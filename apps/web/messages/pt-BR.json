@@ -83,5 +83,136 @@
     "phoneOptional": "Telefone +55… (opcional)",
     "canDelegate": "Pode criar demandas para outras pessoas",
     "addPerson": "Adicionar pessoa"
+  },
+  "landing": {
+    "nav": {
+      "how": "Como funciona",
+      "contexts": "Empresas & Famílias",
+      "plans": "Planos",
+      "affiliates": "Indique e Ganhe",
+      "signIn": "Entrar",
+      "start": "Começar agora"
+    },
+    "hero": {
+      "badge": "Trabalho e vida pessoal, na mesma conta",
+      "headline": "Nunca mais perca uma demanda <hl>por falta de anotação</hl>",
+      "subtitle": "O MILA transforma conversas, reuniões e decisões em execução organizada. Capture na hora, delegue para quem é responsável e acompanhe até concluir — na empresa e em casa.",
+      "emailPlaceholder": "Seu melhor e-mail",
+      "cta": "Começar agora",
+      "finePrint": "Comece em minutos · Planos para empresas e famílias · Cancele quando quiser"
+    },
+    "mockup": {
+      "title": "Demandas · Esta semana",
+      "onTrack": "no prazo",
+      "kpiOpen": "Abertas",
+      "kpiInProgress": "Em andamento",
+      "kpiOverdue": "Atrasadas",
+      "kpiDone": "Concluídas",
+      "chartTitle": "Conclusões por dia",
+      "chartDelta": "+18% vs. semana anterior",
+      "row1Title": "Enviar proposta ao cliente",
+      "row1Sub": "Você → Marina",
+      "row1Tag": "Trabalho",
+      "row2Title": "Levar o carro na revisão",
+      "row2Sub": "Pessoal",
+      "row2Tag": "Família"
+    },
+    "triggers": {
+      "title": "Quantas demandas você já perdeu esta semana?",
+      "desc": "Tudo que é combinado na correria e não vira tarefa, simplesmente some. O custo não é só o esquecimento — é o retrabalho, a cobrança e a confiança que se perde.",
+      "items": [
+        { "p": "“Achei que alguém ia resolver.”", "r": "Toda demanda tem um responsável claro. Nada fica no ar." },
+        { "p": "“Esqueci de anotar e passou.”", "r": "Capture em segundos, por texto ou voz. O que entra, não some." },
+        { "p": "“Não sei o que a equipe está fazendo.”", "r": "Acompanhe o andamento em tempo real, por pessoa, equipe e área." }
+      ]
+    },
+    "how": {
+      "kicker": "Simples assim",
+      "title": "Da conversa à conclusão, em 4 passos",
+      "steps": [
+        { "n": "01", "t": "Capture", "d": "Anote a demanda na hora — por texto ou comando de voz. Avulsa ou dentro de um evento." },
+        { "n": "02", "t": "Delegue", "d": "Defina o responsável, prazo e prioridade. Para você ou para alguém da equipe." },
+        { "n": "03", "t": "Acompanhe", "d": "Veja o status de tudo em painéis por pessoa, equipe, área e organização." },
+        { "n": "04", "t": "Conclua", "d": "Registre o que foi feito. O histórico fica salvo e vira indicador de produtividade." }
+      ]
+    },
+    "contexts": {
+      "title": "Uma conta. Dois mundos, sem misturar.",
+      "subtitle": "Veja suas demandas do trabalho dentro da organização e suas demandas pessoais da família — no mesmo login, com um clique para alternar entre eles.",
+      "corpKicker": "Para empresas",
+      "corpTitle": "Produtividade que a liderança enxerga",
+      "corpDesc": "Estruture a empresa como ela é — Organização, Áreas e Equipes — e dê a cada gestor a visão do que está acontecendo. Delegue com clareza e acompanhe resultados, não promessas.",
+      "corpBullets": [
+        "Estrutura por organização, área e equipe",
+        "Delegação com responsável, prazo e prioridade",
+        "Painéis de acompanhamento por escopo",
+        "Eventos (reuniões/follow-ups) que capturam demandas",
+        "Indicadores de produtividade e destaque de talentos"
+      ],
+      "corpResult": "Resultado: <b>menos retrabalho, prazos cumpridos</b> e uma equipe que sabe exatamente o que fazer.",
+      "familyKicker": "Para famílias",
+      "familyTitle": "Combinados claros, casa em harmonia",
+      "familyDesc": "Sem burocracia: cadastre as pessoas da família e organize o que precisa ser feito. Cada um sabe sua parte, e o que foi combinado deixa de virar discussão.",
+      "familyBullets": [
+        "Cadastro simples de pessoas — sem estrutura corporativa",
+        "Demandas pessoais e da casa em um só lugar",
+        "Quem faz o quê, com prazo e lembrete",
+        "Comunicação clara entre todos",
+        "Até 5 pessoas, por um preço acessível"
+      ],
+      "familyResult": "Resultado: <b>nada esquecido, ninguém sobrecarregado</b> e mais tranquilidade no dia a dia."
+    },
+    "plans": {
+      "kicker": "Planos",
+      "title": "Escolha como o MILA se aplica a você",
+      "subtitle": "Comece pelo que faz sentido hoje. Você pode ter um plano de empresa e um de família na mesma conta.",
+      "perMonth": "/mês",
+      "start": "Começar",
+      "corpTitle": "Corporativo",
+      "corpSub": "Para times e empresas que querem previsibilidade na execução.",
+      "tierTimeName": "Time",
+      "tierTimeUsers": "até 10 usuários",
+      "tierTimeTag": "Para começar com o time",
+      "tierGrowthName": "Crescimento",
+      "tierGrowthUsers": "até 20 usuários",
+      "tierGrowthTag": "O mais escolhido",
+      "tierScaleName": "Escala",
+      "tierScaleUsers": "até 100 usuários",
+      "tierScaleTag": "Para operações maiores",
+      "corpNote": "Acima de 100 usuários: <b>+R$5 por usuário adicional</b>.",
+      "familyTitle": "Família",
+      "familySub": "Simples e acessível. Pague pelo número de pessoas — até 5.",
+      "familyCardTitle": "Plano Família",
+      "familyCardSub": "Escolha quantas pessoas vão participar.",
+      "familyPeople": "{count, plural, one {# pessoa} other {# pessoas}}",
+      "familyAside": "Tudo o que a família precisa para se organizar, sem complicar.",
+      "familyCta": "Começar com a família"
+    },
+    "affiliates": {
+      "badge": "Programa de Afiliados",
+      "title": "Indique o MILA e ganhe",
+      "desc": "Conhece empresas e famílias que vivem perdendo demandas? Indique o MILA e seja recompensado a cada nova assinatura ativada pela sua indicação.",
+      "cta": "Quero indicar",
+      "soon": "Programa em breve"
+    },
+    "finalCta": {
+      "title": "A próxima demanda, você não esquece.",
+      "subtitle": "Coloque tudo no lugar — no trabalho e em casa. Comece a usar o MILA hoje.",
+      "cta": "Começar agora"
+    },
+    "footer": {
+      "tagline": "Transforma demandas soltas, reuniões e decisões em execução organizada.",
+      "copyright": "© 2026 MILA. Todos os direitos reservados."
+    }
+  },
+  "affiliatesPage": {
+    "back": "← Voltar ao site",
+    "badge": "Programa de Afiliados",
+    "title": "Indique e Ganhe",
+    "titleAccent": "está chegando",
+    "desc": "Estamos preparando um programa para recompensar quem indica o MILA para empresas e famílias. Em breve você vai poder gerar seu link, acompanhar suas indicações e receber por cada nova assinatura.",
+    "ctaKnow": "Conhecer o MILA",
+    "ctaApp": "Acessar o app",
+    "construction": "Página em construção · Volte em breve"
   }
 }

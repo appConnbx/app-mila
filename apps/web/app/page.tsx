@@ -1,5 +1,9 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
+import { getLocale, getTranslations } from 'next-intl/server'
+import { LanguageSwitcher } from '@/components/language-switcher'
+import type { Locale } from '@/i18n/config'
 import { startNow } from './_actions'
 
 export const metadata: Metadata = {
@@ -44,7 +48,8 @@ function Logo() {
 }
 
 /* ---------- Mockup do dashboard (hero) ---------- */
-function DashboardMockup() {
+async function DashboardMockup() {
+  const t = await getTranslations('landing.mockup')
   const bars = [40, 62, 48, 75, 55, 88, 70, 96, 64, 82, 58, 90]
   return (
     <div className="relative rounded-2xl border border-white/10 bg-[#0C1424]/90 p-3 shadow-2xl ring-1 ring-white/5 backdrop-blur sm:p-4">
@@ -52,18 +57,18 @@ function DashboardMockup() {
       <div className="flex items-center justify-between border-b border-white/5 pb-3">
         <div className="flex items-center gap-2">
           <span className="grid h-6 w-6 place-items-center rounded-md bg-brand text-[11px] font-black text-slate-950">M</span>
-          <span className="text-sm font-semibold text-white">Demandas · Esta semana</span>
+          <span className="text-sm font-semibold text-white">{t('title')}</span>
         </div>
-        <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-300">no prazo</span>
+        <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-300">{t('onTrack')}</span>
       </div>
 
       {/* KPIs */}
       <div className="mt-3 grid grid-cols-4 gap-2">
         {[
-          { l: 'Abertas', v: '23', c: 'text-white' },
-          { l: 'Em andamento', v: '11', c: 'text-amber-300' },
-          { l: 'Atrasadas', v: '02', c: 'text-rose-300' },
-          { l: 'Concluídas', v: '47', c: 'text-emerald-300' },
+          { l: t('kpiOpen'), v: '23', c: 'text-white' },
+          { l: t('kpiInProgress'), v: '11', c: 'text-amber-300' },
+          { l: t('kpiOverdue'), v: '02', c: 'text-rose-300' },
+          { l: t('kpiDone'), v: '47', c: 'text-emerald-300' },
         ].map((k) => (
           <div key={k.l} className="rounded-lg border border-white/5 bg-white/[0.02] p-2.5">
             <p className="text-[10px] text-slate-400">{k.l}</p>
@@ -75,8 +80,8 @@ function DashboardMockup() {
       {/* gráfico */}
       <div className="mt-3 rounded-lg border border-white/5 bg-white/[0.02] p-3">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-slate-300">Conclusões por dia</p>
-          <p className="text-[11px] text-slate-500">+18% vs. semana anterior</p>
+          <p className="text-xs font-medium text-slate-300">{t('chartTitle')}</p>
+          <p className="text-[11px] text-slate-500">{t('chartDelta')}</p>
         </div>
         <div className="mt-3 flex h-24 items-end gap-1.5">
           {bars.map((h, i) => (
@@ -92,8 +97,8 @@ function DashboardMockup() {
       {/* linha de demanda */}
       <div className="mt-3 space-y-1.5">
         {[
-          { t: 'Enviar proposta ao cliente', who: 'Você → Marina', s: 'Trabalho' },
-          { t: 'Levar o carro na revisão', who: 'Pessoal', s: 'Família' },
+          { t: t('row1Title'), who: t('row1Sub'), s: t('row1Tag') },
+          { t: t('row2Title'), who: t('row2Sub'), s: t('row2Tag') },
         ].map((d) => (
           <div key={d.t} className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2">
             <div className="min-w-0">
@@ -110,7 +115,29 @@ function DashboardMockup() {
 
 /* ===================================================================== */
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const t = await getTranslations('landing')
+  const locale = (await getLocale()) as Locale
+
+  const bold = { b: (chunks: ReactNode) => <span className="font-semibold text-white">{chunks}</span> }
+  const pains = t.raw('triggers.items') as { p: string; r: string }[]
+  const steps = t.raw('how.steps') as { n: string; t: string; d: string }[]
+  const corpBullets = t.raw('contexts.corpBullets') as string[]
+  const familyBullets = t.raw('contexts.familyBullets') as string[]
+
+  const tiers = [
+    { name: t('plans.tierTimeName'), users: t('plans.tierTimeUsers'), tag: t('plans.tierTimeTag'), price: '200' },
+    { name: t('plans.tierGrowthName'), users: t('plans.tierGrowthUsers'), tag: t('plans.tierGrowthTag'), price: '300', featured: true },
+    { name: t('plans.tierScaleName'), users: t('plans.tierScaleUsers'), tag: t('plans.tierScaleTag'), price: '1.000' },
+  ]
+  const familyTiers = [
+    { n: 1, v: '20' },
+    { n: 2, v: '30' },
+    { n: 3, v: '40' },
+    { n: 4, v: '50' },
+    { n: 5, v: '55' },
+  ]
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-surface text-slate-200">
       {/* ---------------- NAV ---------------- */}
@@ -118,20 +145,21 @@ export default function LandingPage() {
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
           <Logo />
           <div className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
-            <a href="#como" className="transition hover:text-white">Como funciona</a>
-            <a href="#contextos" className="transition hover:text-white">Empresas & Famílias</a>
-            <a href="#planos" className="transition hover:text-white">Planos</a>
-            <a href="#afiliados" className="transition hover:text-white">Indique e Ganhe</a>
+            <a href="#como" className="transition hover:text-white">{t('nav.how')}</a>
+            <a href="#contextos" className="transition hover:text-white">{t('nav.contexts')}</a>
+            <a href="#planos" className="transition hover:text-white">{t('nav.plans')}</a>
+            <a href="#afiliados" className="transition hover:text-white">{t('nav.affiliates')}</a>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/login" className="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:text-white">
-              Entrar
+            <LanguageSwitcher current={locale} />
+            <Link href="/login" className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:text-white sm:inline-block">
+              {t('nav.signIn')}
             </Link>
             <Link
               href="/login"
               className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
             >
-              Começar agora
+              {t('nav.start')}
             </Link>
           </div>
         </nav>
@@ -139,7 +167,6 @@ export default function LandingPage() {
 
       {/* ---------------- HERO ---------------- */}
       <section className="relative">
-        {/* glows */}
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute -top-32 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-brand/10 blur-[120px]" />
           <div className="absolute right-0 top-40 h-[360px] w-[360px] rounded-full bg-orange-500/10 blur-[120px]" />
@@ -149,27 +176,24 @@ export default function LandingPage() {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-slate-300">
               <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-              Trabalho e vida pessoal, na mesma conta
+              {t('hero.badge')}
             </span>
 
             <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Nunca mais perca uma demanda{' '}
-              <span className="bg-gradient-to-r from-brand to-orange-400 bg-clip-text text-transparent">
-                por falta de anotação
-              </span>
+              {t.rich('hero.headline', {
+                hl: (chunks) => (
+                  <span className="bg-gradient-to-r from-brand to-orange-400 bg-clip-text text-transparent">{chunks}</span>
+                ),
+              })}
             </h1>
 
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-400">
-              O MILA transforma conversas, reuniões e decisões em execução organizada. Capture na hora, delegue para quem
-              é responsável e acompanhe até concluir — na empresa e em casa.
-            </p>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-400">{t('hero.subtitle')}</p>
 
-            {/* CTA */}
             <form action={startNow} className="mt-7 flex max-w-md flex-col gap-2 sm:flex-row">
               <input
                 type="email"
                 name="email"
-                placeholder="Seu melhor e-mail"
+                placeholder={t('hero.emailPlaceholder')}
                 aria-label="E-mail"
                 className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-brand focus:ring-1 focus:ring-brand"
               />
@@ -177,12 +201,10 @@ export default function LandingPage() {
                 type="submit"
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
               >
-                Começar agora <Arrow className="h-4 w-4" />
+                {t('hero.cta')} <Arrow className="h-4 w-4" />
               </button>
             </form>
-            <p className="mt-3 text-xs text-slate-500">
-              Comece em minutos · Planos para empresas e famílias · Cancele quando quiser
-            </p>
+            <p className="mt-3 text-xs text-slate-500">{t('hero.finePrint')}</p>
           </div>
 
           <div className="relative">
@@ -192,32 +214,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------------- GATILHOS (dor → resultado) ---------------- */}
+      {/* ---------------- GATILHOS ---------------- */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="rounded-2xl border border-white/5 bg-gradient-to-b from-white/[0.04] to-transparent p-8 sm:p-10">
-          <h2 className="max-w-2xl text-2xl font-bold text-white sm:text-3xl">
-            Quantas demandas você já perdeu esta semana?
-          </h2>
-          <p className="mt-3 max-w-2xl text-slate-400">
-            Tudo que é combinado na correria e não vira tarefa, simplesmente some. O custo não é só o esquecimento — é o
-            retrabalho, a cobrança e a confiança que se perde.
-          </p>
+          <h2 className="max-w-2xl text-2xl font-bold text-white sm:text-3xl">{t('triggers.title')}</h2>
+          <p className="mt-3 max-w-2xl text-slate-400">{t('triggers.desc')}</p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              {
-                p: '“Achei que alguém ia resolver.”',
-                r: 'Toda demanda tem um responsável claro. Nada fica no ar.',
-              },
-              {
-                p: '“Esqueci de anotar e passou.”',
-                r: 'Capture em segundos, por texto ou voz. O que entra, não some.',
-              },
-              {
-                p: '“Não sei o que a equipe está fazendo.”',
-                r: 'Acompanhe o andamento em tempo real, por pessoa, equipe e área.',
-              },
-            ].map((b) => (
+            {pains.map((b) => (
               <div key={b.p} className="rounded-xl border border-white/5 bg-surface-card p-5">
                 <p className="text-sm font-medium text-slate-400">{b.p}</p>
                 <div className="mt-3 flex items-start gap-2">
@@ -233,16 +237,11 @@ export default function LandingPage() {
       {/* ---------------- COMO FUNCIONA ---------------- */}
       <section id="como" className="mx-auto max-w-6xl px-4 py-12">
         <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-brand">Simples assim</p>
-          <h2 className="mt-2 text-3xl font-bold text-white">Da conversa à conclusão, em 4 passos</h2>
+          <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('how.kicker')}</p>
+          <h2 className="mt-2 text-3xl font-bold text-white">{t('how.title')}</h2>
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { n: '01', t: 'Capture', d: 'Anote a demanda na hora — por texto ou comando de voz. Avulsa ou dentro de um evento.' },
-            { n: '02', t: 'Delegue', d: 'Defina o responsável, prazo e prioridade. Para você ou para alguém da equipe.' },
-            { n: '03', t: 'Acompanhe', d: 'Veja o status de tudo em painéis por pessoa, equipe, área e organização.' },
-            { n: '04', t: 'Conclua', d: 'Registre o que foi feito. O histórico fica salvo e vira indicador de produtividade.' },
-          ].map((s) => (
+          {steps.map((s) => (
             <div key={s.n} className="rounded-2xl border border-white/5 bg-surface-card p-6">
               <span className="text-sm font-bold text-brand">{s.n}</span>
               <h3 className="mt-2 text-lg font-semibold text-white">{s.t}</h3>
@@ -255,67 +254,44 @@ export default function LandingPage() {
       {/* ---------------- DOIS CONTEXTOS ---------------- */}
       <section id="contextos" className="mx-auto max-w-6xl px-4 py-16">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-white">Uma conta. Dois mundos, sem misturar.</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-400">
-            Veja suas demandas do trabalho dentro da organização e suas demandas pessoais da família — no mesmo login,
-            com um clique para alternar entre eles.
-          </p>
+          <h2 className="text-3xl font-bold text-white">{t('contexts.title')}</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-slate-400">{t('contexts.subtitle')}</p>
         </div>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           {/* Corporativo */}
           <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-surface-card p-8">
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/10 blur-3xl" />
-            <p className="text-sm font-semibold uppercase tracking-wider text-brand">Para empresas</p>
-            <h3 className="mt-2 text-2xl font-bold text-white">Produtividade que a liderança enxerga</h3>
-            <p className="mt-3 text-slate-400">
-              Estruture a empresa como ela é — Organização, Áreas e Equipes — e dê a cada gestor a visão do que está
-              acontecendo. Delegue com clareza e acompanhe resultados, não promessas.
-            </p>
+            <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('contexts.corpKicker')}</p>
+            <h3 className="mt-2 text-2xl font-bold text-white">{t('contexts.corpTitle')}</h3>
+            <p className="mt-3 text-slate-400">{t('contexts.corpDesc')}</p>
             <ul className="mt-5 space-y-2.5 text-sm">
-              {[
-                'Estrutura por organização, área e equipe',
-                'Delegação com responsável, prazo e prioridade',
-                'Painéis de acompanhamento por escopo',
-                'Eventos (reuniões/follow-ups) que capturam demandas',
-                'Indicadores de produtividade e destaque de talentos',
-              ].map((i) => (
+              {corpBullets.map((i) => (
                 <li key={i} className="flex items-start gap-2.5 text-slate-300">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" /> {i}
                 </li>
               ))}
             </ul>
             <p className="mt-6 rounded-lg border border-white/5 bg-white/[0.02] p-3 text-sm text-slate-300">
-              Resultado: <span className="font-semibold text-white">menos retrabalho, prazos cumpridos</span> e uma
-              equipe que sabe exatamente o que fazer.
+              {t.rich('contexts.corpResult', bold)}
             </p>
           </div>
 
           {/* Família */}
           <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-surface-card p-8">
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-orange-500/10 blur-3xl" />
-            <p className="text-sm font-semibold uppercase tracking-wider text-orange-300">Para famílias</p>
-            <h3 className="mt-2 text-2xl font-bold text-white">Combinados claros, casa em harmonia</h3>
-            <p className="mt-3 text-slate-400">
-              Sem burocracia: cadastre as pessoas da família e organize o que precisa ser feito. Cada um sabe sua parte,
-              e o que foi combinado deixa de virar discussão.
-            </p>
+            <p className="text-sm font-semibold uppercase tracking-wider text-orange-300">{t('contexts.familyKicker')}</p>
+            <h3 className="mt-2 text-2xl font-bold text-white">{t('contexts.familyTitle')}</h3>
+            <p className="mt-3 text-slate-400">{t('contexts.familyDesc')}</p>
             <ul className="mt-5 space-y-2.5 text-sm">
-              {[
-                'Cadastro simples de pessoas — sem estrutura corporativa',
-                'Demandas pessoais e da casa em um só lugar',
-                'Quem faz o quê, com prazo e lembrete',
-                'Comunicação clara entre todos',
-                'Até 5 pessoas, por um preço acessível',
-              ].map((i) => (
+              {familyBullets.map((i) => (
                 <li key={i} className="flex items-start gap-2.5 text-slate-300">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-orange-300" /> {i}
                 </li>
               ))}
             </ul>
             <p className="mt-6 rounded-lg border border-white/5 bg-white/[0.02] p-3 text-sm text-slate-300">
-              Resultado: <span className="font-semibold text-white">nada esquecido, ninguém sobrecarregado</span> e mais
-              tranquilidade no dia a dia.
+              {t.rich('contexts.familyResult', bold)}
             </p>
           </div>
         </div>
@@ -324,23 +300,17 @@ export default function LandingPage() {
       {/* ---------------- PLANOS ---------------- */}
       <section id="planos" className="mx-auto max-w-6xl px-4 py-16">
         <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-brand">Planos</p>
-          <h2 className="mt-2 text-3xl font-bold text-white">Escolha como o MILA se aplica a você</h2>
-          <p className="mx-auto mt-3 max-w-xl text-slate-400">
-            Comece pelo que faz sentido hoje. Você pode ter um plano de empresa e um de família na mesma conta.
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('plans.kicker')}</p>
+          <h2 className="mt-2 text-3xl font-bold text-white">{t('plans.title')}</h2>
+          <p className="mx-auto mt-3 max-w-xl text-slate-400">{t('plans.subtitle')}</p>
         </div>
 
         {/* Corporativo */}
         <div className="mt-10">
-          <h3 className="text-lg font-semibold text-white">Corporativo</h3>
-          <p className="text-sm text-slate-400">Para times e empresas que querem previsibilidade na execução.</p>
+          <h3 className="text-lg font-semibold text-white">{t('plans.corpTitle')}</h3>
+          <p className="text-sm text-slate-400">{t('plans.corpSub')}</p>
           <div className="mt-5 grid gap-5 md:grid-cols-3">
-            {[
-              { name: 'Time', users: 'até 10 usuários', price: '200', tag: 'Para começar com o time' },
-              { name: 'Crescimento', users: 'até 20 usuários', price: '300', tag: 'O mais escolhido', featured: true },
-              { name: 'Escala', users: 'até 100 usuários', price: '1.000', tag: 'Para operações maiores' },
-            ].map((p) => (
+            {tiers.map((p) => (
               <div
                 key={p.name}
                 className={`relative rounded-2xl border p-6 ${
@@ -358,7 +328,7 @@ export default function LandingPage() {
                 <p className="text-xs text-slate-400">{p.users}</p>
                 <p className="mt-4 text-4xl font-extrabold text-white">
                   R${p.price}
-                  <span className="text-base font-medium text-slate-400">/mês</span>
+                  <span className="text-base font-medium text-slate-400">{t('plans.perMonth')}</span>
                 </p>
                 {!p.featured && <p className="mt-1 text-xs text-slate-500">{p.tag}</p>}
                 <Link
@@ -369,47 +339,39 @@ export default function LandingPage() {
                       : 'border border-white/10 text-slate-200 hover:bg-white/5'
                   }`}
                 >
-                  Começar
+                  {t('plans.start')}
                 </Link>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-sm text-slate-500">
-            Acima de 100 usuários: <span className="font-medium text-slate-300">+R$5 por usuário adicional</span>.
-          </p>
+          <p className="mt-4 text-sm text-slate-500">{t.rich('plans.corpNote', bold)}</p>
         </div>
 
         {/* Família */}
         <div className="mt-12">
-          <h3 className="text-lg font-semibold text-white">Família</h3>
-          <p className="text-sm text-slate-400">Simples e acessível. Pague pelo número de pessoas — até 5.</p>
+          <h3 className="text-lg font-semibold text-white">{t('plans.familyTitle')}</h3>
+          <p className="text-sm text-slate-400">{t('plans.familySub')}</p>
           <div className="mt-5 grid gap-5 lg:grid-cols-3">
             <div className="rounded-2xl border border-orange-400/30 bg-gradient-to-b from-orange-500/[0.08] to-surface-card p-6 lg:col-span-2">
-              <p className="text-sm font-semibold text-white">Plano Família</p>
-              <p className="text-xs text-slate-400">Escolha quantas pessoas vão participar.</p>
+              <p className="text-sm font-semibold text-white">{t('plans.familyCardTitle')}</p>
+              <p className="text-xs text-slate-400">{t('plans.familyCardSub')}</p>
               <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
-                {[
-                  { u: '1', v: '20' },
-                  { u: '2', v: '30' },
-                  { u: '3', v: '40' },
-                  { u: '4', v: '50' },
-                  { u: '5', v: '55' },
-                ].map((f) => (
-                  <div key={f.u} className="rounded-xl border border-white/10 bg-white/[0.02] p-3 text-center">
-                    <p className="text-xs text-slate-400">{f.u} {f.u === '1' ? 'pessoa' : 'pessoas'}</p>
+                {familyTiers.map((f) => (
+                  <div key={f.n} className="rounded-xl border border-white/10 bg-white/[0.02] p-3 text-center">
+                    <p className="text-xs text-slate-400">{t('plans.familyPeople', { count: f.n })}</p>
                     <p className="mt-1 text-xl font-bold text-white">R${f.v}</p>
-                    <p className="text-[10px] text-slate-500">/mês</p>
+                    <p className="text-[10px] text-slate-500">{t('plans.perMonth')}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div className="flex flex-col justify-center rounded-2xl border border-white/10 bg-surface-card p-6">
-              <p className="text-sm text-slate-300">Tudo o que a família precisa para se organizar, sem complicar.</p>
+              <p className="text-sm text-slate-300">{t('plans.familyAside')}</p>
               <Link
                 href="/login"
                 className="mt-4 block rounded-xl bg-orange-500 px-4 py-2.5 text-center text-sm font-semibold text-slate-950 transition hover:bg-orange-400"
               >
-                Começar com a família
+                {t('plans.familyCta')}
               </Link>
             </div>
           </div>
@@ -423,22 +385,19 @@ export default function LandingPage() {
           <div className="relative grid items-center gap-6 lg:grid-cols-[1.4fr,1fr]">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-slate-300">
-                Programa de Afiliados
+                {t('affiliates.badge')}
               </span>
-              <h2 className="mt-4 text-3xl font-bold text-white">Indique o MILA e ganhe</h2>
-              <p className="mt-3 max-w-xl text-slate-400">
-                Conhece empresas e famílias que vivem perdendo demandas? Indique o MILA e seja recompensado a cada nova
-                assinatura ativada pela sua indicação.
-              </p>
+              <h2 className="mt-4 text-3xl font-bold text-white">{t('affiliates.title')}</h2>
+              <p className="mt-3 max-w-xl text-slate-400">{t('affiliates.desc')}</p>
             </div>
             <div className="lg:justify-self-end">
               <Link
                 href="/affiliates"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
               >
-                Quero indicar <Arrow className="h-4 w-4" />
+                {t('affiliates.cta')} <Arrow className="h-4 w-4" />
               </Link>
-              <p className="mt-2 text-center text-xs text-slate-500 lg:text-right">Programa em breve</p>
+              <p className="mt-2 text-center text-xs text-slate-500 lg:text-right">{t('affiliates.soon')}</p>
             </div>
           </div>
         </div>
@@ -447,18 +406,14 @@ export default function LandingPage() {
       {/* ---------------- CTA FINAL ---------------- */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="rounded-3xl border border-white/10 bg-surface-card p-10 text-center sm:p-14">
-          <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">
-            A próxima demanda, você não esquece.
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-slate-400">
-            Coloque tudo no lugar — no trabalho e em casa. Comece a usar o MILA hoje.
-          </p>
+          <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">{t('finalCta.title')}</h2>
+          <p className="mx-auto mt-3 max-w-xl text-slate-400">{t('finalCta.subtitle')}</p>
           <div className="mt-7 flex justify-center">
             <Link
               href="/login"
               className="inline-flex items-center gap-2 rounded-xl bg-brand px-7 py-3.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
             >
-              Começar agora <Arrow className="h-4 w-4" />
+              {t('finalCta.cta')} <Arrow className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -469,21 +424,19 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <Logo />
-            <p className="mt-3 max-w-xs text-sm text-slate-500">
-              Transforma demandas soltas, reuniões e decisões em execução organizada.
-            </p>
+            <p className="mt-3 max-w-xs text-sm text-slate-500">{t('footer.tagline')}</p>
           </div>
-          <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-slate-400">
-            <a href="#como" className="transition hover:text-white">Como funciona</a>
-            <a href="#planos" className="transition hover:text-white">Planos</a>
-            <a href="#afiliados" className="transition hover:text-white">Indique e Ganhe</a>
-            <Link href="/login" className="transition hover:text-white">Entrar</Link>
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-slate-400">
+            <a href="#como" className="transition hover:text-white">{t('nav.how')}</a>
+            <a href="#planos" className="transition hover:text-white">{t('nav.plans')}</a>
+            <a href="#afiliados" className="transition hover:text-white">{t('nav.affiliates')}</a>
+            <Link href="/login" className="transition hover:text-white">{t('nav.signIn')}</Link>
+            <LanguageSwitcher current={locale} />
           </div>
         </div>
         <div className="border-t border-white/5">
-          <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-            <p>© 2026 MILA. Todos os direitos reservados.</p>
-            <p>Português (BR) · English · Español — em breve</p>
+          <div className="mx-auto max-w-6xl px-4 py-5 text-xs text-slate-500">
+            <p>{t('footer.copyright')}</p>
           </div>
         </div>
       </footer>

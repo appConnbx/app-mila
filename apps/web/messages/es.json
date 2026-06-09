@@ -83,5 +83,136 @@
     "phoneOptional": "Teléfono +55… (opcional)",
     "canDelegate": "Puede crear demandas para otras personas",
     "addPerson": "Añadir persona"
+  },
+  "landing": {
+    "nav": {
+      "how": "Cómo funciona",
+      "contexts": "Empresas y Familias",
+      "plans": "Planes",
+      "affiliates": "Recomienda y Gana",
+      "signIn": "Entrar",
+      "start": "Comenzar ahora"
+    },
+    "hero": {
+      "badge": "Trabajo y vida personal, en una sola cuenta",
+      "headline": "Nunca más pierdas una tarea <hl>por falta de una nota</hl>",
+      "subtitle": "MILA convierte conversaciones, reuniones y decisiones en ejecución organizada. Captura al instante, delega a quien corresponde y haz seguimiento hasta terminar — en la empresa y en casa.",
+      "emailPlaceholder": "Tu mejor correo",
+      "cta": "Comenzar ahora",
+      "finePrint": "Configura en minutos · Planes para empresas y familias · Cancela cuando quieras"
+    },
+    "mockup": {
+      "title": "Tareas · Esta semana",
+      "onTrack": "a tiempo",
+      "kpiOpen": "Abiertas",
+      "kpiInProgress": "En curso",
+      "kpiOverdue": "Atrasadas",
+      "kpiDone": "Completadas",
+      "chartTitle": "Completadas por día",
+      "chartDelta": "+18% vs. semana anterior",
+      "row1Title": "Enviar propuesta al cliente",
+      "row1Sub": "Tú → Marina",
+      "row1Tag": "Trabajo",
+      "row2Title": "Llevar el auto a revisión",
+      "row2Sub": "Personal",
+      "row2Tag": "Familia"
+    },
+    "triggers": {
+      "title": "¿Cuántas tareas has perdido esta semana?",
+      "desc": "Todo lo que se acuerda con prisa y no se convierte en tarea, simplemente desaparece. El costo no es solo el olvido — es el retrabajo, la insistencia y la confianza que se pierde.",
+      "items": [
+        { "p": "“Creí que alguien lo resolvería.”", "r": "Cada tarea tiene un responsable claro. Nada queda en el aire." },
+        { "p": "“Olvidé anotarlo y se me pasó.”", "r": "Captura en segundos, por texto o voz. Lo que entra, no desaparece." },
+        { "p": "“No sé qué está haciendo el equipo.”", "r": "Haz seguimiento en tiempo real, por persona, equipo y área." }
+      ]
+    },
+    "how": {
+      "kicker": "Así de simple",
+      "title": "De la conversación a la conclusión, en 4 pasos",
+      "steps": [
+        { "n": "01", "t": "Captura", "d": "Anota la tarea al instante — por texto o voz. Suelta o dentro de un evento." },
+        { "n": "02", "t": "Delega", "d": "Define el responsable, plazo y prioridad. Para ti o para alguien del equipo." },
+        { "n": "03", "t": "Sigue", "d": "Mira el estado de todo en paneles por persona, equipo, área y organización." },
+        { "n": "04", "t": "Concluye", "d": "Registra lo hecho. El historial se guarda y se convierte en indicador de productividad." }
+      ]
+    },
+    "contexts": {
+      "title": "Una cuenta. Dos mundos, sin mezclar.",
+      "subtitle": "Mira tus tareas del trabajo dentro de la organización y tus tareas personales de la familia — en el mismo inicio de sesión, con un clic para alternar entre ellos.",
+      "corpKicker": "Para empresas",
+      "corpTitle": "Productividad que el liderazgo ve",
+      "corpDesc": "Estructura la empresa como realmente es — Organización, Áreas y Equipos — y dale a cada gerente visibilidad de lo que ocurre. Delega con claridad y haz seguimiento de resultados, no de promesas.",
+      "corpBullets": [
+        "Estructura por organización, área y equipo",
+        "Delegación con responsable, plazo y prioridad",
+        "Paneles de seguimiento por alcance",
+        "Eventos (reuniones/seguimientos) que capturan tareas",
+        "Indicadores de productividad y destaque de talentos"
+      ],
+      "corpResult": "Resultado: <b>menos retrabajo, plazos cumplidos</b> y un equipo que sabe exactamente qué hacer.",
+      "familyKicker": "Para familias",
+      "familyTitle": "Acuerdos claros, hogar en armonía",
+      "familyDesc": "Sin burocracia: registra a las personas de la familia y organiza lo que hay que hacer. Cada uno sabe su parte, y lo acordado deja de volverse discusión.",
+      "familyBullets": [
+        "Registro simple de personas — sin estructura corporativa",
+        "Tareas personales y del hogar en un solo lugar",
+        "Quién hace qué, con plazo y recordatorio",
+        "Comunicación clara entre todos",
+        "Hasta 5 personas, a un precio accesible"
+      ],
+      "familyResult": "Resultado: <b>nada olvidado, nadie sobrecargado</b> y más tranquilidad en el día a día."
+    },
+    "plans": {
+      "kicker": "Planes",
+      "title": "Elige cómo se aplica MILA a ti",
+      "subtitle": "Empieza por lo que tiene sentido hoy. Puedes tener un plan de empresa y uno de familia en la misma cuenta.",
+      "perMonth": "/mes",
+      "start": "Comenzar",
+      "corpTitle": "Corporativo",
+      "corpSub": "Para equipos y empresas que quieren previsibilidad en la ejecución.",
+      "tierTimeName": "Equipo",
+      "tierTimeUsers": "hasta 10 usuarios",
+      "tierTimeTag": "Para empezar con el equipo",
+      "tierGrowthName": "Crecimiento",
+      "tierGrowthUsers": "hasta 20 usuarios",
+      "tierGrowthTag": "El más elegido",
+      "tierScaleName": "Escala",
+      "tierScaleUsers": "hasta 100 usuarios",
+      "tierScaleTag": "Para operaciones mayores",
+      "corpNote": "Más de 100 usuarios: <b>+R$5 por usuario adicional</b>.",
+      "familyTitle": "Familia",
+      "familySub": "Simple y accesible. Paga por número de personas — hasta 5.",
+      "familyCardTitle": "Plan Familia",
+      "familyCardSub": "Elige cuántas personas participarán.",
+      "familyPeople": "{count, plural, one {# persona} other {# personas}}",
+      "familyAside": "Todo lo que la familia necesita para organizarse, sin complicaciones.",
+      "familyCta": "Comenzar con la familia"
+    },
+    "affiliates": {
+      "badge": "Programa de Afiliados",
+      "title": "Recomienda MILA y gana",
+      "desc": "¿Conoces empresas y familias que siempre pierden tareas? Recomienda MILA y recibe una recompensa por cada nueva suscripción activada por tu recomendación.",
+      "cta": "Quiero recomendar",
+      "soon": "Programa muy pronto"
+    },
+    "finalCta": {
+      "title": "La próxima tarea, no la olvidas.",
+      "subtitle": "Pon todo en su lugar — en el trabajo y en casa. Empieza a usar MILA hoy.",
+      "cta": "Comenzar ahora"
+    },
+    "footer": {
+      "tagline": "Convierte tareas sueltas, reuniones y decisiones en ejecución organizada.",
+      "copyright": "© 2026 MILA. Todos los derechos reservados."
+    }
+  },
+  "affiliatesPage": {
+    "back": "← Volver al sitio",
+    "badge": "Programa de Afiliados",
+    "title": "Recomienda y Gana",
+    "titleAccent": "está llegando",
+    "desc": "Estamos preparando un programa para recompensar a quienes recomiendan MILA a empresas y familias. Pronto podrás generar tu enlace, hacer seguimiento de tus recomendaciones y recibir por cada nueva suscripción.",
+    "ctaKnow": "Conocer MILA",
+    "ctaApp": "Ir a la app",
+    "construction": "Página en construcción · Vuelve pronto"
   }
 }

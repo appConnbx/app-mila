@@ -83,5 +83,136 @@
     "phoneOptional": "Phone +55… (optional)",
     "canDelegate": "Can create demands for other people",
     "addPerson": "Add person"
+  },
+  "landing": {
+    "nav": {
+      "how": "How it works",
+      "contexts": "Companies & Families",
+      "plans": "Pricing",
+      "affiliates": "Refer & Earn",
+      "signIn": "Sign in",
+      "start": "Get started"
+    },
+    "hero": {
+      "badge": "Work and personal life, in one account",
+      "headline": "Never lose a task again <hl>for lack of a note</hl>",
+      "subtitle": "MILA turns conversations, meetings and decisions into organized execution. Capture on the spot, delegate to the right person and track until done — at work and at home.",
+      "emailPlaceholder": "Your best email",
+      "cta": "Get started",
+      "finePrint": "Set up in minutes · Plans for companies and families · Cancel anytime"
+    },
+    "mockup": {
+      "title": "Tasks · This week",
+      "onTrack": "on track",
+      "kpiOpen": "Open",
+      "kpiInProgress": "In progress",
+      "kpiOverdue": "Overdue",
+      "kpiDone": "Completed",
+      "chartTitle": "Completions per day",
+      "chartDelta": "+18% vs. last week",
+      "row1Title": "Send proposal to client",
+      "row1Sub": "You → Marina",
+      "row1Tag": "Work",
+      "row2Title": "Take the car for service",
+      "row2Sub": "Personal",
+      "row2Tag": "Family"
+    },
+    "triggers": {
+      "title": "How many tasks have you lost this week?",
+      "desc": "Everything agreed on the fly that never becomes a task simply vanishes. The cost isn't just forgetting — it's the rework, the chasing and the trust you lose.",
+      "items": [
+        { "p": "“I thought someone would handle it.”", "r": "Every task has a clear owner. Nothing is left hanging." },
+        { "p": "“I forgot to write it down and missed it.”", "r": "Capture in seconds, by text or voice. What goes in doesn't disappear." },
+        { "p": "“I don't know what the team is doing.”", "r": "Track progress in real time, by person, team and area." }
+      ]
+    },
+    "how": {
+      "kicker": "It's that simple",
+      "title": "From conversation to done, in 4 steps",
+      "steps": [
+        { "n": "01", "t": "Capture", "d": "Note the task right away — by text or voice. Standalone or inside an event." },
+        { "n": "02", "t": "Delegate", "d": "Set the owner, due date and priority. For you or for someone on the team." },
+        { "n": "03", "t": "Track", "d": "See the status of everything in dashboards by person, team, area and organization." },
+        { "n": "04", "t": "Complete", "d": "Record what was done. History is saved and becomes a productivity metric." }
+      ]
+    },
+    "contexts": {
+      "title": "One account. Two worlds, never mixed.",
+      "subtitle": "See your work tasks within the organization and your personal family tasks — in the same login, one click to switch between them.",
+      "corpKicker": "For companies",
+      "corpTitle": "Productivity leadership can see",
+      "corpDesc": "Structure the company as it really is — Organization, Areas and Teams — and give each manager visibility into what's happening. Delegate with clarity and track results, not promises.",
+      "corpBullets": [
+        "Structure by organization, area and team",
+        "Delegation with owner, due date and priority",
+        "Tracking dashboards by scope",
+        "Events (meetings/follow-ups) that capture tasks",
+        "Productivity metrics and talent highlights"
+      ],
+      "corpResult": "Result: <b>less rework, deadlines met</b> and a team that knows exactly what to do.",
+      "familyKicker": "For families",
+      "familyTitle": "Clear agreements, a harmonious home",
+      "familyDesc": "No bureaucracy: add your family members and organize what needs to get done. Everyone knows their part, and what was agreed stops turning into an argument.",
+      "familyBullets": [
+        "Simple people registration — no corporate structure",
+        "Personal and household tasks in one place",
+        "Who does what, with due date and reminder",
+        "Clear communication for everyone",
+        "Up to 5 people, at an affordable price"
+      ],
+      "familyResult": "Result: <b>nothing forgotten, no one overloaded</b> and more peace of mind day to day."
+    },
+    "plans": {
+      "kicker": "Pricing",
+      "title": "Choose how MILA fits you",
+      "subtitle": "Start with what makes sense today. You can have a company plan and a family plan in the same account.",
+      "perMonth": "/mo",
+      "start": "Get started",
+      "corpTitle": "Corporate",
+      "corpSub": "For teams and companies that want predictable execution.",
+      "tierTimeName": "Team",
+      "tierTimeUsers": "up to 10 users",
+      "tierTimeTag": "To start with your team",
+      "tierGrowthName": "Growth",
+      "tierGrowthUsers": "up to 20 users",
+      "tierGrowthTag": "Most popular",
+      "tierScaleName": "Scale",
+      "tierScaleUsers": "up to 100 users",
+      "tierScaleTag": "For larger operations",
+      "corpNote": "Above 100 users: <b>+R$5 per additional user</b>.",
+      "familyTitle": "Family",
+      "familySub": "Simple and affordable. Pay by number of people — up to 5.",
+      "familyCardTitle": "Family plan",
+      "familyCardSub": "Choose how many people will take part.",
+      "familyPeople": "{count, plural, one {# person} other {# people}}",
+      "familyAside": "Everything a family needs to get organized, without the hassle.",
+      "familyCta": "Start with the family"
+    },
+    "affiliates": {
+      "badge": "Affiliate Program",
+      "title": "Refer MILA and earn",
+      "desc": "Know companies and families that keep losing tasks? Refer MILA and get rewarded for every new subscription activated through your referral.",
+      "cta": "I want to refer",
+      "soon": "Program coming soon"
+    },
+    "finalCta": {
+      "title": "The next task, you won't forget.",
+      "subtitle": "Put everything in its place — at work and at home. Start using MILA today.",
+      "cta": "Get started"
+    },
+    "footer": {
+      "tagline": "Turns scattered tasks, meetings and decisions into organized execution.",
+      "copyright": "© 2026 MILA. All rights reserved."
+    }
+  },
+  "affiliatesPage": {
+    "back": "← Back to site",
+    "badge": "Affiliate Program",
+    "title": "Refer & Earn",
+    "titleAccent": "is coming",
+    "desc": "We're building a program to reward those who refer MILA to companies and families. Soon you'll be able to generate your link, track your referrals and earn for every new subscription.",
+    "ctaKnow": "Discover MILA",
+    "ctaApp": "Go to the app",
+    "construction": "Page under construction · Check back soon"
   }
 }
