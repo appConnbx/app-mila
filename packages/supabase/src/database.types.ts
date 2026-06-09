@@ -1037,7 +1037,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      my_instances: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          holding_id: string
+          holding_name: string
+          kind: "corporate" | "family"
+          person_id: string
+          role_title: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
