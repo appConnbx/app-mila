@@ -1,0 +1,11 @@
+{
+  "name": "@mila/supabase",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cliente Supabase e tipos do banco compartilhados entre web e mobile.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}

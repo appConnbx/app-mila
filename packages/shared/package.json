@@ -1,0 +1,11 @@
+{
+  "name": "@mila/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Regras de negócio puras, schemas de validação (Zod) e utilitários compartilhados.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "zod": "^3.23.0"
+  }
+}

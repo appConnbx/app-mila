@@ -1,0 +1,35 @@
+# Dependências
+node_modules/
+.pnpm-store/
+
+# Build / saída
+.next/
+out/
+dist/
+build/
+.turbo/
+.expo/
+*.tsbuildinfo
+
+# Variáveis de ambiente (NUNCA versionar — contêm chaves secretas)
+.env
+.env.*
+!.env.example
+
+# Supabase (artefatos locais)
+supabase/.branches/
+supabase/.temp/
+
+# Logs e SO
+*.log
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+
+# Config local do Claude (específica da máquina)
+.claude/settings.local.json
