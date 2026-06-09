@@ -36,6 +36,9 @@ export default async function AppLayout({
             <Link href="/demandas" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
               {t('nav.demands')}
             </Link>
+            <Link href="/eventos" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
+              {t('nav.events')}
+            </Link>
             {isHoldingAdmin && (
               <Link href="/estrutura" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
                 {t('nav.structure')}

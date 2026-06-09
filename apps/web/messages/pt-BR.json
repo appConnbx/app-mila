@@ -8,7 +8,39 @@
   },
   "nav": {
     "demands": "Demandas",
+    "events": "Eventos",
     "structure": "Estrutura"
+  },
+  "events": {
+    "title": "Eventos",
+    "subtitle": "Sessões que capturam demandas automaticamente.",
+    "activeSession": "Sessão ativa",
+    "activeHint": "As novas demandas serão vinculadas a esta sessão.",
+    "noActive": "Nenhuma sessão aberta. Abra uma para capturar as próximas demandas automaticamente.",
+    "close": "Encerrar sessão",
+    "open": "Abrir sessão",
+    "namePlaceholder": "Ex.: Follow-up comercial",
+    "type": "Tipo",
+    "statusOpen": "Aberto",
+    "statusClosed": "Fechado",
+    "completion": "concluído",
+    "empty": "Nenhum evento ainda.",
+    "back": "Voltar",
+    "owner": "Responsável",
+    "opened": "Aberto em",
+    "closed": "Fechado em",
+    "linkedDemands": "Demandas do evento",
+    "noDemands": "Nenhuma demanda neste evento.",
+    "types": {
+      "reuniao": "Reunião",
+      "ata": "Ata",
+      "comite": "Comitê",
+      "follow_up": "Follow-up",
+      "alinhamento": "Alinhamento",
+      "plano_acao": "Plano de ação",
+      "diagnostico": "Diagnóstico",
+      "outro": "Outro"
+    }
   },
   "login": {
     "subtitle": "Gestão de demandas e produtividade",

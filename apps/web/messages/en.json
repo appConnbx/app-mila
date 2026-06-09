@@ -8,7 +8,39 @@
   },
   "nav": {
     "demands": "Demands",
+    "events": "Events",
     "structure": "Structure"
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Sessions that capture demands automatically.",
+    "activeSession": "Active session",
+    "activeHint": "New demands will be linked to this session.",
+    "noActive": "No open session. Open one to automatically capture the next demands.",
+    "close": "End session",
+    "open": "Open session",
+    "namePlaceholder": "E.g.: Sales follow-up",
+    "type": "Type",
+    "statusOpen": "Open",
+    "statusClosed": "Closed",
+    "completion": "done",
+    "empty": "No events yet.",
+    "back": "Back",
+    "owner": "Owner",
+    "opened": "Opened at",
+    "closed": "Closed at",
+    "linkedDemands": "Event demands",
+    "noDemands": "No demands in this event.",
+    "types": {
+      "reuniao": "Meeting",
+      "ata": "Minutes",
+      "comite": "Committee",
+      "follow_up": "Follow-up",
+      "alinhamento": "Alignment",
+      "plano_acao": "Action plan",
+      "diagnostico": "Assessment",
+      "outro": "Other"
+    }
   },
   "login": {
     "subtitle": "Demand management and productivity",
