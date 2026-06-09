@@ -214,14 +214,42 @@ export async function setPersonActive(formData: FormData) {
   revalidate()
 }
 
-export async function deletePerson(formData: FormData) {
+/** Edita os dados cadastrais da pessoa (admin da holding). */
+export async function updatePerson(formData: FormData) {
   const { supabase } = await ctx()
   const id = String(formData.get('id') ?? '')
   if (!id) return
-  // Pode falhar se a pessoa for responsável/origem de demandas (FK restrita) —
-  // nesse caso, o correto é desativar. Falha é silenciosa por design.
-  await supabase.from('people').delete().eq('id', id)
+  const patch = {
+    full_name: String(formData.get('full_name') ?? '').trim(),
+    email: String(formData.get('email') ?? '').trim() || null,
+    role_title: String(formData.get('role_title') ?? '').trim() || null,
+    can_delegate: formData.get('can_delegate') === 'on',
+  }
+  if (!patch.full_name) return
+  await supabase.from('people').update(patch as never).eq('id', id)
   revalidate()
+}
+
+/**
+ * Exclui a pessoa. FKs RESTRICT (demands/observations/events) impedem o delete
+ * quando há trabalho vinculado — por isso usamos a RPC admin_delete_person, que
+ * opcionalmente reatribui o trabalho a outra pessoa antes de excluir.
+ */
+export async function deletePerson(formData: FormData) {
+  const { supabase } = await ctx()
+  const id = String(formData.get('id') ?? '')
+  const reassign = String(formData.get('reassign_to') ?? '') || null
+  if (!id) return
+  const sb = supabase as unknown as {
+    rpc: (name: string, args: Record<string, unknown>) => Promise<{ data: { ok: boolean; reason?: string } | null }>
+  }
+  const { data } = await sb.rpc('admin_delete_person', { p_id: id, p_reassign: reassign })
+  revalidate()
+  if (data?.ok) {
+    redirect('/estrutura/usuarios?ok=deleted')
+  } else {
+    redirect(`/estrutura/usuarios?err=${data?.reason ?? 'delete'}`)
+  }
 }
 
 export async function setHoldingAdmin(formData: FormData) {

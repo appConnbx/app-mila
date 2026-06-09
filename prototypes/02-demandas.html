@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>APP MILA — Protótipo · Demandas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared.css"/>
+<style>
+  .shell{max-width:980px;margin:0 auto;padding:34px 24px 80px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .crumbs{display:flex;align-items:center;gap:9px;font-size:13px}
+  .crumbs .dim{color:#5C6677}
+  h1{font-size:28px;font-weight:800;letter-spacing:-1px;margin:14px 0 0}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 6px}
+  .kpi-card{padding:16px 18px}
+  .kpi-card .lbl{font-size:12.5px;color:var(--muted)}
+  .kpi-card .num{font-size:34px;line-height:1;margin-top:8px}
+  .tabs{display:flex;gap:6px;margin:26px 0 14px}
+  .tab{font-size:13.5px;font-weight:600;padding:7px 14px;border-radius:10px;color:var(--muted);cursor:pointer}
+  .tab.on{background:rgba(255,255,255,.07);color:#fff;border:1px solid var(--line)}
+  /* CARD DE DEMANDA */
+  .demand{padding:18px;margin-bottom:14px;display:flex;gap:16px}
+  .demand:hover{border-color:rgba(34,211,238,.35)}
+  .av{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-weight:700;font-size:15px;color:#04222A;flex:none}
+  .body{flex:1;min-width:0}
+  .head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+  .title{font-size:16px;font-weight:700;margin:0}
+  .resp{font-size:12.5px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:6px}
+  .desc{font-size:13.5px;color:#A9B4C4;margin:9px 0 0;line-height:1.5}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 14px}
+  .status{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;flex:none;white-space:nowrap}
+  .s-new{background:rgba(56,189,248,.14);color:#7DD3FC}
+  .s-work{background:rgba(251,191,36,.14);color:#FCD34D}
+  .s-done{background:rgba(52,211,153,.16);color:#9DF6C2}
+  /* rodapé do card: prazo + barra de progresso do prazo */
+  .deadline{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .deadline .meta{font-size:12px;color:var(--muted);display:flex;gap:14px;white-space:nowrap}
+  .deadline .meta b{color:#CBD5E1;font-weight:600}
+  .legend{font-size:11px;color:#5C6677;margin-top:14px;display:flex;gap:18px;align-items:center}
+  @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.head{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="bg-scene"></div>
+
+<div class="shell">
+  <div class="topbar">
+    <div class="crumbs">
+      <span class="pill">🏢 Acme Inc.</span><span class="dim">›</span>
+      <span class="pill">Engenharia</span><span class="dim">›</span>
+      <span class="pill">Equipe Projetos</span>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a class="btn btn-ghost" href="#" style="padding:9px 16px">Trocar instância</a>
+      <a class="btn btn-brand" href="#" style="padding:9px 18px">+ Nova demanda</a>
+    </div>
+  </div>
+
+  <h1>Demandas</h1>
+
+  <div class="kpis">
+    <div class="glass kpi-card"><div class="lbl">Total</div><div class="num kpi">24</div></div>
+    <div class="glass kpi-card"><div class="lbl">Em andamento</div><div class="num kpi" style="color:#FCD34D">9</div></div>
+    <div class="glass kpi-card"><div class="lbl">Atrasadas</div><div class="num kpi" style="color:#FB7185">3</div></div>
+    <div class="glass kpi-card"><div class="lbl">Concluídas</div><div class="num kpi" style="color:#34D399">12</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on">Ativas (12)</div>
+    <div class="tab">Concluídas / arquivadas (12)</div>
+  </div>
+
+  <!-- CARD 1 — no prazo (verde) -->
+  <div class="glass demand">
+    <div class="av" style="background:linear-gradient(180deg,#7DD3FC,#38BDF8)">JM</div>
+    <div class="body">
+      <div class="head">
+        <div>
+          <p class="title">Revisar memorial descritivo do galpão GLP</p>
+          <div class="resp">👤 João Marques · criada 02/06</div>
+        </div>
+        <span class="status s-work">Em andamento</span>
+      </div>
+      <p class="desc">Conferir especificações estruturais e atualizar quantitativos antes do envio à engenharia.</p>
+      <div class="tags">
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#engenharia</span>
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#memorial</span>
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#galpão</span>
+        <span class="tag" style="background:rgba(255,255,255,.07);color:#94A3B8">⚙ auto</span>
+      </div>
+      <div class="deadline">
+        <div class="meta"><span>Prazo <b>12/06</b></span><span>·</span><span>faltam <b>6 dias</b></span></div>
+      </div>
+      <div class="progress" style="margin-top:8px"><i class="bar-ok" style="width:34%"></i></div>
+    </div>
+  </div>
+
+  <!-- CARD 2 — perto do prazo (amarelo) -->
+  <div class="glass demand">
+    <div class="av" style="background:linear-gradient(180deg,#FDBA74,#FB923C)">CA</div>
+    <div class="body">
+      <div class="head">
+        <div>
+          <p class="title">Revisar proposta comercial do cliente XPEX</p>
+          <div class="resp">👤 Carla Alves · criada 04/06</div>
+        </div>
+        <span class="status s-work">Em andamento</span>
+      </div>
+      <p class="desc">Ajustar escopo e valores antes do envio para aprovação do diretor comercial.</p>
+      <div class="tags">
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#comercial</span>
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#proposta</span>
+        <span class="tag" style="background:rgba(251,113,133,.16);color:#FDA4AF">#prioridade-alta</span>
+        <span class="tag" style="background:rgba(255,255,255,.07);color:#94A3B8">⚙ auto</span>
+      </div>
+      <div class="deadline">
+        <div class="meta"><span>Prazo <b>11/06</b></span><span>·</span><span style="color:#FCD34D">faltam <b>2 dias</b></span></div>
+      </div>
+      <div class="progress" style="margin-top:8px"><i class="bar-warn" style="width:78%"></i></div>
+    </div>
+  </div>
+
+  <!-- CARD 3 — atrasada (vermelho) -->
+  <div class="glass demand" style="border-color:rgba(251,113,133,.3)">
+    <div class="av" style="background:linear-gradient(180deg,#FCA5A5,#F87171)">RH</div>
+    <div class="body">
+      <div class="head">
+        <div>
+          <p class="title">Enviar ART da obra Prologis Cajamar</p>
+          <div class="resp">👤 Rogério Hirata · criada 28/05</div>
+        </div>
+        <span class="status s-work">Em andamento</span>
+      </div>
+      <p class="desc">Anotação de responsabilidade técnica pendente de protocolo no CREA.</p>
+      <div class="tags">
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#documentação</span>
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#ART</span>
+        <span class="tag" style="background:rgba(251,113,133,.16);color:#FDA4AF">#atrasada</span>
+        <span class="tag" style="background:rgba(255,255,255,.07);color:#94A3B8">⚙ auto</span>
+      </div>
+      <div class="deadline">
+        <div class="meta"><span>Prazo <b>06/06</b></span><span>·</span><span style="color:#FB7185">atrasada <b>3 dias</b></span></div>
+      </div>
+      <div class="progress" style="margin-top:8px"><i class="bar-danger" style="width:100%"></i></div>
+    </div>
+  </div>
+
+  <!-- CARD 4 — nova (sem prazo iniciado) -->
+  <div class="glass demand">
+    <div class="av" style="background:linear-gradient(180deg,#A5B4FC,#818CF8)">FA</div>
+    <div class="body">
+      <div class="head">
+        <div>
+          <p class="title">Cotar fornecedor de estrutura metálica</p>
+          <div class="resp">👤 Fabíola Amarilis · criada hoje</div>
+        </div>
+        <span class="status s-new">Nova</span>
+      </div>
+      <p class="desc">Levantar 3 cotações para o pacote de aço da obra de Sorocaba.</p>
+      <div class="tags">
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#suprimentos</span>
+        <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#cotação</span>
+        <span class="tag" style="background:rgba(255,255,255,.07);color:#94A3B8">⚙ auto</span>
+      </div>
+      <div class="deadline">
+        <div class="meta"><span>Prazo <b>20/06</b></span><span>·</span><span>faltam <b>11 dias</b></span></div>
+      </div>
+      <div class="progress" style="margin-top:8px"><i class="bar-brand" style="width:8%"></i></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span style="display:flex;align-items:center;gap:6px"><span class="dot" style="background:#34D399"></span> no prazo</span>
+    <span style="display:flex;align-items:center;gap:6px"><span class="dot" style="background:#FBBF24"></span> prazo próximo</span>
+    <span style="display:flex;align-items:center;gap:6px"><span class="dot" style="background:#FB7185"></span> atrasada</span>
+    <span>A barra mostra quanto do tempo até o prazo já passou · <b style="color:#94A3B8">⚙ auto</b> = tag gerada pelo sistema no cadastro</span>
+  </div>
+</div>
+<script>addEventListener('load',()=>{const y=new URLSearchParams(location.search).get('y');if(y)setTimeout(()=>scrollTo(0,+y),60)})</script>
+</body>
+</html>

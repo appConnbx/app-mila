@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { Aurora } from '@/components/ui'
 import type { Locale } from '@/i18n/config'
 
 export default async function AppLayout({
@@ -28,7 +29,8 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen bg-surface">
-      <header className="sticky top-0 z-10 border-b border-surface-border bg-surface/80 backdrop-blur">
+      <Aurora />
+      <header className="sticky top-0 z-10 border-b border-white/5 bg-surface/70 backdrop-blur-xl">
         {/* Linha 1: marca + ações */}
         <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link href="/painel" className="flex shrink-0 items-center gap-2">

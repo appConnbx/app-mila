@@ -110,7 +110,18 @@
     "priority": { "alta": "Alta", "media": "Média", "baixa": "Baixa" },
     "tabActive": "Ativas",
     "tabArchived": "Concluídas",
-    "emptyArchived": "Nenhuma demanda concluída ainda."
+    "emptyArchived": "Nenhuma demanda concluída ainda.",
+    "createdWord": "criada",
+    "dueWord": "Prazo",
+    "noDue": "sem prazo",
+    "dueToday": "vence hoje",
+    "remaining": "{days, plural, one {falta # dia} other {faltam # dias}}",
+    "overdue": "{days, plural, one {atrasada # dia} other {atrasada # dias}}",
+    "autoTag": "auto",
+    "legendOnTime": "no prazo",
+    "legendNear": "prazo próximo",
+    "legendOverdue": "atrasada",
+    "legendHint": "A barra mostra quanto do tempo até o prazo já passou."
   },
   "demandDetail": {
     "back": "Voltar",
@@ -219,7 +230,24 @@
     "removeAdminRole": "Remover admin",
     "resetPassword": "Redefinir senha",
     "sessionActive": "ativa",
-    "sessionNone": "—"
+    "sessionNone": "—",
+    "edit": "Editar",
+    "editUser": "Editar usuário",
+    "saveChanges": "Salvar alterações",
+    "close": "Fechar",
+    "memberRole": "Membro",
+    "online": "Online agora",
+    "reassignLabel": "Reatribuir trabalho para",
+    "reassignKeep": "— escolher pessoa —",
+    "deleteUserHint": "Excluir remove a pessoa definitivamente. Se houver demandas/eventos vinculados, reatribua antes.",
+    "msgDeleted": "Usuário excluído.",
+    "msgHasDeps": "Não foi possível excluir: a pessoa tem demandas ou eventos vinculados. Reatribua o trabalho a outra pessoa e tente novamente.",
+    "msgDeleteError": "Não foi possível excluir o usuário.",
+    "statsUsers": "usuários",
+    "statsActive": "ativos",
+    "statsOnline": "online agora",
+    "statsAdmins": "administradores",
+    "searchPlaceholder": "Buscar por nome, e-mail ou equipe…"
   },
   "landing": {
     "nav": {

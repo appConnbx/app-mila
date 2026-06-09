@@ -57,15 +57,17 @@ export function Card({
   title,
   actions,
   className,
+  glow,
   children,
 }: {
   title?: string
   actions?: ReactNode
   className?: string
+  glow?: boolean
   children: ReactNode
 }) {
   return (
-    <section className={cn('rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card', className)}>
+    <section className={cn('glass p-5', glow && 'glow-top', className)}>
       {(title || actions) && (
         <div className="mb-4 flex items-center justify-between gap-2">
           {title && <h2 className="text-lg font-semibold text-white">{title}</h2>}
@@ -74,6 +76,98 @@ export function Card({
       )}
       {children}
     </section>
+  )
+}
+
+/* ---------------- Aurora (cena de fundo) ---------------- */
+export function Aurora() {
+  return <div className="aurora" aria-hidden />
+}
+
+/* ---------------- Avatar (iniciais com gradiente determinístico) ---------------- */
+const AV_GRADIENTS = [
+  'from-sky-300 to-blue-500',
+  'from-orange-300 to-orange-500',
+  'from-indigo-300 to-indigo-500',
+  'from-emerald-300 to-emerald-500',
+  'from-fuchsia-300 to-fuchsia-500',
+  'from-amber-300 to-amber-500',
+  'from-cyan-300 to-cyan-500',
+  'from-rose-300 to-rose-500',
+]
+export function initials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+function gradientFor(name: string) {
+  let h = 0
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0
+  return AV_GRADIENTS[h % AV_GRADIENTS.length]
+}
+export function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' | 'lg' }) {
+  const sizes = { sm: 'h-9 w-9 text-xs rounded-lg', md: 'h-11 w-11 text-sm rounded-xl', lg: 'h-12 w-12 text-base rounded-xl' }
+  return (
+    <span
+      className={cn(
+        'grid shrink-0 place-items-center bg-gradient-to-b font-bold text-slate-950',
+        gradientFor(name),
+        sizes[size],
+      )}
+    >
+      {initials(name)}
+    </span>
+  )
+}
+
+/* ---------------- Tag (pílula de tag de demanda) ---------------- */
+export function Tag({ children, tone = 'brand' }: { children: ReactNode; tone?: 'brand' | 'danger' | 'auto' }) {
+  const tones = {
+    brand: 'bg-brand/15 text-cyan-200',
+    danger: 'bg-rose-500/15 text-rose-300',
+    auto: 'bg-white/[0.06] text-slate-400',
+  }
+  return <span className={cn('inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11.5px] font-semibold', tones[tone])}>{children}</span>
+}
+
+/* ---------------- DeadlineBar (progresso do tempo até o prazo) ---------------- */
+export function DeadlineBar({
+  createdAt,
+  dueDate,
+  done,
+}: {
+  createdAt: string
+  dueDate: string | null
+  done?: boolean
+}) {
+  if (done) {
+    return (
+      <div className="flex items-center gap-3">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-800">
+          <div className="h-full rounded-full bg-emerald-500" style={{ width: '100%' }} />
+        </div>
+      </div>
+    )
+  }
+  if (!dueDate) {
+    return (
+      <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+        <div className="h-full rounded-full bg-brand/60" style={{ width: '6%' }} />
+      </div>
+    )
+  }
+  const start = new Date(createdAt).getTime()
+  const end = new Date(dueDate + 'T23:59:59').getTime()
+  const now = Date.now()
+  const overdue = now > end
+  const pct = overdue ? 100 : Math.max(4, Math.min(100, Math.round(((now - start) / Math.max(1, end - start)) * 100)))
+  // < 70% = no prazo (verde) · 70–100% = próximo (âmbar) · estourou = vermelho
+  const color = overdue ? 'bg-gradient-to-r from-rose-400 to-red-500' : pct >= 70 ? 'bg-gradient-to-r from-amber-400 to-amber-500' : 'bg-gradient-to-r from-emerald-400 to-emerald-500'
+  return (
+    <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+      <div className={cn('h-full rounded-full transition-all', color)} style={{ width: `${pct}%` }} />
+    </div>
   )
 }
 

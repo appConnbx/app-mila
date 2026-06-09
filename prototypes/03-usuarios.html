@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>APP MILA — Protótipo · Gestão de usuários</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared.css"/>
+<style>
+  .shell{max-width:1180px;margin:0 auto;padding:34px 24px 80px}
+  h1{font-size:28px;font-weight:800;letter-spacing:-1px;margin:0}
+  .sub{color:var(--muted);font-size:14px;margin-top:4px}
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:24px 0 18px;flex-wrap:wrap}
+  .search{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--muted);min-width:280px}
+  .search input{background:transparent;border:0;outline:0;color:#fff;font-size:14px;width:100%}
+  .stats{display:flex;gap:10px}
+  .chip{padding:7px 13px;border-radius:10px;font-size:13px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:#C7D0DE}
+  .chip b{color:#fff}
+  /* tabela */
+  .tablecard{padding:0;overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  thead th{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:#5C6677;text-align:left;padding:14px 18px;border-bottom:1px solid var(--line);font-weight:600}
+  tbody td{padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px;vertical-align:middle}
+  tbody tr:hover{background:rgba(255,255,255,.025)}
+  tbody tr:last-child td{border-bottom:0}
+  .user{display:flex;align-items:center;gap:12px}
+  .av{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-weight:700;font-size:14px;color:#04222A;flex:none}
+  .uname{font-weight:600}
+  .uemail{font-size:12.5px;color:var(--muted)}
+  .teamtags{display:flex;gap:5px;flex-wrap:wrap}
+  .teamtag{font-size:11.5px;padding:3px 8px;border-radius:7px;background:rgba(255,255,255,.06);color:#C7D0DE;border:1px solid var(--line)}
+  .role{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+  .role-admin{background:rgba(34,211,238,.15);color:#9FE9F4}
+  .role-member{background:rgba(255,255,255,.06);color:#AAB4C4}
+  .online{display:inline-flex;align-items:center;gap:7px;font-size:13px}
+  .online.on{color:#9DF6C2}.online.off{color:#6B7689}
+  .pulse{width:8px;height:8px;border-radius:50%;background:#34D399;box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:p 1.6s infinite}
+  @keyframes p{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}70%{box-shadow:0 0 0 7px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+  .status-tag{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+  .st-active{background:rgba(52,211,153,.15);color:#9DF6C2}
+  .st-inactive{background:rgba(148,163,184,.15);color:#94A3B8}
+  /* ações */
+  .actions{display:flex;gap:6px;justify-content:flex-end}
+  .iconbtn{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;border:1px solid var(--line);background:rgba(255,255,255,.04);cursor:pointer;font-size:15px;transition:.15s}
+  .iconbtn:hover{background:rgba(255,255,255,.1)}
+  .iconbtn.edit:hover{border-color:rgba(34,211,238,.5);color:#9FE9F4}
+  .iconbtn.key:hover{border-color:rgba(251,191,36,.5);color:#FCD34D}
+  .iconbtn.del:hover{border-color:rgba(251,113,133,.6);color:#FDA4AF;background:rgba(251,113,133,.1)}
+  .row-inactive{opacity:.55}
+  /* painel de edição (drawer mock) */
+  .drawer{padding:24px}
+  .drawer h3{margin:0 0 4px;font-size:18px}
+  .field{margin-top:16px}
+  .field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+  .field input,.field select{width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:#fff;font-size:14px;outline:0}
+  .field input:focus,.field select:focus{border-color:var(--brand)}
+  .togglerow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+  .switch{width:42px;height:24px;border-radius:999px;background:rgba(34,211,238,.6);position:relative;flex:none}
+  .switch::after{content:"";position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff}
+  .switch.off{background:rgba(255,255,255,.15)}.switch.off::after{left:3px;right:auto}
+  .gridcol{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  @media(max-width:1024px){.gridcol{grid-template-columns:1fr}.uemail{display:none}}
+</style>
+</head>
+<body>
+<div class="bg-scene"></div>
+
+<div class="shell">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+    <div>
+      <h1>Gestão de usuários</h1>
+      <p class="sub">Administre quem acessa o sistema, equipes, permissões e senhas — controle completo da holding.</p>
+    </div>
+    <a class="btn btn-brand" href="#">+ Cadastrar usuário</a>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">🔎 <input placeholder="Buscar por nome, e-mail ou equipe…"/></div>
+    <div class="stats">
+      <span class="chip"><b>28</b> usuários</span>
+      <span class="chip"><b>24</b> ativos</span>
+      <span class="chip"><b>6</b> online agora</span>
+      <span class="chip"><b>3</b> administradores</span>
+    </div>
+  </div>
+
+  <div class="gridcol">
+    <!-- TABELA -->
+    <div class="glass tablecard">
+      <table>
+        <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Equipes</th>
+            <th>Permissão</th>
+            <th>Último acesso</th>
+            <th>Situação</th>
+            <th style="text-align:right">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="user"><div class="av" style="background:linear-gradient(180deg,#7DD3FC,#38BDF8)">JM</div><div><div class="uname">João Marques</div><div class="uemail">joao@acme.com</div></div></div></td>
+            <td><div class="teamtags"><span class="teamtag">Projetos</span><span class="teamtag">Orçamento</span></div></td>
+            <td><span class="role role-admin">◆ Admin holding</span></td>
+            <td><div class="online on"><span class="pulse"></span> Online agora</div></td>
+            <td><span class="status-tag st-active">Ativo</span></td>
+            <td><div class="actions">
+              <button class="iconbtn edit" title="Editar">✏️</button>
+              <button class="iconbtn key" title="Redefinir senha">🔑</button>
+              <button class="iconbtn del" title="Excluir">🗑️</button>
+            </div></td>
+          </tr>
+          <tr>
+            <td><div class="user"><div class="av" style="background:linear-gradient(180deg,#FDBA74,#FB923C)">CA</div><div><div class="uname">Carla Alves</div><div class="uemail">carla@acme.com</div></div></div></td>
+            <td><div class="teamtags"><span class="teamtag">Comercial</span></div></td>
+            <td><span class="role role-member">Membro</span></td>
+            <td><div class="online off">há 2 horas · 09/06 14:12</div></td>
+            <td><span class="status-tag st-active">Ativo</span></td>
+            <td><div class="actions">
+              <button class="iconbtn edit" title="Editar">✏️</button>
+              <button class="iconbtn key" title="Redefinir senha">🔑</button>
+              <button class="iconbtn del" title="Excluir">🗑️</button>
+            </div></td>
+          </tr>
+          <tr>
+            <td><div class="user"><div class="av" style="background:linear-gradient(180deg,#A5B4FC,#818CF8)">FA</div><div><div class="uname">Fabíola Amarilis</div><div class="uemail">fabiola@acme.com</div></div></div></td>
+            <td><div class="teamtags"><span class="teamtag">Suprimentos</span><span class="teamtag">Qualidade</span></div></td>
+            <td><span class="role role-admin">◆ Admin área</span></td>
+            <td><div class="online off">ontem · 08/06 18:40</div></td>
+            <td><span class="status-tag st-active">Ativo</span></td>
+            <td><div class="actions">
+              <button class="iconbtn edit" title="Editar">✏️</button>
+              <button class="iconbtn key" title="Redefinir senha">🔑</button>
+              <button class="iconbtn del" title="Excluir">🗑️</button>
+            </div></td>
+          </tr>
+          <tr class="row-inactive">
+            <td><div class="user"><div class="av" style="background:linear-gradient(180deg,#94A3B8,#64748B)">PE</div><div><div class="uname">Pedro Esteves</div><div class="uemail">pedro@acme.com</div></div></div></td>
+            <td><div class="teamtags"><span class="teamtag">—</span></div></td>
+            <td><span class="role role-member">Membro</span></td>
+            <td><div class="online off">há 34 dias · 06/05</div></td>
+            <td><span class="status-tag st-inactive">Inativo</span></td>
+            <td><div class="actions">
+              <button class="iconbtn edit" title="Editar">✏️</button>
+              <button class="iconbtn key" title="Redefinir senha">🔑</button>
+              <button class="iconbtn del" title="Excluir">🗑️</button>
+            </div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DRAWER DE EDIÇÃO (mock aberto) -->
+    <div class="glass glow drawer">
+      <h3>Editar usuário</h3>
+      <p class="sub" style="margin:0">João Marques</p>
+      <div class="field"><label>Nome completo</label><input value="João Marques"/></div>
+      <div class="field"><label>Apelidos (para captura de demandas)</label><input value="João, JM, Marques"/></div>
+      <div class="field"><label>E-mail</label><input value="joao@acme.com"/></div>
+      <div class="field"><label>Permissão</label>
+        <select><option>Admin da holding</option><option>Admin de área</option><option>Admin de equipe</option><option>Membro</option></select>
+      </div>
+      <div class="field"><label>Equipes</label><input value="Projetos, Orçamento"/></div>
+
+      <div style="margin-top:18px;border-top:1px solid var(--line);padding-top:6px">
+        <div class="togglerow"><div><div style="font-size:14px;font-weight:600">Pode delegar demandas</div><div class="uemail">Atribuir tarefas a outras pessoas</div></div><div class="switch"></div></div>
+        <div class="togglerow"><div><div style="font-size:14px;font-weight:600">Usuário ativo</div><div class="uemail">Desativar bloqueia o acesso sem excluir</div></div><div class="switch"></div></div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <a class="btn btn-brand" href="#" style="flex:1">Salvar alterações</a>
+        <button class="iconbtn key" title="Redefinir senha" style="width:44px">🔑</button>
+        <button class="iconbtn del" title="Excluir usuário" style="width:44px">🗑️</button>
+      </div>
+      <p class="uemail" style="text-align:center;margin-top:12px">🔑 redefinir senha · 🗑️ excluir definitivamente</p>
+    </div>
+  </div>
+</div>
+<script>addEventListener('load',()=>{const y=new URLSearchParams(location.search).get('y');if(y)setTimeout(()=>scrollTo(0,+y),60)})</script>
+</body>
+</html>

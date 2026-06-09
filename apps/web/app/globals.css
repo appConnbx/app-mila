@@ -22,3 +22,55 @@ body {
 * {
   scrollbar-color: #334155 transparent;
 }
+
+@layer components {
+  /* Card vitrificado (glassmorphism) — usado em todo o sistema */
+  .glass {
+    @apply relative rounded-2xl border border-white/10;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 24px 50px -28px rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  /* Glow superior (spotlight) — para cards de destaque */
+  .glow-top::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -1px;
+    transform: translateX(-50%);
+    width: 72%;
+    height: 90px;
+    border-radius: 9999px;
+    background: radial-gradient(60% 100% at 50% 0%, rgba(34, 211, 238, 0.42), transparent 70%);
+    filter: blur(14px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .glow-top.glow-blue::after {
+    background: radial-gradient(60% 100% at 50% 0%, rgba(59, 130, 246, 0.5), transparent 70%);
+  }
+}
+
+/* Cena de fundo (aurora + grade) — dá profundidade ao vidro */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 560px at 50% -8%, rgba(37, 99, 235, 0.16), transparent 60%),
+    radial-gradient(820px 460px at 88% 6%, rgba(34, 211, 238, 0.08), transparent 55%);
+}
+.aurora::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(ellipse 92% 70% at 50% 14%, #000 28%, transparent 76%);
+  -webkit-mask-image: radial-gradient(ellipse 92% 70% at 50% 14%, #000 28%, transparent 76%);
+}

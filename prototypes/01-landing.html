@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>APP MILA — Protótipo · Página comercial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared.css"/>
+<style>
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:rgba(6,9,18,.6);border-bottom:1px solid var(--line)}
+  .navrow{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{font-weight:800;letter-spacing:.5px;font-size:18px}
+  .brand b{color:var(--brand)}
+  .navlinks{display:flex;gap:26px;align-items:center}
+  .navlinks a{color:#AAB4C4;text-decoration:none;font-size:14px}
+  .navlinks a:hover{color:#fff}
+  section{padding:72px 0}
+  .eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:#9FE9F4;background:var(--brand-soft);border:1px solid rgba(34,211,238,.25);padding:6px 13px;border-radius:999px}
+  h1{font-size:62px;line-height:1.04;font-weight:800;letter-spacing:-2px;margin:22px 0 0}
+  .sub{font-size:19px;color:var(--muted);max-width:620px;margin:20px auto 0;line-height:1.55}
+  .center{text-align:center}
+  .ctas{display:flex;gap:14px;justify-content:center;margin-top:34px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .feat{padding:26px}
+  .feat .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--brand-soft);border:1px solid rgba(34,211,238,.3);font-size:20px;margin-bottom:16px}
+  .feat h3{margin:0 0 8px;font-size:18px}
+  .feat p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.55}
+  .sec-title{font-size:40px;font-weight:800;letter-spacing:-1.2px;margin:0}
+  .price{padding:30px;display:flex;flex-direction:column;gap:6px}
+  .price .plan{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9FE9F4}
+  .price .val{font-size:46px;font-weight:800;letter-spacing:-1.5px;margin-top:6px}
+  .price .val span{font-size:16px;color:var(--muted);font-weight:500}
+  .price ul{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-direction:column;gap:11px}
+  .price li{display:flex;gap:10px;font-size:14px;color:#C7D0DE}
+  .price li::before{content:"✓";color:var(--brand);font-weight:800}
+  .badge-pop{position:absolute;top:20px;right:20px;font-size:11.5px;font-weight:700;color:#04222A;background:linear-gradient(180deg,#3DE0F2,#16B6CE);padding:5px 11px;border-radius:999px}
+  /* showcase mock demanda */
+  .mock{padding:18px;display:flex;flex-direction:column;gap:12px}
+  .mock .row{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;color:#04222A;flex:none}
+  footer{border-top:1px solid var(--line);padding:40px 0;color:var(--muted);font-size:13.5px}
+  .affiliate{padding:40px;text-align:center;background:
+     radial-gradient(120% 120% at 50% 0%, rgba(34,211,238,.12), transparent 60%), linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02))}
+  @media(max-width:880px){h1{font-size:40px}.grid-3,.grid-2{grid-template-columns:1fr}.navlinks{display:none}.sec-title{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="bg-scene"></div>
+
+<nav>
+  <div class="wrap navrow">
+    <div class="brand">APP <b>MILA</b></div>
+    <div class="navlinks">
+      <a href="#como">Como funciona</a>
+      <a href="#planos">Planos</a>
+      <a href="#familia">Família</a>
+      <a href="#indique">Indique e ganhe</a>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a class="btn btn-ghost" href="#" style="padding:9px 16px">Entrar</a>
+      <a class="btn btn-brand" href="#" style="padding:9px 18px">Começar agora</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="center">
+  <div class="wrap">
+    <span class="eyebrow">◇ Nunca mais perca uma demanda por falta de anotação</span>
+    <h1 class="h-grad">Toda demanda registrada.<br/>Nada se perde.</h1>
+    <p class="sub">Organize as demandas do <b style="color:#cfe9f0">trabalho</b> dentro da sua empresa e as <b style="color:#cfe9f0">pessoais</b> da sua família — no mesmo lugar, com acompanhamento e prazos que ninguém esquece.</p>
+    <div class="ctas">
+      <a class="btn btn-brand" href="#">Experimentar grátis</a>
+      <a class="btn btn-ghost" href="#como">Ver como funciona</a>
+    </div>
+
+    <!-- SHOWCASE card vitrificado com glow -->
+    <div class="glass glow-blue" style="margin-top:56px;padding:8px">
+      <div class="mock">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="pill">🏢 Acme Inc.</span><span class="dim">›</span><span class="pill">Engenharia</span>
+          </div>
+          <span class="pill" style="color:#9DF6C2;border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.12)"><span class="dot" style="background:#34D399"></span> 12 demandas ativas</span>
+        </div>
+        <div class="row">
+          <div class="av" style="background:linear-gradient(180deg,#7DD3FC,#38BDF8)">JM</div>
+          <div style="flex:1;text-align:left">
+            <div style="display:flex;justify-content:space-between;gap:12px">
+              <strong style="font-size:15px">Revisar proposta comercial do cliente XPEX</strong>
+              <span class="tag" style="background:rgba(251,191,36,.14);color:#FCD34D">Em andamento</span>
+            </div>
+            <p class="muted" style="margin:5px 0 0;font-size:13.5px">Ajustar escopo e valores antes do envio para aprovação.</p>
+            <div style="display:flex;gap:6px;margin:10px 0">
+              <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#comercial</span>
+              <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#proposta</span>
+              <span class="tag" style="background:var(--brand-soft);color:#9FE9F4">#prioridade-alta</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="progress" style="flex:1"><i class="bar-warn" style="width:68%"></i></div>
+              <span class="dim" style="font-size:12px">vence em 2 dias</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRIGGERS / COMO FUNCIONA -->
+<section id="como">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:42px">
+      <h2 class="sec-title">O resultado que você sente no primeiro dia</h2>
+      <p class="sub">Menos coisas na cabeça. Mais coisas concluídas.</p>
+    </div>
+    <div class="grid-3">
+      <div class="glass feat glow">
+        <div class="ic">🎯</div>
+        <h3>Nada cai no esquecimento</h3>
+        <p>Capturou, registrou. Cada pedido vira uma demanda com responsável e prazo — pare de confiar na memória.</p>
+      </div>
+      <div class="glass feat">
+        <div class="ic">📈</div>
+        <h3>Produtividade visível</h3>
+        <p>Acompanhe o andamento por pessoa, equipe e área. Saiba o que avança e o que travou, sem reunião.</p>
+      </div>
+      <div class="glass feat">
+        <div class="ic">👨‍👩‍👧</div>
+        <h3>Família alinhada</h3>
+        <p>Combinados, compras e tarefas de casa num só lugar. Comunicação clara, sem cobrança no grupo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANOS -->
+<section id="planos">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:42px">
+      <span class="eyebrow">Para empresas</span>
+      <h2 class="sec-title" style="margin-top:16px">Pacotes corporativos</h2>
+      <p class="sub">Holding, organizações, áreas e equipes — estrutura completa com dashboards de produtividade.</p>
+    </div>
+    <div class="grid-3">
+      <div class="glass price">
+        <span class="plan">Essencial</span>
+        <div class="val">R$200<span>/mês</span></div>
+        <p class="muted" style="margin:4px 0 0;font-size:13.5px">Para times enxutos que querem começar a registrar tudo.</p>
+        <ul><li>Até 10 colaboradores</li><li>Demandas + eventos</li><li>Dashboard básico</li><li>+ R$5 por colaborador extra</li></ul>
+        <a class="btn btn-ghost" href="#" style="margin-top:22px">Escolher</a>
+      </div>
+      <div class="glass glow price" style="border-color:rgba(34,211,238,.4)">
+        <span class="badge-pop">Mais popular</span>
+        <span class="plan">Crescimento</span>
+        <div class="val">R$300<span>/mês</span></div>
+        <p class="muted" style="margin:4px 0 0;font-size:13.5px">Estrutura por áreas e equipes com acompanhamento gerencial.</p>
+        <ul><li>Até 30 colaboradores</li><li>Áreas, equipes e responsáveis</li><li>Dashboards por pessoa e equipe</li><li>+ R$5 por colaborador extra</li></ul>
+        <a class="btn btn-brand" href="#" style="margin-top:22px">Escolher</a>
+      </div>
+      <div class="glass price">
+        <span class="plan">Corporativo</span>
+        <div class="val">R$1.000<span>/mês</span></div>
+        <p class="muted" style="margin:4px 0 0;font-size:13.5px">Holding com várias organizações e governança completa.</p>
+        <ul><li>Colaboradores ilimitados*</li><li>Multi-organização</li><li>Gestão de sistema completa</li><li>Suporte prioritário</li></ul>
+        <a class="btn btn-ghost" href="#" style="margin-top:22px">Falar com vendas</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAMÍLIA -->
+<section id="familia">
+  <div class="wrap">
+    <div class="glass glow-blue" style="padding:40px">
+      <div class="grid-2" style="align-items:center">
+        <div>
+          <span class="eyebrow">Para a família</span>
+          <h2 class="sec-title" style="margin-top:16px">Sem estrutura de empresa.<br/>Só as pessoas que importam.</h2>
+          <p class="muted" style="font-size:15.5px;line-height:1.6;margin-top:16px">Cadastre os membros da família e distribua tarefas, combinados e compras. Cada um vê o que precisa fazer e o prazo. Simples assim.</p>
+          <div style="display:flex;gap:10px;margin-top:22px">
+            <span class="pill">A partir de <b style="color:#9FE9F4;margin-left:4px">R$20/mês</b></span>
+            <span class="pill">2 a 8 pessoas</span>
+          </div>
+          <a class="btn btn-brand" href="#" style="margin-top:24px">Começar com a família</a>
+        </div>
+        <div class="glass" style="padding:16px">
+          <div class="row" style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)">
+            <div class="av" style="background:linear-gradient(180deg,#FDBA74,#FB923C)">LA</div>
+            <div style="flex:1"><strong style="font-size:14px">Comprar material escolar</strong><div class="dim" style="font-size:12px">Larissa · vence sábado</div></div>
+            <span class="tag" style="background:rgba(52,211,153,.14);color:#9DF6C2">Concluído</span>
+          </div>
+          <div style="height:10px"></div>
+          <div class="row" style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)">
+            <div class="av" style="background:linear-gradient(180deg,#A5B4FC,#818CF8)">PE</div>
+            <div style="flex:1"><strong style="font-size:14px">Levar carro na revisão</strong><div class="dim" style="font-size:12px">Pedro · vence amanhã</div></div>
+            <span class="tag" style="background:rgba(251,191,36,.14);color:#FCD34D">Em andamento</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDIQUE E GANHE -->
+<section id="indique">
+  <div class="wrap">
+    <div class="glass affiliate glow">
+      <span class="eyebrow">💸 Indique e ganhe</span>
+      <h2 class="sec-title" style="margin-top:18px">Recomende o MILA e seja recompensado</h2>
+      <p class="sub">Indique empresas e famílias e ganhe comissão recorrente a cada assinatura ativa.</p>
+      <a class="btn btn-brand" href="/affiliates" style="margin-top:26px">Quero ser afiliado</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px">
+    <div class="brand">APP <b>MILA</b></div>
+    <div>© 2026 APP MILA · appmila.co · PT-BR · EN · ES</div>
+  </div>
+</footer>
+<script>addEventListener('load',()=>{const y=new URLSearchParams(location.search).get('y');if(y)setTimeout(()=>scrollTo(0,+y),60)})</script>
+</body>
+</html>

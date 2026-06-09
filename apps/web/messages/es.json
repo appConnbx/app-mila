@@ -110,7 +110,18 @@
     "priority": { "alta": "Alta", "media": "Media", "baixa": "Baja" },
     "tabActive": "Activas",
     "tabArchived": "Completadas",
-    "emptyArchived": "Aún no hay demandas completadas."
+    "emptyArchived": "Aún no hay demandas completadas.",
+    "createdWord": "creada",
+    "dueWord": "Plazo",
+    "noDue": "sin plazo",
+    "dueToday": "vence hoy",
+    "remaining": "{days, plural, one {falta # día} other {faltan # días}}",
+    "overdue": "{days, plural, one {atrasada # día} other {atrasada # días}}",
+    "autoTag": "auto",
+    "legendOnTime": "en plazo",
+    "legendNear": "plazo próximo",
+    "legendOverdue": "atrasada",
+    "legendHint": "La barra muestra cuánto del tiempo hasta el plazo ya pasó."
   },
   "demandDetail": {
     "back": "Volver",
@@ -219,7 +230,24 @@
     "removeAdminRole": "Quitar admin",
     "resetPassword": "Restablecer contraseña",
     "sessionActive": "activa",
-    "sessionNone": "—"
+    "sessionNone": "—",
+    "edit": "Editar",
+    "editUser": "Editar usuario",
+    "saveChanges": "Guardar cambios",
+    "close": "Cerrar",
+    "memberRole": "Miembro",
+    "online": "En línea ahora",
+    "reassignLabel": "Reasignar trabajo a",
+    "reassignKeep": "— elegir persona —",
+    "deleteUserHint": "Eliminar quita a la persona definitivamente. Si tiene demandas/eventos vinculados, reasigna antes.",
+    "msgDeleted": "Usuario eliminado.",
+    "msgHasDeps": "No se pudo eliminar: la persona tiene demandas o eventos vinculados. Reasigna su trabajo a otra persona e inténtalo de nuevo.",
+    "msgDeleteError": "No se pudo eliminar el usuario.",
+    "statsUsers": "usuarios",
+    "statsActive": "activos",
+    "statsOnline": "en línea ahora",
+    "statsAdmins": "administradores",
+    "searchPlaceholder": "Buscar por nombre, correo o equipo…"
   },
   "landing": {
     "nav": {

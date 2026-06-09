@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { Aurora } from '@/components/ui'
 import type { Locale } from '@/i18n/config'
 import { startNow } from './_actions'
 
@@ -52,7 +53,7 @@ async function DashboardMockup() {
   const t = await getTranslations('landing.mockup')
   const bars = [40, 62, 48, 75, 55, 88, 70, 96, 64, 82, 58, 90]
   return (
-    <div className="relative rounded-2xl border border-white/10 bg-[#0C1424]/90 p-3 shadow-2xl ring-1 ring-white/5 backdrop-blur sm:p-4">
+    <div className="glass glow-top glow-blue relative p-3 sm:p-4">
       {/* topo */}
       <div className="flex items-center justify-between border-b border-white/5 pb-3">
         <div className="flex items-center gap-2">
@@ -140,6 +141,7 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-surface text-slate-200">
+      <Aurora />
       {/* ---------------- NAV ---------------- */}
       <header className="sticky top-0 z-50 border-b border-white/5 bg-surface/80 backdrop-blur">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
@@ -216,13 +218,13 @@ export default async function LandingPage() {
 
       {/* ---------------- GATILHOS ---------------- */}
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <div className="rounded-2xl border border-white/5 bg-gradient-to-b from-white/[0.04] to-transparent p-8 sm:p-10">
+        <div className="glass p-8 sm:p-10">
           <h2 className="max-w-2xl text-2xl font-bold text-white sm:text-3xl">{t('triggers.title')}</h2>
           <p className="mt-3 max-w-2xl text-slate-400">{t('triggers.desc')}</p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {pains.map((b) => (
-              <div key={b.p} className="rounded-xl border border-white/5 bg-surface-card p-5">
+              <div key={b.p} className="glass p-5">
                 <p className="text-sm font-medium text-slate-400">{b.p}</p>
                 <div className="mt-3 flex items-start gap-2">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
@@ -242,7 +244,7 @@ export default async function LandingPage() {
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s) => (
-            <div key={s.n} className="rounded-2xl border border-white/5 bg-surface-card p-6">
+            <div key={s.n} className="glass p-6">
               <span className="text-sm font-bold text-brand">{s.n}</span>
               <h3 className="mt-2 text-lg font-semibold text-white">{s.t}</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{s.d}</p>
@@ -260,7 +262,7 @@ export default async function LandingPage() {
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           {/* Corporativo */}
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-surface-card p-8">
+          <div className="glass glow-top relative overflow-hidden p-8">
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/10 blur-3xl" />
             <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('contexts.corpKicker')}</p>
             <h3 className="mt-2 text-2xl font-bold text-white">{t('contexts.corpTitle')}</h3>
@@ -278,7 +280,7 @@ export default async function LandingPage() {
           </div>
 
           {/* Família */}
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-surface-card p-8">
+          <div className="glass relative overflow-hidden p-8">
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-orange-500/10 blur-3xl" />
             <p className="text-sm font-semibold uppercase tracking-wider text-orange-300">{t('contexts.familyKicker')}</p>
             <h3 className="mt-2 text-2xl font-bold text-white">{t('contexts.familyTitle')}</h3>
@@ -313,11 +315,7 @@ export default async function LandingPage() {
             {tiers.map((p) => (
               <div
                 key={p.name}
-                className={`relative rounded-2xl border p-6 ${
-                  p.featured
-                    ? 'border-brand/40 bg-gradient-to-b from-brand/[0.08] to-surface-card'
-                    : 'border-white/10 bg-surface-card'
-                }`}
+                className={`glass relative p-6 ${p.featured ? 'glow-top border-brand/40' : ''}`}
               >
                 {p.featured && (
                   <span className="absolute -top-3 left-6 rounded-full bg-brand px-3 py-0.5 text-[11px] font-bold text-slate-950">
@@ -352,7 +350,7 @@ export default async function LandingPage() {
           <h3 className="text-lg font-semibold text-white">{t('plans.familyTitle')}</h3>
           <p className="text-sm text-slate-400">{t('plans.familySub')}</p>
           <div className="mt-5 grid gap-5 lg:grid-cols-3">
-            <div className="rounded-2xl border border-orange-400/30 bg-gradient-to-b from-orange-500/[0.08] to-surface-card p-6 lg:col-span-2">
+            <div className="glass p-6 lg:col-span-2">
               <p className="text-sm font-semibold text-white">{t('plans.familyCardTitle')}</p>
               <p className="text-xs text-slate-400">{t('plans.familyCardSub')}</p>
               <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
@@ -365,7 +363,7 @@ export default async function LandingPage() {
                 ))}
               </div>
             </div>
-            <div className="flex flex-col justify-center rounded-2xl border border-white/10 bg-surface-card p-6">
+            <div className="glass flex flex-col justify-center p-6">
               <p className="text-sm text-slate-300">{t('plans.familyAside')}</p>
               <Link
                 href="/login"
@@ -380,7 +378,7 @@ export default async function LandingPage() {
 
       {/* ---------------- INDIQUE E GANHE ---------------- */}
       <section id="afiliados" className="mx-auto max-w-6xl px-4 py-16">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-brand/[0.10] via-surface-card to-orange-500/[0.10] p-8 sm:p-12">
+        <div className="glass glow-top relative overflow-hidden p-8 sm:p-12">
           <div className="pointer-events-none absolute -left-10 -top-10 h-48 w-48 rounded-full bg-brand/10 blur-3xl" />
           <div className="relative grid items-center gap-6 lg:grid-cols-[1.4fr,1fr]">
             <div>
@@ -405,7 +403,7 @@ export default async function LandingPage() {
 
       {/* ---------------- CTA FINAL ---------------- */}
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <div className="rounded-3xl border border-white/10 bg-surface-card p-10 text-center sm:p-14">
+        <div className="glass glow-top p-10 text-center sm:p-14">
           <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">{t('finalCta.title')}</h2>
           <p className="mx-auto mt-3 max-w-xl text-slate-400">{t('finalCta.subtitle')}</p>
           <div className="mt-7 flex justify-center">

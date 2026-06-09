@@ -110,7 +110,18 @@
     "priority": { "alta": "High", "media": "Medium", "baixa": "Low" },
     "tabActive": "Active",
     "tabArchived": "Completed",
-    "emptyArchived": "No completed demands yet."
+    "emptyArchived": "No completed demands yet.",
+    "createdWord": "created",
+    "dueWord": "Due",
+    "noDue": "no due date",
+    "dueToday": "due today",
+    "remaining": "{days, plural, one {# day left} other {# days left}}",
+    "overdue": "{days, plural, one {# day overdue} other {# days overdue}}",
+    "autoTag": "auto",
+    "legendOnTime": "on time",
+    "legendNear": "due soon",
+    "legendOverdue": "overdue",
+    "legendHint": "The bar shows how much of the time until the due date has elapsed."
   },
   "demandDetail": {
     "back": "Back",
@@ -219,7 +230,24 @@
     "removeAdminRole": "Remove admin",
     "resetPassword": "Reset password",
     "sessionActive": "active",
-    "sessionNone": "—"
+    "sessionNone": "—",
+    "edit": "Edit",
+    "editUser": "Edit user",
+    "saveChanges": "Save changes",
+    "close": "Close",
+    "memberRole": "Member",
+    "online": "Online now",
+    "reassignLabel": "Reassign work to",
+    "reassignKeep": "— choose a person —",
+    "deleteUserHint": "Deleting removes the person permanently. If they have linked demands/events, reassign first.",
+    "msgDeleted": "User deleted.",
+    "msgHasDeps": "Could not delete: the person has linked demands or events. Reassign their work to someone else and try again.",
+    "msgDeleteError": "Could not delete the user.",
+    "statsUsers": "users",
+    "statsActive": "active",
+    "statsOnline": "online now",
+    "statsAdmins": "admins",
+    "searchPlaceholder": "Search by name, email or team…"
   },
   "landing": {
     "nav": {

@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+import { generateTags } from '@/lib/auto-tags'
 
 export async function createDemand(formData: FormData) {
   const cookieStore = await cookies()
@@ -34,6 +35,9 @@ export async function createDemand(formData: FormData) {
   const event_id = String(formData.get('event_id') ?? '') || null
   if (!title || !responsible_id) redirect('/demandas/nova')
 
+  // Tags automáticas (regras por palavra-chave) geradas no cadastro.
+  const tags = generateTags(title, description, priority)
+
   const { error } = await supabase.from('demands').insert({
     holding_id: holdingId,
     title,
@@ -43,6 +47,7 @@ export async function createDemand(formData: FormData) {
     priority,
     due_date,
     event_id,
+    tags,
     channel: 'web',
   } as never)
 
