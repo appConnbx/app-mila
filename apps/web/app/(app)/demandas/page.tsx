@@ -69,12 +69,20 @@ export default async function DemandasPage() {
           <p className="text-sm text-slate-400">{holding?.name ?? 'Instância'}</p>
           <h1 className="text-2xl font-bold text-white">Demandas</h1>
         </div>
-        <Link
-          href="/dashboard"
-          className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800"
-        >
-          Trocar instância
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/demandas/nova"
+            className="rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
+          >
+            + Nova demanda
+          </Link>
+          <Link
+            href="/dashboard"
+            className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800"
+          >
+            Trocar instância
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
