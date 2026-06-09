@@ -52,3 +52,65 @@ export async function createDemand(formData: FormData) {
   revalidatePath('/demandas')
   redirect('/demandas')
 }
+
+async function currentPersonId() {
+  const cookieStore = await cookies()
+  const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user || !holdingId) return { supabase, holdingId, me: undefined as string | undefined }
+  const { data } = await supabase
+    .from('people')
+    .select('id')
+    .eq('auth_user_id', user.id)
+    .eq('holding_id', holdingId)
+    .limit(1)
+  const me = (data as unknown as { id: string }[] | null)?.[0]?.id
+  return { supabase, holdingId, me }
+}
+
+/** Atualiza status/prioridade/prazo/responsável. O banco grava histórico (trigger). */
+export async function updateDemand(formData: FormData) {
+  const supabase = await createClient()
+  const id = String(formData.get('id') ?? '')
+  if (!id) return
+
+  const patch: Record<string, unknown> = {}
+  const status = String(formData.get('status') ?? '')
+  const priority = String(formData.get('priority') ?? '')
+  const responsible_id = String(formData.get('responsible_id') ?? '')
+  const due_raw = formData.get('due_date')
+  if (status) patch.status = status
+  if (priority) patch.priority = priority
+  if (responsible_id) patch.responsible_id = responsible_id
+  if (due_raw !== null) patch.due_date = String(due_raw) || null
+  if (Object.keys(patch).length === 0) return
+
+  await supabase.from('demands').update(patch as never).eq('id', id)
+  revalidatePath('/demandas')
+  revalidatePath(`/demandas/${id}`)
+}
+
+/** Mudança rápida de status (botões no detalhe). */
+export async function setDemandStatus(formData: FormData) {
+  const supabase = await createClient()
+  const id = String(formData.get('id') ?? '')
+  const status = String(formData.get('status') ?? '')
+  if (!id || !status) return
+  await supabase.from('demands').update({ status } as never).eq('id', id)
+  revalidatePath('/demandas')
+  revalidatePath(`/demandas/${id}`)
+}
+
+export async function addObservation(formData: FormData) {
+  const { supabase, holdingId, me } = await currentPersonId()
+  const demand_id = String(formData.get('demand_id') ?? '')
+  const body = String(formData.get('body') ?? '').trim()
+  if (!holdingId || !me || !demand_id || !body) return
+  await supabase
+    .from('demand_observations')
+    .insert({ holding_id: holdingId, demand_id, author_id: me, body } as never)
+  revalidatePath(`/demandas/${demand_id}`)
+}

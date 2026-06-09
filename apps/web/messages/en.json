@@ -44,7 +44,30 @@
     "empty": "No demands in this instance yet.",
     "overdueSuffix": " (overdue)",
     "status": { "nova": "New", "trabalhando": "In progress", "finalizada": "Done" },
-    "priority": { "alta": "High", "media": "Medium", "baixa": "Low" }
+    "priority": { "alta": "High", "media": "Medium", "baixa": "Low" },
+    "tabActive": "Active",
+    "tabArchived": "Completed",
+    "emptyArchived": "No completed demands yet."
+  },
+  "demandDetail": {
+    "back": "Back",
+    "description": "Description",
+    "noDescription": "No description.",
+    "observations": "Observations",
+    "obsPlaceholder": "Write an observation…",
+    "send": "Send",
+    "noObservations": "No observations yet.",
+    "properties": "Properties",
+    "fResponsible": "Owner",
+    "fPriority": "Priority",
+    "fDue": "Due",
+    "fStatus": "Status",
+    "save": "Save",
+    "origin": "Created by",
+    "event": "Event",
+    "created": "Created at",
+    "history": "History",
+    "noHistory": "No changes recorded."
   },
   "newDemand": {
     "title": "New demand",

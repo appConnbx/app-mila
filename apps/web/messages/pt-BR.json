@@ -44,7 +44,30 @@
     "empty": "Nenhuma demanda nesta instância ainda.",
     "overdueSuffix": " (atrasada)",
     "status": { "nova": "Nova", "trabalhando": "Trabalhando", "finalizada": "Finalizada" },
-    "priority": { "alta": "Alta", "media": "Média", "baixa": "Baixa" }
+    "priority": { "alta": "Alta", "media": "Média", "baixa": "Baixa" },
+    "tabActive": "Ativas",
+    "tabArchived": "Concluídas",
+    "emptyArchived": "Nenhuma demanda concluída ainda."
+  },
+  "demandDetail": {
+    "back": "Voltar",
+    "description": "Descrição",
+    "noDescription": "Sem descrição.",
+    "observations": "Observações",
+    "obsPlaceholder": "Escreva uma observação…",
+    "send": "Enviar",
+    "noObservations": "Nenhuma observação ainda.",
+    "properties": "Propriedades",
+    "fResponsible": "Responsável",
+    "fPriority": "Prioridade",
+    "fDue": "Prazo",
+    "fStatus": "Status",
+    "save": "Salvar",
+    "origin": "Criada por",
+    "event": "Evento",
+    "created": "Criada em",
+    "history": "Histórico",
+    "noHistory": "Sem alterações registradas."
   },
   "newDemand": {
     "title": "Nova demanda",
