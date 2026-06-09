@@ -24,56 +24,46 @@ export default async function AppLayout({
   const locale = (await getLocale()) as Locale
   const initial = (user.email ?? '?').charAt(0).toUpperCase()
 
+  const navLink = 'whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white'
+
   return (
     <div className="min-h-screen bg-surface">
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-surface-border bg-surface/80 px-6 py-3 backdrop-blur">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
+      <header className="sticky top-0 z-10 border-b border-surface-border bg-surface/80 backdrop-blur">
+        {/* Linha 1: marca + ações */}
+        <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <Link href="/painel" className="flex shrink-0 items-center gap-2">
             <span className="text-xl font-bold tracking-tight text-white">MILA</span>
             <span className="h-4 w-1 rounded-full bg-brand" />
+          </Link>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageSwitcher current={locale} />
+            <span className="hidden text-sm text-slate-400 md:inline">{user.email}</span>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/15 text-sm font-semibold text-brand">
+              {initial}
+            </div>
+            <form action="/auth/signout" method="post">
+              <button
+                type="submit"
+                className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
+              >
+                {t('common.signOut')}
+              </button>
+            </form>
           </div>
-          <nav className="hidden items-center gap-1 sm:flex">
-            <Link href="/painel" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
-              {t('nav.panel')}
-            </Link>
-            <Link href="/demandas" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
-              {t('nav.demands')}
-            </Link>
-            <Link href="/eventos" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
-              {t('nav.events')}
-            </Link>
-            {isHoldingAdmin && (
-              <Link href="/estrutura" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
-                {t('nav.structure')}
-              </Link>
-            )}
-          </nav>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden items-center gap-2 rounded-lg border border-surface-border bg-slate-900/60 px-3 py-1.5 text-sm text-slate-500 sm:flex">
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <span>{t('common.search')}</span>
-          </div>
-          <LanguageSwitcher current={locale} />
-          <span className="hidden text-sm text-slate-400 md:inline">{user.email}</span>
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand/15 text-sm font-semibold text-brand">
-            {initial}
-          </div>
-          <form action="/auth/signout" method="post">
-            <button
-              type="submit"
-              className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800"
-            >
-              {t('common.signOut')}
-            </button>
-          </form>
-        </div>
+        {/* Linha 2: navegação (rolável no mobile) */}
+        <nav className="flex items-center gap-1 overflow-x-auto px-4 pb-2 sm:px-6">
+          <Link href="/painel" className={navLink}>{t('nav.panel')}</Link>
+          <Link href="/demandas" className={navLink}>{t('nav.demands')}</Link>
+          <Link href="/eventos" className={navLink}>{t('nav.events')}</Link>
+          {isHoldingAdmin && (
+            <Link href="/estrutura" className={navLink}>{t('nav.structure')}</Link>
+          )}
+        </nav>
       </header>
-      <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
     </div>
   )
 }

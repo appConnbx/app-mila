@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { ConfirmButton } from '@/components/confirm-button'
+import { Badge, fieldClasses } from '@/components/ui'
 import {
   assignAdmin,
   removeAdmin,
@@ -16,21 +17,12 @@ import {
 
 export async function StatusBadge({ active }: { active: boolean }) {
   const t = await getTranslations('structure')
-  return (
-    <span
-      className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
-        active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-600/30 text-slate-400'
-      }`}
-    >
-      {active ? t('active') : t('inactive')}
-    </span>
-  )
+  return <Badge variant={active ? 'success' : 'neutral'}>{active ? t('active') : t('inactive')}</Badge>
 }
 
-export const inputCls =
-  'w-full rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand'
+export const inputCls = fieldClasses
 export const btnCls =
-  'shrink-0 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500'
+  'shrink-0 inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500'
 
 export function Card({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (

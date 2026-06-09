@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+import { Button, Badge, EmptyState } from '@/components/ui'
 
 type Demand = {
   id: string
@@ -14,10 +15,10 @@ type Demand = {
   event: { name: string } | null
 }
 
-const STATUS_CLS = {
-  nova: 'bg-blue-500/15 text-blue-300',
-  trabalhando: 'bg-amber-500/15 text-amber-300',
-  finalizada: 'bg-emerald-500/15 text-emerald-300',
+const STATUS_VARIANT = {
+  nova: 'info',
+  trabalhando: 'warning',
+  finalizada: 'success',
 } as const
 
 const PRIORITY_CLS = {
@@ -89,18 +90,8 @@ export default async function DemandasPage({
           <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Link
-            href="/demandas/nova"
-            className="rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
-          >
-            {t('new')}
-          </Link>
-          <Link
-            href="/dashboard"
-            className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800"
-          >
-            {t('switchInstance')}
-          </Link>
+          <Button href="/demandas/nova" size="sm">{t('new')}</Button>
+          <Button href="/dashboard" variant="secondary" size="sm">{t('switchInstance')}</Button>
         </div>
       </div>
 
@@ -131,11 +122,7 @@ export default async function DemandasPage({
           <div className="col-span-2 text-right">{t('colStatus')}</div>
         </div>
 
-        {demands.length === 0 && (
-          <div className="px-5 py-10 text-center text-sm text-slate-500">
-            {archived ? t('emptyArchived') : t('empty')}
-          </div>
-        )}
+        {demands.length === 0 && <EmptyState>{archived ? t('emptyArchived') : t('empty')}</EmptyState>}
 
         {demands.map((d) => {
           const overdue = isOverdue(d)
@@ -160,9 +147,7 @@ export default async function DemandasPage({
                 {overdue && t('overdueSuffix')}
               </div>
               <div className="col-span-2 text-right">
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_CLS[d.status]}`}>
-                  {t(`status.${d.status}`)}
-                </span>
+                <Badge variant={STATUS_VARIANT[d.status]}>{t(`status.${d.status}`)}</Badge>
               </div>
             </Link>
           )

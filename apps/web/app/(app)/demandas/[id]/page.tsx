@@ -3,7 +3,10 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+import { Badge } from '@/components/ui'
 import { updateDemand, setDemandStatus, addObservation } from '../actions'
+
+const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 
 type Demand = {
   id: string
@@ -25,11 +28,6 @@ type Person = { id: string; full_name: string }
 type Obs = { id: string; body: string; created_at: string; author: { full_name: string } | null }
 type Hist = { id: string; field_changed: string; old_value: string | null; new_value: string | null; created_at: string; changed_by: string | null }
 
-const STATUS_CLS = {
-  nova: 'bg-blue-500/15 text-blue-300',
-  trabalhando: 'bg-amber-500/15 text-amber-300',
-  finalizada: 'bg-emerald-500/15 text-emerald-300',
-} as const
 const STATUSES = ['nova', 'trabalhando', 'finalizada'] as const
 const inputCls =
   'mt-1 w-full rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand'
@@ -83,7 +81,7 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
 
       <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
         <h1 className="text-2xl font-bold text-white">{d.title}</h1>
-        <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_CLS[d.status]}`}>{td(`status.${d.status}`)}</span>
+        <Badge variant={STATUS_VARIANT[d.status]}>{td(`status.${d.status}`)}</Badge>
       </div>
 
       {/* Mudança rápida de status */}

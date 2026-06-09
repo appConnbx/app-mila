@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+import { Badge, ProgressBar } from '@/components/ui'
 import { openEvent, closeEvent } from './actions'
 
 type EventRow = {
@@ -112,16 +113,14 @@ export default async function EventosPage() {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-white">{e.name}</h3>
-                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${e.status === 'aberto' ? 'bg-amber-500/15 text-amber-300' : 'bg-slate-600/30 text-slate-400'}`}>
+                  <Badge variant={e.status === 'aberto' ? 'warning' : 'neutral'}>
                     {e.status === 'aberto' ? t('statusOpen') : t('statusClosed')}
-                  </span>
+                  </Badge>
                 </div>
                 <span className="text-xs text-slate-500">{t(`types.${e.type}`)}</span>
               </div>
               <div className="mt-3 flex items-center gap-3">
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-800">
-                  <div className="h-full rounded-full bg-brand" style={{ width: `${s.pct}%` }} />
-                </div>
+                <ProgressBar value={s.pct} className="flex-1" />
                 <span className="text-xs text-slate-400">{s.pct}% {t('completion')} · {s.done}/{s.total}</span>
               </div>
             </Link>

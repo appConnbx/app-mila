@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { Field, fieldClasses } from '@/components/ui'
 import type { Locale } from '@/i18n/config'
 import { login } from './actions'
 
@@ -19,13 +20,9 @@ export default async function LoginPage({
           <LanguageSwitcher current={locale} />
         </div>
         <div className="mb-7 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-white">
-            MILA
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">MILA</h1>
           <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-brand" />
-          <p className="mt-3 text-sm text-slate-400">
-            {t('subtitle')}
-          </p>
+          <p className="mt-3 text-sm text-slate-400">{t('subtitle')}</p>
         </div>
 
         {error && (
@@ -35,37 +32,15 @@ export default async function LoginPage({
         )}
 
         <form action={login} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-300">
-              {t('email')}
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              className="mt-1 w-full rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-300">
-              {t('password')}
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autoComplete="current-password"
-              className="mt-1 w-full rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
-            />
-          </div>
-
+          <Field label={t('email')} htmlFor="email">
+            <input id="email" name="email" type="email" required autoComplete="email" className={fieldClasses} />
+          </Field>
+          <Field label={t('password')} htmlFor="password">
+            <input id="password" name="password" type="password" required autoComplete="current-password" className={fieldClasses} />
+          </Field>
           <button
             type="submit"
-            className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
+            className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
           >
             {t('submit')}
           </button>

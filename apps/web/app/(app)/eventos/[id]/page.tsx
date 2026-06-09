@@ -3,7 +3,10 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+import { Badge, ProgressBar, EmptyState } from '@/components/ui'
 import { closeEvent } from '../actions'
+
+const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 
 type EventFull = {
   id: string
@@ -21,12 +24,6 @@ type DemandRow = {
   status: 'nova' | 'trabalhando' | 'finalizada'
   responsible: { full_name: string } | null
 }
-
-const STATUS_CLS = {
-  nova: 'bg-blue-500/15 text-blue-300',
-  trabalhando: 'bg-amber-500/15 text-amber-300',
-  finalizada: 'bg-emerald-500/15 text-emerald-300',
-} as const
 
 export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -68,9 +65,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
       <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-white">{ev.name}</h1>
-          <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${ev.status === 'aberto' ? 'bg-amber-500/15 text-amber-300' : 'bg-slate-600/30 text-slate-400'}`}>
+          <Badge variant={ev.status === 'aberto' ? 'warning' : 'neutral'}>
             {ev.status === 'aberto' ? t('statusOpen') : t('statusClosed')}
-          </span>
+          </Badge>
         </div>
         {ev.status === 'aberto' && (
           <form action={closeEvent}>
@@ -84,9 +81,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
 
       <div className="mt-5 rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
         <div className="flex items-center gap-3">
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-800">
-            <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
-          </div>
+          <ProgressBar value={pct} className="h-2 flex-1" />
           <span className="text-sm font-medium text-white">{pct}%</span>
         </div>
         <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-slate-500 sm:grid-cols-4">
@@ -108,11 +103,11 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
             <span className="font-medium text-slate-100">{d.title}</span>
             <span className="flex items-center gap-3">
               <span className="text-slate-400">{d.responsible?.full_name ?? '—'}</span>
-              <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_CLS[d.status]}`}>{td(`status.${d.status}`)}</span>
+              <Badge variant={STATUS_VARIANT[d.status]}>{td(`status.${d.status}`)}</Badge>
             </span>
           </Link>
         ))}
-        {demands.length === 0 && <div className="px-5 py-10 text-center text-sm text-slate-500">{t('noDemands')}</div>}
+        {demands.length === 0 && <EmptyState>{t('noDemands')}</EmptyState>}
       </div>
     </div>
   )
