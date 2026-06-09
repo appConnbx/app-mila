@@ -12,8 +12,13 @@ const inputCls =
   'mt-1 w-full rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand'
 const labelCls = 'block text-sm font-medium text-slate-300'
 
-export default async function NovaDemandaPage() {
+export default async function NovaDemandaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
   const t = await getTranslations('newDemand')
+  const { error } = await searchParams
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
   if (!holdingId) redirect('/dashboard')
@@ -37,6 +42,12 @@ export default async function NovaDemandaPage() {
           {t('back')}
         </Link>
       </div>
+
+      {error && (
+        <div className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          {t('createError')}
+        </div>
+      )}
 
       <form
         action={createDemand}

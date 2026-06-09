@@ -62,7 +62,8 @@
     "event": "Evento (opcional)",
     "eventNone": "Ninguno (suelta)",
     "cancel": "Cancelar",
-    "submit": "Crear demanda"
+    "submit": "Crear demanda",
+    "createError": "No se pudo crear la demanda. En empresas, debes pertenecer a un equipo (o ser administrador) para crear demandas."
   },
   "structure": {
     "title": "Estructura",
@@ -82,7 +83,35 @@
     "roleOptional": "Cargo (opcional)",
     "phoneOptional": "Teléfono +55… (opcional)",
     "canDelegate": "Puede crear demandas para otras personas",
-    "addPerson": "Añadir persona"
+    "addPerson": "Añadir persona",
+    "add": "Añadir",
+    "admins": "Administradores",
+    "addAdmin": "Añadir admin",
+    "noAdmins": "Aún no hay administradores.",
+    "remove": "Quitar",
+    "selectPerson": "Selecciona una persona…",
+    "canDelegateBadge": "puede delegar",
+    "emailOptional": "Correo (opcional)",
+    "aliasesPlaceholder": "Apodos (separados por coma)",
+    "addAliasPlaceholder": "apodo",
+    "holdingMgmt": "Gestión del grupo",
+    "holdingMgmtDesc": "Datos de registro del grupo.",
+    "holdingData": "Datos del grupo",
+    "hName": "Nombre",
+    "legalName": "Razón social",
+    "taxId": "NIF / CNPJ",
+    "phoneField": "Teléfono",
+    "contactEmail": "Correo de contacto",
+    "save": "Guardar",
+    "openFolder": "Abrir",
+    "familyTitle": "Personas de la familia",
+    "familyDesc": "Registra a las personas de tu familia. Sin organización, áreas ni equipos — solo personas.",
+    "orgScope": "Áreas y administradores de esta organización.",
+    "areaScope": "Equipos y administradores de esta área.",
+    "teamScope": "Miembros y administradores de este equipo.",
+    "members": "Miembros",
+    "noMembers": "Aún no hay miembros.",
+    "addMember": "Añadir"
   },
   "landing": {
     "nav": {

@@ -34,7 +34,7 @@ export async function createDemand(formData: FormData) {
   const event_id = String(formData.get('event_id') ?? '') || null
   if (!title || !responsible_id) redirect('/demandas/nova')
 
-  await supabase.from('demands').insert({
+  const { error } = await supabase.from('demands').insert({
     holding_id: holdingId,
     title,
     description,
@@ -45,6 +45,9 @@ export async function createDemand(formData: FormData) {
     event_id,
     channel: 'web',
   } as never)
+
+  // RLS pode bloquear (ex.: em empresa, quem não está em equipe não cria demanda).
+  if (error) redirect('/demandas/nova?error=create')
 
   revalidatePath('/demandas')
   redirect('/demandas')

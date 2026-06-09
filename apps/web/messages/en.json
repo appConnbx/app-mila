@@ -62,7 +62,8 @@
     "event": "Event (optional)",
     "eventNone": "None (standalone)",
     "cancel": "Cancel",
-    "submit": "Create demand"
+    "submit": "Create demand",
+    "createError": "Couldn't create the demand. In companies, you must belong to a team (or be an admin) to create demands."
   },
   "structure": {
     "title": "Structure",
@@ -82,7 +83,35 @@
     "roleOptional": "Role (optional)",
     "phoneOptional": "Phone +55… (optional)",
     "canDelegate": "Can create demands for other people",
-    "addPerson": "Add person"
+    "addPerson": "Add person",
+    "add": "Add",
+    "admins": "Admins",
+    "addAdmin": "Add admin",
+    "noAdmins": "No admins yet.",
+    "remove": "Remove",
+    "selectPerson": "Select a person…",
+    "canDelegateBadge": "can delegate",
+    "emailOptional": "Email (optional)",
+    "aliasesPlaceholder": "Nicknames (comma-separated)",
+    "addAliasPlaceholder": "nickname",
+    "holdingMgmt": "Holding settings",
+    "holdingMgmtDesc": "Group registration data.",
+    "holdingData": "Holding data",
+    "hName": "Name",
+    "legalName": "Legal name",
+    "taxId": "Tax ID",
+    "phoneField": "Phone",
+    "contactEmail": "Contact email",
+    "save": "Save",
+    "openFolder": "Open",
+    "familyTitle": "Family members",
+    "familyDesc": "Add the people in your family. No organization, areas or teams — just people.",
+    "orgScope": "Areas and admins of this organization.",
+    "areaScope": "Teams and admins of this area.",
+    "teamScope": "Members and admins of this team.",
+    "members": "Members",
+    "noMembers": "No members yet.",
+    "addMember": "Add"
   },
   "landing": {
     "nav": {

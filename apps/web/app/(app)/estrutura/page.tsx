@@ -1,26 +1,34 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
-import { createOrganization, createArea, createTeam, createPerson } from './actions'
+import { createOrganization } from './actions'
+import { Card, PeopleManager, inputCls, btnCls } from './_components'
 
 type Org = { id: string; name: string }
-type Area = { id: string; name: string; organization_id: string }
-type Team = { id: string; name: string; area_id: string }
-type Person = { id: string; full_name: string; role_title: string | null; organization_id: string }
+type Holding = { id: string; name: string; kind: 'corporate' | 'family' }
+type Alias = { id: string; alias: string; person_id: string }
+type Person = {
+  id: string
+  full_name: string
+  role_title: string | null
+  email: string | null
+  can_delegate: boolean
+  organization_id: string
+}
 
-const inputCls =
-  'w-full rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand'
-const btnCls =
-  'rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500'
-
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
-      <h2 className="text-lg font-semibold text-white">{title}</h2>
-      <div className="mt-4 space-y-4">{children}</div>
-    </section>
-  )
+async function loadPeople(supabase: Awaited<ReturnType<typeof createClient>>) {
+  const [peopleRes, aliasRes] = await Promise.all([
+    supabase.from('people').select('id, full_name, role_title, email, can_delegate, organization_id').order('full_name'),
+    supabase.from('person_aliases').select('id, alias, person_id'),
+  ])
+  const people = (peopleRes.data ?? []) as unknown as Person[]
+  const aliases = (aliasRes.data ?? []) as unknown as Alias[]
+  return people.map((p) => ({
+    ...p,
+    aliases: aliases.filter((a) => a.person_id === p.id).map((a) => ({ id: a.id, alias: a.alias })),
+  }))
 }
 
 export default async function EstruturaPage() {
@@ -30,122 +38,66 @@ export default async function EstruturaPage() {
   if (!holdingId) redirect('/dashboard')
 
   const supabase = await createClient()
-  const [orgsRes, areasRes, teamsRes, peopleRes] = await Promise.all([
-    supabase.from('organizations').select('id, name').order('name'),
-    supabase.from('areas').select('id, name, organization_id').order('name'),
-    supabase.from('teams').select('id, name, area_id').order('name'),
-    supabase.from('people').select('id, full_name, role_title, organization_id').order('full_name'),
-  ])
+  const { data: holdingData } = await supabase.from('holdings').select('id, name, kind').eq('id', holdingId).single()
+  const holding = holdingData as unknown as Holding | null
 
-  const orgs = (orgsRes.data ?? []) as unknown as Org[]
-  const areas = (areasRes.data ?? []) as unknown as Area[]
-  const teams = (teamsRes.data ?? []) as unknown as Team[]
-  const people = (peopleRes.data ?? []) as unknown as Person[]
+  const { data: orgsData } = await supabase.from('organizations').select('id, name').order('name')
+  const orgs = (orgsData ?? []) as unknown as Org[]
+  const people = await loadPeople(supabase)
 
-  const orgName = (id: string) => orgs.find((o) => o.id === id)?.name ?? '—'
-  const areaName = (id: string) => areas.find((a) => a.id === id)?.name ?? '—'
+  // ----------------------------------------------------------------- FAMÍLIA
+  if (holding?.kind === 'family') {
+    const defaultOrgId = orgs[0]?.id
+    return (
+      <div className="mx-auto max-w-2xl">
+        <h1 className="text-2xl font-bold text-white">{t('familyTitle')}</h1>
+        <p className="mt-1 text-sm text-slate-400">{t('familyDesc')}</p>
+        <div className="mt-6">
+          <PeopleManager people={people} defaultOrgId={defaultOrgId} />
+        </div>
+      </div>
+    )
+  }
 
+  // ------------------------------------------------------------- CORPORATIVO
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
-        <span className="text-sm text-slate-400">
-          {t('summary', {
-            orgs: orgs.length,
-            areas: areas.length,
-            teams: teams.length,
-            people: people.length,
-          })}
-        </span>
+        <div>
+          <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
+          <p className="mt-1 text-sm text-slate-400">{holding?.name}</p>
+        </div>
+        <Link
+          href="/estrutura/holding"
+          className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800"
+        >
+          {t('holdingMgmt')}
+        </Link>
       </div>
 
-      <div className="mt-6 grid gap-5 lg:grid-cols-2">
-        {/* ORGANIZAÇÕES */}
+      <div className="mt-6 grid items-start gap-5 lg:grid-cols-2">
         <Card title={t('orgs')}>
           <ul className="space-y-1.5">
             {orgs.map((o) => (
-              <li key={o.id} className="rounded-lg bg-slate-900/40 px-3 py-2 text-sm text-slate-200">
-                {o.name}
+              <li key={o.id}>
+                <Link
+                  href={`/estrutura/org/${o.id}`}
+                  className="flex items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-800/60"
+                >
+                  <span className="font-medium">{o.name}</span>
+                  <span className="text-xs text-brand">{t('openFolder')} →</span>
+                </Link>
               </li>
             ))}
             {orgs.length === 0 && <li className="text-sm text-slate-500">{t('none')}</li>}
           </ul>
           <form action={createOrganization} className="flex gap-2">
             <input name="name" placeholder={t('newOrg')} required className={inputCls} />
-            <button type="submit" className={btnCls}>Add</button>
+            <button type="submit" className={btnCls}>{t('add')}</button>
           </form>
         </Card>
 
-        {/* ÁREAS */}
-        <Card title={t('areas')}>
-          <ul className="space-y-1.5">
-            {areas.map((a) => (
-              <li key={a.id} className="rounded-lg bg-slate-900/40 px-3 py-2 text-sm text-slate-200">
-                {a.name} <span className="text-slate-500">· {orgName(a.organization_id)}</span>
-              </li>
-            ))}
-            {areas.length === 0 && <li className="text-sm text-slate-500">{t('none')}</li>}
-          </ul>
-          <form action={createArea} className="space-y-2">
-            <select name="organization_id" required className={inputCls} defaultValue="">
-              <option value="" disabled>{t('selectOrg')}</option>
-              {orgs.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
-            </select>
-            <div className="flex gap-2">
-              <input name="name" placeholder={t('newArea')} required className={inputCls} />
-              <button type="submit" className={btnCls}>Add</button>
-            </div>
-          </form>
-        </Card>
-
-        {/* EQUIPES */}
-        <Card title={t('teams')}>
-          <ul className="space-y-1.5">
-            {teams.map((tm) => (
-              <li key={tm.id} className="rounded-lg bg-slate-900/40 px-3 py-2 text-sm text-slate-200">
-                {tm.name} <span className="text-slate-500">· {areaName(tm.area_id)}</span>
-              </li>
-            ))}
-            {teams.length === 0 && <li className="text-sm text-slate-500">{t('none')}</li>}
-          </ul>
-          <form action={createTeam} className="space-y-2">
-            <select name="area_id" required className={inputCls} defaultValue="">
-              <option value="" disabled>{t('selectArea')}</option>
-              {areas.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-            </select>
-            <div className="flex gap-2">
-              <input name="name" placeholder={t('newTeam')} required className={inputCls} />
-              <button type="submit" className={btnCls}>Add</button>
-            </div>
-          </form>
-        </Card>
-
-        {/* PESSOAS */}
-        <Card title={t('people')}>
-          <ul className="space-y-1.5">
-            {people.map((p) => (
-              <li key={p.id} className="rounded-lg bg-slate-900/40 px-3 py-2 text-sm text-slate-200">
-                {p.full_name}
-                {p.role_title && <span className="text-slate-500"> · {p.role_title}</span>}
-              </li>
-            ))}
-            {people.length === 0 && <li className="text-sm text-slate-500">{t('none')}</li>}
-          </ul>
-          <form action={createPerson} className="space-y-2">
-            <select name="organization_id" required className={inputCls} defaultValue="">
-              <option value="" disabled>{t('orgPlaceholder')}</option>
-              {orgs.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
-            </select>
-            <input name="full_name" placeholder={t('fullName')} required className={inputCls} />
-            <input name="role_title" placeholder={t('roleOptional')} className={inputCls} />
-            <input name="whatsapp_phone" placeholder={t('phoneOptional')} className={inputCls} />
-            <label className="flex items-center gap-2 text-sm text-slate-300">
-              <input type="checkbox" name="can_delegate" className="h-4 w-4 rounded border-surface-border bg-slate-900" />
-              {t('canDelegate')}
-            </label>
-            <button type="submit" className={btnCls}>{t('addPerson')}</button>
-          </form>
-        </Card>
+        <PeopleManager people={people} orgs={orgs} />
       </div>
     </div>
   )

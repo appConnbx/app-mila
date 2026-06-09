@@ -62,7 +62,8 @@
     "event": "Evento (opcional)",
     "eventNone": "Nenhum (avulsa)",
     "cancel": "Cancelar",
-    "submit": "Criar demanda"
+    "submit": "Criar demanda",
+    "createError": "Não foi possível criar a demanda. Em empresas, é preciso estar em uma equipe (ou ser administrador) para criar demandas."
   },
   "structure": {
     "title": "Estrutura",
@@ -82,7 +83,35 @@
     "roleOptional": "Função (opcional)",
     "phoneOptional": "Telefone +55… (opcional)",
     "canDelegate": "Pode criar demandas para outras pessoas",
-    "addPerson": "Adicionar pessoa"
+    "addPerson": "Adicionar pessoa",
+    "add": "Adicionar",
+    "admins": "Administradores",
+    "addAdmin": "Adicionar admin",
+    "noAdmins": "Nenhum administrador ainda.",
+    "remove": "Remover",
+    "selectPerson": "Selecione uma pessoa…",
+    "canDelegateBadge": "pode delegar",
+    "emailOptional": "E-mail (opcional)",
+    "aliasesPlaceholder": "Apelidos (separados por vírgula)",
+    "addAliasPlaceholder": "apelido",
+    "holdingMgmt": "Gestão da Holding",
+    "holdingMgmtDesc": "Dados cadastrais do grupo.",
+    "holdingData": "Dados da holding",
+    "hName": "Nome",
+    "legalName": "Razão social",
+    "taxId": "CNPJ / CPF",
+    "phoneField": "Telefone",
+    "contactEmail": "E-mail de contato",
+    "save": "Salvar",
+    "openFolder": "Abrir",
+    "familyTitle": "Pessoas da família",
+    "familyDesc": "Cadastre as pessoas da sua família. Sem organização, áreas ou equipes — apenas pessoas.",
+    "orgScope": "Áreas e administradores desta organização.",
+    "areaScope": "Equipes e administradores desta área.",
+    "teamScope": "Membros e administradores desta equipe.",
+    "members": "Membros",
+    "noMembers": "Nenhum membro ainda.",
+    "addMember": "Adicionar"
   },
   "landing": {
     "nav": {
