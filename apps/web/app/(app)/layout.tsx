@@ -17,8 +17,8 @@ export default async function AppLayout({
 
   if (!user) redirect('/login')
 
-  const rpc = supabase.rpc as unknown as (name: string) => Promise<{ data: boolean | null }>
-  const { data: isHoldingAdmin } = await rpc('is_holding_admin')
+  const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
+  const { data: isHoldingAdmin } = await sb.rpc('is_holding_admin')
 
   const t = await getTranslations()
   const locale = (await getLocale()) as Locale

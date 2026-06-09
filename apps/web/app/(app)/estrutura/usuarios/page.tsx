@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { ConfirmButton } from '@/components/confirm-button'
@@ -24,10 +23,9 @@ export default async function UsuariosPage() {
   const locale = await getLocale()
   const supabase = await createClient()
 
-  const rpc = supabase.rpc as unknown as (name: string) => Promise<{ data: HoldingUser[] | null }>
-  const { data } = await rpc('holding_users')
+  const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: HoldingUser[] | null }> }
+  const { data } = await sb.rpc('holding_users')
   const users = data ?? []
-  if (!data) redirect('/demandas')
 
   const { data: orgsData } = await supabase.from('organizations').select('id, name').eq('is_active', true).order('name')
   const orgs = (orgsData ?? []) as unknown as Org[]

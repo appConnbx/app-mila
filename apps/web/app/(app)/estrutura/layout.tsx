@@ -7,8 +7,8 @@ import { createClient } from '@/lib/supabase/server'
  */
 export default async function EstruturaLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
-  const rpc = supabase.rpc as unknown as (name: string) => Promise<{ data: boolean | null }>
-  const { data: isAdmin } = await rpc('is_holding_admin')
+  const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
+  const { data: isAdmin } = await sb.rpc('is_holding_admin')
   if (!isAdmin) redirect('/demandas')
   return <>{children}</>
 }
