@@ -3,9 +3,9 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { addTeamMember, removeTeamMember } from '../../../../../../actions'
-import { Breadcrumb, Card, ScopeAdmins, inputCls, btnCls } from '../../../../../../_components'
+import { Breadcrumb, Card, ScopeAdmins, StructureSettings, StatusBadge, inputCls, btnCls } from '../../../../../../_components'
 
-type Named = { id: string; name: string }
+type Named = { id: string; name: string; is_active: boolean }
 type Person = { id: string; full_name: string }
 type Membership = { id: string; person_id: string }
 type TeamMember = { id: string; person_id: string }
@@ -23,9 +23,9 @@ export default async function TeamPage({
 
   const supabase = await createClient()
   const [orgRes, areaRes, teamRes] = await Promise.all([
-    supabase.from('organizations').select('id, name').eq('id', orgId).single(),
-    supabase.from('areas').select('id, name').eq('id', areaId).single(),
-    supabase.from('teams').select('id, name').eq('id', teamId).single(),
+    supabase.from('organizations').select('id, name, is_active').eq('id', orgId).single(),
+    supabase.from('areas').select('id, name, is_active').eq('id', areaId).single(),
+    supabase.from('teams').select('id, name, is_active').eq('id', teamId).single(),
   ])
   const org = orgRes.data as unknown as Named | null
   const area = areaRes.data as unknown as Named | null
@@ -55,7 +55,10 @@ export default async function TeamPage({
           { label: team.name },
         ]}
       />
-      <h1 className="mt-3 text-2xl font-bold text-white">{team.name}</h1>
+      <div className="mt-3 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-white">{team.name}</h1>
+        <StatusBadge active={team.is_active} />
+      </div>
       <p className="mt-1 text-sm text-slate-400">{t('teamScope')}</p>
 
       <div className="mt-6 grid items-start gap-5 lg:grid-cols-2">
@@ -87,6 +90,10 @@ export default async function TeamPage({
         </Card>
 
         <ScopeAdmins role="team_admin" scopeLevel="team" scopeId={teamId} admins={admins} people={people} />
+      </div>
+
+      <div className="mt-5 max-w-2xl">
+        <StructureSettings kind="team" id={teamId} name={team.name} isActive={team.is_active} redirectAfterDelete={`/estrutura/org/${orgId}/area/${areaId}`} />
       </div>
     </div>
   )

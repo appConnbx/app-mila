@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { createArea } from '../../actions'
-import { Breadcrumb, Card, ScopeAdmins, inputCls, btnCls } from '../../_components'
+import { Breadcrumb, Card, ScopeAdmins, StructureSettings, StatusBadge, inputCls, btnCls } from '../../_components'
 
-type Named = { id: string; name: string }
+type Named = { id: string; name: string; is_active: boolean }
 type Person = { id: string; full_name: string }
 type Membership = { id: string; person_id: string }
 
@@ -18,12 +18,12 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
   if (!holdingId) redirect('/dashboard')
 
   const supabase = await createClient()
-  const { data: orgData } = await supabase.from('organizations').select('id, name').eq('id', orgId).single()
+  const { data: orgData } = await supabase.from('organizations').select('id, name, is_active').eq('id', orgId).single()
   const org = orgData as unknown as Named | null
   if (!org) redirect('/estrutura')
 
   const [areasRes, peopleRes, adminsRes] = await Promise.all([
-    supabase.from('areas').select('id, name').eq('organization_id', orgId).order('name'),
+    supabase.from('areas').select('id, name, is_active').eq('organization_id', orgId).order('name'),
     supabase.from('people').select('id, full_name').order('full_name'),
     supabase.from('memberships').select('id, person_id').eq('role', 'org_admin').eq('scope_id', orgId),
   ])
@@ -36,7 +36,10 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
   return (
     <div>
       <Breadcrumb items={[{ href: '/estrutura', label: t('title') }, { label: org.name }]} />
-      <h1 className="mt-3 text-2xl font-bold text-white">{org.name}</h1>
+      <div className="mt-3 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-white">{org.name}</h1>
+        <StatusBadge active={org.is_active} />
+      </div>
       <p className="mt-1 text-sm text-slate-400">{t('orgScope')}</p>
 
       <div className="mt-6 grid items-start gap-5 lg:grid-cols-2">
@@ -48,7 +51,10 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
                   href={`/estrutura/org/${orgId}/area/${a.id}`}
                   className="flex items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-800/60"
                 >
-                  <span className="font-medium">{a.name}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="font-medium">{a.name}</span>
+                    <StatusBadge active={a.is_active} />
+                  </span>
                   <span className="text-xs text-brand">{t('openFolder')} →</span>
                 </Link>
               </li>
@@ -63,6 +69,10 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
         </Card>
 
         <ScopeAdmins role="org_admin" scopeLevel="organization" scopeId={orgId} admins={admins} people={people} />
+      </div>
+
+      <div className="mt-5 max-w-2xl">
+        <StructureSettings kind="organization" id={orgId} name={org.name} isActive={org.is_active} redirectAfterDelete="/estrutura" />
       </div>
     </div>
   )

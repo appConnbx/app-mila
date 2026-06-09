@@ -17,6 +17,9 @@ export default async function AppLayout({
 
   if (!user) redirect('/login')
 
+  const rpc = supabase.rpc as unknown as (name: string) => Promise<{ data: boolean | null }>
+  const { data: isHoldingAdmin } = await rpc('is_holding_admin')
+
   const t = await getTranslations()
   const locale = (await getLocale()) as Locale
   const initial = (user.email ?? '?').charAt(0).toUpperCase()
@@ -33,9 +36,11 @@ export default async function AppLayout({
             <Link href="/demandas" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
               {t('nav.demands')}
             </Link>
-            <Link href="/estrutura" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
-              {t('nav.structure')}
-            </Link>
+            {isHoldingAdmin && (
+              <Link href="/estrutura" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
+                {t('nav.structure')}
+              </Link>
+            )}
           </nav>
         </div>
 

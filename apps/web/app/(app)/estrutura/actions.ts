@@ -2,7 +2,11 @@
 
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+
+const STRUCTURE_TABLES = { organization: 'organizations', area: 'areas', team: 'teams' } as const
+type StructureKind = keyof typeof STRUCTURE_TABLES
 
 function slugify(s: string) {
   return (
@@ -163,5 +167,91 @@ export async function removeTeamMember(formData: FormData) {
   const id = String(formData.get('id') ?? '')
   if (!id) return
   await supabase.from('team_members').delete().eq('id', id)
+  revalidate()
+}
+
+// ---------------------------------------------------------------- Editar estruturas
+export async function renameStructure(formData: FormData) {
+  const { supabase } = await ctx()
+  const kind = String(formData.get('kind') ?? '') as StructureKind
+  const id = String(formData.get('id') ?? '')
+  const name = String(formData.get('name') ?? '').trim()
+  const table = STRUCTURE_TABLES[kind]
+  if (!table || !id || !name) return
+  await supabase.from(table).update({ name } as never).eq('id', id)
+  revalidate()
+}
+
+export async function setStructureActive(formData: FormData) {
+  const { supabase } = await ctx()
+  const kind = String(formData.get('kind') ?? '') as StructureKind
+  const id = String(formData.get('id') ?? '')
+  const is_active = String(formData.get('active') ?? '') === '1'
+  const table = STRUCTURE_TABLES[kind]
+  if (!table || !id) return
+  await supabase.from(table).update({ is_active } as never).eq('id', id)
+  revalidate()
+}
+
+export async function deleteStructure(formData: FormData) {
+  const { supabase } = await ctx()
+  const kind = String(formData.get('kind') ?? '') as StructureKind
+  const id = String(formData.get('id') ?? '')
+  const back = String(formData.get('redirect') ?? '/estrutura')
+  const table = STRUCTURE_TABLES[kind]
+  if (table && id) await supabase.from(table).delete().eq('id', id)
+  revalidate()
+  redirect(back)
+}
+
+// ---------------------------------------------------------------- Usuários (admin da holding)
+export async function setPersonActive(formData: FormData) {
+  const { supabase } = await ctx()
+  const id = String(formData.get('id') ?? '')
+  const is_active = String(formData.get('active') ?? '') === '1'
+  if (!id) return
+  await supabase.from('people').update({ is_active } as never).eq('id', id)
+  revalidate()
+}
+
+export async function deletePerson(formData: FormData) {
+  const { supabase } = await ctx()
+  const id = String(formData.get('id') ?? '')
+  if (!id) return
+  // Pode falhar se a pessoa for responsável/origem de demandas (FK restrita) —
+  // nesse caso, o correto é desativar. Falha é silenciosa por design.
+  await supabase.from('people').delete().eq('id', id)
+  revalidate()
+}
+
+export async function setHoldingAdmin(formData: FormData) {
+  const { holdingId, supabase } = await ctx()
+  const person_id = String(formData.get('person_id') ?? '')
+  const make = String(formData.get('make') ?? '') === '1'
+  if (!holdingId || !person_id) return
+  if (make) {
+    await supabase.from('memberships').insert({
+      holding_id: holdingId,
+      person_id,
+      role: 'holding_admin',
+      scope_level: 'holding',
+      scope_id: holdingId,
+    } as never)
+  } else {
+    await supabase
+      .from('memberships')
+      .delete()
+      .eq('person_id', person_id)
+      .eq('role', 'holding_admin')
+      .eq('scope_id', holdingId)
+  }
+  revalidate()
+}
+
+export async function sendPasswordReset(formData: FormData) {
+  const { supabase } = await ctx()
+  const email = String(formData.get('email') ?? '').trim()
+  if (!email) return
+  await supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://www.appmila.co/login' })
   revalidate()
 }
