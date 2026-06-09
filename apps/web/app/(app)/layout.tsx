@@ -33,6 +33,9 @@ export default async function AppLayout({
             <span className="h-4 w-1 rounded-full bg-brand" />
           </div>
           <nav className="hidden items-center gap-1 sm:flex">
+            <Link href="/painel" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
+              {t('nav.panel')}
+            </Link>
             <Link href="/demandas" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
               {t('nav.demands')}
             </Link>
