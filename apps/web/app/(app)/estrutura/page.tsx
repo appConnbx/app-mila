@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { createOrganization } from './actions'
-import { Card, PeopleManager, StatusBadge, inputCls, btnCls } from './_components'
+import { PeopleManager, StatusBadge, inputCls, btnCls } from './_components'
 
 type Org = { id: string; name: string; is_active: boolean }
 type Holding = { id: string; name: string; kind: 'corporate' | 'family' }
@@ -61,53 +61,67 @@ export default async function EstruturaPage() {
   }
 
   // ------------------------------------------------------------- CORPORATIVO
+  const activeOrgs = orgs.filter((o) => o.is_active).length
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
           <p className="mt-1 text-sm text-slate-400">{holding?.name}</p>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href="/estrutura/usuarios"
-            className="rounded-lg bg-brand px-3 py-1.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
+            className="rounded-lg bg-brand px-3.5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
           >
             {t('usersMgmt')}
           </Link>
           <Link
             href="/estrutura/holding"
-            className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800"
+            className="rounded-lg border border-white/10 px-3.5 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10"
           >
             {t('holdingMgmt')}
           </Link>
         </div>
       </div>
 
-      <div className="mt-6 max-w-2xl">
-        <Card title={t('orgs')}>
-          <ul className="space-y-1.5">
+      {/* Criar organização */}
+      <form action={createOrganization} className="mt-6 flex flex-wrap items-center gap-2">
+        <input name="name" placeholder={t('newOrg')} required className={`${inputCls} max-w-xs flex-1`} />
+        <button type="submit" className={btnCls}>{t('add')}</button>
+      </form>
+
+      {/* Data grid de organizações */}
+      <div className="mt-4 flex items-center justify-between">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">{t('orgs')}</h2>
+        <span className="text-xs text-slate-500">{activeOrgs}/{orgs.length}</span>
+      </div>
+      <div className="mt-2 glass overflow-x-auto p-0">
+        <table className="w-full min-w-[560px] text-sm">
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t('orgs')}</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t('colStatus')}</th>
+              <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t('colActions')}</th>
+            </tr>
+          </thead>
+          <tbody>
             {orgs.map((o) => (
-              <li key={o.id}>
-                <Link
-                  href={`/estrutura/org/${o.id}`}
-                  className="flex items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-800/60"
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="font-medium">{o.name}</span>
-                    <StatusBadge active={o.is_active} />
-                  </span>
-                  <span className="text-xs text-brand">{t('openFolder')} →</span>
-                </Link>
-              </li>
+              <tr key={o.id} className={`border-b border-white/5 last:border-0 transition hover:bg-white/[0.025] ${o.is_active ? '' : 'opacity-55'}`}>
+                <td className="px-4 py-3">
+                  <Link href={`/estrutura/org/${o.id}`} className="font-semibold text-slate-100 transition hover:text-brand">{o.name}</Link>
+                </td>
+                <td className="px-4 py-3"><StatusBadge active={o.is_active} /></td>
+                <td className="px-4 py-3 text-right">
+                  <Link href={`/estrutura/org/${o.id}`} className="text-xs font-semibold text-brand transition hover:text-brand-500">{t('openFolder')} →</Link>
+                </td>
+              </tr>
             ))}
-            {orgs.length === 0 && <li className="text-sm text-slate-500">{t('none')}</li>}
-          </ul>
-          <form action={createOrganization} className="flex gap-2">
-            <input name="name" placeholder={t('newOrg')} required className={inputCls} />
-            <button type="submit" className={btnCls}>{t('add')}</button>
-          </form>
-        </Card>
+            {orgs.length === 0 && (
+              <tr><td colSpan={3} className="px-4 py-10 text-center text-sm text-slate-500">{t('none')}</td></tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   )

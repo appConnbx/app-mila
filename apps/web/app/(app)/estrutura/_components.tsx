@@ -26,7 +26,7 @@ export const btnCls =
 
 export function Card({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
+    <section className="glass p-5">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-white">{title}</h2>
         {action}

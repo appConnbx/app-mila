@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
-import { Field, fieldClasses } from '@/components/ui'
+import { Field, fieldClasses, Aurora } from '@/components/ui'
 import type { Locale } from '@/i18n/config'
 import { login } from './actions'
 
@@ -14,8 +14,9 @@ export default async function LoginPage({
   const locale = (await getLocale()) as Locale
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-surface-border bg-surface-card p-8 shadow-card">
+    <main className="flex min-h-screen items-center justify-center p-4">
+      <Aurora />
+      <div className="glass glow-top w-full max-w-sm p-8">
         <div className="mb-4 flex justify-end">
           <LanguageSwitcher current={locale} />
         </div>

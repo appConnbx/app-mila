@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
-import { Button, Badge, EmptyState, Avatar, Tag, DeadlineBar } from '@/components/ui'
+import { Button, Badge, EmptyState, Avatar, Tag } from '@/components/ui'
 
 type Demand = {
   id: string
@@ -73,6 +73,17 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
     if (days === 0) return { text: t('dueToday'), cls: 'text-amber-400' }
     return { text: t('remaining', { days }), cls: days <= 2 ? 'text-amber-400' : 'text-slate-400' }
   }
+  // Progresso do TEMPO até o prazo (aberta dia 1, hoje dia 9, prazo dia 10 => ~90%).
+  const deadlineProgress = (d: Demand) => {
+    if (d.status === 'finalizada') return { pct: 100, color: 'bg-emerald-500' }
+    if (!d.due_date) return { pct: 4, color: 'bg-brand/50' }
+    const start = new Date(d.created_at).getTime()
+    const end = new Date(d.due_date + 'T23:59:59').getTime()
+    const now = Date.now()
+    if (now > end) return { pct: 100, color: 'bg-gradient-to-r from-rose-400 to-red-500' }
+    const pct = Math.max(4, Math.min(100, Math.round(((now - start) / Math.max(1, end - start)) * 100)))
+    return { pct, color: pct >= 70 ? 'bg-gradient-to-r from-amber-400 to-amber-500' : 'bg-gradient-to-r from-emerald-400 to-emerald-500' }
+  }
   const fmtDate = (iso: string) => new Date(iso).toLocaleDateString(locale, { day: '2-digit', month: '2-digit' })
 
   return (
@@ -116,12 +127,13 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
         {demands.map((d) => {
           const overdue = isOverdue(d)
           const dl = deadlineLabel(d)
+          const prog = deadlineProgress(d)
           const tags = d.tags ?? []
           return (
             <Link
               key={d.id}
               href={`/demandas/${d.id}`}
-              className={`glass flex gap-4 p-5 transition hover:border-brand/40 ${overdue ? '!border-rose-500/30' : ''}`}
+              className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${overdue ? '!border-rose-500/30' : ''}`}
             >
               <Avatar name={d.responsible?.full_name ?? '?'} />
               <div className="min-w-0 flex-1">
@@ -148,13 +160,17 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
                   </div>
                 )}
 
-                <div className="mt-3 flex items-center gap-3">
-                  <span className="shrink-0 text-xs text-slate-500">
+                <div className="mt-3 flex items-center justify-between gap-3 text-xs">
+                  <span className="text-slate-500">
                     {t('dueWord')} {d.due_date ? fmtDate(d.due_date) : '—'}
                   </span>
-                  <DeadlineBar createdAt={d.created_at} dueDate={d.due_date} done={d.status === 'finalizada'} />
-                  <span className={`shrink-0 text-xs font-medium ${dl.cls}`}>{dl.text}</span>
+                  <span className={`font-medium ${dl.cls}`}>{dl.text}</span>
                 </div>
+              </div>
+
+              {/* Barra de progresso do prazo — borda inferior do card */}
+              <div className="absolute inset-x-0 bottom-0 h-1 bg-white/5">
+                <div className={`h-full ${prog.color} transition-all`} style={{ width: `${prog.pct}%` }} />
               </div>
             </Link>
           )

@@ -15,7 +15,7 @@ type Team = { id: string; name: string }
 
 function Kpi({ label, value, accent }: { label: string; value: number | string; accent?: string }) {
   return (
-    <div className="rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
+    <div className="glass p-5">
       <p className="text-sm text-slate-400">{label}</p>
       <p className={`mt-1 text-3xl font-bold ${accent ?? 'text-white'}`}>{value}</p>
     </div>
@@ -141,7 +141,7 @@ export default async function PainelPage() {
           <p className="text-sm text-slate-400">{t('talentsHint')}</p>
           <div className="mt-3 space-y-2">
             {talents.map((r, i) => (
-              <div key={r.pid} className="flex items-center gap-3 rounded-xl border border-surface-border bg-surface-card px-4 py-3">
+              <div key={r.pid} className="glass flex items-center gap-3 px-4 py-3">
                 <span className={`grid h-7 w-7 place-items-center rounded-full text-sm font-bold ${i === 0 ? 'bg-brand text-slate-950' : 'bg-slate-800 text-slate-300'}`}>{i + 1}</span>
                 <span className="flex-1 font-medium text-slate-100">{r.name}</span>
                 <span className="text-sm text-emerald-400">{r.done} {t('doneShort')}</span>
@@ -153,7 +153,7 @@ export default async function PainelPage() {
 
           {/* Por pessoa */}
           <h2 className="mt-8 text-lg font-semibold text-white">{t('byPerson')}</h2>
-          <div className="mt-3 overflow-x-auto rounded-2xl border border-surface-border bg-surface-card shadow-card">
+          <div className="mt-3 glass overflow-x-auto p-0">
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b border-surface-border">
@@ -187,7 +187,7 @@ export default async function PainelPage() {
           {teamRows.length > 0 && (
             <>
               <h2 className="mt-8 text-lg font-semibold text-white">{t('byTeam')}</h2>
-              <div className="mt-3 overflow-x-auto rounded-2xl border border-surface-border bg-surface-card shadow-card">
+              <div className="mt-3 glass overflow-x-auto p-0">
                 <table className="w-full min-w-[640px] text-sm">
                   <thead>
                     <tr className="border-b border-surface-border">

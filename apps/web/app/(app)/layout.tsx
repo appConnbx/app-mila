@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Aurora } from '@/components/ui'
+import { NavLinks } from './_nav'
 import type { Locale } from '@/i18n/config'
 
 export default async function AppLayout({
@@ -25,10 +26,15 @@ export default async function AppLayout({
   const locale = (await getLocale()) as Locale
   const initial = (user.email ?? '?').charAt(0).toUpperCase()
 
-  const navLink = 'whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white'
+  const navItems = [
+    { href: '/painel', label: t('nav.panel') },
+    { href: '/demandas', label: t('nav.demands') },
+    { href: '/eventos', label: t('nav.events') },
+    ...(isHoldingAdmin ? [{ href: '/estrutura', label: t('nav.structure') }] : []),
+  ]
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen">
       <Aurora />
       <header className="sticky top-0 z-10 border-b border-white/5 bg-surface/70 backdrop-blur-xl">
         {/* Linha 1: marca + ações */}
@@ -55,15 +61,8 @@ export default async function AppLayout({
           </div>
         </div>
 
-        {/* Linha 2: navegação (rolável no mobile) */}
-        <nav className="flex items-center gap-1 overflow-x-auto px-4 pb-2 sm:px-6">
-          <Link href="/painel" className={navLink}>{t('nav.panel')}</Link>
-          <Link href="/demandas" className={navLink}>{t('nav.demands')}</Link>
-          <Link href="/eventos" className={navLink}>{t('nav.events')}</Link>
-          {isHoldingAdmin && (
-            <Link href="/estrutura" className={navLink}>{t('nav.structure')}</Link>
-          )}
-        </nav>
+        {/* Linha 2: navegação (rolável no mobile, com item ativo destacado) */}
+        <NavLinks items={navItems} />
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
     </div>

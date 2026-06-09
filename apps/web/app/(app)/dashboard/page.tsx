@@ -33,7 +33,7 @@ export default async function DashboardPage() {
       )}
 
       {!error && instances.length === 0 && (
-        <div className="mt-6 rounded-2xl border border-dashed border-surface-border bg-surface-card p-10 text-center">
+        <div className="mt-6 glass border-dashed p-10 text-center">
           <p className="text-slate-300">{t('emptyTitle')}</p>
           <p className="mt-1 text-sm text-slate-500">{t('emptyHint')}</p>
         </div>
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
                   <input type="hidden" name="holding_id" value={it.holding_id} />
                   <button
                     type="submit"
-                    className="group w-full rounded-2xl border border-surface-border bg-surface-card p-5 text-left shadow-card transition hover:border-brand/60 hover:bg-slate-800/40"
+                    className="group glass w-full p-5 text-left transition hover:border-brand/60"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-lg font-bold text-brand">

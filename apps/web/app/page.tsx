@@ -140,7 +140,7 @@ export default async function LandingPage() {
   ]
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-surface text-slate-200">
+    <div className="min-h-screen overflow-x-hidden text-slate-200">
       <Aurora />
       {/* ---------------- NAV ---------------- */}
       <header className="sticky top-0 z-50 border-b border-white/5 bg-surface/80 backdrop-blur">

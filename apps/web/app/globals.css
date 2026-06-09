@@ -52,7 +52,9 @@ body {
   }
 }
 
-/* Cena de fundo (aurora + grade) — dá profundidade ao vidro */
+/* Cena de fundo (aurora + grade) — dá profundidade ao vidro.
+   IMPORTANTE: os wrappers das telas NÃO devem ter fundo opaco (bg-surface),
+   senão cobrem a aurora (z-index:-1) na ordem de pintura. */
 .aurora {
   position: fixed;
   inset: 0;
@@ -60,17 +62,19 @@ body {
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(1100px 560px at 50% -8%, rgba(37, 99, 235, 0.16), transparent 60%),
-    radial-gradient(820px 460px at 88% 6%, rgba(34, 211, 238, 0.08), transparent 55%);
+    radial-gradient(1100px 620px at 50% -10%, rgba(56, 130, 246, 0.30), transparent 60%),
+    radial-gradient(880px 520px at 88% 2%, rgba(34, 211, 238, 0.18), transparent 55%),
+    radial-gradient(720px 520px at 6% 16%, rgba(99, 102, 241, 0.14), transparent 60%),
+    linear-gradient(180deg, #070b16 0%, #06080f 55%, #05070d 100%);
 }
 .aurora::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
-  background-size: 54px 54px;
-  mask-image: radial-gradient(ellipse 92% 70% at 50% 14%, #000 28%, transparent 76%);
-  -webkit-mask-image: radial-gradient(ellipse 92% 70% at 50% 14%, #000 28%, transparent 76%);
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 95% 75% at 50% 12%, #000 26%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 75% at 50% 12%, #000 26%, transparent 78%);
 }

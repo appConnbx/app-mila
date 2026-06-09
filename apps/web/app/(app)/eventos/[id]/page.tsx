@@ -79,7 +79,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
         )}
       </div>
 
-      <div className="mt-5 rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
+      <div className="mt-5 glass p-5">
         <div className="flex items-center gap-3">
           <ProgressBar value={pct} className="h-2 flex-1" />
           <span className="text-sm font-medium text-white">{pct}%</span>
@@ -93,7 +93,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
       </div>
 
       <h2 className="mt-6 text-lg font-semibold text-white">{t('linkedDemands')} ({total})</h2>
-      <div className="mt-3 overflow-hidden rounded-2xl border border-surface-border bg-surface-card shadow-card">
+      <div className="mt-3 glass overflow-hidden p-0">
         {demands.map((d) => (
           <Link
             key={d.id}

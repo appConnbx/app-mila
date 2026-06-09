@@ -105,12 +105,12 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
       <div className="mt-6 grid items-start gap-5 lg:grid-cols-3">
         {/* Esquerda: descrição + observações */}
         <div className="space-y-5 lg:col-span-2">
-          <section className="rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
+          <section className="glass p-5">
             <h2 className="text-sm font-medium text-slate-400">{t('description')}</h2>
             <p className="mt-2 whitespace-pre-wrap text-sm text-slate-200">{d.description || t('noDescription')}</p>
           </section>
 
-          <section className="rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
+          <section className="glass p-5">
             <h2 className="text-lg font-semibold text-white">{t('observations')}</h2>
             <form action={addObservation} className="mt-3 flex flex-col gap-2">
               <input type="hidden" name="demand_id" value={d.id} />
@@ -135,7 +135,7 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
 
         {/* Direita: propriedades (editar) + histórico */}
         <div className="space-y-5">
-          <form action={updateDemand} className="rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
+          <form action={updateDemand} className="glass p-5">
             <input type="hidden" name="id" value={d.id} />
             <h2 className="text-lg font-semibold text-white">{t('properties')}</h2>
             <div className="mt-3 space-y-3 text-sm">
@@ -168,7 +168,7 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
             </dl>
           </form>
 
-          <section className="rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card">
+          <section className="glass p-5">
             <h2 className="text-lg font-semibold text-white">{t('history')}</h2>
             <ul className="mt-3 space-y-3">
               {history.map((h) => (

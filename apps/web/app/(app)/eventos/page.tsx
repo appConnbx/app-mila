@@ -108,7 +108,7 @@ export default async function EventosPage() {
             <Link
               key={e.id}
               href={`/eventos/${e.id}`}
-              className="block rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card transition hover:border-brand/40"
+              className="glass block p-5 transition hover:border-brand/40"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
@@ -127,7 +127,7 @@ export default async function EventosPage() {
           )
         })}
         {events.length === 0 && (
-          <div className="rounded-2xl border border-surface-border bg-surface-card px-5 py-10 text-center text-sm text-slate-500">
+          <div className="glass px-5 py-10 text-center text-sm text-slate-500">
             {t('empty')}
           </div>
         )}

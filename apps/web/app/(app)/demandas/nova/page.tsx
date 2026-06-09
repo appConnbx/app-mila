@@ -51,7 +51,7 @@ export default async function NovaDemandaPage({
 
       <form
         action={createDemand}
-        className="mt-6 space-y-4 rounded-2xl border border-surface-border bg-surface-card p-6 shadow-card"
+        className="mt-6 glass space-y-4 p-6"
       >
         <div>
           <label htmlFor="title" className={labelCls}>{t('demand')}</label>

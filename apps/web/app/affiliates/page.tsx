@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { Aurora } from '@/components/ui'
 import type { Locale } from '@/i18n/config'
 
 export const metadata: Metadata = {
@@ -14,12 +15,8 @@ export default async function AffiliatesPage() {
   const locale = (await getLocale()) as Locale
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-surface text-slate-200">
-      {/* glows */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-24 left-1/2 h-[460px] w-[760px] -translate-x-1/2 rounded-full bg-brand/10 blur-[120px]" />
-        <div className="absolute bottom-0 right-0 h-[320px] w-[320px] rounded-full bg-orange-500/10 blur-[120px]" />
-      </div>
+    <div className="relative min-h-screen overflow-hidden text-slate-200">
+      <Aurora />
 
       <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link href="/" className="flex items-center gap-2">
