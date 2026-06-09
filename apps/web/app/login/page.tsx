@@ -1,3 +1,6 @@
+import { getLocale, getTranslations } from 'next-intl/server'
+import { LanguageSwitcher } from '@/components/language-switcher'
+import type { Locale } from '@/i18n/config'
 import { login } from './actions'
 
 export default async function LoginPage({
@@ -6,17 +9,22 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string }>
 }) {
   const { error } = await searchParams
+  const t = await getTranslations('login')
+  const locale = (await getLocale()) as Locale
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-surface p-4">
       <div className="w-full max-w-sm rounded-2xl border border-surface-border bg-surface-card p-8 shadow-card">
+        <div className="mb-4 flex justify-end">
+          <LanguageSwitcher current={locale} />
+        </div>
         <div className="mb-7 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-white">
             MILA
           </h1>
           <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-brand" />
           <p className="mt-3 text-sm text-slate-400">
-            Gestão de demandas e produtividade
+            {t('subtitle')}
           </p>
         </div>
 
@@ -29,7 +37,7 @@ export default async function LoginPage({
         <form action={login} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-slate-300">
-              E-mail
+              {t('email')}
             </label>
             <input
               id="email"
@@ -43,7 +51,7 @@ export default async function LoginPage({
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-slate-300">
-              Senha
+              {t('password')}
             </label>
             <input
               id="password"
@@ -59,7 +67,7 @@ export default async function LoginPage({
             type="submit"
             className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
           >
-            Entrar
+            {t('submit')}
           </button>
         </form>
       </div>

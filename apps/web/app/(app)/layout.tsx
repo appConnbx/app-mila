@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
+import { LanguageSwitcher } from '@/components/language-switcher'
+import type { Locale } from '@/i18n/config'
 
 export default async function AppLayout({
   children,
@@ -14,6 +17,8 @@ export default async function AppLayout({
 
   if (!user) redirect('/login')
 
+  const t = await getTranslations()
+  const locale = (await getLocale()) as Locale
   const initial = (user.email ?? '?').charAt(0).toUpperCase()
 
   return (
@@ -26,10 +31,10 @@ export default async function AppLayout({
           </div>
           <nav className="hidden items-center gap-1 sm:flex">
             <Link href="/demandas" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
-              Demandas
+              {t('nav.demands')}
             </Link>
             <Link href="/estrutura" className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
-              Estrutura
+              {t('nav.structure')}
             </Link>
           </nav>
         </div>
@@ -40,8 +45,9 @@ export default async function AppLayout({
               <circle cx="11" cy="11" r="7" />
               <path d="m21 21-4.3-4.3" />
             </svg>
-            <span>Buscar…</span>
+            <span>{t('common.search')}</span>
           </div>
+          <LanguageSwitcher current={locale} />
           <span className="hidden text-sm text-slate-400 md:inline">{user.email}</span>
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand/15 text-sm font-semibold text-brand">
             {initial}
@@ -51,7 +57,7 @@ export default async function AppLayout({
               type="submit"
               className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800"
             >
-              Sair
+              {t('common.signOut')}
             </button>
           </form>
         </div>

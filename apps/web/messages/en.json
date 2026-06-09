@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "MILA",
+    "search": "Search…",
+    "signOut": "Sign out",
+    "add": "Add",
+    "language": "Language"
+  },
+  "nav": {
+    "demands": "Demands",
+    "structure": "Structure"
+  },
+  "login": {
+    "subtitle": "Demand management and productivity",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in"
+  },
+  "instances": {
+    "title": "My instances",
+    "subtitle": "Choose where you want to work. You can belong to several companies and families.",
+    "loadError": "Error loading instances: {message}",
+    "emptyTitle": "You're not linked to any instance yet.",
+    "emptyHint": "Ask an administrator to add you, or get a plan.",
+    "corporate": "Company",
+    "family": "Family",
+    "member": "Member",
+    "enter": "Enter"
+  },
+  "demands": {
+    "instanceFallback": "Instance",
+    "title": "Demands",
+    "new": "+ New demand",
+    "switchInstance": "Switch instance",
+    "kpiTotal": "Total",
+    "kpiInProgress": "In progress",
+    "kpiOverdue": "Overdue",
+    "kpiDone": "Completed",
+    "loadError": "Error loading demands: {message}",
+    "colDemand": "Demand",
+    "colResponsible": "Owner",
+    "colDue": "Due",
+    "colStatus": "Status",
+    "empty": "No demands in this instance yet.",
+    "overdueSuffix": " (overdue)",
+    "status": { "nova": "New", "trabalhando": "In progress", "finalizada": "Done" },
+    "priority": { "alta": "High", "media": "Medium", "baixa": "Low" }
+  },
+  "newDemand": {
+    "title": "New demand",
+    "back": "Back",
+    "demand": "Demand *",
+    "demandPlaceholder": "E.g.: Review pending tickets",
+    "description": "Description (optional)",
+    "responsible": "Owner *",
+    "selectPlaceholder": "Select…",
+    "priority": "Priority",
+    "priorityHigh": "High",
+    "priorityMedium": "Medium",
+    "priorityLow": "Low",
+    "due": "Due date (optional)",
+    "event": "Event (optional)",
+    "eventNone": "None (standalone)",
+    "cancel": "Cancel",
+    "submit": "Create demand"
+  },
+  "structure": {
+    "title": "Structure",
+    "summary": "{orgs} org · {areas} areas · {teams} teams · {people} people",
+    "orgs": "Organizations",
+    "areas": "Areas",
+    "teams": "Teams",
+    "people": "People",
+    "none": "None yet.",
+    "newOrg": "New organization",
+    "selectOrg": "Select organization…",
+    "newArea": "New area",
+    "selectArea": "Select area…",
+    "newTeam": "New team",
+    "orgPlaceholder": "Organization…",
+    "fullName": "Full name",
+    "roleOptional": "Role (optional)",
+    "phoneOptional": "Phone +55… (optional)",
+    "canDelegate": "Can create demands for other people",
+    "addPerson": "Add person"
+  }
+}

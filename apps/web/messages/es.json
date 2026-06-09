@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "MILA",
+    "search": "Buscar…",
+    "signOut": "Salir",
+    "add": "Añadir",
+    "language": "Idioma"
+  },
+  "nav": {
+    "demands": "Demandas",
+    "structure": "Estructura"
+  },
+  "login": {
+    "subtitle": "Gestión de demandas y productividad",
+    "email": "Correo",
+    "password": "Contraseña",
+    "submit": "Entrar"
+  },
+  "instances": {
+    "title": "Mis instancias",
+    "subtitle": "Elige dónde quieres trabajar. Puedes pertenecer a varias empresas y familias.",
+    "loadError": "Error al cargar instancias: {message}",
+    "emptyTitle": "Aún no estás vinculado a ninguna instancia.",
+    "emptyHint": "Pide a un administrador que te agregue, o contrata un plan.",
+    "corporate": "Empresa",
+    "family": "Familia",
+    "member": "Miembro",
+    "enter": "Entrar"
+  },
+  "demands": {
+    "instanceFallback": "Instancia",
+    "title": "Demandas",
+    "new": "+ Nueva demanda",
+    "switchInstance": "Cambiar instancia",
+    "kpiTotal": "Total",
+    "kpiInProgress": "En curso",
+    "kpiOverdue": "Atrasadas",
+    "kpiDone": "Completadas",
+    "loadError": "Error al cargar demandas: {message}",
+    "colDemand": "Demanda",
+    "colResponsible": "Responsable",
+    "colDue": "Plazo",
+    "colStatus": "Estado",
+    "empty": "Aún no hay demandas en esta instancia.",
+    "overdueSuffix": " (atrasada)",
+    "status": { "nova": "Nueva", "trabalhando": "En curso", "finalizada": "Finalizada" },
+    "priority": { "alta": "Alta", "media": "Media", "baixa": "Baja" }
+  },
+  "newDemand": {
+    "title": "Nueva demanda",
+    "back": "Volver",
+    "demand": "Demanda *",
+    "demandPlaceholder": "Ej.: Validar tickets pendientes",
+    "description": "Descripción (opcional)",
+    "responsible": "Responsable *",
+    "selectPlaceholder": "Selecciona…",
+    "priority": "Prioridad",
+    "priorityHigh": "Alta",
+    "priorityMedium": "Media",
+    "priorityLow": "Baja",
+    "due": "Plazo (opcional)",
+    "event": "Evento (opcional)",
+    "eventNone": "Ninguno (suelta)",
+    "cancel": "Cancelar",
+    "submit": "Crear demanda"
+  },
+  "structure": {
+    "title": "Estructura",
+    "summary": "{orgs} org · {areas} áreas · {teams} equipos · {people} personas",
+    "orgs": "Organizaciones",
+    "areas": "Áreas",
+    "teams": "Equipos",
+    "people": "Personas",
+    "none": "Ninguna aún.",
+    "newOrg": "Nueva organización",
+    "selectOrg": "Selecciona la organización…",
+    "newArea": "Nueva área",
+    "selectArea": "Selecciona el área…",
+    "newTeam": "Nuevo equipo",
+    "orgPlaceholder": "Organización…",
+    "fullName": "Nombre completo",
+    "roleOptional": "Cargo (opcional)",
+    "phoneOptional": "Teléfono +55… (opcional)",
+    "canDelegate": "Puede crear demandas para otras personas",
+    "addPerson": "Añadir persona"
+  }
+}
