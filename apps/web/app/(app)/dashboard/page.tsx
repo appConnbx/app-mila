@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { enterInstance } from './actions'
 
 type Instance = {
   holding_id: string
@@ -47,30 +48,35 @@ export default async function DashboardPage() {
           {instances.map((it) => {
             const kind = KIND[it.kind] ?? KIND.corporate
             return (
-              <li
-                key={it.holding_id}
-                className="group cursor-pointer rounded-2xl border border-surface-border bg-surface-card p-5 shadow-card transition hover:border-brand/60 hover:bg-slate-800/40"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-lg font-bold text-brand">
-                    {it.holding_name.charAt(0).toUpperCase()}
-                  </div>
-                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${kind.cls}`}>
-                    {kind.label}
-                  </span>
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-white">
-                  {it.holding_name}
-                </h3>
-                <p className="mt-0.5 text-sm text-slate-400">
-                  {it.role_title ?? 'Membro'}
-                </p>
-                <div className="mt-4 flex items-center gap-1 text-sm font-medium text-brand opacity-0 transition group-hover:opacity-100">
-                  Entrar
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 12h14M13 6l6 6-6 6" />
-                  </svg>
-                </div>
+              <li key={it.holding_id}>
+                <form action={enterInstance}>
+                  <input type="hidden" name="holding_id" value={it.holding_id} />
+                  <button
+                    type="submit"
+                    className="group w-full rounded-2xl border border-surface-border bg-surface-card p-5 text-left shadow-card transition hover:border-brand/60 hover:bg-slate-800/40"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-lg font-bold text-brand">
+                        {it.holding_name.charAt(0).toUpperCase()}
+                      </div>
+                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${kind.cls}`}>
+                        {kind.label}
+                      </span>
+                    </div>
+                    <h3 className="mt-4 text-lg font-semibold text-white">
+                      {it.holding_name}
+                    </h3>
+                    <p className="mt-0.5 text-sm text-slate-400">
+                      {it.role_title ?? 'Membro'}
+                    </p>
+                    <div className="mt-4 flex items-center gap-1 text-sm font-medium text-brand opacity-0 transition group-hover:opacity-100">
+                      Entrar
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 12h14M13 6l6 6-6 6" />
+                      </svg>
+                    </div>
+                  </button>
+                </form>
               </li>
             )
           })}
