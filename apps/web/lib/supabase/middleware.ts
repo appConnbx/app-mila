@@ -4,7 +4,8 @@ import type { Database } from '@mila/supabase'
 
 type CookieToSet = { name: string; value: string; options: CookieOptions }
 
-const PUBLIC_PATHS = ['/login', '/auth']
+// Rotas públicas (sem exigir login). A landing comercial é a raiz "/".
+const PUBLIC_PREFIXES = ['/login', '/auth', '/affiliates']
 
 /** Renova a sessão e protege rotas (redireciona para /login se não autenticado). */
 export async function updateSession(request: NextRequest) {
@@ -34,7 +35,8 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
-  const isPublic = PUBLIC_PATHS.some((p) => path.startsWith(p))
+  const isPublic =
+    path === '/' || PUBLIC_PREFIXES.some((p) => path.startsWith(p))
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone()
