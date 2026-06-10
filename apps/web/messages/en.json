@@ -12,7 +12,22 @@
     "events": "Events",
     "structure": "Administration",
     "exitInstance": "Exit {name}",
-    "exit": "Exit"
+    "exit": "Exit",
+    "profile": "Profile"
+  },
+  "profile": {
+    "back": "Back",
+    "changePhoto": "Change photo",
+    "uploading": "Uploading…",
+    "headline": "About you",
+    "headlinePlaceholder": "e.g.: IT Coordinator · automation enthusiast",
+    "phone": "Mobile",
+    "skills": "Skills",
+    "skillsPlaceholder": "e.g.: Excel, project management, BIM…",
+    "add": "Add",
+    "save": "Save profile",
+    "saving": "Saving…",
+    "saved": "Profile saved."
   },
   "home": {
     "title": "Personal overview",

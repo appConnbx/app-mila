@@ -12,7 +12,22 @@
     "events": "Eventos",
     "structure": "Administração",
     "exitInstance": "Sair de {name}",
-    "exit": "Sair"
+    "exit": "Sair",
+    "profile": "Perfil"
+  },
+  "profile": {
+    "back": "Voltar",
+    "changePhoto": "Alterar foto",
+    "uploading": "Enviando…",
+    "headline": "Sobre você",
+    "headlinePlaceholder": "Ex.: Coordenador de TI · apaixonado por automação",
+    "phone": "Celular",
+    "skills": "Habilidades",
+    "skillsPlaceholder": "Ex.: Excel, gestão de obras, BIM…",
+    "add": "Adicionar",
+    "save": "Salvar perfil",
+    "saving": "Salvando…",
+    "saved": "Perfil salvo."
   },
   "home": {
     "title": "Visão geral pessoal",

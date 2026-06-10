@@ -22,7 +22,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const pathname = (await headers()).get('x-pathname') ?? ''
   const activeHolding = (await cookies()).get(ACTIVE_HOLDING_COOKIE)?.value
   // "Home" = área inicial (dashboard pessoal + seleção): sem nav de instância.
-  const isHome = !activeHolding || pathname === '/dashboard' || pathname.startsWith('/assinatura')
+  const isHome = !activeHolding || pathname === '/dashboard' || pathname.startsWith('/assinatura') || pathname.startsWith('/perfil')
 
   const t = await getTranslations()
   const locale = (await getLocale()) as Locale
@@ -83,9 +83,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             )}
             <LanguageSwitcher current={locale} />
             <span className="hidden text-sm text-slate-400 md:inline">{user.email}</span>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/15 text-sm font-semibold text-brand">
+            <Link
+              href="/perfil"
+              title={t('nav.profile')}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/15 text-sm font-semibold text-brand transition hover:bg-brand/25"
+            >
               {initial}
-            </div>
+            </Link>
             <form action="/auth/signout" method="post">
               <button
                 type="submit"
