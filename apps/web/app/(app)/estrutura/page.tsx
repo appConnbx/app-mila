@@ -3,34 +3,12 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
-import { createOrganization } from './actions'
-import { PeopleManager, StatusBadge, inputCls, btnCls } from './_components'
+import { createOrganization, createPerson } from './actions'
+import { Card, StatusBadge, inputCls, btnCls } from './_components'
+import { UsersManager, type HoldingUser } from './usuarios/_users-manager'
 
 type Org = { id: string; name: string; is_active: boolean }
 type Holding = { id: string; name: string; kind: 'corporate' | 'family' }
-type Alias = { id: string; alias: string; person_id: string }
-type Person = {
-  id: string
-  full_name: string
-  role_title: string | null
-  email: string | null
-  can_delegate: boolean
-  is_active: boolean
-  organization_id: string
-}
-
-async function loadPeople(supabase: Awaited<ReturnType<typeof createClient>>) {
-  const [peopleRes, aliasRes] = await Promise.all([
-    supabase.from('people').select('id, full_name, role_title, email, can_delegate, is_active, organization_id').order('full_name'),
-    supabase.from('person_aliases').select('id, alias, person_id'),
-  ])
-  const people = (peopleRes.data ?? []) as unknown as Person[]
-  const aliases = (aliasRes.data ?? []) as unknown as Alias[]
-  return people.map((p) => ({
-    ...p,
-    aliases: aliases.filter((a) => a.person_id === p.id).map((a) => ({ id: a.id, alias: a.alias })),
-  }))
-}
 
 export default async function EstruturaPage() {
   const t = await getTranslations('structure')
@@ -47,14 +25,33 @@ export default async function EstruturaPage() {
 
   // ----------------------------------------------------------------- FAMÍLIA
   if (holding?.kind === 'family') {
-    const people = await loadPeople(supabase)
-    const defaultOrgId = orgs[0]?.id
+    const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: HoldingUser[] | null }> }
+    const { data: usersData } = await sb.rpc('holding_users')
+    const users = usersData ?? []
     return (
-      <div className="mx-auto max-w-2xl">
-        <h1 className="text-2xl font-bold text-white">{t('familyTitle')}</h1>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-white">{t('familyTitle')}</h1>
         <p className="mt-1 text-sm text-slate-400">{t('familyDesc')}</p>
+
         <div className="mt-6">
-          <PeopleManager people={people} defaultOrgId={defaultOrgId} />
+          <UsersManager users={users} />
+        </div>
+
+        {/* Adicionar pessoa */}
+        <div className="mt-6 max-w-xl">
+          <Card title={t('addPerson')}>
+            <form action={createPerson} className="space-y-2">
+              <input name="full_name" required placeholder={t('fullName')} className={inputCls} />
+              <input name="email" type="email" placeholder={t('emailOptional')} className={inputCls} />
+              <input name="role_title" placeholder={t('roleOptional')} className={inputCls} />
+              <input name="aliases" placeholder={t('aliasesPlaceholder')} className={inputCls} />
+              <label className="flex items-center gap-2 text-sm text-slate-300">
+                <input type="checkbox" name="can_delegate" className="h-4 w-4 rounded border-surface-border bg-slate-900" />
+                {t('canDelegate')}
+              </label>
+              <button type="submit" className={btnCls}>{t('addPerson')}</button>
+            </form>
+          </Card>
         </div>
       </div>
     )
