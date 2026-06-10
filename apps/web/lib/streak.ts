@@ -81,6 +81,19 @@ export function isSkippedDay(d: Date): boolean {
  * O último ponto do array é "hoje": se hoje é dia útil sem atividade ainda,
  * não quebra a chama (o dia ainda está em andamento).
  */
+/** Chama a partir de uma lista de dias com atividade (ISO YYYY-MM-DD). */
+export function streakFromDates(activeDays: string[]): number {
+  const set = new Set(activeDays)
+  const today = new Date()
+  const daily: DailyPoint[] = []
+  for (let i = 59; i >= 0; i--) {
+    const d = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - i))
+    const iso = d.toISOString().slice(0, 10)
+    daily.push({ day: iso, completed: set.has(iso) ? 1 : 0 })
+  }
+  return computeStreak(daily)
+}
+
 export function computeStreak(daily: DailyPoint[]): number {
   let streak = 0
   for (let i = daily.length - 1; i >= 0; i--) {

@@ -24,12 +24,16 @@ export default async function NovaDemandaPage({
   if (!holdingId) redirect('/dashboard')
 
   const supabase = await createClient()
-  const [peopleRes, eventsRes] = await Promise.all([
+  const [peopleRes, eventsRes, holdingRes] = await Promise.all([
     supabase.from('people').select('id, full_name').eq('is_active', true).order('full_name'),
     supabase.from('events').select('id, name').eq('status', 'aberto').order('opened_at', { ascending: false }),
+    supabase.from('holdings').select('kind').eq('id', holdingId).single(),
   ])
   const people = (peopleRes.data ?? []) as unknown as Person[]
   const events = (eventsRes.data ?? []) as unknown as Event[]
+  const isFamily = (holdingRes.data as unknown as { kind: string } | null)?.kind === 'family'
+  const visPublicLabel = isFamily ? t('visPublicFamily') : t('visPublicCorp')
+  const visHint = isFamily ? t('visHintFamily') : t('visHintCorp')
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -99,9 +103,9 @@ export default async function NovaDemandaPage({
           <label htmlFor="visibility" className={labelCls}>{t('visibility')}</label>
           <select id="visibility" name="visibility" defaultValue="private" className={inputCls}>
             <option value="private">{t('visPrivate')}</option>
-            <option value="public">{t('visPublic')}</option>
+            <option value="public">{visPublicLabel}</option>
           </select>
-          <p className="mt-1 text-xs text-slate-500">{t('visHint')}</p>
+          <p className="mt-1 text-xs text-slate-500">{visHint}</p>
         </div>
 
         <div className="flex justify-end gap-3 pt-2">

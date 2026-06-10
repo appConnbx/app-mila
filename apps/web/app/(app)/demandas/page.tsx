@@ -92,8 +92,6 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
     const s = sp.toString()
     return s ? `/demandas?${s}` : '/demandas'
   }
-  const tabCls = (active: boolean) =>
-    `rounded-lg px-3 py-1.5 text-sm font-medium transition ${active ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`
 
   // Rótulo do prazo (faltam/atrasada/hoje/sem prazo)
   const todayDate = new Date(today + 'T00:00:00')
@@ -125,10 +123,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
           <p className="text-sm text-slate-400">{holding?.name ?? t('instanceFallback')}</p>
           <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
         </div>
-        <div className="flex items-center gap-2">
-          <Button href="/demandas/nova" size="sm">{t('new')}</Button>
-          <Button href="/dashboard" variant="secondary" size="sm">{t('switchInstance')}</Button>
-        </div>
+        <Button href="/demandas/nova" size="sm">{t('new')}</Button>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -144,16 +139,31 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
         </div>
       )}
 
-      {/* Abas: relação com o usuário */}
-      <div className="mt-6 flex flex-wrap items-center gap-1">
-        <Link href={q({ tab: 'minhas', view: archived ? 'arquivadas' : undefined })} className={tabCls(tab === 'minhas')}>{t('tabMine')} ({mine.length})</Link>
-        <Link href={q({ tab: 'delegadas', view: archived ? 'arquivadas' : undefined })} className={tabCls(tab === 'delegadas')}>{t('tabDelegated')} ({delegated.length})</Link>
-        <Link href={q({ tab: 'compartilhadas', view: archived ? 'arquivadas' : undefined })} className={tabCls(tab === 'compartilhadas')}>{t('tabShared')} ({shared.length})</Link>
-      </div>
-      {/* Sub-filtro: ativas x concluídas */}
-      <div className="mt-2 flex items-center gap-1">
-        <Link href={q({ tab })} className={tabCls(!archived)}>{t('tabActive')} ({base.length - baseDone})</Link>
-        <Link href={q({ tab, view: 'arquivadas' })} className={tabCls(archived)}>{t('tabArchived')} ({baseDone})</Link>
+      {/* Filtros: relação (esquerda) × situação (direita) */}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
+          {([
+            ['minhas', t('tabMine'), mine.length],
+            ['delegadas', t('tabDelegated'), delegated.length],
+            ['compartilhadas', t('tabShared'), shared.length],
+          ] as const).map(([key, label, count]) => (
+            <Link
+              key={key}
+              href={q({ tab: key as Tab, view: archived ? 'arquivadas' : undefined })}
+              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${tab === key ? 'bg-brand/15 text-brand' : 'text-slate-400 hover:text-white'}`}
+            >
+              {label} <span className="opacity-60">{count}</span>
+            </Link>
+          ))}
+        </div>
+        <div className="inline-flex rounded-lg border border-white/10 bg-white/[0.03] p-1">
+          <Link href={q({ tab })} className={`rounded-md px-3 py-1 text-sm transition ${!archived ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>
+            {t('tabActive')} ({base.length - baseDone})
+          </Link>
+          <Link href={q({ tab, view: 'arquivadas' })} className={`rounded-md px-3 py-1 text-sm transition ${archived ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>
+            {t('tabArchived')} ({baseDone})
+          </Link>
+        </div>
       </div>
 
       <div className="mt-4 space-y-3">

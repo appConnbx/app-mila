@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getLocale, getTranslations } from 'next-intl/server'
+import { NextIntlClientProvider } from 'next-intl'
+import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Aurora } from '@/components/ui'
@@ -25,6 +26,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const t = await getTranslations()
   const locale = (await getLocale()) as Locale
+  const messages = await getMessages()
   const initial = (user.email ?? '?').charAt(0).toUpperCase()
 
   const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
@@ -98,7 +100,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         {/* Linha 2: navegação da instância (oculta na home) */}
         {!isHome && <NavLinks items={navItems} />}
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <NextIntlClientProvider locale={locale} messages={messages}>{children}</NextIntlClientProvider>
+      </main>
     </div>
   )
 }

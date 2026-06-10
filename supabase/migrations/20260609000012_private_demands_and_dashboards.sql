@@ -112,7 +112,9 @@ returns jsonb language sql stable security definer set search_path = public, app
           'total',   count(*),
           'working', count(*) filter (where s.status = 'trabalhando'),
           'overdue', count(*) filter (where s.status <> 'finalizada' and s.due_date is not null and s.due_date < current_date),
-          'done',    count(*) filter (where s.status = 'finalizada')
+          'done',    count(*) filter (where s.status = 'finalizada'),
+          'active_days', coalesce(array_agg(distinct to_char(s.completed_at, 'YYYY-MM-DD'))
+                           filter (where s.completed_at is not null and s.completed_at >= current_date - interval '60 days'), '{}')
         ) as x
         from scope s join public.people p on p.id = s.responsible_id
         group by p.id, p.full_name

@@ -67,17 +67,17 @@ export default async function DashboardPage() {
           {/* Gráfico de conclusões por dia (14 dias) */}
           <div className="glass p-5">
             <p className="text-sm font-medium text-slate-300">{t('completionsTitle')}</p>
-            <div className="mt-4 flex h-28 items-end gap-1.5">
+            <div className="mt-4 flex h-32 items-end gap-1.5">
               {last14.map((d) => (
-                <div key={d.day} className="flex flex-1 flex-col items-center gap-1">
-                  <div className="flex w-full flex-1 items-end">
-                    <div
-                      className="w-full rounded-t bg-gradient-to-t from-brand-700/40 to-brand"
-                      style={{ height: `${Math.max(6, (d.completed / max) * 100)}%` }}
-                      title={`${d.completed}`}
-                    />
-                  </div>
-                  <span className="text-[10px] text-slate-600">{dayLabel(d.day)}</span>
+                <div key={d.day} className="flex h-full flex-1 flex-col justify-end gap-1" title={`${d.completed}`}>
+                  {d.completed > 0 && (
+                    <span className="text-center text-[10px] font-semibold text-brand">{d.completed}</span>
+                  )}
+                  <div
+                    className={`w-full rounded-t ${d.completed > 0 ? 'bg-gradient-to-t from-brand-700/50 to-brand' : 'bg-white/5'}`}
+                    style={{ height: d.completed > 0 ? `${Math.max(12, (d.completed / max) * 100)}%` : '3px' }}
+                  />
+                  <span className="text-center text-[10px] text-slate-600">{dayLabel(d.day)}</span>
                 </div>
               ))}
               {last14.length === 0 && <p className="text-sm text-slate-500">{t('noData')}</p>}
