@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { addTeamMember, removeTeamMember } from '../../../../../../actions'
 import { Breadcrumb, Card, ScopeAdmins, StructureSettings, StatusBadge, inputCls, btnCls } from '../../../../../../_components'
+import { SubmitButton } from '@/components/pending'
 
 type Named = { id: string; name: string; is_active: boolean }
 type Person = { id: string; full_name: string }
@@ -76,7 +77,7 @@ export default async function TeamPage({
                 <span>{nameOf(m.person_id)}</span>
                 <form action={removeTeamMember}>
                   <input type="hidden" name="id" value={m.id} />
-                  <button type="submit" className="text-xs text-slate-500 transition hover:text-red-400">{t('remove')}</button>
+                  <SubmitButton className="text-xs text-slate-500 transition hover:text-red-400">{t('remove')}</SubmitButton>
                 </form>
               </li>
             ))}
@@ -91,7 +92,7 @@ export default async function TeamPage({
                   <option key={p.id} value={p.id}>{p.full_name}</option>
                 ))}
               </select>
-              <button type="submit" className={btnCls}>{t('addMember')}</button>
+              <SubmitButton className={btnCls}>{t('addMember')}</SubmitButton>
             </form>
           )}
         </Card>

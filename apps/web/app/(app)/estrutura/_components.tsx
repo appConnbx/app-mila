@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { ConfirmButton } from '@/components/confirm-button'
+import { SubmitButton } from '@/components/pending'
 import { Badge, fieldClasses } from '@/components/ui'
 import {
   assignAdmin,
@@ -83,9 +84,9 @@ export async function ScopeAdmins({
             <span>{a.person_name}</span>
             <form action={removeAdmin}>
               <input type="hidden" name="id" value={a.id} />
-              <button type="submit" className="text-xs text-slate-500 transition hover:text-red-400">
+              <SubmitButton className="text-xs text-slate-500 transition hover:text-red-400">
                 {t('remove')}
-              </button>
+              </SubmitButton>
             </form>
           </li>
         ))}
@@ -102,7 +103,7 @@ export async function ScopeAdmins({
               <option key={p.id} value={p.id}>{p.full_name}</option>
             ))}
           </select>
-          <button type="submit" className={btnCls}>{t('addAdmin')}</button>
+          <SubmitButton className={btnCls}>{t('addAdmin')}</SubmitButton>
         </form>
       )}
     </Card>
@@ -155,9 +156,9 @@ export async function PeopleManager({
               <form action={setPersonActive}>
                 <input type="hidden" name="id" value={p.id} />
                 <input type="hidden" name="active" value={p.is_active ? '0' : '1'} />
-                <button type="submit" className="text-slate-400 transition hover:text-white">
+                <SubmitButton className="text-slate-400 transition hover:text-white">
                   {p.is_active ? t('deactivate') : t('activate')}
-                </button>
+                </SubmitButton>
               </form>
               <form action={deletePerson}>
                 <input type="hidden" name="id" value={p.id} />
@@ -172,7 +173,7 @@ export async function PeopleManager({
                   {al.alias}
                   <form action={removeAlias} className="inline">
                     <input type="hidden" name="id" value={al.id} />
-                    <button type="submit" className="text-slate-500 transition hover:text-red-400">×</button>
+                    <SubmitButton className="text-slate-500 transition hover:text-red-400">×</SubmitButton>
                   </form>
                 </span>
               ))}
@@ -183,7 +184,7 @@ export async function PeopleManager({
                   placeholder={t('addAliasPlaceholder')}
                   className="w-24 rounded-full border border-surface-border bg-slate-900/60 px-2 py-0.5 text-[11px] text-slate-200 outline-none focus:border-brand"
                 />
-                <button type="submit" className="text-xs font-semibold text-brand">+</button>
+                <SubmitButton className="text-xs font-semibold text-brand">+</SubmitButton>
               </form>
             </div>
           </li>
@@ -210,7 +211,7 @@ export async function PeopleManager({
           <input type="checkbox" name="can_delegate" className="h-4 w-4 rounded border-surface-border bg-slate-900" />
           {t('canDelegate')}
         </label>
-        <button type="submit" className={btnCls}>{t('addPerson')}</button>
+        <SubmitButton className={btnCls}>{t('addPerson')}</SubmitButton>
       </form>
     </Card>
   )
@@ -237,16 +238,16 @@ export async function StructureSettings({
         <input type="hidden" name="kind" value={kind} />
         <input type="hidden" name="id" value={id} />
         <input name="name" defaultValue={name} required className={inputCls} />
-        <button type="submit" className={btnCls}>{t('save')}</button>
+        <SubmitButton className={btnCls}>{t('save')}</SubmitButton>
       </form>
       <div className="flex items-center gap-2">
         <form action={setStructureActive}>
           <input type="hidden" name="kind" value={kind} />
           <input type="hidden" name="id" value={id} />
           <input type="hidden" name="active" value={isActive ? '0' : '1'} />
-          <button type="submit" className="rounded-lg border border-surface-border px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800">
+          <SubmitButton className="rounded-lg border border-surface-border px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800">
             {isActive ? t('deactivate') : t('activate')}
-          </button>
+          </SubmitButton>
         </form>
         <form action={deleteStructure}>
           <input type="hidden" name="kind" value={kind} />

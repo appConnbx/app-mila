@@ -12,8 +12,8 @@ export const fieldClasses =
 export const labelClasses = 'block text-sm font-medium text-slate-300'
 
 /* ---------------- Button ---------------- */
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
-type Size = 'sm' | 'md'
+export type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
+export type Size = 'sm' | 'md'
 
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-brand text-slate-950 hover:bg-brand-500 font-semibold',
@@ -28,6 +28,11 @@ const SIZES: Record<Size, string> = {
 const BTN_BASE =
   'inline-flex items-center justify-center gap-1.5 rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 disabled:opacity-50'
 
+/** Classes de botão compartilhadas (usadas por Button e SubmitButton). */
+export function buttonClasses(variant: Variant = 'primary', size: Size = 'md', className?: string) {
+  return cn(BTN_BASE, VARIANTS[variant], SIZES[size], className)
+}
+
 type ButtonProps = {
   href?: string
   variant?: Variant
@@ -37,7 +42,7 @@ type ButtonProps = {
 } & ButtonHTMLAttributes<HTMLButtonElement>
 
 export function Button({ href, variant = 'primary', size = 'md', className, children, ...props }: ButtonProps) {
-  const classes = cn(BTN_BASE, VARIANTS[variant], SIZES[size], className)
+  const classes = buttonClasses(variant, size, className)
   if (href) {
     return (
       <Link href={href} className={classes}>

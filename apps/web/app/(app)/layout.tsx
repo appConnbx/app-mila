@@ -6,6 +6,7 @@ import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Aurora } from '@/components/ui'
+import { SubmitButton } from '@/components/pending'
 import { NavLinks } from './_nav'
 import { exitInstance } from './dashboard/actions'
 import type { Locale } from '@/i18n/config'
@@ -78,13 +79,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-2 sm:gap-3">
             {!isHome && holding && (
               <form action={exitInstance}>
-                <button
-                  type="submit"
-                  className="rounded-lg border border-white/10 px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
-                >
+                <SubmitButton className="rounded-lg border border-white/10 px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white">
                   <span className="hidden sm:inline">{t('nav.exitInstance', { name: holding.name })}</span>
                   <span className="sm:hidden">{t('nav.exit')}</span>
-                </button>
+                </SubmitButton>
               </form>
             )}
             <LanguageSwitcher current={locale} />
@@ -100,12 +98,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               )}
             </Link>
             <form action="/auth/signout" method="post">
-              <button
-                type="submit"
-                className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
-              >
+              <SubmitButton className="rounded-lg border border-surface-border px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white">
                 {t('common.signOut')}
-              </button>
+              </SubmitButton>
             </form>
           </div>
         </div>

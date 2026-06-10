@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { enterInstance } from './actions'
 import { computeStreak, type DailyPoint } from '@/lib/streak'
 import { Avatar, Button } from '@/components/ui'
+import { SubmitButton } from '@/components/pending'
 
 type Instance = {
   holding_id: string
@@ -145,7 +146,7 @@ export default async function DashboardPage() {
                 <li key={it.holding_id}>
                   <form action={enterInstance}>
                     <input type="hidden" name="holding_id" value={it.holding_id} />
-                    <button type="submit" className="group glass w-full p-5 text-left transition hover:border-brand/60">
+                    <SubmitButton mode="overlay" className="group glass w-full p-5 text-left transition hover:border-brand/60">
                       <div className="flex items-start justify-between">
                         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-lg font-bold text-brand">
                           {it.holding_name.charAt(0).toUpperCase()}
@@ -160,7 +161,7 @@ export default async function DashboardPage() {
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
                       </div>
-                    </button>
+                    </SubmitButton>
                   </form>
                 </li>
               )

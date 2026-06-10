@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { updateHolding } from '../actions'
 import { Breadcrumb, Card, inputCls, btnCls } from '../_components'
+import { SubmitButton } from '@/components/pending'
 
 type Holding = {
   id: string
@@ -71,7 +72,7 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
             <input id="contact_email" name="contact_email" type="email" defaultValue={h.contact_email ?? ''} className={`mt-1 ${inputCls}`} />
           </div>
           <div className="flex justify-end pt-2">
-            <button type="submit" className={btnCls}>{t('save')}</button>
+            <SubmitButton className={btnCls}>{t('save')}</SubmitButton>
           </div>
         </Card>
       </form>

@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { Breadcrumb, Card, inputCls, btnCls } from '../_components'
+import { SubmitButton } from '@/components/pending'
 import { createPerson } from '../actions'
 import { UsersManager, type HoldingUser } from './_users-manager'
 
@@ -46,7 +47,7 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
               <input type="checkbox" name="can_delegate" className="h-4 w-4 rounded border-surface-border bg-slate-900" />
               {t('canDelegate')}
             </label>
-            <button type="submit" className={btnCls}>{t('addPerson')}</button>
+            <SubmitButton className={btnCls}>{t('addPerson')}</SubmitButton>
           </form>
         </Card>
       </div>

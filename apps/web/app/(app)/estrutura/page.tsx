@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { createOrganization, createPerson } from './actions'
 import { Card, StatusBadge, inputCls, btnCls } from './_components'
+import { SubmitButton } from '@/components/pending'
 import { UsersManager, type HoldingUser } from './usuarios/_users-manager'
 
 type Org = { id: string; name: string; is_active: boolean }
@@ -49,7 +50,7 @@ export default async function EstruturaPage() {
                 <input type="checkbox" name="can_delegate" className="h-4 w-4 rounded border-surface-border bg-slate-900" />
                 {t('canDelegate')}
               </label>
-              <button type="submit" className={btnCls}>{t('addPerson')}</button>
+              <SubmitButton className={btnCls}>{t('addPerson')}</SubmitButton>
             </form>
           </Card>
         </div>
@@ -85,7 +86,7 @@ export default async function EstruturaPage() {
       {/* Criar organização */}
       <form action={createOrganization} className="mt-6 flex flex-wrap items-center gap-2">
         <input name="name" placeholder={t('newOrg')} required className={`${inputCls} max-w-xs flex-1`} />
-        <button type="submit" className={btnCls}>{t('add')}</button>
+        <SubmitButton className={btnCls}>{t('add')}</SubmitButton>
       </form>
 
       {/* Data grid de organizações */}

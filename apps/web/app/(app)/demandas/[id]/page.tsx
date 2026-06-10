@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui'
+import { SubmitButton } from '@/components/pending'
 import { updateDemand, setDemandStatus, addObservation } from '../actions'
 
 const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
@@ -91,14 +92,13 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
           <form action={setDemandStatus} key={s}>
             <input type="hidden" name="id" value={d.id} />
             <input type="hidden" name="status" value={s} />
-            <button
-              type="submit"
+            <SubmitButton
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
                 d.status === s ? 'bg-brand text-slate-950' : 'border border-surface-border text-slate-300 hover:bg-slate-800'
               }`}
             >
               {td(`status.${s}`)}
-            </button>
+            </SubmitButton>
           </form>
         ))}
       </div>
@@ -116,9 +116,9 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
             <form action={addObservation} className="mt-3 flex flex-col gap-2">
               <input type="hidden" name="demand_id" value={d.id} />
               <textarea name="body" rows={2} required placeholder={t('obsPlaceholder')} className={inputCls} />
-              <button type="submit" className="self-end rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+              <SubmitButton className="self-end rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
                 {t('send')}
-              </button>
+              </SubmitButton>
             </form>
             <ul className="mt-4 space-y-3">
               {observations.map((o) => (
@@ -165,9 +165,9 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
                   <option value="public">{t('visPublic')}</option>
                 </select>
               </div>
-              <button type="submit" className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+              <SubmitButton className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
                 {t('save')}
-              </button>
+              </SubmitButton>
             </div>
             <dl className="mt-4 space-y-1.5 border-t border-surface-border pt-3 text-xs text-slate-500">
               <div className="flex justify-between"><dt>{t('origin')}</dt><dd className="text-slate-300">{d.origin?.full_name ?? '—'}</dd></div>

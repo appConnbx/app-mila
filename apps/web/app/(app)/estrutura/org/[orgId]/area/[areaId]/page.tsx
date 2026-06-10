@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { createTeam } from '../../../../actions'
 import { Breadcrumb, Card, ScopeAdmins, StructureSettings, StatusBadge, inputCls, btnCls } from '../../../../_components'
+import { SubmitButton } from '@/components/pending'
 
 type Named = { id: string; name: string; is_active: boolean }
 type Person = { id: string; full_name: string }
@@ -81,7 +82,7 @@ export default async function AreaPage({ params }: { params: Promise<{ orgId: st
           <form action={createTeam} className="flex gap-2">
             <input type="hidden" name="area_id" value={areaId} />
             <input name="name" placeholder={t('newTeam')} required className={inputCls} />
-            <button type="submit" className={btnCls}>{t('add')}</button>
+            <SubmitButton className={btnCls}>{t('add')}</SubmitButton>
           </form>
         </Card>
       </div>

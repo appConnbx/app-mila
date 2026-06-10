@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Avatar, Badge, Button, fieldClasses, labelClasses } from '@/components/ui'
 import { ConfirmButton } from '@/components/confirm-button'
+import { SubmitButton } from '@/components/pending'
 import {
   updatePerson,
   setHoldingAdmin,
@@ -203,7 +204,7 @@ export function UsersManager({ users, flash }: { users: HoldingUser[]; flash?: {
                 <input type="checkbox" name="can_delegate" defaultChecked={open.can_delegate} className="h-4 w-4 rounded border-white/20 bg-slate-900" />
                 {t('canDelegate')}
               </label>
-              <Button type="submit" className="w-full">{t('saveChanges')}</Button>
+              <SubmitButton btnVariant="primary" className="w-full">{t('saveChanges')}</SubmitButton>
             </form>
 
             {/* Permissão / status / senha */}
@@ -211,16 +212,16 @@ export function UsersManager({ users, flash }: { users: HoldingUser[]; flash?: {
               <form action={setHoldingAdmin}>
                 <input type="hidden" name="person_id" value={open.id} />
                 <input type="hidden" name="make" value={open.is_admin ? '0' : '1'} />
-                <Button type="submit" variant="ghost" size="sm" className="w-full justify-start">
+                <SubmitButton btnVariant="ghost" btnSize="sm" className="w-full justify-start">
                   {open.is_admin ? t('removeAdminRole') : t('makeAdmin')}
-                </Button>
+                </SubmitButton>
               </form>
               <form action={setPersonActive}>
                 <input type="hidden" name="id" value={open.id} />
                 <input type="hidden" name="active" value={open.is_active ? '0' : '1'} />
-                <Button type="submit" variant="ghost" size="sm" className="w-full justify-start">
+                <SubmitButton btnVariant="ghost" btnSize="sm" className="w-full justify-start">
                   {open.is_active ? t('deactivate') : t('activate')}
-                </Button>
+                </SubmitButton>
               </form>
             </div>
 
@@ -242,9 +243,9 @@ export function UsersManager({ users, flash }: { users: HoldingUser[]; flash?: {
                       {t('generate')}
                     </button>
                   </div>
-                  <Button type="submit" variant="ghost" size="sm" className="w-full justify-start" disabled={pw.length < 4}>
+                  <SubmitButton btnVariant="ghost" btnSize="sm" className="w-full justify-start" disabled={pw.length < 4}>
                     🔑 {t('setPasswordBtn')}
-                  </Button>
+                  </SubmitButton>
                   <p className="text-xs text-slate-500">{t('setPasswordHint')}</p>
                 </>
               ) : (
