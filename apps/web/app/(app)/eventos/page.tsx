@@ -1,28 +1,28 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Badge, ProgressBar } from '@/components/ui'
-import { openEvent, closeEvent } from './actions'
+import { SubmitButton } from '@/components/pending'
+import { createEvent } from './actions'
 
 type EventRow = {
   id: string
   name: string
   status: 'aberto' | 'fechado'
-  type: string
   event_date: string | null
-  opened_at: string
+  owner_id: string
+  owner: { full_name: string } | null
 }
 type DemandLite = { event_id: string | null; status: string }
-
-const EVENT_TYPES = ['reuniao', 'ata', 'comite', 'follow_up', 'alinhamento', 'plano_acao', 'diagnostico', 'outro'] as const
 
 const inputCls =
   'w-full rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand'
 
 export default async function EventosPage() {
   const t = await getTranslations('events')
+  const locale = await getLocale()
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
   if (!holdingId) redirect('/dashboard')
@@ -36,31 +36,75 @@ export default async function EventosPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
-  // Pessoa atual + sessão ativa
   const { data: meData } = await supabase
     .from('people')
-    .select('id, active_event_id')
+    .select('id')
     .eq('auth_user_id', user?.id ?? '')
     .eq('holding_id', holdingId)
     .limit(1)
-  const me = (meData as unknown as { id: string; active_event_id: string | null }[] | null)?.[0]
+  const me = (meData as unknown as { id: string }[] | null)?.[0]?.id
 
-  const [eventsRes, demandsRes] = await Promise.all([
-    supabase.from('events').select('id, name, status, type, event_date, opened_at').order('opened_at', { ascending: false }),
+  const [eventsRes, demandsRes, partsRes] = await Promise.all([
+    supabase
+      .from('events')
+      .select('id, name, status, event_date, owner_id, owner:owner_id(full_name)')
+      .order('event_date', { ascending: false, nullsFirst: false })
+      .order('opened_at', { ascending: false }),
     supabase.from('demands').select('event_id, status'),
+    supabase.from('event_participants').select('event_id').eq('person_id', me ?? ''),
   ])
-  const events = (eventsRes.data ?? []) as unknown as EventRow[]
+  const allEvents = (eventsRes.data ?? []) as unknown as EventRow[]
   const demands = (demandsRes.data ?? []) as unknown as DemandLite[]
+  const myParticipations = new Set(
+    ((partsRes.data ?? []) as unknown as { event_id: string }[]).map((p) => p.event_id),
+  )
+
+  // Só eventos que EU criei ou de que participo.
+  const events = allEvents.filter((e) => e.owner_id === me || myParticipations.has(e.id))
 
   const stats = (eventId: string) => {
     const ds = demands.filter((d) => d.event_id === eventId)
     const total = ds.length
     const done = ds.filter((d) => d.status === 'finalizada').length
-    return { total, done, pct: total ? Math.round((done / total) * 100) : 0 }
+    const pending = total - done
+    return { total, done, pending, pct: total ? Math.round((done / total) * 100) : 0 }
   }
+  // Finalizado de vez = fechado E sem atividades pendentes.
+  const isFinished = (e: EventRow) => e.status === 'fechado' && stats(e.id).pending === 0
+  const active = events.filter((e) => !isFinished(e))
+  const finished = events.filter((e) => isFinished(e))
 
-  const activeEvent = me?.active_event_id ? events.find((e) => e.id === me.active_event_id) : undefined
+  const fmtDate = (iso: string | null) => (iso ? new Date(iso + 'T00:00:00').toLocaleDateString(locale) : null)
+
+  const card = (e: EventRow) => {
+    const s = stats(e.id)
+    const finishedNow = isFinished(e)
+    const date = fmtDate(e.event_date)
+    return (
+      <Link key={e.id} href={`/eventos/${e.id}`} className="glass block p-5 transition hover:border-brand/40">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold text-white">{e.name}</h3>
+            {finishedNow ? (
+              <Badge variant="success">{t('statusFinished')}</Badge>
+            ) : e.status === 'fechado' ? (
+              <Badge variant="info">{t('statusClosedPending')}</Badge>
+            ) : (
+              <Badge variant="warning">{t('statusActive')}</Badge>
+            )}
+          </div>
+          <span className="text-xs text-slate-500">
+            {date ? `${date} · ` : ''}
+            {t('owner')}: {e.owner?.full_name ?? '—'}
+          </span>
+        </div>
+        <div className="mt-3 flex items-center gap-3">
+          <ProgressBar value={s.pct} className="flex-1" />
+          <span className="text-xs text-slate-400">{s.pct}% {t('completion')} · {s.done}/{s.total}</span>
+        </div>
+      </Link>
+    )
+  }
 
   return (
     <div>
@@ -71,72 +115,41 @@ export default async function EventosPage() {
         </div>
       </div>
 
-      {/* Sessão ativa */}
+      {/* Novo evento */}
       <div className="mt-6 rounded-2xl border border-brand/30 bg-brand/[0.06] p-5">
-        {activeEvent ? (
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-brand">{t('activeSession')}</p>
-              <p className="mt-1 text-lg font-semibold text-white">{activeEvent.name}</p>
-              <p className="text-xs text-slate-400">{t('activeHint')}</p>
-            </div>
-            <form action={closeEvent}>
-              <input type="hidden" name="id" value={activeEvent.id} />
-              <button type="submit" className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-                {t('close')}
-              </button>
-            </form>
-          </div>
-        ) : (
-          <div>
-            <p className="text-sm text-slate-300">{t('noActive')}</p>
-            <form action={openEvent} className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <input name="name" required placeholder={t('namePlaceholder')} className={inputCls} />
-              <select name="type" defaultValue="follow_up" className={`${inputCls} sm:max-w-[180px]`}>
-                {EVENT_TYPES.map((ty) => (
-                  <option key={ty} value={ty}>{t(`types.${ty}`)}</option>
-                ))}
-              </select>
-              <button type="submit" className="shrink-0 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-                {t('open')}
-              </button>
-            </form>
-          </div>
-        )}
+        <p className="text-sm font-medium text-white">{t('newEvent')}</p>
+        <form action={createEvent} className="mt-3 flex flex-col gap-2 sm:flex-row">
+          <input name="name" required placeholder={t('namePlaceholder')} className={inputCls} />
+          <input
+            name="event_date"
+            type="date"
+            aria-label={t('eventDateOptional')}
+            className={`${inputCls} sm:max-w-[200px]`}
+          />
+          <SubmitButton className="shrink-0 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+            {t('create')}
+          </SubmitButton>
+        </form>
       </div>
 
-      {/* Lista de eventos */}
-      <div className="mt-6 space-y-3">
-        {events.map((e) => {
-          const s = stats(e.id)
-          return (
-            <Link
-              key={e.id}
-              href={`/eventos/${e.id}`}
-              className="glass block p-5 transition hover:border-brand/40"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-white">{e.name}</h3>
-                  <Badge variant={e.status === 'aberto' ? 'warning' : 'neutral'}>
-                    {e.status === 'aberto' ? t('statusOpen') : t('statusClosed')}
-                  </Badge>
-                </div>
-                <span className="text-xs text-slate-500">{t(`types.${e.type}`)}</span>
-              </div>
-              <div className="mt-3 flex items-center gap-3">
-                <ProgressBar value={s.pct} className="flex-1" />
-                <span className="text-xs text-slate-400">{s.pct}% {t('completion')} · {s.done}/{s.total}</span>
-              </div>
-            </Link>
-          )
-        })}
-        {events.length === 0 && (
-          <div className="glass px-5 py-10 text-center text-sm text-slate-500">
-            {t('empty')}
-          </div>
-        )}
+      {/* Ativos */}
+      <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        {t('sectionActive')} ({active.length})
+      </h2>
+      <div className="mt-3 space-y-3">
+        {active.map(card)}
+        {active.length === 0 && <div className="glass px-5 py-8 text-center text-sm text-slate-500">{t('empty')}</div>}
       </div>
+
+      {/* Finalizados */}
+      {finished.length > 0 && (
+        <>
+          <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide text-slate-400">
+            {t('sectionFinished')} ({finished.length})
+          </h2>
+          <div className="mt-3 space-y-3">{finished.map(card)}</div>
+        </>
+      )}
     </div>
   )
 }

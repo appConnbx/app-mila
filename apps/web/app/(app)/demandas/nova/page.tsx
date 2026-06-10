@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+import { SubmitButton } from '@/components/pending'
 import { createDemand } from '../actions'
 
 type Person = { id: string; full_name: string }
@@ -59,7 +60,7 @@ export default async function NovaDemandaPage({
       >
         <div>
           <label htmlFor="title" className={labelCls}>{t('demand')}</label>
-          <input id="title" name="title" required placeholder={t('demandPlaceholder')} className={inputCls} />
+          <input id="title" name="title" required placeholder={isFamily ? t('demandPlaceholderFamily') : t('demandPlaceholder')} className={inputCls} />
         </div>
 
         <div>
@@ -85,18 +86,20 @@ export default async function NovaDemandaPage({
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className={isFamily ? '' : 'grid gap-4 sm:grid-cols-2'}>
           <div>
             <label htmlFor="due_date" className={labelCls}>{t('due')}</label>
             <input id="due_date" name="due_date" type="date" className={inputCls} />
           </div>
-          <div>
-            <label htmlFor="event_id" className={labelCls}>{t('event')}</label>
-            <select id="event_id" name="event_id" defaultValue="" className={inputCls}>
-              <option value="">{t('eventNone')}</option>
-              {events.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}
-            </select>
-          </div>
+          {!isFamily && (
+            <div>
+              <label htmlFor="event_id" className={labelCls}>{t('event')}</label>
+              <select id="event_id" name="event_id" defaultValue="" className={inputCls}>
+                <option value="">{t('eventNone')}</option>
+                {events.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}
+              </select>
+            </div>
+          )}
         </div>
 
         <div>
@@ -112,9 +115,9 @@ export default async function NovaDemandaPage({
           <Link href="/demandas" className="rounded-lg border border-surface-border px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
             {t('cancel')}
           </Link>
-          <button type="submit" className="rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+          <SubmitButton className="rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
             {t('submit')}
-          </button>
+          </SubmitButton>
         </div>
       </form>
     </div>

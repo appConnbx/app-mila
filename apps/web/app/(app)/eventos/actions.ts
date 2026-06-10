@@ -2,7 +2,9 @@
 
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+import { generateTags } from '@/lib/auto-tags'
 
 async function ctx() {
   const c = await cookies()
@@ -33,41 +35,89 @@ function revalidate(eventId?: string) {
   if (eventId) revalidatePath(`/eventos/${eventId}`)
 }
 
-/** Abre uma sessão de evento e a torna a sessão ativa da pessoa
- *  (novas demandas se vinculam automaticamente — trigger before_demand_insert). */
-export async function openEvent(formData: FormData) {
+/** Cria um evento-contêiner. Quem cria é o administrador (owner). Data opcional. */
+export async function createEvent(formData: FormData) {
   const { supabase, holdingId, me, orgId } = await ctx()
   const name = String(formData.get('name') ?? '').trim()
-  const type = String(formData.get('type') ?? 'outro')
+  const event_date = String(formData.get('event_date') ?? '') || null
   if (!holdingId || !me || !orgId || !name) return
 
   const { data: ev } = await supabase
     .from('events')
-    .insert({ holding_id: holdingId, organization_id: orgId, owner_id: me, name, type, status: 'aberto' } as never)
+    .insert({ holding_id: holdingId, organization_id: orgId, owner_id: me, name, event_date, status: 'aberto' } as never)
     .select('id')
     .single()
   const eventId = (ev as unknown as { id: string } | null)?.id
-  if (eventId) {
-    await supabase.from('people').update({ active_event_id: eventId } as never).eq('id', me)
-  }
   revalidate(eventId)
+  if (eventId) redirect(`/eventos/${eventId}`)
 }
 
-/** Encerra a sessão (fecha o evento e limpa a sessão ativa da pessoa). */
-export async function closeEvent(formData: FormData) {
-  const { supabase, me } = await ctx()
+/** Finaliza o evento (ação do administrador): não aceita mais novas atividades.
+ *  As atividades pendentes continuam aparecendo para o responsável concluir. */
+export async function finalizeEvent(formData: FormData) {
+  const { supabase } = await ctx()
   const id = String(formData.get('id') ?? '')
   if (!id) return
+  // RLS (events_update) garante que só o dono/overseer consegue.
   await supabase
     .from('events')
     .update({ status: 'fechado', closed_at: new Date().toISOString() } as never)
     .eq('id', id)
-  if (me) {
-    await supabase
-      .from('people')
-      .update({ active_event_id: null } as never)
-      .eq('id', me)
-      .eq('active_event_id', id)
-  }
   revalidate(id)
+}
+
+/** Adiciona um participante (qualquer pessoa da holding). Só o dono gerencia (RLS). */
+export async function addParticipant(formData: FormData) {
+  const { supabase, holdingId } = await ctx()
+  const event_id = String(formData.get('event_id') ?? '')
+  const person_id = String(formData.get('person_id') ?? '')
+  if (!holdingId || !event_id || !person_id) return
+  await supabase
+    .from('event_participants')
+    .insert({ holding_id: holdingId, event_id, person_id } as never)
+  revalidate(event_id)
+}
+
+/** Remove um participante do evento (não apaga as atividades dele). */
+export async function removeParticipant(formData: FormData) {
+  const { supabase } = await ctx()
+  const id = String(formData.get('id') ?? '')
+  const event_id = String(formData.get('event_id') ?? '')
+  if (!id) return
+  await supabase.from('event_participants').delete().eq('id', id)
+  revalidate(event_id || undefined)
+}
+
+/** Cria uma atividade (demanda) dentro do evento. Responsável entre os participantes/dono.
+ *  Permitido enquanto o evento está aberto, para o dono ou participantes (RLS reforça). */
+export async function addEventDemand(formData: FormData) {
+  const { supabase, holdingId, me } = await ctx()
+  const event_id = String(formData.get('event_id') ?? '')
+  const title = String(formData.get('title') ?? '').trim()
+  const responsible_id = String(formData.get('responsible_id') ?? '')
+  const priority = String(formData.get('priority') ?? 'media')
+  const due_date = String(formData.get('due_date') ?? '') || null
+  const description = String(formData.get('description') ?? '').trim() || null
+  if (!holdingId || !me || !event_id || !title || !responsible_id) {
+    if (event_id) redirect(`/eventos/${event_id}?error=activity`)
+    return
+  }
+
+  const tags = generateTags(title, description, priority)
+  const { error } = await supabase.from('demands').insert({
+    holding_id: holdingId,
+    title,
+    description,
+    responsible_id,
+    origin_id: me,
+    priority,
+    due_date,
+    event_id,
+    tags,
+    visibility: 'private',
+    channel: 'web',
+  } as never)
+
+  if (error) redirect(`/eventos/${event_id}?error=activity`)
+  revalidate(event_id)
 }
