@@ -8,8 +8,7 @@
 | 3 | Banco de dados (schema + RLS + seed) | **Entregue p/ validação** (`supabase/migrations/`) |
 | 2 | Protótipos de tela | Pendente (pode rodar em paralelo) |
 | 4 | Interface web (cadastros + gestão) | Pendente |
-| 5 | Input de demandas por WhatsApp (texto → áudio) | Pendente |
-| 6 | App mobile Android/iOS | Pendente |
+| 6 | App mobile Android/iOS (inclui captura de demandas por texto e áudio) | Pendente |
 | 7 | Evolução SaaS: webhook Hotmart (provisionar/suspender), onboarding self-service, monitoramento | Banco pronto; código pendente |
 | 8 | Portal do Negócio CONNBX (`apps/admin`): métricas globais, engajamento, impersonação de suporte | Banco pronto (platform_admins); código pendente |
 
