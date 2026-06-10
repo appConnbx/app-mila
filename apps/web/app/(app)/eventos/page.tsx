@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
-import { Badge, ProgressBar } from '@/components/ui'
+import { Badge, ProgressBar, EmptyState } from '@/components/ui'
 import { SubmitButton } from '@/components/pending'
 import { createEvent } from './actions'
 
@@ -20,9 +20,12 @@ type DemandLite = { event_id: string | null; status: string }
 const inputCls =
   'w-full rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand'
 
-export default async function EventosPage() {
+export default async function EventosPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
   const t = await getTranslations('events')
   const locale = await getLocale()
+  const { view } = await searchParams
+  const showFinished = view === 'finalizados'
+
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
   if (!holdingId) redirect('/dashboard')
@@ -69,10 +72,11 @@ export default async function EventosPage() {
     const pending = total - done
     return { total, done, pending, pct: total ? Math.round((done / total) * 100) : 0 }
   }
-  // Finalizado de vez = fechado E sem atividades pendentes.
+  // Finalizado = fechado E sem atividades pendentes. Ativo = o resto.
   const isFinished = (e: EventRow) => e.status === 'fechado' && stats(e.id).pending === 0
   const active = events.filter((e) => !isFinished(e))
   const finished = events.filter((e) => isFinished(e))
+  const list = showFinished ? finished : active
 
   const fmtDate = (iso: string | null) => (iso ? new Date(iso + 'T00:00:00').toLocaleDateString(locale) : null)
 
@@ -132,24 +136,30 @@ export default async function EventosPage() {
         </form>
       </div>
 
-      {/* Ativos */}
-      <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide text-slate-400">
-        {t('sectionActive')} ({active.length})
-      </h2>
-      <div className="mt-3 space-y-3">
-        {active.map(card)}
-        {active.length === 0 && <div className="glass px-5 py-8 text-center text-sm text-slate-500">{t('empty')}</div>}
+      {/* Filtro: Ativos / Finalizados (mesmo padrão das demandas) */}
+      <div className="mt-6 inline-flex rounded-lg border border-white/10 bg-white/[0.03] p-1">
+        <Link
+          href="/eventos"
+          className={`rounded-md px-3 py-1 text-sm transition ${!showFinished ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}
+        >
+          {t('sectionActive')} ({active.length})
+        </Link>
+        <Link
+          href="/eventos?view=finalizados"
+          className={`rounded-md px-3 py-1 text-sm transition ${showFinished ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}
+        >
+          {t('sectionFinished')} ({finished.length})
+        </Link>
       </div>
 
-      {/* Finalizados */}
-      {finished.length > 0 && (
-        <>
-          <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide text-slate-400">
-            {t('sectionFinished')} ({finished.length})
-          </h2>
-          <div className="mt-3 space-y-3">{finished.map(card)}</div>
-        </>
-      )}
+      <div className="mt-4 space-y-3">
+        {list.map(card)}
+        {list.length === 0 && (
+          <div className="glass p-10 text-center">
+            <EmptyState>{showFinished ? t('emptyFinished') : t('empty')}</EmptyState>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

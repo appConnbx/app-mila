@@ -8,6 +8,7 @@ import { SubmitButton } from '@/components/pending'
 import { finalizeEvent, addParticipant, removeParticipant, addEventDemand } from '../actions'
 
 const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
+const STATUS_RANK = { nova: 0, trabalhando: 0, finalizada: 1 } as const
 
 type EventFull = {
   id: string
@@ -23,6 +24,7 @@ type DemandRow = {
   id: string
   title: string
   status: 'nova' | 'trabalhando' | 'finalizada'
+  created_at: string
   responsible: { full_name: string } | null
 }
 type Participant = { id: string; person_id: string; person: { full_name: string } | null }
@@ -37,10 +39,11 @@ export default async function EventDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; tab?: string }>
 }) {
   const { id } = await params
-  const { error } = await searchParams
+  const { error, tab: tabRaw } = await searchParams
+  const tab = tabRaw === 'participantes' ? 'participantes' : 'demandas'
   const t = await getTranslations('events')
   const td = await getTranslations('demands')
   const tn = await getTranslations('newDemand')
@@ -73,7 +76,7 @@ export default async function EventDetailPage({
   const [demandsRes, partsRes, peopleRes] = await Promise.all([
     supabase
       .from('demands')
-      .select('id, title, status, responsible:responsible_id(full_name)')
+      .select('id, title, status, created_at, responsible:responsible_id(full_name)')
       .eq('event_id', id)
       .order('created_at', { ascending: false }),
     supabase
@@ -82,9 +85,12 @@ export default async function EventDetailPage({
       .eq('event_id', id),
     supabase.from('people').select('id, full_name').eq('is_active', true).order('full_name'),
   ])
-  const demands = (demandsRes.data ?? []) as unknown as DemandRow[]
+  const demandsRaw = (demandsRes.data ?? []) as unknown as DemandRow[]
   const participants = (partsRes.data ?? []) as unknown as Participant[]
   const allPeople = (peopleRes.data ?? []) as unknown as Person[]
+
+  // Pendentes primeiro, depois concluídas (cada grupo já vem por created_at desc).
+  const demands = [...demandsRaw].sort((a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status])
 
   const amOwner = ev.owner_id === me
   const amMember = amOwner || participants.some((p) => p.person_id === me)
@@ -96,10 +102,8 @@ export default async function EventDetailPage({
   const pct = total ? Math.round((done / total) * 100) : 0
   const finishedForGood = ev.status === 'fechado' && pending === 0
 
-  // Pessoas que podem virar participantes: ativas, não-dono, ainda não participantes.
   const participantPersonIds = new Set([ev.owner_id, ...participants.map((p) => p.person_id)])
   const addable = allPeople.filter((p) => !participantPersonIds.has(p.id))
-  // Responsáveis possíveis numa atividade: dono + participantes.
   const responsibles: Person[] = [
     { id: ev.owner_id, full_name: ev.owner?.full_name ?? '—' },
     ...participants.map((p) => ({ id: p.person_id, full_name: p.person?.full_name ?? '—' })),
@@ -111,6 +115,7 @@ export default async function EventDetailPage({
     const dt = new Date(iso)
     return `${dt.toLocaleDateString(locale)} ${dt.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`
   }
+  const tabHref = (tb: 'demandas' | 'participantes') => (tb === 'demandas' ? `/eventos/${ev.id}` : `/eventos/${ev.id}?tab=participantes`)
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -148,110 +153,128 @@ export default async function EventDetailPage({
           <div><dt>{t('opened')}</dt><dd className="text-slate-300">{fmtDateTime(ev.opened_at)}</dd></div>
           <div><dt>{t('closed')}</dt><dd className="text-slate-300">{fmtDateTime(ev.closed_at)}</dd></div>
         </dl>
+        {amOwner && isOpen && <p className="mt-3 text-xs text-slate-500">{t('closeHint')}</p>}
       </div>
 
-      {/* Participantes */}
-      <h2 className="mt-6 text-lg font-semibold text-white">{t('participants')} ({participants.length})</h2>
-      <div className="mt-3 glass p-5">
-        <ul className="space-y-2">
-          {participants.map((p) => (
-            <li key={p.id} className="flex items-center justify-between gap-2 rounded-lg bg-slate-900/40 px-3 py-2">
-              <span className="flex items-center gap-2 text-sm text-slate-100">
-                <Avatar name={p.person?.full_name ?? '—'} size="sm" />
-                {p.person?.full_name ?? '—'}
-              </span>
-              {amOwner && (
-                <form action={removeParticipant}>
-                  <input type="hidden" name="id" value={p.id} />
-                  <input type="hidden" name="event_id" value={ev.id} />
-                  <SubmitButton className="text-xs text-slate-500 transition hover:text-red-400">
-                    {t('removeParticipant')}
-                  </SubmitButton>
-                </form>
-              )}
-            </li>
-          ))}
-          {participants.length === 0 && <li className="text-sm text-slate-500">{t('noParticipants')}</li>}
-        </ul>
-        {amOwner && addable.length > 0 && (
-          <form action={addParticipant} className="mt-3 flex gap-2 border-t border-surface-border pt-4">
-            <input type="hidden" name="event_id" value={ev.id} />
-            <select name="person_id" required defaultValue="" className={inputCls}>
-              <option value="" disabled>{t('selectPerson')}</option>
-              {addable.map((p) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
-            </select>
-            <SubmitButton className="shrink-0 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-              {t('addParticipant')}
-            </SubmitButton>
-          </form>
-        )}
+      {/* Abas: Demandas (prioridade) e Participantes */}
+      <div className="mt-6 inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
+        <Link
+          href={tabHref('demandas')}
+          className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${tab === 'demandas' ? 'bg-brand/15 text-brand' : 'text-slate-400 hover:text-white'}`}
+        >
+          {t('activities')} <span className="opacity-60">{pending}/{total}</span>
+        </Link>
+        <Link
+          href={tabHref('participantes')}
+          className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${tab === 'participantes' ? 'bg-brand/15 text-brand' : 'text-slate-400 hover:text-white'}`}
+        >
+          {t('participants')} <span className="opacity-60">{participants.length}</span>
+        </Link>
       </div>
 
-      {/* Atividades */}
-      <h2 className="mt-6 text-lg font-semibold text-white">{t('activities')} ({total})</h2>
-      {error === 'activity' && (
-        <div className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-          {tn('createError')}
+      {tab === 'demandas' ? (
+        <div className="mt-4">
+          {error === 'activity' && (
+            <div className="mb-3 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {tn('createError')}
+            </div>
+          )}
+
+          {/* Nova atividade — só com evento aberto e sendo membro */}
+          {isOpen && amMember && (
+            <form action={addEventDemand} className="glass space-y-3 p-5">
+              <input type="hidden" name="event_id" value={ev.id} />
+              <div>
+                <label htmlFor="title" className={labelCls}>{t('activityTitle')}</label>
+                <input id="title" name="title" required placeholder={tn('demandPlaceholder')} className={`mt-1 ${inputCls}`} />
+              </div>
+              <div>
+                <label htmlFor="description" className={labelCls}>{tn('description')}</label>
+                <textarea id="description" name="description" rows={2} className={`mt-1 ${inputCls}`} />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div>
+                  <label htmlFor="responsible_id" className={labelCls}>{tn('responsible')}</label>
+                  <select id="responsible_id" name="responsible_id" required defaultValue="" className={`mt-1 ${inputCls}`}>
+                    <option value="" disabled>{tn('selectPlaceholder')}</option>
+                    {responsibles.map((p) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="priority" className={labelCls}>{tn('priority')}</label>
+                  <select id="priority" name="priority" defaultValue="media" className={`mt-1 ${inputCls}`}>
+                    <option value="baixa">{tn('priorityLow')}</option>
+                    <option value="media">{tn('priorityMedium')}</option>
+                    <option value="alta">{tn('priorityHigh')}</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="due_date" className={labelCls}>{tn('due')}</label>
+                  <input id="due_date" name="due_date" type="date" className={`mt-1 ${inputCls}`} />
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <SubmitButton className="rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+                  {t('addActivity')}
+                </SubmitButton>
+              </div>
+            </form>
+          )}
+
+          <div className="mt-3 glass overflow-hidden p-0">
+            {demands.map((d) => (
+              <Link
+                key={d.id}
+                href={`/demandas/${d.id}`}
+                className="flex items-center justify-between gap-2 border-b border-surface-border/60 px-5 py-3 text-sm last:border-0 transition hover:bg-slate-800/30"
+              >
+                <span className="font-medium text-slate-100">{d.title}</span>
+                <span className="flex items-center gap-3">
+                  <span className="text-slate-400">{d.responsible?.full_name ?? '—'}</span>
+                  <Badge variant={STATUS_VARIANT[d.status]}>{td(`status.${d.status}`)}</Badge>
+                </span>
+              </Link>
+            ))}
+            {demands.length === 0 && <EmptyState>{t('noDemands')}</EmptyState>}
+          </div>
+        </div>
+      ) : (
+        <div className="mt-4 glass p-5">
+          <ul className="space-y-2">
+            {participants.map((p) => (
+              <li key={p.id} className="flex items-center justify-between gap-2 rounded-lg bg-slate-900/40 px-3 py-2">
+                <span className="flex items-center gap-2 text-sm text-slate-100">
+                  <Avatar name={p.person?.full_name ?? '—'} size="sm" />
+                  {p.person?.full_name ?? '—'}
+                </span>
+                {amOwner && (
+                  <form action={removeParticipant}>
+                    <input type="hidden" name="id" value={p.id} />
+                    <input type="hidden" name="event_id" value={ev.id} />
+                    <SubmitButton className="text-xs text-slate-500 transition hover:text-red-400">
+                      {t('removeParticipant')}
+                    </SubmitButton>
+                  </form>
+                )}
+              </li>
+            ))}
+            {participants.length === 0 && <li className="text-sm text-slate-500">{t('noParticipants')}</li>}
+          </ul>
+          {amOwner && addable.length > 0 && (
+            <form action={addParticipant} className="mt-3 flex gap-2 border-t border-surface-border pt-4">
+              <input type="hidden" name="event_id" value={ev.id} />
+              <select name="person_id" required defaultValue="" className={inputCls}>
+                <option value="" disabled>{t('selectPerson')}</option>
+                {addable.map((p) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
+              </select>
+              <SubmitButton className="shrink-0 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+                {t('addParticipant')}
+              </SubmitButton>
+            </form>
+          )}
+          {!amOwner && <p className="mt-3 text-xs text-slate-500">{t('onlyOwnerManages')}</p>}
         </div>
       )}
-
-      {/* Form de nova atividade — só com evento aberto e sendo membro */}
-      {isOpen && amMember && (
-        <form action={addEventDemand} className="mt-3 glass space-y-3 p-5">
-          <input type="hidden" name="event_id" value={ev.id} />
-          <div>
-            <label htmlFor="title" className={labelCls}>{t('activityTitle')}</label>
-            <input id="title" name="title" required placeholder={tn('demandPlaceholder')} className={`mt-1 ${inputCls}`} />
-          </div>
-          <div>
-            <label htmlFor="description" className={labelCls}>{tn('description')}</label>
-            <textarea id="description" name="description" rows={2} className={`mt-1 ${inputCls}`} />
-          </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div>
-              <label htmlFor="responsible_id" className={labelCls}>{tn('responsible')}</label>
-              <select id="responsible_id" name="responsible_id" required defaultValue="" className={`mt-1 ${inputCls}`}>
-                <option value="" disabled>{tn('selectPlaceholder')}</option>
-                {responsibles.map((p) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="priority" className={labelCls}>{tn('priority')}</label>
-              <select id="priority" name="priority" defaultValue="media" className={`mt-1 ${inputCls}`}>
-                <option value="baixa">{tn('priorityLow')}</option>
-                <option value="media">{tn('priorityMedium')}</option>
-                <option value="alta">{tn('priorityHigh')}</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="due_date" className={labelCls}>{tn('due')}</label>
-              <input id="due_date" name="due_date" type="date" className={`mt-1 ${inputCls}`} />
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <SubmitButton className="rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-              {t('addActivity')}
-            </SubmitButton>
-          </div>
-        </form>
-      )}
-
-      <div className="mt-3 glass overflow-hidden p-0">
-        {demands.map((d) => (
-          <Link
-            key={d.id}
-            href={`/demandas/${d.id}`}
-            className="flex items-center justify-between gap-2 border-b border-surface-border/60 px-5 py-3 text-sm last:border-0 transition hover:bg-slate-800/30"
-          >
-            <span className="font-medium text-slate-100">{d.title}</span>
-            <span className="flex items-center gap-3">
-              <span className="text-slate-400">{d.responsible?.full_name ?? '—'}</span>
-              <Badge variant={STATUS_VARIANT[d.status]}>{td(`status.${d.status}`)}</Badge>
-            </span>
-          </Link>
-        ))}
-        {demands.length === 0 && <EmptyState>{t('noDemands')}</EmptyState>}
-      </div>
     </div>
   )
 }
