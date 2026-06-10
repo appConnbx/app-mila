@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { enterInstance } from './actions'
 import { computeStreak, type DailyPoint } from '@/lib/streak'
+import { Avatar, Button } from '@/components/ui'
 
 type Instance = {
   holding_id: string
@@ -42,6 +43,18 @@ export default async function DashboardPage() {
   const overview = (ovRes.data ?? { counts: { pending: 0, working: 0, overdue: 0, done: 0 }, daily: [] }) as Overview
   const instances = (instRes.data ?? []) as Instance[]
 
+  // Perfil (para o cabeçalho da home)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const [profRes, persRes] = await Promise.all([
+    supabase.from('profiles').select('avatar_url, phone, skills, headline').eq('auth_user_id', user?.id ?? '').maybeSingle(),
+    supabase.from('people').select('full_name').eq('auth_user_id', user?.id ?? '').limit(1),
+  ])
+  const prof = profRes.data as unknown as { avatar_url: string | null; phone: string | null; skills: string[] | null; headline: string | null } | null
+  const myName = (persRes.data as unknown as { full_name: string }[] | null)?.[0]?.full_name ?? user?.email?.split('@')[0] ?? 'Você'
+  const profileIncomplete = !prof?.avatar_url || !prof?.phone || !(prof?.skills?.length)
+
   const c = overview.counts
   const daily = overview.daily ?? []
   const streak = computeStreak(daily)
@@ -51,6 +64,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      {/* ---------- Perfil (em destaque) ---------- */}
+      <div className="glass glow-top flex flex-wrap items-center gap-4 p-5">
+        <Avatar name={myName} src={prof?.avatar_url} size="lg" />
+        <div className="min-w-0 flex-1">
+          <p className="text-lg font-semibold text-white">{myName}</p>
+          <p className="truncate text-sm text-slate-400">{prof?.headline || t('profileSubtitle')}</p>
+          {profileIncomplete && <p className="mt-1 text-xs text-amber-400">{t('profileNudge')}</p>}
+        </div>
+        <Button href="/perfil" variant={profileIncomplete ? 'primary' : 'secondary'} size="sm">{t('editProfile')}</Button>
+      </div>
+
       {/* ---------- Dashboard pessoal ---------- */}
       <section>
         <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>

@@ -39,7 +39,10 @@
     "completionsTitle": "Finalizaciones por día (14 días)",
     "noData": "Sin datos aún.",
     "streakLabel": "días de racha",
-    "streakHint": "Completa algo cada día hábil para mantener la racha."
+    "streakHint": "Completa algo cada día hábil para mantener la racha.",
+    "editProfile": "Editar perfil",
+    "profileSubtitle": "Completa tu perfil: foto, celular y habilidades.",
+    "profileNudge": "Tu perfil está incompleto — agrega foto, celular y habilidades."
   },
   "panel": {
     "title": "Panel",

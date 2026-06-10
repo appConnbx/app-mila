@@ -39,7 +39,10 @@
     "completionsTitle": "Conclusões por dia (14 dias)",
     "noData": "Sem dados ainda.",
     "streakLabel": "dias de chama",
-    "streakHint": "Conclua algo a cada dia útil para manter a chama acesa."
+    "streakHint": "Conclua algo a cada dia útil para manter a chama acesa.",
+    "editProfile": "Editar perfil",
+    "profileSubtitle": "Complete seu perfil: foto, celular e habilidades.",
+    "profileNudge": "Seu perfil está incompleto — adicione foto, celular e habilidades."
   },
   "panel": {
     "title": "Painel",

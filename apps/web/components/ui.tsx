@@ -106,8 +106,12 @@ function gradientFor(name: string) {
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0
   return AV_GRADIENTS[h % AV_GRADIENTS.length]
 }
-export function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' | 'lg' }) {
+export function Avatar({ name, size = 'md', src }: { name: string; size?: 'sm' | 'md' | 'lg'; src?: string | null }) {
   const sizes = { sm: 'h-9 w-9 text-xs rounded-lg', md: 'h-11 w-11 text-sm rounded-xl', lg: 'h-12 w-12 text-base rounded-xl' }
+  if (src) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src} alt={name} className={cn('shrink-0 object-cover', sizes[size])} />
+  }
   return (
     <span
       className={cn(

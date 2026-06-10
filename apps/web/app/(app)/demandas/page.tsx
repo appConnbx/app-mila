@@ -17,7 +17,7 @@ type Demand = {
   visibility: 'private' | 'public'
   responsible_id: string
   origin_id: string
-  responsible: { full_name: string } | null
+  responsible: { full_name: string; auth_user_id: string | null } | null
   event: { name: string } | null
 }
 
@@ -63,10 +63,20 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
 
   const { data, error } = await supabase
     .from('demands')
-    .select('id, title, description, status, priority, due_date, created_at, tags, visibility, responsible_id, origin_id, responsible:responsible_id(full_name), event:event_id(name)')
+    .select('id, title, description, status, priority, due_date, created_at, tags, visibility, responsible_id, origin_id, responsible:responsible_id(full_name, auth_user_id), event:event_id(name)')
     .order('created_at', { ascending: false })
 
   const all = (data ?? []) as unknown as Demand[]
+
+  // Fotos dos responsáveis (perfil por auth_user_id)
+  const respUids = Array.from(new Set(all.map((d) => d.responsible?.auth_user_id).filter(Boolean))) as string[]
+  const photoMap = new Map<string, string>()
+  if (respUids.length) {
+    const { data: profs } = await supabase.from('profiles').select('auth_user_id, avatar_url').in('auth_user_id', respUids)
+    for (const p of (profs as unknown as { auth_user_id: string; avatar_url: string | null }[] | null) ?? []) {
+      if (p.avatar_url) photoMap.set(p.auth_user_id, p.avatar_url)
+    }
+  }
   const today = new Date().toISOString().slice(0, 10)
   const isOverdue = (d: Demand) => !!d.due_date && d.due_date < today && d.status !== 'finalizada'
 
@@ -184,7 +194,10 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
               href={`/demandas/${d.id}`}
               className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${overdue ? '!border-rose-500/30' : ''}`}
             >
-              <Avatar name={d.responsible?.full_name ?? '?'} />
+              <Avatar
+                name={d.responsible?.full_name ?? '?'}
+                src={d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) : null}
+              />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">

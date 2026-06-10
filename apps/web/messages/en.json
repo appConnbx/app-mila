@@ -39,7 +39,10 @@
     "completionsTitle": "Completions per day (14 days)",
     "noData": "No data yet.",
     "streakLabel": "day streak",
-    "streakHint": "Complete something each business day to keep the streak alive."
+    "streakHint": "Complete something each business day to keep the streak alive.",
+    "editProfile": "Edit profile",
+    "profileSubtitle": "Complete your profile: photo, phone and skills.",
+    "profileNudge": "Your profile is incomplete — add a photo, phone and skills."
   },
   "panel": {
     "title": "Dashboard",

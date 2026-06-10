@@ -29,6 +29,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const messages = await getMessages()
   const initial = (user.email ?? '?').charAt(0).toUpperCase()
 
+  const { data: profData } = await supabase.from('profiles').select('avatar_url').eq('auth_user_id', user.id).maybeSingle()
+  const avatarUrl = (profData as unknown as { avatar_url: string | null } | null)?.avatar_url ?? null
+
   const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
   let holding: Holding | null = null
   let isHoldingAdmin = false
@@ -83,12 +86,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             )}
             <LanguageSwitcher current={locale} />
             <span className="hidden text-sm text-slate-400 md:inline">{user.email}</span>
-            <Link
-              href="/perfil"
-              title={t('nav.profile')}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/15 text-sm font-semibold text-brand transition hover:bg-brand/25"
-            >
-              {initial}
+            <Link href="/perfil" title={t('nav.profile')} className="shrink-0">
+              {avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={avatarUrl} alt={t('nav.profile')} className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 transition hover:ring-brand/50" />
+              ) : (
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand/15 text-sm font-semibold text-brand transition hover:bg-brand/25">
+                  {initial}
+                </span>
+              )}
             </Link>
             <form action="/auth/signout" method="post">
               <button
