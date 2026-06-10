@@ -9,8 +9,15 @@ import {
   setHoldingAdmin,
   setPersonActive,
   deletePerson,
-  sendPasswordReset,
+  adminSetPassword,
 } from '../actions'
+
+function genPassword() {
+  const chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+  let s = ''
+  for (let i = 0; i < 8; i++) s += chars[Math.floor(Math.random() * chars.length)]
+  return s
+}
 
 export type HoldingUser = {
   id: string
@@ -30,6 +37,7 @@ export function UsersManager({ users, flash }: { users: HoldingUser[]; flash?: {
   const locale = useLocale()
   const [openId, setOpenId] = useState<string | null>(null)
   const [q, setQ] = useState('')
+  const [pw, setPw] = useState('')
 
   const fmt = (iso: string | null) => {
     if (!iso) return '—'
@@ -146,7 +154,7 @@ export function UsersManager({ users, flash }: { users: HoldingUser[]; flash?: {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end">
-                    <Button size="sm" variant="secondary" onClick={() => setOpenId(u.id)}>{t('edit')}</Button>
+                    <Button size="sm" variant="secondary" onClick={() => { setOpenId(u.id); setPw('') }}>{t('edit')}</Button>
                   </div>
                 </td>
               </tr>
@@ -214,13 +222,35 @@ export function UsersManager({ users, flash }: { users: HoldingUser[]; flash?: {
                   {open.is_active ? t('deactivate') : t('activate')}
                 </Button>
               </form>
-              {open.email && (
-                <form action={sendPasswordReset}>
-                  <input type="hidden" name="email" value={open.email} />
-                  <Button type="submit" variant="ghost" size="sm" className="w-full justify-start">🔑 {t('resetPassword')}</Button>
-                </form>
-              )}
             </div>
+
+            {/* Definir senha (admin) */}
+            <form action={adminSetPassword} className="mt-4 space-y-2 rounded-xl border border-white/10 bg-slate-900/40 p-3">
+              <input type="hidden" name="person_id" value={open.id} />
+              <label className={labelClasses}>{t('setPassword')}</label>
+              {open.email ? (
+                <>
+                  <div className="flex gap-2">
+                    <input
+                      name="password"
+                      value={pw}
+                      onChange={(e) => setPw(e.target.value)}
+                      placeholder={t('setPasswordPlaceholder')}
+                      className={fieldClasses}
+                    />
+                    <button type="button" onClick={() => setPw(genPassword())} className="shrink-0 rounded-lg border border-white/10 px-3 text-sm text-slate-300 transition hover:bg-white/10">
+                      {t('generate')}
+                    </button>
+                  </div>
+                  <Button type="submit" variant="ghost" size="sm" className="w-full justify-start" disabled={pw.length < 4}>
+                    🔑 {t('setPasswordBtn')}
+                  </Button>
+                  <p className="text-xs text-slate-500">{t('setPasswordHint')}</p>
+                </>
+              ) : (
+                <p className="text-xs text-slate-500">{t('setPasswordNoEmail')}</p>
+              )}
+            </form>
 
             {/* Excluir (com reatribuição) */}
             <form action={deletePerson} className="mt-5 space-y-2 border-t border-white/10 pt-4">

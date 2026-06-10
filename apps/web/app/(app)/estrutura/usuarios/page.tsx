@@ -4,8 +4,6 @@ import { Breadcrumb, Card, inputCls, btnCls } from '../_components'
 import { createPerson } from '../actions'
 import { UsersManager, type HoldingUser } from './_users-manager'
 
-type Org = { id: string; name: string }
-
 export default async function UsuariosPage({ searchParams }: { searchParams: Promise<{ ok?: string; err?: string }> }) {
   const t = await getTranslations('structure')
   const { ok, err } = await searchParams
@@ -15,16 +13,15 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
   const { data } = await sb.rpc('holding_users')
   const users = data ?? []
 
-  const { data: orgsData } = await supabase.from('organizations').select('id, name').eq('is_active', true).order('name')
-  const orgs = (orgsData ?? []) as unknown as Org[]
-
-  const flash = ok === 'deleted'
-    ? { kind: 'ok' as const, text: t('msgDeleted') }
-    : err === 'has_dependencies'
-      ? { kind: 'err' as const, text: t('msgHasDeps') }
-      : err
-        ? { kind: 'err' as const, text: t('msgDeleteError') }
-        : undefined
+  const flash =
+    ok === 'deleted' ? { kind: 'ok' as const, text: t('msgDeleted') }
+    : ok === 'pwset' ? { kind: 'ok' as const, text: t('msgPwSet') }
+    : err === 'has_dependencies' ? { kind: 'err' as const, text: t('msgHasDeps') }
+    : err === 'pwshort' ? { kind: 'err' as const, text: t('msgPwShort') }
+    : err === 'noemail' ? { kind: 'err' as const, text: t('msgNoEmail') }
+    : err === 'forbidden' ? { kind: 'err' as const, text: t('msgForbidden') }
+    : err ? { kind: 'err' as const, text: t('msgDeleteError') }
+    : undefined
 
   return (
     <div>
@@ -36,16 +33,11 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
         <UsersManager users={users} flash={flash} />
       </div>
 
-      {/* Cadastrar novo usuário */}
+      {/* Cadastrar novo usuário — só nome (e opcionais). O vínculo é a instância;
+          equipe/área são configurados depois. */}
       <div className="mt-6 max-w-xl">
         <Card title={t('addPerson')}>
           <form action={createPerson} className="space-y-2">
-            <select name="organization_id" required defaultValue="" className={inputCls}>
-              <option value="" disabled>{t('orgPlaceholder')}</option>
-              {orgs.map((o) => (
-                <option key={o.id} value={o.id}>{o.name}</option>
-              ))}
-            </select>
             <input name="full_name" required placeholder={t('fullName')} className={inputCls} />
             <input name="email" type="email" placeholder={t('emailOptional')} className={inputCls} />
             <input name="role_title" placeholder={t('roleOptional')} className={inputCls} />

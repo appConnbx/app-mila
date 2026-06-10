@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const STRUCTURE_TABLES = { organization: 'organizations', area: 'areas', team: 'teams' } as const
 type StructureKind = keyof typeof STRUCTURE_TABLES
@@ -88,12 +89,25 @@ export async function createTeam(formData: FormData) {
 export async function createPerson(formData: FormData) {
   const { holdingId, supabase } = await ctx()
   const full_name = String(formData.get('full_name') ?? '').trim()
-  const organization_id = String(formData.get('organization_id') ?? '')
+  let organization_id = String(formData.get('organization_id') ?? '')
   const email = String(formData.get('email') ?? '').trim() || null
   const role_title = String(formData.get('role_title') ?? '').trim() || null
   const can_delegate = formData.get('can_delegate') === 'on'
   const aliasesRaw = String(formData.get('aliases') ?? '').trim()
-  if (!holdingId || !full_name || !organization_id) return
+  if (!holdingId || !full_name) return
+
+  // Organização é opcional no cadastro: assume a 1ª organização da instância.
+  // O vínculo a áreas/equipes é configurado depois.
+  if (!organization_id) {
+    const { data: defOrg } = await supabase
+      .from('organizations')
+      .select('id')
+      .eq('holding_id', holdingId)
+      .order('created_at', { ascending: true })
+      .limit(1)
+    organization_id = (defOrg as unknown as { id: string }[] | null)?.[0]?.id ?? ''
+  }
+  if (!organization_id) return
 
   const { data: inserted } = await supabase
     .from('people')
@@ -282,4 +296,45 @@ export async function sendPasswordReset(formData: FormData) {
   if (!email) return
   await supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://www.appmila.co/login' })
   revalidate()
+}
+
+/**
+ * Admin da holding define/forcaa a senha de um usuário (sem e-mail).
+ * Cria a conta de acesso se a pessoa ainda não tiver (vincula auth_user_id).
+ * Usa o cliente admin (service_role) — exige SUPABASE_SERVICE_ROLE_KEY.
+ */
+export async function adminSetPassword(formData: FormData) {
+  const { holdingId, supabase } = await ctx()
+  if (!holdingId) return
+  const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: boolean | null }> }
+  const { data: isAdmin } = await sb.rpc('is_holding_admin')
+  if (!isAdmin) redirect('/estrutura/usuarios?err=forbidden')
+
+  const personId = String(formData.get('person_id') ?? '')
+  const password = String(formData.get('password') ?? '')
+  if (!personId) return
+  if (password.length < 4) redirect('/estrutura/usuarios?err=pwshort')
+
+  const admin = createAdminClient()
+  const { data: person } = await admin.from('people').select('id, holding_id, email, auth_user_id').eq('id', personId).single()
+  const p = person as unknown as { id: string; holding_id: string; email: string | null; auth_user_id: string | null } | null
+  if (!p || p.holding_id !== holdingId) redirect('/estrutura/usuarios?err=forbidden')
+  if (!p!.email) redirect('/estrutura/usuarios?err=noemail')
+
+  if (p!.auth_user_id) {
+    await admin.auth.admin.updateUserById(p!.auth_user_id, { password })
+  } else {
+    const { data: created } = await admin.auth.admin.createUser({ email: p!.email!, password, email_confirm: true })
+    let uid = created?.user?.id ?? null
+    if (!uid) {
+      // e-mail já possui conta auth → recupera o id e atualiza a senha
+      const sbAdmin = admin as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: string | null }> }
+      const { data: existing } = await sbAdmin.rpc('auth_user_id_by_email', { p_email: p!.email! })
+      uid = existing ?? null
+      if (uid) await admin.auth.admin.updateUserById(uid, { password })
+    }
+    if (uid) await admin.from('people').update({ auth_user_id: uid } as never).eq('id', p!.id)
+  }
+  revalidate()
+  redirect('/estrutura/usuarios?ok=pwset')
 }
