@@ -94,6 +94,8 @@ begin
 end;
 $$;
 grant execute on function public.provision_from_hotmart(uuid, text, text, text, uuid, timestamptz, text) to service_role;
+-- Sem guard interno (confia no webhook): revoga o EXECUTE padrão de PUBLIC.
+revoke execute on function public.provision_from_hotmart(uuid, text, text, text, uuid, timestamptz, text) from public, anon, authenticated;
 
 -- Lookup de auth.users.id por e-mail (usado pelo webhook quando o comprador já existe).
 create or replace function public.auth_user_id_by_email(p_email text)
@@ -101,6 +103,7 @@ returns uuid language sql stable security definer set search_path = public, auth
   select id from auth.users where lower(email) = lower(p_email) limit 1;
 $$;
 grant execute on function public.auth_user_id_by_email(text) to service_role;
+revoke execute on function public.auth_user_id_by_email(text) from public, anon, authenticated;
 
 -- ----------------------------------------------------------------------------
 -- Guard de acesso com grace period (substitui a definição da migração 0004):
