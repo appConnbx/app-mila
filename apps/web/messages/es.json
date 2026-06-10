@@ -249,6 +249,14 @@
     "statsAdmins": "administradores",
     "searchPlaceholder": "Buscar por nombre, correo o equipo…"
   },
+  "billing": {
+    "title": "Suscripción inactiva",
+    "desc": "Esta instancia no tiene un plan activo en este momento. Reactiva la suscripción para volver a acceder a las demandas y al equipo.",
+    "suspended": "Si acabas de suscribirte, puede tardar unos instantes en confirmarse el pago.",
+    "manage": "Gestionar suscripción",
+    "switch": "Cambiar de instancia",
+    "help": "Contactar al soporte"
+  },
   "landing": {
     "nav": {
       "how": "Cómo funciona",

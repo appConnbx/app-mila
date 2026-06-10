@@ -1,7 +1,8 @@
 import Link from 'next/link'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Aurora } from '@/components/ui'
 import { NavLinks } from './_nav'
@@ -21,6 +22,16 @@ export default async function AppLayout({
 
   const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
   const { data: isHoldingAdmin } = await sb.rpc('is_holding_admin')
+
+  // Guard de assinatura ativa: instância sem plano ativo → tela de assinatura.
+  // Pula a seleção de instância (/dashboard) e a própria /assinatura (evita loop).
+  const pathname = (await headers()).get('x-pathname') ?? ''
+  const activeHolding = (await cookies()).get(ACTIVE_HOLDING_COOKIE)?.value
+  const guardSkip = pathname.startsWith('/dashboard') || pathname.startsWith('/assinatura')
+  if (activeHolding && !guardSkip) {
+    const { data: hasAccess } = await sb.rpc('holding_has_active_access')
+    if (!hasAccess) redirect('/assinatura')
+  }
 
   const t = await getTranslations()
   const locale = (await getLocale()) as Locale

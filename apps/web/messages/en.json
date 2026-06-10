@@ -249,6 +249,14 @@
     "statsAdmins": "admins",
     "searchPlaceholder": "Search by name, email or team…"
   },
+  "billing": {
+    "title": "Subscription inactive",
+    "desc": "This instance has no active plan right now. Reactivate the subscription to access demands and your team again.",
+    "suspended": "If you just subscribed, it may take a moment for the payment to be confirmed.",
+    "manage": "Manage subscription",
+    "switch": "Switch instance",
+    "help": "Contact support"
+  },
   "landing": {
     "nav": {
       "how": "How it works",

@@ -249,6 +249,14 @@
     "statsAdmins": "administradores",
     "searchPlaceholder": "Buscar por nome, e-mail ou equipe…"
   },
+  "billing": {
+    "title": "Assinatura inativa",
+    "desc": "Esta instância não tem um plano ativo no momento. Reative a assinatura para voltar a acessar as demandas e a equipe.",
+    "suspended": "Se você acabou de assinar, pode levar alguns instantes até a confirmação do pagamento.",
+    "manage": "Gerenciar assinatura",
+    "switch": "Trocar de instância",
+    "help": "Falar com o suporte"
+  },
   "landing": {
     "nav": {
       "how": "Como funciona",

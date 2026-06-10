@@ -5,11 +5,16 @@ import type { Database } from '@mila/supabase'
 type CookieToSet = { name: string; value: string; options: CookieOptions }
 
 // Rotas públicas (sem exigir login). A landing comercial é a raiz "/".
-const PUBLIC_PREFIXES = ['/login', '/auth', '/affiliates']
+// /api/hotmart = webhook da Hotmart (autenticado por hottok, não por sessão).
+const PUBLIC_PREFIXES = ['/login', '/auth', '/affiliates', '/api/hotmart']
 
 /** Renova a sessão e protege rotas (redireciona para /login se não autenticado). */
 export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request })
+  // Propaga o pathname para os Server Components (guard de assinatura no layout).
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', request.nextUrl.pathname)
+
+  let response = NextResponse.next({ request: { headers: requestHeaders } })
 
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,7 +26,7 @@ export async function updateSession(request: NextRequest) {
         },
         setAll(cookiesToSet: CookieToSet[]) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          response = NextResponse.next({ request })
+          response = NextResponse.next({ request: { headers: requestHeaders } })
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           )
