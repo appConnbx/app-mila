@@ -2,28 +2,41 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { Avatar } from '@/components/ui'
 
-type Team = { id: string; name: string; is_active: boolean; admins: string[]; members: string[] }
-type Area = { id: string; name: string; is_active: boolean; admins: string[]; teams: Team[] }
-type Org = { id: string; name: string; is_active: boolean; admins: string[]; areas: Area[] }
-export type ChartData = { holding_name?: string; holding_admins?: string[]; orgs: Org[] }
+type Person = { name: string; avatar_url: string | null; headline: string | null; phone: string | null; skills: string[] }
+type Team = { id: string; name: string; is_active: boolean; admins: Person[]; members: Person[] }
+type Area = { id: string; name: string; is_active: boolean; admins: Person[]; teams: Team[] }
+type Org = { id: string; name: string; is_active: boolean; admins: Person[]; areas: Area[] }
+export type ChartData = { holding_name?: string; holding_admins?: Person[]; orgs: Org[] }
 
-type Selected = { type: string; name: string; admins: string[]; members?: string[] } | null
+type Selected = { type: string; name: string; admins: Person[]; members?: Person[] } | null
 
 export function OrgChart({ data }: { data: ChartData }) {
   const t = useTranslations('orgchart')
   const [sel, setSel] = useState<Selected>(null)
+  const [person, setPerson] = useState<Person | null>(null)
 
-  const node = (label: string, name: string, onClick: () => void, tone = 'brand') => (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-left text-sm transition hover:border-brand/50 hover:bg-white/[0.08]"
-    >
-      <span className={`text-[10px] font-semibold uppercase tracking-wide ${tone === 'brand' ? 'text-brand' : 'text-slate-500'}`}>{label}</span>
-      <span className="font-medium text-slate-100">{name}</span>
-    </button>
-  )
+  // Lista de pessoas clicáveis (abre o popup de perfil)
+  const peopleList = (people: Person[], bullet: string, empty: string) =>
+    people.length ? (
+      <ul className="mt-2 space-y-1">
+        {people.map((p) => (
+          <li key={p.name}>
+            <button
+              type="button"
+              onClick={() => setPerson(p)}
+              className="inline-flex items-center gap-2 text-sm text-slate-200 transition hover:text-brand"
+            >
+              <Avatar name={p.name} src={p.avatar_url} size="sm" />
+              <span className="underline-offset-2 hover:underline">{bullet} {p.name}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="mt-1 text-sm text-slate-500">{empty}</p>
+    )
 
   return (
     <div>
@@ -46,20 +59,29 @@ export function OrgChart({ data }: { data: ChartData }) {
       <div className="mt-6 space-y-4">
         {data.orgs.map((o) => (
           <div key={o.id} className="glass p-5">
-            {/* Organização */}
             <div className="flex flex-wrap items-center gap-2">
-              {node(t('orgLabel'), o.name, () => setSel({ type: t('orgLabel'), name: o.name, admins: o.admins }))}
+              <button
+                type="button"
+                onClick={() => setSel({ type: t('orgLabel'), name: o.name, admins: o.admins })}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm transition hover:border-brand/50 hover:bg-white/[0.08]"
+              >
+                <span className="text-[10px] font-semibold uppercase tracking-wide text-brand">{t('orgLabel')}</span>
+                <span className="font-medium text-slate-100">{o.name}</span>
+              </button>
               <span className="text-xs text-slate-500">{t('areasCount', { count: o.areas.length })}</span>
             </div>
 
-            {/* Áreas */}
             <div className="mt-4 space-y-3 border-l border-white/10 pl-4">
               {o.areas.map((a) => (
                 <div key={a.id}>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {node(t('areaLabel'), a.name, () => setSel({ type: t('areaLabel'), name: a.name, admins: a.admins }), 'muted')}
-                  </div>
-                  {/* Equipes */}
+                  <button
+                    type="button"
+                    onClick={() => setSel({ type: t('areaLabel'), name: a.name, admins: a.admins })}
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm transition hover:border-brand/50 hover:bg-white/[0.08]"
+                  >
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{t('areaLabel')}</span>
+                    <span className="font-medium text-slate-100">{a.name}</span>
+                  </button>
                   <div className="mt-2 flex flex-wrap gap-2 border-l border-white/5 pl-4">
                     {a.teams.map((tm) => (
                       <button
@@ -82,9 +104,9 @@ export function OrgChart({ data }: { data: ChartData }) {
         ))}
       </div>
 
-      {/* Modal */}
+      {/* Modal do nó (org/área/equipe) */}
       {sel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div className="fixed inset-0 z-40 flex items-center justify-center p-4" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSel(null)} />
           <div className="glass glow-top relative w-full max-w-md p-6">
             <div className="flex items-start justify-between">
@@ -97,27 +119,50 @@ export function OrgChart({ data }: { data: ChartData }) {
 
             <div className="mt-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t('admins')}</p>
-              {sel.admins.length ? (
-                <ul className="mt-2 space-y-1">
-                  {sel.admins.map((n) => <li key={n} className="text-sm text-slate-200">◆ {n}</li>)}
-                </ul>
-              ) : (
-                <p className="mt-1 text-sm text-slate-500">{t('noAdmins')}</p>
-              )}
+              {peopleList(sel.admins, '◆', t('noAdmins'))}
             </div>
 
             {sel.members !== undefined && (
               <div className="mt-4 border-t border-white/10 pt-3">
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t('members')}</p>
-                {sel.members.length ? (
-                  <ul className="mt-2 space-y-1">
-                    {sel.members.map((n) => <li key={n} className="text-sm text-slate-200">• {n}</li>)}
-                  </ul>
-                ) : (
-                  <p className="mt-1 text-sm text-slate-500">{t('noMembers')}</p>
-                )}
+                {peopleList(sel.members, '•', t('noMembers'))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Popup de perfil da pessoa */}
+      {person && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setPerson(null)} />
+          <div className="glass glow-top relative w-full max-w-sm p-6">
+            <button onClick={() => setPerson(null)} className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white" aria-label={t('close')}>✕</button>
+            <div className="flex flex-col items-center text-center">
+              <Avatar name={person.name} src={person.avatar_url} size="lg" />
+              <h3 className="mt-3 text-lg font-bold text-white">{person.name}</h3>
+              {person.headline && <p className="mt-0.5 text-sm text-slate-400">{person.headline}</p>}
+            </div>
+            <div className="mt-4 space-y-3 text-sm">
+              {person.phone && (
+                <div className="flex items-center gap-2 text-slate-300">
+                  <span className="text-slate-500">📱</span> {person.phone}
+                </div>
+              )}
+              {person.skills.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{t('skills')}</p>
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                    {person.skills.map((s) => (
+                      <span key={s} className="rounded-md bg-brand/15 px-2 py-0.5 text-[12px] font-semibold text-cyan-200">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {!person.phone && person.skills.length === 0 && (
+                <p className="text-sm text-slate-500">{t('noProfile')}</p>
+              )}
+            </div>
           </div>
         </div>
       )}

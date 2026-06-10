@@ -31,6 +31,8 @@
     "noAreas": "Aún no hay áreas.",
     "areasCount": "{count, plural, one {# área} other {# áreas}}",
     "empty": "Aún no hay organizaciones registradas.",
+    "skills": "Habilidades",
+    "noProfile": "Aún sin datos de perfil.",
     "close": "Cerrar"
   },
   "profile": {

@@ -31,6 +31,8 @@
     "noAreas": "No areas yet.",
     "areasCount": "{count, plural, one {# area} other {# areas}}",
     "empty": "No organizations registered yet.",
+    "skills": "Skills",
+    "noProfile": "No profile data yet.",
     "close": "Close"
   },
   "profile": {
