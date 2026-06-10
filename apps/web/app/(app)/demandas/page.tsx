@@ -88,11 +88,12 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   const base = tab === 'delegadas' ? delegated : tab === 'compartilhadas' ? shared : mine
   const activeCount = (set: Demand[]) => set.filter((d) => d.status !== 'finalizada').length
 
-  // KPIs sobre as MINHAS demandas (meu trabalho)
-  const total = mine.length
-  const emAndamento = mine.filter((d) => d.status === 'trabalhando').length
-  const concluidas = mine.filter((d) => d.status === 'finalizada').length
-  const atrasadas = mine.filter(isOverdue).length
+  // KPIs acionáveis sobre tudo que me envolve: minhas + delegadas + compartilhadas (conjuntos disjuntos).
+  const scope = [...mine, ...delegated, ...shared]
+  const kpiPendentes = scope.filter((d) => d.status !== 'finalizada').length
+  const kpiEmAndamento = scope.filter((d) => d.status === 'trabalhando').length
+  const kpiProximas = scope.filter((d) => d.status !== 'finalizada' && d.due_date === today).length
+  const kpiAtrasadas = scope.filter(isOverdue).length
 
   const baseDone = base.filter((d) => d.status === 'finalizada').length
   const demands = archived ? base.filter((d) => d.status === 'finalizada') : base.filter((d) => d.status !== 'finalizada')
@@ -201,10 +202,10 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Kpi label={t('kpiTotal')} value={total} accent="text-white" />
-        <Kpi label={t('kpiInProgress')} value={emAndamento} accent="text-amber-400" />
-        <Kpi label={t('kpiOverdue')} value={atrasadas} accent="text-rose-400" />
-        <Kpi label={t('kpiDone')} value={concluidas} accent="text-emerald-400" />
+        <Kpi label={t('kpiPending')} value={kpiPendentes} accent="text-white" />
+        <Kpi label={t('kpiInProgress')} value={kpiEmAndamento} accent="text-amber-400" />
+        <Kpi label={t('kpiDueSoon')} value={kpiProximas} accent="text-blue-400" />
+        <Kpi label={t('kpiOverdue')} value={kpiAtrasadas} accent="text-rose-400" />
       </div>
 
       {error && (
