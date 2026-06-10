@@ -13,7 +13,25 @@
     "structure": "Administration",
     "exitInstance": "Exit {name}",
     "exit": "Exit",
-    "profile": "Profile"
+    "profile": "Profile",
+    "orgchart": "Org chart"
+  },
+  "orgchart": {
+    "title": "Org chart",
+    "subtitle": "Company structure. Click an organization, area or team to see leads and members.",
+    "holdingLabel": "Holding",
+    "orgLabel": "Organization",
+    "areaLabel": "Area",
+    "teamLabel": "Team",
+    "admins": "Leads / administrators",
+    "members": "Members",
+    "noAdmins": "No lead defined.",
+    "noMembers": "No members yet.",
+    "noTeams": "No teams yet.",
+    "noAreas": "No areas yet.",
+    "areasCount": "{count, plural, one {# area} other {# areas}}",
+    "empty": "No organizations registered yet.",
+    "close": "Close"
   },
   "profile": {
     "back": "Back",

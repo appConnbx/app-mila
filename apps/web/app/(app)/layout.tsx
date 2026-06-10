@@ -55,9 +55,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const isFamily = holding?.kind === 'family'
   const navItems = [
-    { href: '/painel', label: t('nav.panel') },
+    // Dashboard (gerencial) só para administradores da holding.
+    ...(isHoldingAdmin ? [{ href: '/painel', label: t('nav.panel') }] : []),
     { href: '/demandas', label: t('nav.demands') },
     ...(!isFamily ? [{ href: '/eventos', label: t('nav.events') }] : []),
+    // Organograma: visível a todos (corporativo).
+    ...(!isFamily ? [{ href: '/organograma', label: t('nav.orgchart') }] : []),
     ...(isHoldingAdmin ? [{ href: '/estrutura', label: t('nav.structure') }] : []),
   ]
 
@@ -67,7 +70,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <header className="sticky top-0 z-10 border-b border-white/5 bg-surface/70 backdrop-blur-xl">
         {/* Linha 1: marca + ações */}
         <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <Link href={isHome ? '/dashboard' : '/painel'} className="flex shrink-0 items-center gap-2">
+          <Link href={isHome ? '/dashboard' : '/demandas'} className="flex shrink-0 items-center gap-2">
             <span className="text-xl font-bold tracking-tight text-white">MILA</span>
             <span className="h-4 w-1 rounded-full bg-brand" />
           </Link>

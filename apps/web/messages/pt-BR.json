@@ -13,7 +13,25 @@
     "structure": "Administração",
     "exitInstance": "Sair de {name}",
     "exit": "Sair",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "orgchart": "Organograma"
+  },
+  "orgchart": {
+    "title": "Organograma",
+    "subtitle": "Estrutura da empresa. Clique em uma organização, área ou equipe para ver responsáveis e membros.",
+    "holdingLabel": "Holding",
+    "orgLabel": "Organização",
+    "areaLabel": "Área",
+    "teamLabel": "Equipe",
+    "admins": "Responsáveis / administradores",
+    "members": "Membros",
+    "noAdmins": "Nenhum responsável definido.",
+    "noMembers": "Nenhum membro ainda.",
+    "noTeams": "Nenhuma equipe ainda.",
+    "noAreas": "Nenhuma área ainda.",
+    "areasCount": "{count, plural, one {# área} other {# áreas}}",
+    "empty": "Nenhuma organização cadastrada ainda.",
+    "close": "Fechar"
   },
   "profile": {
     "back": "Voltar",

@@ -16,7 +16,7 @@ export async function enterInstance(formData: FormData) {
     maxAge: 60 * 60 * 24 * 30,
   })
 
-  redirect('/painel')
+  redirect('/demandas')
 }
 
 /** Sai da instância ativa e volta para a área inicial (dashboard pessoal + seleção). */
