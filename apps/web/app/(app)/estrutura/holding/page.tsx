@@ -17,8 +17,9 @@ type Holding = {
 
 const labelCls = 'block text-sm font-medium text-slate-300'
 
-export default async function HoldingPage() {
+export default async function HoldingPage({ searchParams }: { searchParams: Promise<{ onboarding?: string }> }) {
   const t = await getTranslations('structure')
+  const { onboarding } = await searchParams
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
   if (!holdingId) redirect('/dashboard')
@@ -37,6 +38,13 @@ export default async function HoldingPage() {
       <Breadcrumb items={[{ href: '/estrutura', label: t('title') }, { label: t('holdingMgmt') }]} />
       <h1 className="mt-3 text-2xl font-bold text-white">{t('holdingMgmt')}</h1>
       <p className="mt-1 text-sm text-slate-400">{t('holdingMgmtDesc')}</p>
+
+      {onboarding === '1' && (
+        <div className="mt-4 glass glow-top p-5">
+          <p className="text-base font-semibold text-white">{t('onboardingTitle')}</p>
+          <p className="mt-1 text-sm text-slate-300">{t('onboardingDesc')}</p>
+        </div>
+      )}
 
       <form action={updateHolding} className="mt-6">
         <Card title={t('holdingData')}>

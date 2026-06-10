@@ -88,10 +88,12 @@ export async function updateDemand(formData: FormData) {
   const status = String(formData.get('status') ?? '')
   const priority = String(formData.get('priority') ?? '')
   const responsible_id = String(formData.get('responsible_id') ?? '')
+  const visibility = String(formData.get('visibility') ?? '')
   const due_raw = formData.get('due_date')
   if (status) patch.status = status
   if (priority) patch.priority = priority
   if (responsible_id) patch.responsible_id = responsible_id
+  if (visibility === 'private' || visibility === 'public') patch.visibility = visibility
   if (due_raw !== null) patch.due_date = String(due_raw) || null
   if (Object.keys(patch).length === 0) return
 

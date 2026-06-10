@@ -52,7 +52,14 @@ export default async function AreaPage({ params }: { params: Promise<{ orgId: st
       </div>
       <p className="mt-1 text-sm text-slate-400">{t('areaScope')}</p>
 
-      <div className="mt-6 grid items-start gap-5 lg:grid-cols-2">
+      <div className="mt-6 space-y-5">
+        {/* 1) Configurações */}
+        <StructureSettings kind="area" id={areaId} name={area.name} isActive={area.is_active} redirectAfterDelete={`/estrutura/org/${orgId}`} />
+
+        {/* 2) Administradores */}
+        <ScopeAdmins role="area_admin" scopeLevel="area" scopeId={areaId} admins={admins} people={people} />
+
+        {/* 3) Equipes (filhos) */}
         <Card title={t('teams')}>
           <ul className="space-y-1.5">
             {teams.map((tm) => (
@@ -77,12 +84,6 @@ export default async function AreaPage({ params }: { params: Promise<{ orgId: st
             <button type="submit" className={btnCls}>{t('add')}</button>
           </form>
         </Card>
-
-        <ScopeAdmins role="area_admin" scopeLevel="area" scopeId={areaId} admins={admins} people={people} />
-      </div>
-
-      <div className="mt-5 max-w-2xl">
-        <StructureSettings kind="area" id={areaId} name={area.name} isActive={area.is_active} redirectAfterDelete={`/estrutura/org/${orgId}`} />
       </div>
     </div>
   )

@@ -61,7 +61,14 @@ export default async function TeamPage({
       </div>
       <p className="mt-1 text-sm text-slate-400">{t('teamScope')}</p>
 
-      <div className="mt-6 grid items-start gap-5 lg:grid-cols-2">
+      <div className="mt-6 space-y-5">
+        {/* 1) Configurações */}
+        <StructureSettings kind="team" id={teamId} name={team.name} isActive={team.is_active} redirectAfterDelete={`/estrutura/org/${orgId}/area/${areaId}`} />
+
+        {/* 2) Administradores */}
+        <ScopeAdmins role="team_admin" scopeLevel="team" scopeId={teamId} admins={admins} people={people} />
+
+        {/* 3) Membros (filhos) */}
         <Card title={t('members')}>
           <ul className="space-y-1.5">
             {memberRows.map((m) => (
@@ -88,12 +95,6 @@ export default async function TeamPage({
             </form>
           )}
         </Card>
-
-        <ScopeAdmins role="team_admin" scopeLevel="team" scopeId={teamId} admins={admins} people={people} />
-      </div>
-
-      <div className="mt-5 max-w-2xl">
-        <StructureSettings kind="team" id={teamId} name={team.name} isActive={team.is_active} redirectAfterDelete={`/estrutura/org/${orgId}/area/${areaId}`} />
       </div>
     </div>
   )

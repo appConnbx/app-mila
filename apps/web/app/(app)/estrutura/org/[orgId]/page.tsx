@@ -42,7 +42,14 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
       </div>
       <p className="mt-1 text-sm text-slate-400">{t('orgScope')}</p>
 
-      <div className="mt-6 grid items-start gap-5 lg:grid-cols-2">
+      <div className="mt-6 space-y-5">
+        {/* 1) Configurações */}
+        <StructureSettings kind="organization" id={orgId} name={org.name} isActive={org.is_active} redirectAfterDelete="/estrutura" />
+
+        {/* 2) Administradores */}
+        <ScopeAdmins role="org_admin" scopeLevel="organization" scopeId={orgId} admins={admins} people={people} />
+
+        {/* 3) Áreas (filhos) */}
         <Card title={t('areas')}>
           <ul className="space-y-1.5">
             {areas.map((a) => (
@@ -67,12 +74,6 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
             <button type="submit" className={btnCls}>{t('add')}</button>
           </form>
         </Card>
-
-        <ScopeAdmins role="org_admin" scopeLevel="organization" scopeId={orgId} admins={admins} people={people} />
-      </div>
-
-      <div className="mt-5 max-w-2xl">
-        <StructureSettings kind="organization" id={orgId} name={org.name} isActive={org.is_active} redirectAfterDelete="/estrutura" />
       </div>
     </div>
   )

@@ -20,6 +20,7 @@ type Demand = {
   responsible_id: string
   origin_id: string
   event_id: string | null
+  visibility: 'private' | 'public'
   responsible: { full_name: string } | null
   origin: { full_name: string } | null
   event: { name: string } | null
@@ -43,7 +44,7 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
   const supabase = await createClient()
   const { data: demandData } = await supabase
     .from('demands')
-    .select('id, title, description, status, priority, due_date, created_at, channel, responsible_id, origin_id, event_id, responsible:responsible_id(full_name), origin:origin_id(full_name), event:event_id(name)')
+    .select('id, title, description, status, priority, due_date, created_at, channel, responsible_id, origin_id, event_id, visibility, responsible:responsible_id(full_name), origin:origin_id(full_name), event:event_id(name)')
     .eq('id', id)
     .single()
   const d = demandData as unknown as Demand | null
@@ -156,6 +157,13 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
               <div>
                 <label className="text-xs text-slate-400">{t('fDue')}</label>
                 <input type="date" name="due_date" defaultValue={d.due_date ?? ''} className={inputCls} />
+              </div>
+              <div>
+                <label className="text-xs text-slate-400">{t('fVisibility')}</label>
+                <select name="visibility" defaultValue={d.visibility} className={inputCls}>
+                  <option value="private">{t('visPrivate')}</option>
+                  <option value="public">{t('visPublic')}</option>
+                </select>
               </div>
               <button type="submit" className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
                 {t('save')}
