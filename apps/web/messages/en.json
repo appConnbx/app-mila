@@ -130,7 +130,9 @@
     "activities": "Activities",
     "activityTitle": "Activity",
     "addActivity": "Add activity",
-    "noDemands": "No activities in this event."
+    "noDemands": "No activities in this event.",
+    "delete": "Delete event",
+    "confirmDelete": "Delete this event? Linked activities become standalone demands."
   },
   "login": {
     "subtitle": "Demand management and productivity",
@@ -206,7 +208,9 @@
     "event": "Event",
     "created": "Created at",
     "history": "History",
-    "noHistory": "No changes recorded."
+    "noHistory": "No changes recorded.",
+    "delete": "Delete demand",
+    "confirmDelete": "Delete this demand? This action cannot be undone."
   },
   "newDemand": {
     "title": "New demand",

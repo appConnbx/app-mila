@@ -66,6 +66,18 @@ export async function finalizeEvent(formData: FormData) {
   revalidate(id)
 }
 
+/** Exclui um evento. O RLS (events_delete) garante: dono ou admin da holding.
+ *  As atividades vinculadas viram demandas avulsas (FK event_id ON DELETE SET NULL). */
+export async function deleteEvent(formData: FormData) {
+  const { supabase } = await ctx()
+  const id = String(formData.get('id') ?? '')
+  if (!id) return
+  await supabase.from('events').delete().eq('id', id)
+  revalidatePath('/eventos')
+  revalidatePath('/demandas')
+  redirect('/eventos')
+}
+
 /** Adiciona um participante (qualquer pessoa da holding). Só o dono gerencia (RLS). */
 export async function addParticipant(formData: FormData) {
   const { supabase, holdingId } = await ctx()

@@ -113,6 +113,16 @@ export async function setDemandStatus(formData: FormData) {
   revalidatePath(`/demandas/${id}`)
 }
 
+/** Exclui uma demanda. O RLS (demands_delete) garante: criador ou admin da holding. */
+export async function deleteDemand(formData: FormData) {
+  const supabase = await createClient()
+  const id = String(formData.get('id') ?? '')
+  if (!id) return
+  await supabase.from('demands').delete().eq('id', id)
+  revalidatePath('/demandas')
+  redirect('/demandas')
+}
+
 export async function addObservation(formData: FormData) {
   const { supabase, holdingId, me } = await currentPersonId()
   const demand_id = String(formData.get('demand_id') ?? '')

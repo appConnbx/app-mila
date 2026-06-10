@@ -5,7 +5,8 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui'
 import { SubmitButton } from '@/components/pending'
-import { updateDemand, setDemandStatus, addObservation } from '../actions'
+import { ConfirmButton } from '@/components/confirm-button'
+import { updateDemand, setDemandStatus, addObservation, deleteDemand } from '../actions'
 
 const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 
@@ -50,6 +51,22 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
     .single()
   const d = demandData as unknown as Demand | null
   if (!d) notFound()
+
+  // Quem sou eu nesta instância + sou admin da holding? (controla exclusão)
+  const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)!.value
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const { data: meRows } = await supabase
+    .from('people')
+    .select('id')
+    .eq('auth_user_id', user?.id ?? '')
+    .eq('holding_id', holdingId)
+    .limit(1)
+  const me = (meRows as unknown as { id: string }[] | null)?.[0]?.id
+  const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
+  const { data: adminFlag } = await sb.rpc('is_holding_admin')
+  const canDelete = d.origin_id === me || !!adminFlag
 
   const [peopleRes, obsRes, histRes] = await Promise.all([
     supabase.from('people').select('id, full_name').eq('is_active', true).order('full_name'),
@@ -175,6 +192,18 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
               <div className="flex justify-between"><dt>{t('created')}</dt><dd className="text-slate-300">{fmtDateTime(d.created_at)}</dd></div>
             </dl>
           </form>
+
+          {canDelete && (
+            <form action={deleteDemand} className="glass p-5">
+              <input type="hidden" name="id" value={d.id} />
+              <ConfirmButton
+                message={t('confirmDelete')}
+                className="w-full rounded-lg border border-rose-500/40 px-4 py-2 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/10"
+              >
+                {t('delete')}
+              </ConfirmButton>
+            </form>
+          )}
 
           <section className="glass p-5">
             <h2 className="text-lg font-semibold text-white">{t('history')}</h2>

@@ -5,7 +5,8 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Avatar, Badge, ProgressBar, EmptyState } from '@/components/ui'
 import { SubmitButton } from '@/components/pending'
-import { finalizeEvent, addParticipant, removeParticipant, addEventDemand } from '../actions'
+import { ConfirmButton } from '@/components/confirm-button'
+import { finalizeEvent, deleteEvent, addParticipant, removeParticipant, addEventDemand } from '../actions'
 
 const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 const STATUS_RANK = { nova: 0, trabalhando: 0, finalizada: 1 } as const
@@ -72,6 +73,9 @@ export default async function EventDetailPage({
     .eq('holding_id', holdingId)
     .limit(1)
   const me = (meData as unknown as { id: string }[] | null)?.[0]?.id
+  const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
+  const { data: adminFlag } = await sb.rpc('is_holding_admin')
+  const isHoldingAdmin = !!adminFlag
 
   const [demandsRes, partsRes, peopleRes] = await Promise.all([
     supabase
@@ -95,6 +99,7 @@ export default async function EventDetailPage({
   const amOwner = ev.owner_id === me
   const amMember = amOwner || participants.some((p) => p.person_id === me)
   const isOpen = ev.status === 'aberto'
+  const canDeleteEvent = amOwner || isHoldingAdmin
 
   const total = demands.length
   const done = demands.filter((d) => d.status === 'finalizada').length
@@ -132,14 +137,27 @@ export default async function EventDetailPage({
             <Badge variant="warning">{t('statusActive')}</Badge>
           )}
         </div>
-        {amOwner && isOpen && (
-          <form action={finalizeEvent}>
-            <input type="hidden" name="id" value={ev.id} />
-            <SubmitButton className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-              {t('finalize')}
-            </SubmitButton>
-          </form>
-        )}
+        <div className="flex items-center gap-2">
+          {amOwner && isOpen && (
+            <form action={finalizeEvent}>
+              <input type="hidden" name="id" value={ev.id} />
+              <SubmitButton className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+                {t('finalize')}
+              </SubmitButton>
+            </form>
+          )}
+          {canDeleteEvent && (
+            <form action={deleteEvent}>
+              <input type="hidden" name="id" value={ev.id} />
+              <ConfirmButton
+                message={t('confirmDelete')}
+                className="rounded-lg border border-rose-500/40 px-4 py-2 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/10"
+              >
+                {t('delete')}
+              </ConfirmButton>
+            </form>
+          )}
+        </div>
       </div>
 
       <div className="mt-5 glass p-5">

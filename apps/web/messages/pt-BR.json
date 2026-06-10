@@ -130,7 +130,9 @@
     "activities": "Atividades",
     "activityTitle": "Atividade",
     "addActivity": "Adicionar atividade",
-    "noDemands": "Nenhuma atividade neste evento."
+    "noDemands": "Nenhuma atividade neste evento.",
+    "delete": "Excluir evento",
+    "confirmDelete": "Excluir este evento? As atividades vinculadas viram demandas avulsas."
   },
   "login": {
     "subtitle": "Gestão de demandas e produtividade",
@@ -206,7 +208,9 @@
     "event": "Evento",
     "created": "Criada em",
     "history": "Histórico",
-    "noHistory": "Sem alterações registradas."
+    "noHistory": "Sem alterações registradas.",
+    "delete": "Excluir demanda",
+    "confirmDelete": "Excluir esta demanda? Esta ação não pode ser desfeita."
   },
   "newDemand": {
     "title": "Nova demanda",
