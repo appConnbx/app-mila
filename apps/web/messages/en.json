@@ -10,7 +10,21 @@
     "panel": "Dashboard",
     "demands": "Demands",
     "events": "Events",
-    "structure": "Structure"
+    "structure": "Administration",
+    "exitInstance": "Exit {name}",
+    "exit": "Exit"
+  },
+  "home": {
+    "title": "Personal overview",
+    "subtitle": "Your demands across all contexts — only what's yours.",
+    "kpiPending": "Pending",
+    "kpiWorking": "In progress",
+    "kpiOverdue": "Overdue",
+    "kpiDone": "Done",
+    "completionsTitle": "Completions per day (14 days)",
+    "noData": "No data yet.",
+    "streakLabel": "day streak",
+    "streakHint": "Complete something each business day to keep the streak alive."
   },
   "panel": {
     "title": "Dashboard",
@@ -24,6 +38,8 @@
     "completionRate": "Completion rate",
     "general": "Overall indicators",
     "genTotal": "Total demands",
+    "genOpen": "Open",
+    "genWorking": "In progress",
     "genDone": "Completed",
     "genOverdue": "Overdue",
     "genRate": "Completion rate",
@@ -110,6 +126,9 @@
     "priority": { "alta": "High", "media": "Medium", "baixa": "Low" },
     "tabActive": "Active",
     "tabArchived": "Completed",
+    "tabMine": "Mine",
+    "tabDelegated": "Delegated",
+    "tabShared": "Shared",
     "emptyArchived": "No completed demands yet.",
     "createdWord": "created",
     "dueWord": "Due",
@@ -158,6 +177,10 @@
     "due": "Due date (optional)",
     "event": "Event (optional)",
     "eventNone": "None (standalone)",
+    "visibility": "Visibility",
+    "visPrivate": "Private (only you and the assignee)",
+    "visPublic": "Public (team / family and managers)",
+    "visHint": "Private: only you and the person you delegate to can see it. Public: in a company, the creator's team and the admins above; in a family, everyone sees it.",
     "cancel": "Cancel",
     "submit": "Create demand",
     "createError": "Couldn't create the demand. In companies, you must belong to a team (or be an admin) to create demands."

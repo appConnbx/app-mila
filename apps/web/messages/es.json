@@ -7,10 +7,24 @@
     "language": "Idioma"
   },
   "nav": {
-    "panel": "Panel",
+    "panel": "Dashboard",
     "demands": "Demandas",
     "events": "Eventos",
-    "structure": "Estructura"
+    "structure": "Administración",
+    "exitInstance": "Salir de {name}",
+    "exit": "Salir"
+  },
+  "home": {
+    "title": "Visión general personal",
+    "subtitle": "Tus demandas en todos los contextos — solo lo que es tuyo.",
+    "kpiPending": "Pendientes",
+    "kpiWorking": "En curso",
+    "kpiOverdue": "Atrasadas",
+    "kpiDone": "Completadas",
+    "completionsTitle": "Finalizaciones por día (14 días)",
+    "noData": "Sin datos aún.",
+    "streakLabel": "días de racha",
+    "streakHint": "Completa algo cada día hábil para mantener la racha."
   },
   "panel": {
     "title": "Panel",
@@ -24,6 +38,8 @@
     "completionRate": "Tasa de finalización",
     "general": "Indicadores generales",
     "genTotal": "Total de demandas",
+    "genOpen": "Abiertas",
+    "genWorking": "En curso",
     "genDone": "Completadas",
     "genOverdue": "Atrasadas",
     "genRate": "Tasa de finalización",
@@ -110,6 +126,9 @@
     "priority": { "alta": "Alta", "media": "Media", "baixa": "Baja" },
     "tabActive": "Activas",
     "tabArchived": "Completadas",
+    "tabMine": "Mías",
+    "tabDelegated": "Delegadas",
+    "tabShared": "Compartidas",
     "emptyArchived": "Aún no hay demandas completadas.",
     "createdWord": "creada",
     "dueWord": "Plazo",
@@ -158,6 +177,10 @@
     "due": "Plazo (opcional)",
     "event": "Evento (opcional)",
     "eventNone": "Ninguno (suelta)",
+    "visibility": "Visibilidad",
+    "visPrivate": "Privada (solo tú y el responsable)",
+    "visPublic": "Pública (equipo / familia y gestión)",
+    "visHint": "Privada: solo tú y a quien delegas la ven. Pública: en la empresa, el equipo del creador y los administradores superiores; en la familia, todos la ven.",
     "cancel": "Cancelar",
     "submit": "Crear demanda",
     "createError": "No se pudo crear la demanda. En empresas, debes pertenecer a un equipo (o ser administrador) para crear demandas."

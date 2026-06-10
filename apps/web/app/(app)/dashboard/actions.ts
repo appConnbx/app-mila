@@ -16,5 +16,12 @@ export async function enterInstance(formData: FormData) {
     maxAge: 60 * 60 * 24 * 30,
   })
 
-  redirect('/demandas')
+  redirect('/painel')
+}
+
+/** Sai da instância ativa e volta para a área inicial (dashboard pessoal + seleção). */
+export async function exitInstance() {
+  const cookieStore = await cookies()
+  cookieStore.delete(ACTIVE_HOLDING_COOKIE)
+  redirect('/dashboard')
 }

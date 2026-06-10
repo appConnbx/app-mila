@@ -7,10 +7,24 @@
     "language": "Idioma"
   },
   "nav": {
-    "panel": "Painel",
+    "panel": "Dashboard",
     "demands": "Demandas",
     "events": "Eventos",
-    "structure": "Estrutura"
+    "structure": "Administração",
+    "exitInstance": "Sair de {name}",
+    "exit": "Sair"
+  },
+  "home": {
+    "title": "Visão geral pessoal",
+    "subtitle": "Suas demandas em todos os contextos — só o que é seu.",
+    "kpiPending": "Pendentes",
+    "kpiWorking": "Trabalhando",
+    "kpiOverdue": "Atrasadas",
+    "kpiDone": "Concluídas",
+    "completionsTitle": "Conclusões por dia (14 dias)",
+    "noData": "Sem dados ainda.",
+    "streakLabel": "dias de chama",
+    "streakHint": "Conclua algo a cada dia útil para manter a chama acesa."
   },
   "panel": {
     "title": "Painel",
@@ -24,6 +38,8 @@
     "completionRate": "Taxa de conclusão",
     "general": "Indicadores gerais",
     "genTotal": "Total de demandas",
+    "genOpen": "Abertas",
+    "genWorking": "Trabalhando",
     "genDone": "Concluídas",
     "genOverdue": "Atrasadas",
     "genRate": "Taxa de conclusão",
@@ -110,6 +126,9 @@
     "priority": { "alta": "Alta", "media": "Média", "baixa": "Baixa" },
     "tabActive": "Ativas",
     "tabArchived": "Concluídas",
+    "tabMine": "Minhas",
+    "tabDelegated": "Delegadas",
+    "tabShared": "Compartilhadas",
     "emptyArchived": "Nenhuma demanda concluída ainda.",
     "createdWord": "criada",
     "dueWord": "Prazo",
@@ -158,6 +177,10 @@
     "due": "Prazo (opcional)",
     "event": "Evento (opcional)",
     "eventNone": "Nenhum (avulsa)",
+    "visibility": "Visibilidade",
+    "visPrivate": "Privada (só você e o responsável)",
+    "visPublic": "Pública (equipe / família e gestão)",
+    "visHint": "Privada: só você e quem você delega veem. Pública: na empresa, a equipe do criador e os administradores acima; na família, todos veem.",
     "cancel": "Cancelar",
     "submit": "Criar demanda",
     "createError": "Não foi possível criar a demanda. Em empresas, é preciso estar em uma equipe (ou ser administrador) para criar demandas."

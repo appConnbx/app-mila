@@ -95,6 +95,15 @@ export default async function NovaDemandaPage({
           </div>
         </div>
 
+        <div>
+          <label htmlFor="visibility" className={labelCls}>{t('visibility')}</label>
+          <select id="visibility" name="visibility" defaultValue="private" className={inputCls}>
+            <option value="private">{t('visPrivate')}</option>
+            <option value="public">{t('visPublic')}</option>
+          </select>
+          <p className="mt-1 text-xs text-slate-500">{t('visHint')}</p>
+        </div>
+
         <div className="flex justify-end gap-3 pt-2">
           <Link href="/demandas" className="rounded-lg border border-surface-border px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800">
             {t('cancel')}

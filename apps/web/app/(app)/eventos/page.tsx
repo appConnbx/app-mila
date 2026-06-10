@@ -28,6 +28,11 @@ export default async function EventosPage() {
   if (!holdingId) redirect('/dashboard')
 
   const supabase = await createClient()
+
+  // Família não tem eventos — bloqueia acesso direto à rota.
+  const { data: hk } = await supabase.from('holdings').select('kind').eq('id', holdingId).single()
+  if ((hk as unknown as { kind: string } | null)?.kind === 'family') redirect('/demandas')
+
   const {
     data: { user },
   } = await supabase.auth.getUser()

@@ -14,9 +14,14 @@ type Demand = {
   due_date: string | null
   created_at: string
   tags: string[] | null
+  visibility: 'private' | 'public'
+  responsible_id: string
+  origin_id: string
   responsible: { full_name: string } | null
   event: { name: string } | null
 }
+
+type Tab = 'minhas' | 'delegadas' | 'compartilhadas'
 
 const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 
@@ -29,37 +34,64 @@ function Kpi({ label, value, accent }: { label: string; value: number; accent: s
   )
 }
 
-export default async function DemandasPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
+export default async function DemandasPage({ searchParams }: { searchParams: Promise<{ view?: string; tab?: string }> }) {
   const t = await getTranslations('demands')
   const locale = await getLocale()
-  const { view } = await searchParams
+  const { view, tab: tabRaw } = await searchParams
   const archived = view === 'arquivadas'
+  const tab: Tab = tabRaw === 'delegadas' || tabRaw === 'compartilhadas' ? tabRaw : 'minhas'
 
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
   if (!holdingId) redirect('/dashboard')
 
   const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   const { data: holdingData } = await supabase.from('holdings').select('name, kind').eq('id', holdingId).single()
   const holding = holdingData as unknown as { name: string; kind: string } | null
 
+  const { data: meRows } = await supabase
+    .from('people')
+    .select('id')
+    .eq('auth_user_id', user?.id ?? '')
+    .eq('holding_id', holdingId)
+    .limit(1)
+  const me = (meRows as unknown as { id: string }[] | null)?.[0]?.id ?? ''
+
   const { data, error } = await supabase
     .from('demands')
-    .select('id, title, description, status, priority, due_date, created_at, tags, responsible:responsible_id(full_name), event:event_id(name)')
+    .select('id, title, description, status, priority, due_date, created_at, tags, visibility, responsible_id, origin_id, responsible:responsible_id(full_name), event:event_id(name)')
     .order('created_at', { ascending: false })
 
   const all = (data ?? []) as unknown as Demand[]
   const today = new Date().toISOString().slice(0, 10)
   const isOverdue = (d: Demand) => !!d.due_date && d.due_date < today && d.status !== 'finalizada'
 
-  const total = all.length
-  const emAndamento = all.filter((d) => d.status === 'trabalhando').length
-  const concluidas = all.filter((d) => d.status === 'finalizada').length
-  const atrasadas = all.filter(isOverdue).length
+  // Conjuntos por relação com o usuário
+  const mine = all.filter((d) => d.responsible_id === me)
+  const delegated = all.filter((d) => d.origin_id === me && d.responsible_id !== me)
+  const shared = all.filter((d) => d.visibility === 'public' && d.responsible_id !== me && d.origin_id !== me)
+  const base = tab === 'delegadas' ? delegated : tab === 'compartilhadas' ? shared : mine
 
-  const demands = archived ? all.filter((d) => d.status === 'finalizada') : all.filter((d) => d.status !== 'finalizada')
+  // KPIs sobre as MINHAS demandas (meu trabalho)
+  const total = mine.length
+  const emAndamento = mine.filter((d) => d.status === 'trabalhando').length
+  const concluidas = mine.filter((d) => d.status === 'finalizada').length
+  const atrasadas = mine.filter(isOverdue).length
 
+  const baseDone = base.filter((d) => d.status === 'finalizada').length
+  const demands = archived ? base.filter((d) => d.status === 'finalizada') : base.filter((d) => d.status !== 'finalizada')
+
+  const q = (params: { tab?: Tab; view?: string }) => {
+    const sp = new URLSearchParams()
+    if (params.tab && params.tab !== 'minhas') sp.set('tab', params.tab)
+    if (params.view) sp.set('view', params.view)
+    const s = sp.toString()
+    return s ? `/demandas?${s}` : '/demandas'
+  }
   const tabCls = (active: boolean) =>
     `rounded-lg px-3 py-1.5 text-sm font-medium transition ${active ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`
 
@@ -112,9 +144,16 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
         </div>
       )}
 
-      <div className="mt-6 flex items-center gap-1">
-        <Link href="/demandas" className={tabCls(!archived)}>{t('tabActive')} ({total - concluidas})</Link>
-        <Link href="/demandas?view=arquivadas" className={tabCls(archived)}>{t('tabArchived')} ({concluidas})</Link>
+      {/* Abas: relação com o usuário */}
+      <div className="mt-6 flex flex-wrap items-center gap-1">
+        <Link href={q({ tab: 'minhas', view: archived ? 'arquivadas' : undefined })} className={tabCls(tab === 'minhas')}>{t('tabMine')} ({mine.length})</Link>
+        <Link href={q({ tab: 'delegadas', view: archived ? 'arquivadas' : undefined })} className={tabCls(tab === 'delegadas')}>{t('tabDelegated')} ({delegated.length})</Link>
+        <Link href={q({ tab: 'compartilhadas', view: archived ? 'arquivadas' : undefined })} className={tabCls(tab === 'compartilhadas')}>{t('tabShared')} ({shared.length})</Link>
+      </div>
+      {/* Sub-filtro: ativas x concluídas */}
+      <div className="mt-2 flex items-center gap-1">
+        <Link href={q({ tab })} className={tabCls(!archived)}>{t('tabActive')} ({base.length - baseDone})</Link>
+        <Link href={q({ tab, view: 'arquivadas' })} className={tabCls(archived)}>{t('tabArchived')} ({baseDone})</Link>
       </div>
 
       <div className="mt-4 space-y-3">

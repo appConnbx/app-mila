@@ -33,6 +33,7 @@ export async function createDemand(formData: FormData) {
   const priority = String(formData.get('priority') ?? 'media')
   const due_date = String(formData.get('due_date') ?? '') || null
   const event_id = String(formData.get('event_id') ?? '') || null
+  const visibility = String(formData.get('visibility') ?? 'private') === 'public' ? 'public' : 'private'
   if (!title || !responsible_id) redirect('/demandas/nova')
 
   // Tags automáticas (regras por palavra-chave) geradas no cadastro.
@@ -48,6 +49,7 @@ export async function createDemand(formData: FormData) {
     due_date,
     event_id,
     tags,
+    visibility,
     channel: 'web',
   } as never)
 
