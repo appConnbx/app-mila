@@ -13,6 +13,7 @@ type Demand = {
   priority: 'baixa' | 'media' | 'alta'
   due_date: string | null
   created_at: string
+  completed_at: string | null
   tags: string[] | null
   visibility: 'private' | 'public'
   responsible_id: string
@@ -63,7 +64,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
 
   const { data, error } = await supabase
     .from('demands')
-    .select('id, title, description, status, priority, due_date, created_at, tags, visibility, responsible_id, origin_id, responsible:responsible_id(full_name, auth_user_id), event:event_id(name)')
+    .select('id, title, description, status, priority, due_date, created_at, completed_at, tags, visibility, responsible_id, origin_id, responsible:responsible_id(full_name, auth_user_id), event:event_id(name)')
     .order('created_at', { ascending: false })
 
   const all = (data ?? []) as unknown as Demand[]
@@ -85,6 +86,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   const delegated = all.filter((d) => d.origin_id === me && d.responsible_id !== me)
   const shared = all.filter((d) => d.visibility === 'public' && d.responsible_id !== me && d.origin_id !== me)
   const base = tab === 'delegadas' ? delegated : tab === 'compartilhadas' ? shared : mine
+  const activeCount = (set: Demand[]) => set.filter((d) => d.status !== 'finalizada').length
 
   // KPIs sobre as MINHAS demandas (meu trabalho)
   const total = mine.length
@@ -126,6 +128,68 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   }
   const fmtDate = (iso: string) => new Date(iso).toLocaleDateString(locale, { day: '2-digit', month: '2-digit' })
 
+  // Concluídas agrupadas por mês (mais recente primeiro)
+  const completedItems = base.filter((d) => d.status === 'finalizada')
+  const groupMap = new Map<string, { key: string; label: string; sort: number; items: Demand[] }>()
+  for (const d of completedItems) {
+    const dt = new Date(d.completed_at ?? d.created_at)
+    const y = dt.getFullYear()
+    const m = dt.getMonth()
+    const key = `${y}-${String(m).padStart(2, '0')}`
+    if (!groupMap.has(key)) {
+      const monthName = dt.toLocaleDateString(locale, { month: 'long' })
+      groupMap.set(key, { key, label: `${y} - ${monthName.charAt(0).toUpperCase()}${monthName.slice(1)}`, sort: y * 100 + m, items: [] })
+    }
+    groupMap.get(key)!.items.push(d)
+  }
+  const monthGroups = Array.from(groupMap.values()).sort((a, b) => b.sort - a.sort)
+
+  // Card de uma demanda (reusado na lista ativa e nos grupos de concluídas)
+  const cardOf = (d: Demand) => {
+    const overdue = isOverdue(d)
+    const dl = deadlineLabel(d)
+    const prog = deadlineProgress(d)
+    const tags = d.tags ?? []
+    return (
+      <Link
+        key={d.id}
+        href={`/demandas/${d.id}`}
+        className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${overdue ? '!border-rose-500/30' : ''}`}
+      >
+        <Avatar name={d.responsible?.full_name ?? '?'} src={d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) : null} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="truncate font-semibold text-slate-100">{d.title}</p>
+              <p className="mt-0.5 text-xs text-slate-500">
+                {d.responsible?.full_name ?? '—'} · {t('createdWord')} {fmtDate(d.created_at)}
+                {d.event && <span> · {d.event.name}</span>}
+              </p>
+            </div>
+            <Badge variant={STATUS_VARIANT[d.status]} className="shrink-0">{t(`status.${d.status}`)}</Badge>
+          </div>
+          {d.description && <p className="mt-2 line-clamp-2 text-sm text-slate-400">{d.description}</p>}
+          {(tags.length > 0 || overdue) && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {overdue && <Tag tone="danger">#{t('legendOverdue')}</Tag>}
+              {tags.map((tag) => (
+                <Tag key={tag} tone={tag === 'prioridade-alta' ? 'danger' : 'brand'}>#{tag}</Tag>
+              ))}
+              {tags.length > 0 && <Tag tone="auto">⚙ {t('autoTag')}</Tag>}
+            </div>
+          )}
+          <div className="mt-3 flex items-center justify-between gap-3 text-xs">
+            <span className="text-slate-500">{t('dueWord')} {d.due_date ? fmtDate(d.due_date) : '—'}</span>
+            <span className={`font-medium ${dl.cls}`}>{dl.text}</span>
+          </div>
+        </div>
+        <div className="absolute inset-x-0 bottom-0 h-1 bg-white/5">
+          <div className={`h-full ${prog.color} transition-all`} style={{ width: `${prog.pct}%` }} />
+        </div>
+      </Link>
+    )
+  }
+
   return (
     <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -153,9 +217,9 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
           {([
-            ['minhas', t('tabMine'), mine.length],
-            ['delegadas', t('tabDelegated'), delegated.length],
-            ['compartilhadas', t('tabShared'), shared.length],
+            ['minhas', t('tabMine'), activeCount(mine)],
+            ['delegadas', t('tabDelegated'), activeCount(delegated)],
+            ['compartilhadas', t('tabShared'), activeCount(shared)],
           ] as const).map(([key, label, count]) => (
             <Link
               key={key}
@@ -176,70 +240,36 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
         </div>
       </div>
 
-      <div className="mt-4 space-y-3">
-        {demands.length === 0 && (
-          <div className="glass p-10 text-center">
-            <EmptyState>{archived ? t('emptyArchived') : t('empty')}</EmptyState>
-          </div>
-        )}
+      {/* Lista ativa (flat) ou concluídas (agrupadas por mês) */}
+      {!archived ? (
+        <div className="mt-4 space-y-3">
+          {demands.length === 0 && (
+            <div className="glass p-10 text-center">
+              <EmptyState>{t('empty')}</EmptyState>
+            </div>
+          )}
+          {demands.map(cardOf)}
+        </div>
+      ) : (
+        <div className="mt-4 space-y-3">
+          {monthGroups.length === 0 && (
+            <div className="glass p-10 text-center">
+              <EmptyState>{t('emptyArchived')}</EmptyState>
+            </div>
+          )}
+          {monthGroups.map((g, i) => (
+            <details key={g.key} open={i === 0} className="glass overflow-hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/[0.03]">
+                <span>{g.label}</span>
+                <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-300">{g.items.length}</span>
+              </summary>
+              <div className="space-y-3 p-3 pt-0">{g.items.map(cardOf)}</div>
+            </details>
+          ))}
+        </div>
+      )}
 
-        {demands.map((d) => {
-          const overdue = isOverdue(d)
-          const dl = deadlineLabel(d)
-          const prog = deadlineProgress(d)
-          const tags = d.tags ?? []
-          return (
-            <Link
-              key={d.id}
-              href={`/demandas/${d.id}`}
-              className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${overdue ? '!border-rose-500/30' : ''}`}
-            >
-              <Avatar
-                name={d.responsible?.full_name ?? '?'}
-                src={d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) : null}
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="truncate font-semibold text-slate-100">{d.title}</p>
-                    <p className="mt-0.5 text-xs text-slate-500">
-                      {d.responsible?.full_name ?? '—'} · {t('createdWord')} {fmtDate(d.created_at)}
-                      {d.event && <span> · {d.event.name}</span>}
-                    </p>
-                  </div>
-                  <Badge variant={STATUS_VARIANT[d.status]} className="shrink-0">{t(`status.${d.status}`)}</Badge>
-                </div>
-
-                {d.description && <p className="mt-2 line-clamp-2 text-sm text-slate-400">{d.description}</p>}
-
-                {(tags.length > 0 || overdue) && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {overdue && <Tag tone="danger">#{t('legendOverdue')}</Tag>}
-                    {tags.map((tag) => (
-                      <Tag key={tag} tone={tag === 'prioridade-alta' ? 'danger' : 'brand'}>#{tag}</Tag>
-                    ))}
-                    {tags.length > 0 && <Tag tone="auto">⚙ {t('autoTag')}</Tag>}
-                  </div>
-                )}
-
-                <div className="mt-3 flex items-center justify-between gap-3 text-xs">
-                  <span className="text-slate-500">
-                    {t('dueWord')} {d.due_date ? fmtDate(d.due_date) : '—'}
-                  </span>
-                  <span className={`font-medium ${dl.cls}`}>{dl.text}</span>
-                </div>
-              </div>
-
-              {/* Barra de progresso do prazo — borda inferior do card */}
-              <div className="absolute inset-x-0 bottom-0 h-1 bg-white/5">
-                <div className={`h-full ${prog.color} transition-all`} style={{ width: `${prog.pct}%` }} />
-              </div>
-            </Link>
-          )
-        })}
-      </div>
-
-      {demands.length > 0 && (
+      {((!archived && demands.length > 0) || (archived && monthGroups.length > 0)) && (
         <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-600">
           <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-400" /> {t('legendOnTime')}</span>
           <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-amber-400" /> {t('legendNear')}</span>
