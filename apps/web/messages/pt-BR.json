@@ -398,7 +398,7 @@
       "desc": "Tudo que é combinado na correria e não vira tarefa, simplesmente some. O custo não é só o esquecimento — é o retrabalho, a cobrança e a confiança que se perde.",
       "items": [
         { "p": "“Achei que alguém ia resolver.”", "r": "Toda demanda tem um responsável claro. Nada fica no ar." },
-        { "p": "“Esqueci de anotar e passou.”", "r": "Capture em segundos, por texto ou voz. O que entra, não some." },
+        { "p": "“Esqueci de anotar e passou.”", "r": "Capture em segundos. O que entra, não some." },
         { "p": "“Não sei o que a equipe está fazendo.”", "r": "Acompanhe o andamento em tempo real, por pessoa, equipe e área." }
       ]
     },
@@ -406,7 +406,7 @@
       "kicker": "Simples assim",
       "title": "Da conversa à conclusão, em 4 passos",
       "steps": [
-        { "n": "01", "t": "Capture", "d": "Anote a demanda na hora — por texto ou comando de voz. Avulsa ou dentro de um evento." },
+        { "n": "01", "t": "Capture", "d": "Anote a demanda na hora — por texto, em segundos. Avulsa ou dentro de um evento." },
         { "n": "02", "t": "Delegue", "d": "Defina o responsável, prazo e prioridade. Para você ou para alguém da equipe." },
         { "n": "03", "t": "Acompanhe", "d": "Veja o status de tudo em painéis por pessoa, equipe, área e organização." },
         { "n": "04", "t": "Conclua", "d": "Registre o que foi feito. O histórico fica salvo e vira indicador de produtividade." }
@@ -434,7 +434,7 @@
         "Demandas pessoais e da casa em um só lugar",
         "Quem faz o quê, com prazo e lembrete",
         "Comunicação clara entre todos",
-        "Até 5 pessoas, por um preço acessível"
+        "Planos de 5 ou 10 pessoas, por um preço acessível"
       ],
       "familyResult": "Resultado: <b>nada esquecido, ninguém sobrecarregado</b> e mais tranquilidade no dia a dia."
     },
@@ -443,26 +443,20 @@
       "title": "Escolha como o MILA se aplica a você",
       "subtitle": "Comece pelo que faz sentido hoje. Você pode ter um plano de empresa e um de família na mesma conta.",
       "perMonth": "/mês",
-      "start": "Começar",
+      "start": "Assinar",
+      "featuredTag": "Mais escolhido",
       "corpTitle": "Corporativo",
       "corpSub": "Para times e empresas que querem previsibilidade na execução.",
-      "tierTimeName": "Time",
-      "tierTimeUsers": "até 10 usuários",
-      "tierTimeTag": "Para começar com o time",
-      "tierGrowthName": "Crescimento",
-      "tierGrowthUsers": "até 20 usuários",
-      "tierGrowthTag": "O mais escolhido",
-      "tierScaleName": "Escala",
-      "tierScaleUsers": "até 100 usuários",
-      "tierScaleTag": "Para operações maiores",
-      "corpNote": "Acima de 100 usuários: <b>+R$5 por usuário adicional</b>.",
+      "starterUsers": "até 20 usuários",
+      "growthUsers": "até 50 usuários",
+      "scaleUsers": "até 200 usuários",
+      "enterpriseUsers": "usuários ilimitados",
       "familyTitle": "Família",
-      "familySub": "Simples e acessível. Pague pelo número de pessoas — até 5.",
-      "familyCardTitle": "Plano Família",
-      "familyCardSub": "Escolha quantas pessoas vão participar.",
-      "familyPeople": "{count, plural, one {# pessoa} other {# pessoas}}",
-      "familyAside": "Tudo o que a família precisa para se organizar, sem complicar.",
-      "familyCta": "Começar com a família"
+      "familySub": "Simples e acessível, para a casa toda se organizar.",
+      "familyUsers": "até 5 pessoas",
+      "familyPlusUsers": "até 10 pessoas",
+      "familyCta": "Começar com a família",
+      "refundNote": "Garantia de 7 dias — reembolso integral se não fizer sentido."
     },
     "affiliates": {
       "badge": "Programa de Afiliados",

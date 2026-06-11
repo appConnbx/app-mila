@@ -126,17 +126,22 @@ export default async function LandingPage() {
   const corpBullets = t.raw('contexts.corpBullets') as string[]
   const familyBullets = t.raw('contexts.familyBullets') as string[]
 
-  const tiers = [
-    { name: t('plans.tierTimeName'), users: t('plans.tierTimeUsers'), tag: t('plans.tierTimeTag'), price: '200' },
-    { name: t('plans.tierGrowthName'), users: t('plans.tierGrowthUsers'), tag: t('plans.tierGrowthTag'), price: '300', featured: true },
-    { name: t('plans.tierScaleName'), users: t('plans.tierScaleUsers'), tag: t('plans.tierScaleTag'), price: '1.000' },
+  // Preço e checkout por locale: pt-BR → produto Brasil (R$); en/es → International (US$).
+  const isBR = locale === 'pt-BR'
+  const cur = isBR ? 'R$' : 'US$'
+  const checkout = (offBR: string, offINTL: string) =>
+    isBR
+      ? `https://pay.hotmart.com/P106262837P?off=${offBR}`
+      : `https://pay.hotmart.com/Y106267582L?off=${offINTL}`
+  const corpPlans = [
+    { name: 'Starter', users: t('plans.starterUsers'), price: isBR ? '200' : '80', href: checkout('hcxkobrb', 'gwlaaeei') },
+    { name: 'Growth', users: t('plans.growthUsers'), price: isBR ? '300' : '150', href: checkout('7d5lrof8', 'qqkl7a6p'), featured: true },
+    { name: 'Scale', users: t('plans.scaleUsers'), price: isBR ? '1.000' : '400', href: checkout('u7x98fyz', 'v7x1xwst') },
+    { name: 'Enterprise', users: t('plans.enterpriseUsers'), price: isBR ? '1.500' : '500', href: checkout('9gacabk6', 'g901biby') },
   ]
-  const familyTiers = [
-    { n: 1, v: '20' },
-    { n: 2, v: '30' },
-    { n: 3, v: '40' },
-    { n: 4, v: '50' },
-    { n: 5, v: '55' },
+  const familyPlans = [
+    { name: 'Family', users: t('plans.familyUsers'), price: isBR ? '37' : '9', href: checkout('f7nrog01', 'gmafnne4') },
+    { name: 'Family Plus', users: t('plans.familyPlusUsers'), price: isBR ? '50' : '13', href: checkout('d3c9cwha', 'e4qsc1yt') },
   ]
 
   return (
@@ -307,30 +312,31 @@ export default async function LandingPage() {
           <p className="mx-auto mt-3 max-w-xl text-slate-400">{t('plans.subtitle')}</p>
         </div>
 
-        {/* Corporativo */}
+        {/* Corporativo — 4 planos */}
         <div className="mt-10">
           <h3 className="text-lg font-semibold text-white">{t('plans.corpTitle')}</h3>
           <p className="text-sm text-slate-400">{t('plans.corpSub')}</p>
-          <div className="mt-5 grid gap-5 md:grid-cols-3">
-            {tiers.map((p) => (
+          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {corpPlans.map((p) => (
               <div
                 key={p.name}
-                className={`glass relative p-6 ${p.featured ? 'glow-top border-brand/40' : ''}`}
+                className={`glass relative flex flex-col p-6 ${p.featured ? 'glow-top border-brand/40' : ''}`}
               >
                 {p.featured && (
                   <span className="absolute -top-3 left-6 rounded-full bg-brand px-3 py-0.5 text-[11px] font-bold text-slate-950">
-                    {p.tag}
+                    {t('plans.featuredTag')}
                   </span>
                 )}
                 <p className="text-sm font-semibold text-white">{p.name}</p>
                 <p className="text-xs text-slate-400">{p.users}</p>
-                <p className="mt-4 text-4xl font-extrabold text-white">
-                  R${p.price}
+                <p className="mt-4 text-3xl font-extrabold text-white">
+                  {cur}{p.price}
                   <span className="text-base font-medium text-slate-400">{t('plans.perMonth')}</span>
                 </p>
-                {!p.featured && <p className="mt-1 text-xs text-slate-500">{p.tag}</p>}
-                <Link
-                  href="/login"
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noreferrer"
                   className={`mt-5 block rounded-xl px-4 py-2.5 text-center text-sm font-semibold transition ${
                     p.featured
                       ? 'bg-brand text-slate-950 hover:bg-brand-500'
@@ -338,42 +344,39 @@ export default async function LandingPage() {
                   }`}
                 >
                   {t('plans.start')}
-                </Link>
+                </a>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-sm text-slate-500">{t.rich('plans.corpNote', bold)}</p>
         </div>
 
-        {/* Família */}
+        {/* Família — 2 planos */}
         <div className="mt-12">
           <h3 className="text-lg font-semibold text-white">{t('plans.familyTitle')}</h3>
           <p className="text-sm text-slate-400">{t('plans.familySub')}</p>
-          <div className="mt-5 grid gap-5 lg:grid-cols-3">
-            <div className="glass p-6 lg:col-span-2">
-              <p className="text-sm font-semibold text-white">{t('plans.familyCardTitle')}</p>
-              <p className="text-xs text-slate-400">{t('plans.familyCardSub')}</p>
-              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
-                {familyTiers.map((f) => (
-                  <div key={f.n} className="rounded-xl border border-white/10 bg-white/[0.02] p-3 text-center">
-                    <p className="text-xs text-slate-400">{t('plans.familyPeople', { count: f.n })}</p>
-                    <p className="mt-1 text-xl font-bold text-white">R${f.v}</p>
-                    <p className="text-[10px] text-slate-500">{t('plans.perMonth')}</p>
-                  </div>
-                ))}
+          <div className="mt-5 grid gap-5 sm:grid-cols-2">
+            {familyPlans.map((p) => (
+              <div key={p.name} className="glass flex flex-col p-6">
+                <p className="text-sm font-semibold text-white">{p.name}</p>
+                <p className="text-xs text-slate-400">{p.users}</p>
+                <p className="mt-4 text-3xl font-extrabold text-white">
+                  {cur}{p.price}
+                  <span className="text-base font-medium text-slate-400">{t('plans.perMonth')}</span>
+                </p>
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 block rounded-xl bg-orange-500 px-4 py-2.5 text-center text-sm font-semibold text-slate-950 transition hover:bg-orange-400"
+                >
+                  {t('plans.familyCta')}
+                </a>
               </div>
-            </div>
-            <div className="glass flex flex-col justify-center p-6">
-              <p className="text-sm text-slate-300">{t('plans.familyAside')}</p>
-              <Link
-                href="/login"
-                className="mt-4 block rounded-xl bg-orange-500 px-4 py-2.5 text-center text-sm font-semibold text-slate-950 transition hover:bg-orange-400"
-              >
-                {t('plans.familyCta')}
-              </Link>
-            </div>
+            ))}
           </div>
         </div>
+
+        <p className="mt-8 text-center text-sm text-slate-500">{t('plans.refundNote')}</p>
       </section>
 
       {/* ---------------- INDIQUE E GANHE ---------------- */}

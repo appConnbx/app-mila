@@ -398,7 +398,7 @@
       "desc": "Everything agreed on the fly that never becomes a task simply vanishes. The cost isn't just forgetting — it's the rework, the chasing and the trust you lose.",
       "items": [
         { "p": "“I thought someone would handle it.”", "r": "Every task has a clear owner. Nothing is left hanging." },
-        { "p": "“I forgot to write it down and missed it.”", "r": "Capture in seconds, by text or voice. What goes in doesn't disappear." },
+        { "p": "“I forgot to write it down and missed it.”", "r": "Capture in seconds. What goes in doesn't disappear." },
         { "p": "“I don't know what the team is doing.”", "r": "Track progress in real time, by person, team and area." }
       ]
     },
@@ -406,7 +406,7 @@
       "kicker": "It's that simple",
       "title": "From conversation to done, in 4 steps",
       "steps": [
-        { "n": "01", "t": "Capture", "d": "Note the task right away — by text or voice. Standalone or inside an event." },
+        { "n": "01", "t": "Capture", "d": "Note the task right away — by text, in seconds. Standalone or inside an event." },
         { "n": "02", "t": "Delegate", "d": "Set the owner, due date and priority. For you or for someone on the team." },
         { "n": "03", "t": "Track", "d": "See the status of everything in dashboards by person, team, area and organization." },
         { "n": "04", "t": "Complete", "d": "Record what was done. History is saved and becomes a productivity metric." }
@@ -434,7 +434,7 @@
         "Personal and household tasks in one place",
         "Who does what, with due date and reminder",
         "Clear communication for everyone",
-        "Up to 5 people, at an affordable price"
+        "Plans for 5 or 10 people, at an affordable price"
       ],
       "familyResult": "Result: <b>nothing forgotten, no one overloaded</b> and more peace of mind day to day."
     },
@@ -443,26 +443,20 @@
       "title": "Choose how MILA fits you",
       "subtitle": "Start with what makes sense today. You can have a company plan and a family plan in the same account.",
       "perMonth": "/mo",
-      "start": "Get started",
+      "start": "Subscribe",
+      "featuredTag": "Most popular",
       "corpTitle": "Corporate",
       "corpSub": "For teams and companies that want predictable execution.",
-      "tierTimeName": "Team",
-      "tierTimeUsers": "up to 10 users",
-      "tierTimeTag": "To start with your team",
-      "tierGrowthName": "Growth",
-      "tierGrowthUsers": "up to 20 users",
-      "tierGrowthTag": "Most popular",
-      "tierScaleName": "Scale",
-      "tierScaleUsers": "up to 100 users",
-      "tierScaleTag": "For larger operations",
-      "corpNote": "Above 100 users: <b>+R$5 per additional user</b>.",
+      "starterUsers": "up to 20 users",
+      "growthUsers": "up to 50 users",
+      "scaleUsers": "up to 200 users",
+      "enterpriseUsers": "unlimited users",
       "familyTitle": "Family",
-      "familySub": "Simple and affordable. Pay by number of people — up to 5.",
-      "familyCardTitle": "Family plan",
-      "familyCardSub": "Choose how many people will take part.",
-      "familyPeople": "{count, plural, one {# person} other {# people}}",
-      "familyAside": "Everything a family needs to get organized, without the hassle.",
-      "familyCta": "Start with the family"
+      "familySub": "Simple and affordable, so the whole home stays organized.",
+      "familyUsers": "up to 5 people",
+      "familyPlusUsers": "up to 10 people",
+      "familyCta": "Start with the family",
+      "refundNote": "7-day guarantee — full refund if it's not a fit."
     },
     "affiliates": {
       "badge": "Affiliate Program",
