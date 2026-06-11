@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MILA</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="root">
+      <!-- Pílula (estado recolhido, encostada na borda) -->
+      <div id="pill" title="MILA — suas demandas">
+        <span class="pill-m">M</span>
+        <span id="pill-count" class="pill-count" hidden>0</span>
+      </div>
+
+      <!-- Painel (estado expandido) -->
+      <div id="panel" hidden>
+        <header id="panel-header" data-tauri-drag-region>
+          <div class="brand" data-tauri-drag-region>
+            <span class="mark" data-tauri-drag-region>M</span>
+            <span class="name" data-tauri-drag-region>MILA</span>
+          </div>
+          <div class="header-actions">
+            <button id="btn-refresh" class="icon-btn" title="Atualizar">⟳</button>
+            <button id="btn-logout" class="icon-btn" title="Sair da conta" hidden>⏻</button>
+          </div>
+        </header>
+
+        <!-- Login -->
+        <section id="view-login" hidden>
+          <p class="login-hint">Entre com a mesma conta do MILA web.</p>
+          <form id="login-form">
+            <input id="login-email" type="email" placeholder="E-mail" autocomplete="username" required />
+            <input id="login-password" type="password" placeholder="Senha" autocomplete="current-password" required />
+            <button type="submit" id="login-btn">Entrar</button>
+            <p id="login-error" class="error" hidden></p>
+          </form>
+        </section>
+
+        <!-- Conteúdo -->
+        <section id="view-main" hidden>
+          <form id="quick-form" autocomplete="off">
+            <input id="quick-title" type="text" placeholder="Nova demanda…" maxlength="200" />
+            <div class="quick-row">
+              <select id="quick-holding"></select>
+              <input id="quick-due" type="date" title="Prazo (opcional)" />
+              <button type="submit" id="quick-btn" title="Criar demanda">+</button>
+            </div>
+            <p id="quick-error" class="error" hidden></p>
+          </form>
+          <div id="list"></div>
+        </section>
+
+        <footer id="panel-footer">
+          <label class="autostart"><input type="checkbox" id="chk-autostart" /> Iniciar com o Windows</label>
+          <span class="ver">v0.1.0</span>
+        </footer>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
