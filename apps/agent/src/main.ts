@@ -1,5 +1,7 @@
 import { getCurrentWindow, currentMonitor, LogicalSize, LogicalPosition } from '@tauri-apps/api/window'
 import { enable as autostartEnable, disable as autostartDisable, isEnabled as autostartIsEnabled } from '@tauri-apps/plugin-autostart'
+import { check as checkUpdate } from '@tauri-apps/plugin-updater'
+import { relaunch } from '@tauri-apps/plugin-process'
 import { supabase, fetchPending, fetchHoldings, createDemand, setDemandStatus, type Demand, type DemandStatus, type Holding } from './supabase'
 import { COLLAPSED, EXPANDED, POLL_MS } from './config'
 
@@ -23,6 +25,7 @@ let demands: Demand[] = []
 let holdings: Holding[] = []
 let collapseTimer: number | undefined
 let pollTimer: number | undefined
+let pendingRelaunch = false
 
 // ---------------- Janela: dock + expand/collapse ----------------
 async function dockToEdge() {
@@ -54,6 +57,11 @@ async function expand() {
 
 async function collapse() {
   if (!expanded || pinned) return
+  // Atualização baixada enquanto o painel estava em uso: aplica agora.
+  if (pendingRelaunch) {
+    await relaunch()
+    return
+  }
   expanded = false
   document.body.classList.remove('expanded')
   panel.hidden = true
@@ -331,6 +339,24 @@ $<HTMLInputElement>('chk-autostart').addEventListener('change', async (e) => {
   }
 })
 
+// ---------------- Auto-update ----------------
+// Verifica no boot e a cada 6h; baixa e instala sozinho. Só reinicia quando
+// o painel não está em uso (senão marca e aplica ao recolher).
+async function autoUpdate() {
+  try {
+    const update = await checkUpdate()
+    if (!update) return
+    await update.downloadAndInstall()
+    if (!expanded && !pinned) {
+      await relaunch()
+    } else {
+      pendingRelaunch = true
+    }
+  } catch {
+    // offline / dev sem updater: tenta na próxima rodada
+  }
+}
+
 // ---------------- Boot ----------------
 async function boot() {
   await dockToEdge()
@@ -340,5 +366,7 @@ async function boot() {
   } else {
     showLogin()
   }
+  void autoUpdate()
+  window.setInterval(() => void autoUpdate(), 6 * 60 * 60 * 1000)
 }
 void boot()

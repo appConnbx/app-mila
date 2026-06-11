@@ -30,6 +30,7 @@
   "bundle": {
     "active": true,
     "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -41,6 +42,14 @@
         "installMode": "currentUser",
         "languages": ["PortugueseBR"]
       }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDEwMEM2RDdFOTgzRjc3RkUKUldUK2R6K1lmbTBNRUV1b0E2VGdycVVuN3lWRkFXV3NOcHd6eEVNb21nSm9TQWVQWGdFSW91WTkK",
+      "endpoints": [
+        "https://github.com/appConnbx/app-mila/releases/latest/download/latest.json"
+      ]
     }
   }
 }

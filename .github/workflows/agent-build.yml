@@ -1,5 +1,13 @@
-# Compila o instalador Windows do MILA Agente (Tauri/NSIS) na nuvem.
-# Dispara manualmente (Actions > MILA Agente > Run workflow) ou por tag agent-v*.
+# MILA Agente — build e release do instalador Windows (Tauri/NSIS).
+#
+# Dois modos:
+#  - Tag agent-v* (ex.: agent-v0.2.0): compila, ASSINA a atualização e publica
+#    uma GitHub Release com o instalador + latest.json. Os apps instalados
+#    se atualizam sozinhos a partir dela (plugin updater).
+#  - Run workflow (manual): só compila e deixa o .exe como artifact (teste).
+#
+# Segredos necessários (Settings > Secrets > Actions):
+#  - TAURI_SIGNING_PRIVATE_KEY: conteúdo de ~/.tauri/mila-agent.key
 name: MILA Agente — instalador Windows
 
 on:
@@ -7,6 +15,9 @@ on:
   push:
     tags:
       - 'agent-v*'
+
+permissions:
+  contents: write
 
 jobs:
   build-windows:
@@ -34,18 +45,32 @@ jobs:
       - name: Gerar ícones do app
         run: pnpm --filter agent exec tauri icon src-tauri/icon-source.png
 
-      - name: Compilar (NSIS)
+      # ----- Tag: release assinada com auto-update -----
+      - name: Compilar e publicar release (tag)
+        if: startsWith(github.ref, 'refs/tags/agent-v')
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ''
+        with:
+          projectPath: apps/agent
+          tagName: ${{ github.ref_name }}
+          releaseName: 'MILA Agente ${{ github.ref_name }}'
+          releaseBody: 'Instalador do MILA Agente para Windows. Os apps já instalados atualizam sozinhos.'
+
+      # ----- Manual: build de teste, sem release -----
+      - name: Compilar (manual, sem release)
+        if: ${{ !startsWith(github.ref, 'refs/tags/agent-v') }}
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ''
         run: pnpm --filter agent exec tauri build
 
-      - name: Publicar instalador como artifact
+      - name: Publicar instalador como artifact (manual)
+        if: ${{ !startsWith(github.ref, 'refs/tags/agent-v') }}
         uses: actions/upload-artifact@v4
         with:
           name: mila-agente-windows
           path: apps/agent/src-tauri/target/release/bundle/nsis/*.exe
           if-no-files-found: error
-
-      - name: Anexar à release (apenas em tag)
-        if: startsWith(github.ref, 'refs/tags/agent-v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: apps/agent/src-tauri/target/release/bundle/nsis/*.exe

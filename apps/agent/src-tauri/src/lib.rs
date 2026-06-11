@@ -17,6 +17,8 @@ pub fn run() {
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             None,
         ))
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             // Sem acrílico nativo: ele pinta o retângulo inteiro da janela e
             // "vaza" nos cantos arredondados. O vidro vem do CSS translúcido

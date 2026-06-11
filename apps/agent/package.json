@@ -14,7 +14,9 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.47.0",
     "@tauri-apps/api": "^2.4.0",
-    "@tauri-apps/plugin-autostart": "^2.2.0"
+    "@tauri-apps/plugin-autostart": "^2.2.0",
+    "@tauri-apps/plugin-process": "^2.2.0",
+    "@tauri-apps/plugin-updater": "^2.6.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.4.0",
