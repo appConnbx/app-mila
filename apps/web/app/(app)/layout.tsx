@@ -36,12 +36,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
   let holding: Holding | null = null
   let isHoldingAdmin = false
+  let isManager = false
 
   if (activeHolding) {
     const { data: hData } = await supabase.from('holdings').select('name, kind, legal_name').eq('id', activeHolding).single()
     holding = hData as unknown as Holding | null
     const { data: admin } = await sb.rpc('is_holding_admin')
     isHoldingAdmin = !!admin
+    // Dashboard gerencial: admin de qualquer nível (holding/org/área/equipe).
+    const { data: mgr } = await sb.rpc('is_manager')
+    isManager = !!mgr
 
     if (!isHome) {
       // Guard de assinatura ativa.
@@ -56,8 +60,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const isFamily = holding?.kind === 'family'
   const navItems = [
-    // Dashboard (gerencial) só para administradores da holding.
-    ...(isHoldingAdmin ? [{ href: '/painel', label: t('nav.panel') }] : []),
+    // Dashboard (gerencial) para administradores de qualquer nível.
+    ...(isManager ? [{ href: '/painel', label: t('nav.panel') }] : []),
     { href: '/demandas', label: t('nav.demands') },
     ...(!isFamily ? [{ href: '/eventos', label: t('nav.events') }] : []),
     // Organograma: visível a todos (corporativo).
