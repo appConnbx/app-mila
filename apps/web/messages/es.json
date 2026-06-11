@@ -62,7 +62,11 @@
     "streakHint": "Completa algo cada día hábil para mantener la racha.",
     "editProfile": "Editar perfil",
     "profileSubtitle": "Completa tu perfil: foto, celular y habilidades.",
-    "profileNudge": "Tu perfil está incompleto — agrega foto, celular y habilidades."
+    "profileNudge": "Tu perfil está incompleto — agrega foto, celular y habilidades.",
+    "agentTitle": "Agente MILA para Windows",
+    "agentDesc": "Un widget de vidrio al borde de la pantalla: tus tareas pendientes siempre a la vista, creación rápida y alerta visual cuando te llega algo nuevo. Entra con la misma cuenta.",
+    "agentCta": "Descargar para Windows",
+    "agentNote": "Gratis · Windows 10/11 · se actualiza solo"
   },
   "panel": {
     "title": "Panel",

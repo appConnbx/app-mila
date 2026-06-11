@@ -169,6 +169,32 @@ export default async function DashboardPage() {
           </ul>
         )}
       </section>
+
+      {/* ---------- Agente desktop (Windows) ---------- */}
+      <section>
+        <div className="glass glow-top flex flex-wrap items-center gap-5 p-6">
+          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand/15">
+            {/* Janela do Windows estilizada */}
+            <svg className="h-7 w-7 text-brand" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+              <path d="M3 5.5L10.5 4.4v7.1H3V5.5zM11.6 4.2L21 3v8.5h-9.4V4.2zM3 12.5h7.5v7.1L3 18.5v-6zM11.6 12.5H21V21l-9.4-1.2v-7.3z" />
+            </svg>
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg font-semibold text-white">{t('agentTitle')}</h2>
+            <p className="mt-1 max-w-2xl text-sm text-slate-400">{t('agentDesc')}</p>
+            <p className="mt-1 text-xs text-slate-500">{t('agentNote')}</p>
+          </div>
+          <a
+            href="/api/agent/download"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {t('agentCta')}
+          </a>
+        </div>
+      </section>
     </div>
   )
 }

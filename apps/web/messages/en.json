@@ -62,7 +62,11 @@
     "streakHint": "Complete something each business day to keep the streak alive.",
     "editProfile": "Edit profile",
     "profileSubtitle": "Complete your profile: photo, phone and skills.",
-    "profileNudge": "Your profile is incomplete — add a photo, phone and skills."
+    "profileNudge": "Your profile is incomplete — add a photo, phone and skills.",
+    "agentTitle": "MILA Agent for Windows",
+    "agentDesc": "A glass widget on the edge of your screen: your pending tasks always in sight, quick capture, and a visual alert when something new lands on you. Sign in with the same account.",
+    "agentCta": "Download for Windows",
+    "agentNote": "Free · Windows 10/11 · updates itself"
   },
   "panel": {
     "title": "Dashboard",
