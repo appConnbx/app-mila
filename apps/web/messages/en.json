@@ -279,6 +279,8 @@
     "taxId": "Tax ID",
     "phoneField": "Phone",
     "contactEmail": "Contact email",
+    "timezone": "Time zone",
+    "timezoneHint": "Applies to how dates and times are shown for this instance.",
     "save": "Save",
     "openFolder": "Open",
     "familyTitle": "Family members",

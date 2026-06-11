@@ -34,7 +34,7 @@ export default async function TeamPage({
   if (!org || !area || !team) redirect('/estrutura')
 
   const [peopleRes, adminsRes, membersRes] = await Promise.all([
-    supabase.from('people').select('id, full_name').order('full_name'),
+    supabase.from('people').select('id, full_name').eq('is_active', true).order('full_name'),
     supabase.from('memberships').select('id, person_id').eq('role', 'team_admin').eq('scope_id', teamId),
     supabase.from('team_members').select('id, person_id').eq('team_id', teamId),
   ])

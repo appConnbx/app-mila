@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Button, Badge, EmptyState, Avatar, Tag } from '@/components/ui'
+import { fmtDayMonth } from '@/lib/datetime'
 
 type Demand = {
   id: string
@@ -51,8 +52,9 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { data: holdingData } = await supabase.from('holdings').select('name, kind').eq('id', holdingId).single()
+  const { data: holdingData } = await supabase.from('holdings').select('name, kind, timezone').eq('id', holdingId).single()
   const holding = holdingData as unknown as { name: string; kind: string } | null
+  const tz = (holdingData as unknown as { timezone: string | null } | null)?.timezone ?? 'America/Sao_Paulo'
 
   const { data: meRows } = await supabase
     .from('people')
@@ -127,7 +129,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
     const pct = Math.max(4, Math.min(100, Math.round(((now - start) / Math.max(1, end - start)) * 100)))
     return { pct, color: pct >= 70 ? 'bg-gradient-to-r from-amber-400 to-amber-500' : 'bg-gradient-to-r from-emerald-400 to-emerald-500' }
   }
-  const fmtDate = (iso: string) => new Date(iso).toLocaleDateString(locale, { day: '2-digit', month: '2-digit' })
+  const fmtDate = (iso: string) => fmtDayMonth(iso, locale, tz)
 
   // Concluídas agrupadas por mês (mais recente primeiro)
   const completedItems = base.filter((d) => d.status === 'finalizada')

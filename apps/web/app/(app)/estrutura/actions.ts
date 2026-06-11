@@ -41,6 +41,7 @@ export async function updateHolding(formData: FormData) {
     tax_id: String(formData.get('tax_id') ?? '').trim() || null,
     contact_email: String(formData.get('contact_email') ?? '').trim() || null,
     phone: String(formData.get('phone') ?? '').trim() || null,
+    timezone: String(formData.get('timezone') ?? '').trim() || 'America/Sao_Paulo',
   }
   if (!patch.name) return
   await supabase.from('holdings').update(patch as never).eq('id', holdingId)
@@ -201,9 +202,10 @@ export async function setStructureActive(formData: FormData) {
   const kind = String(formData.get('kind') ?? '') as StructureKind
   const id = String(formData.get('id') ?? '')
   const is_active = String(formData.get('active') ?? '') === '1'
-  const table = STRUCTURE_TABLES[kind]
-  if (!table || !id) return
-  await supabase.from(table).update({ is_active } as never).eq('id', id)
+  if (!kind || !id) return
+  // Desativar cascateia para a estrutura abaixo (áreas/equipes); nunca toca em pessoas.
+  const sb = supabase as unknown as { rpc: (n: string, args: Record<string, unknown>) => Promise<unknown> }
+  await sb.rpc('set_structure_active', { p_kind: kind, p_id: id, p_active: is_active })
   revalidate()
 }
 
@@ -224,7 +226,13 @@ export async function setPersonActive(formData: FormData) {
   const id = String(formData.get('id') ?? '')
   const is_active = String(formData.get('active') ?? '') === '1'
   if (!id) return
-  await supabase.from('people').update({ is_active } as never).eq('id', id)
+  if (is_active) {
+    await supabase.from('people').update({ is_active: true } as never).eq('id', id)
+  } else {
+    // Desativa e reatribui as demandas abertas ao admin da equipe (com observação).
+    const sb = supabase as unknown as { rpc: (n: string, args: Record<string, unknown>) => Promise<unknown> }
+    await sb.rpc('deactivate_person', { p_id: id })
+  }
   revalidate()
 }
 

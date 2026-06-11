@@ -29,7 +29,7 @@ export default async function AreaPage({ params }: { params: Promise<{ orgId: st
 
   const [teamsRes, peopleRes, adminsRes] = await Promise.all([
     supabase.from('teams').select('id, name, is_active').eq('area_id', areaId).order('name'),
-    supabase.from('people').select('id, full_name').order('full_name'),
+    supabase.from('people').select('id, full_name').eq('is_active', true).order('full_name'),
     supabase.from('memberships').select('id, person_id').eq('role', 'area_admin').eq('scope_id', areaId),
   ])
   const teams = (teamsRes.data ?? []) as unknown as Named[]

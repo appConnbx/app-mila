@@ -279,6 +279,8 @@
     "taxId": "CNPJ / CPF",
     "phoneField": "Telefone",
     "contactEmail": "E-mail de contato",
+    "timezone": "Fuso horário",
+    "timezoneHint": "Aplica-se à exibição de datas e horas desta instância.",
     "save": "Salvar",
     "openFolder": "Abrir",
     "familyTitle": "Pessoas da família",

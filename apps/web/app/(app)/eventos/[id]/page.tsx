@@ -7,6 +7,7 @@ import { Avatar, Badge, ProgressBar, EmptyState } from '@/components/ui'
 import { SubmitButton } from '@/components/pending'
 import { ConfirmButton } from '@/components/confirm-button'
 import { finalizeEvent, deleteEvent, addParticipant, removeParticipant, addEventDemand } from '../actions'
+import { fmtDate as fmtDateTz, fmtDateTime as fmtDateTimeTz } from '@/lib/datetime'
 
 const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 const STATUS_RANK = { nova: 0, trabalhando: 0, finalizada: 1 } as const
@@ -76,6 +77,8 @@ export default async function EventDetailPage({
   const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
   const { data: adminFlag } = await sb.rpc('is_holding_admin')
   const isHoldingAdmin = !!adminFlag
+  const { data: hRow } = await supabase.from('holdings').select('timezone').eq('id', holdingId).single()
+  const tz = (hRow as unknown as { timezone: string | null } | null)?.timezone ?? 'America/Sao_Paulo'
 
   const [demandsRes, partsRes, peopleRes] = await Promise.all([
     supabase
@@ -114,12 +117,8 @@ export default async function EventDetailPage({
     ...participants.map((p) => ({ id: p.person_id, full_name: p.person?.full_name ?? '—' })),
   ]
 
-  const fmtDate = (iso: string | null) => (iso ? new Date(iso + 'T00:00:00').toLocaleDateString(locale) : '—')
-  const fmtDateTime = (iso: string | null) => {
-    if (!iso) return '—'
-    const dt = new Date(iso)
-    return `${dt.toLocaleDateString(locale)} ${dt.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`
-  }
+  const fmtDate = (iso: string | null) => fmtDateTz(iso, locale, tz)
+  const fmtDateTime = (iso: string | null) => fmtDateTimeTz(iso, locale, tz)
   const tabHref = (tb: 'demandas' | 'participantes') => (tb === 'demandas' ? `/eventos/${ev.id}` : `/eventos/${ev.id}?tab=participantes`)
 
   return (

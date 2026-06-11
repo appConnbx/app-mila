@@ -49,6 +49,21 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Expiração por inatividade (30 min). touch_activity registra a atividade
+  // (com throttle) e devolve 'expired' quando passou o limite.
+  if (user && !isPublic) {
+    const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: string | null }> }
+    const { data: activity } = await sb.rpc('touch_activity')
+    if (activity === 'expired') {
+      await supabase.auth.signOut()
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      const redirect = NextResponse.redirect(url)
+      response.cookies.getAll().forEach((c) => redirect.cookies.set(c))
+      return redirect
+    }
+  }
+
   if (user && path === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'

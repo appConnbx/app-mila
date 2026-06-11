@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { Avatar, Badge, Button, fieldClasses, labelClasses } from '@/components/ui'
 import { ConfirmButton } from '@/components/confirm-button'
 import { SubmitButton } from '@/components/pending'
+import { fmtDateTime } from '@/lib/datetime'
 import {
   updatePerson,
   setHoldingAdmin,
@@ -33,18 +34,14 @@ export type HoldingUser = {
   has_active_session: boolean
 }
 
-export function UsersManager({ users, flash }: { users: HoldingUser[]; flash?: { kind: 'ok' | 'err'; text: string } }) {
+export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash?: { kind: 'ok' | 'err'; text: string }; tz?: string }) {
   const t = useTranslations('structure')
   const locale = useLocale()
   const [openId, setOpenId] = useState<string | null>(null)
   const [q, setQ] = useState('')
   const [pw, setPw] = useState('')
 
-  const fmt = (iso: string | null) => {
-    if (!iso) return '—'
-    const d = new Date(iso)
-    return `${d.toLocaleDateString(locale)} ${d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`
-  }
+  const fmt = (iso: string | null) => fmtDateTime(iso, locale, tz)
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase()

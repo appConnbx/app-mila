@@ -18,8 +18,9 @@ export default async function EstruturaPage() {
   if (!holdingId) redirect('/dashboard')
 
   const supabase = await createClient()
-  const { data: holdingData } = await supabase.from('holdings').select('id, name, kind').eq('id', holdingId).single()
+  const { data: holdingData } = await supabase.from('holdings').select('id, name, kind, timezone').eq('id', holdingId).single()
   const holding = holdingData as unknown as Holding | null
+  const tz = (holdingData as unknown as { timezone: string | null } | null)?.timezone ?? 'America/Sao_Paulo'
 
   const { data: orgsData } = await supabase.from('organizations').select('id, name, is_active').order('name')
   const orgs = (orgsData ?? []) as unknown as Org[]
@@ -35,7 +36,7 @@ export default async function EstruturaPage() {
         <p className="mt-1 text-sm text-slate-400">{t('familyDesc')}</p>
 
         <div className="mt-6">
-          <UsersManager users={users} />
+          <UsersManager users={users} tz={tz} />
         </div>
 
         {/* Adicionar pessoa */}

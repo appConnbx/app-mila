@@ -279,6 +279,8 @@
     "taxId": "NIF / CNPJ",
     "phoneField": "Teléfono",
     "contactEmail": "Correo de contacto",
+    "timezone": "Zona horaria",
+    "timezoneHint": "Se aplica a cómo se muestran fechas y horas en esta instancia.",
     "save": "Guardar",
     "openFolder": "Abrir",
     "familyTitle": "Personas de la familia",

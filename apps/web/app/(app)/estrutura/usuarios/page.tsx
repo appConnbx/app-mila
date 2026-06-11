@@ -1,5 +1,6 @@
+import { cookies } from 'next/headers'
 import { getTranslations } from 'next-intl/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Breadcrumb, Card, inputCls, btnCls } from '../_components'
 import { SubmitButton } from '@/components/pending'
 import { createPerson } from '../actions'
@@ -13,6 +14,10 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
   const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: HoldingUser[] | null }> }
   const { data } = await sb.rpc('holding_users')
   const users = data ?? []
+
+  const holdingId = (await cookies()).get(ACTIVE_HOLDING_COOKIE)?.value
+  const { data: hRow } = await supabase.from('holdings').select('timezone').eq('id', holdingId ?? '').single()
+  const tz = (hRow as unknown as { timezone: string | null } | null)?.timezone ?? 'America/Sao_Paulo'
 
   const flash =
     ok === 'deleted' ? { kind: 'ok' as const, text: t('msgDeleted') }
@@ -31,7 +36,7 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
       <p className="mt-1 text-sm text-slate-400">{t('usersMgmtDesc')}</p>
 
       <div className="mt-6">
-        <UsersManager users={users} flash={flash} />
+        <UsersManager users={users} flash={flash} tz={tz} />
       </div>
 
       {/* Cadastrar novo usuário — só nome (e opcionais). O vínculo é a instância;

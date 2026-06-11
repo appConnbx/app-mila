@@ -5,6 +5,7 @@ import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { updateHolding } from '../actions'
 import { Breadcrumb, Card, inputCls, btnCls } from '../_components'
 import { SubmitButton } from '@/components/pending'
+import { TIMEZONES } from '@/lib/datetime'
 
 type Holding = {
   id: string
@@ -14,6 +15,7 @@ type Holding = {
   tax_id: string | null
   contact_email: string | null
   phone: string | null
+  timezone: string | null
 }
 
 const labelCls = 'block text-sm font-medium text-slate-300'
@@ -28,7 +30,7 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
   const supabase = await createClient()
   const { data } = await supabase
     .from('holdings')
-    .select('id, name, kind, legal_name, tax_id, contact_email, phone')
+    .select('id, name, kind, legal_name, tax_id, contact_email, phone, timezone')
     .eq('id', holdingId)
     .single()
   const h = data as unknown as Holding | null
@@ -70,6 +72,13 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
           <div>
             <label htmlFor="contact_email" className={labelCls}>{t('contactEmail')}</label>
             <input id="contact_email" name="contact_email" type="email" defaultValue={h.contact_email ?? ''} className={`mt-1 ${inputCls}`} />
+          </div>
+          <div>
+            <label htmlFor="timezone" className={labelCls}>{t('timezone')}</label>
+            <select id="timezone" name="timezone" defaultValue={h.timezone ?? 'America/Sao_Paulo'} className={`mt-1 ${inputCls}`}>
+              {TIMEZONES.map((tz) => <option key={tz} value={tz}>{tz}</option>)}
+            </select>
+            <p className="mt-1 text-xs text-slate-500">{t('timezoneHint')}</p>
           </div>
           <div className="flex justify-end pt-2">
             <SubmitButton className={btnCls}>{t('save')}</SubmitButton>

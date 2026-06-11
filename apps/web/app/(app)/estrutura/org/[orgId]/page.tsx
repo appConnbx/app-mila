@@ -25,7 +25,7 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
 
   const [areasRes, peopleRes, adminsRes] = await Promise.all([
     supabase.from('areas').select('id, name, is_active').eq('organization_id', orgId).order('name'),
-    supabase.from('people').select('id, full_name').order('full_name'),
+    supabase.from('people').select('id, full_name').eq('is_active', true).order('full_name'),
     supabase.from('memberships').select('id, person_id').eq('role', 'org_admin').eq('scope_id', orgId),
   ])
   const areas = (areasRes.data ?? []) as unknown as Named[]

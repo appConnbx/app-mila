@@ -6,7 +6,8 @@ import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui'
 import { SubmitButton } from '@/components/pending'
 import { ConfirmButton } from '@/components/confirm-button'
-import { updateDemand, setDemandStatus, addObservation, deleteDemand } from '../actions'
+import { setDemandStatus, addObservation, deleteDemand } from '../actions'
+import { fmtDate, fmtDateTime } from '@/lib/datetime'
 
 const STATUS_VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 
@@ -52,24 +53,23 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
   const d = demandData as unknown as Demand | null
   if (!d) notFound()
 
-  // Quem sou eu nesta instância + sou admin da holding? (controla exclusão)
+  // Quem sou eu nesta instância + admin? (controla exclusão) + fuso da instância.
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)!.value
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  const { data: meRows } = await supabase
-    .from('people')
-    .select('id')
-    .eq('auth_user_id', user?.id ?? '')
-    .eq('holding_id', holdingId)
-    .limit(1)
-  const me = (meRows as unknown as { id: string }[] | null)?.[0]?.id
+  const [meRes, hRes] = await Promise.all([
+    supabase.from('people').select('id').eq('auth_user_id', user?.id ?? '').eq('holding_id', holdingId).limit(1),
+    supabase.from('holdings').select('timezone').eq('id', holdingId).single(),
+  ])
+  const me = (meRes.data as unknown as { id: string }[] | null)?.[0]?.id
+  const tz = (hRes.data as unknown as { timezone: string | null } | null)?.timezone ?? 'America/Sao_Paulo'
   const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
   const { data: adminFlag } = await sb.rpc('is_holding_admin')
   const canDelete = d.origin_id === me || !!adminFlag
 
   const [peopleRes, obsRes, histRes] = await Promise.all([
-    supabase.from('people').select('id, full_name').eq('is_active', true).order('full_name'),
+    supabase.from('people').select('id, full_name').order('full_name'),
     supabase.from('demand_observations').select('id, body, created_at, author:author_id(full_name)').eq('demand_id', id).order('created_at', { ascending: false }),
     supabase.from('demand_history').select('id, field_changed, old_value, new_value, created_at, changed_by').eq('demand_id', id).order('created_at', { ascending: false }),
   ])
@@ -78,11 +78,7 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
   const history = (histRes.data ?? []) as unknown as Hist[]
 
   const nameOf = (pid: string | null) => (pid ? people.find((p) => p.id === pid)?.full_name ?? '—' : '—')
-  const fmtDate = (iso: string | null) => (iso ? iso.slice(0, 10).split('-').reverse().join('/') : '—')
-  const fmtDateTime = (iso: string) => {
-    const dt = new Date(iso)
-    return `${dt.toLocaleDateString(locale)} ${dt.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`
-  }
+  const visLabel = d.visibility === 'public' ? t('visPublic') : t('visPrivate')
   const fieldLabel = (f: string) =>
     ({ status: t('fStatus'), responsible_id: t('fResponsible'), priority: t('fPriority'), due_date: t('fDue') }[f] ?? f)
   const renderVal = (f: string, v: string | null) => {
@@ -90,136 +86,118 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
     if (f === 'status') return td(`status.${v}`)
     if (f === 'priority') return td(`priority.${v}`)
     if (f === 'responsible_id') return nameOf(v)
-    if (f === 'due_date') return fmtDate(v)
+    if (f === 'due_date') return fmtDate(v, locale, tz)
     return v
   }
 
+  const Row = ({ label, value }: { label: string; value: string }) => (
+    <div className="flex justify-between gap-3">
+      <dt className="text-slate-500">{label}</dt>
+      <dd className="text-right text-slate-200">{value}</dd>
+    </div>
+  )
+
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-5xl">
       <Link href="/demandas" className="text-sm text-slate-400 transition hover:text-white">← {t('back')}</Link>
 
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
-        <h1 className="text-2xl font-bold text-white">{d.title}</h1>
-        <Badge variant={STATUS_VARIANT[d.status]}>{td(`status.${d.status}`)}</Badge>
-      </div>
-
-      {/* Mudança rápida de status */}
-      <div className="mt-4 flex flex-wrap gap-2">
-        {STATUSES.map((s) => (
-          <form action={setDemandStatus} key={s}>
-            <input type="hidden" name="id" value={d.id} />
-            <input type="hidden" name="status" value={s} />
-            <SubmitButton
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                d.status === s ? 'bg-brand text-slate-950' : 'border border-surface-border text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              {td(`status.${s}`)}
-            </SubmitButton>
-          </form>
-        ))}
-      </div>
-
-      <div className="mt-6 grid items-start gap-5 lg:grid-cols-3">
-        {/* Esquerda: descrição + observações */}
-        <div className="space-y-5 lg:col-span-2">
-          <section className="glass p-5">
-            <h2 className="text-sm font-medium text-slate-400">{t('description')}</h2>
-            <p className="mt-2 whitespace-pre-wrap text-sm text-slate-200">{d.description || t('noDescription')}</p>
-          </section>
-
-          <section className="glass p-5">
-            <h2 className="text-lg font-semibold text-white">{t('observations')}</h2>
-            <form action={addObservation} className="mt-3 flex flex-col gap-2">
-              <input type="hidden" name="demand_id" value={d.id} />
-              <textarea name="body" rows={2} required placeholder={t('obsPlaceholder')} className={inputCls} />
-              <SubmitButton className="self-end rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-                {t('send')}
-              </SubmitButton>
-            </form>
-            <ul className="mt-4 space-y-3">
-              {observations.map((o) => (
-                <li key={o.id} className="rounded-lg bg-slate-900/40 px-3 py-2">
-                  <p className="text-sm text-slate-200">{o.body}</p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    {o.author?.full_name ?? '—'} · {fmtDateTime(o.created_at)}
-                  </p>
-                </li>
-              ))}
-              {observations.length === 0 && <li className="text-sm text-slate-500">{t('noObservations')}</li>}
-            </ul>
-          </section>
-        </div>
-
-        {/* Direita: propriedades (editar) + histórico */}
-        <div className="space-y-5">
-          <form action={updateDemand} className="glass p-5">
-            <input type="hidden" name="id" value={d.id} />
-            <h2 className="text-lg font-semibold text-white">{t('properties')}</h2>
-            <div className="mt-3 space-y-3 text-sm">
-              <div>
-                <label className="text-xs text-slate-400">{t('fResponsible')}</label>
-                <select name="responsible_id" defaultValue={d.responsible_id} className={inputCls}>
-                  {people.map((p) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs text-slate-400">{t('fPriority')}</label>
-                <select name="priority" defaultValue={d.priority} className={inputCls}>
-                  <option value="baixa">{td('priority.baixa')}</option>
-                  <option value="media">{td('priority.media')}</option>
-                  <option value="alta">{td('priority.alta')}</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs text-slate-400">{t('fDue')}</label>
-                <input type="date" name="due_date" defaultValue={d.due_date ?? ''} className={inputCls} />
-              </div>
-              <div>
-                <label className="text-xs text-slate-400">{t('fVisibility')}</label>
-                <select name="visibility" defaultValue={d.visibility} className={inputCls}>
-                  <option value="private">{t('visPrivate')}</option>
-                  <option value="public">{t('visPublic')}</option>
-                </select>
-              </div>
-              <SubmitButton className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-                {t('save')}
-              </SubmitButton>
-            </div>
-            <dl className="mt-4 space-y-1.5 border-t border-surface-border pt-3 text-xs text-slate-500">
-              <div className="flex justify-between"><dt>{t('origin')}</dt><dd className="text-slate-300">{d.origin?.full_name ?? '—'}</dd></div>
-              <div className="flex justify-between"><dt>{t('event')}</dt><dd className="text-slate-300">{d.event?.name ?? '—'}</dd></div>
-              <div className="flex justify-between"><dt>{t('created')}</dt><dd className="text-slate-300">{fmtDateTime(d.created_at)}</dd></div>
-            </dl>
-          </form>
-
+      {/* Cabeçalho full-width: título + status + descrição + propriedades (somente leitura) */}
+      <section className="mt-3 glass p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-white">{d.title}</h1>
+            <Badge variant={STATUS_VARIANT[d.status]}>{td(`status.${d.status}`)}</Badge>
+          </div>
           {canDelete && (
-            <form action={deleteDemand} className="glass p-5">
+            <form action={deleteDemand}>
               <input type="hidden" name="id" value={d.id} />
               <ConfirmButton
                 message={t('confirmDelete')}
-                className="w-full rounded-lg border border-rose-500/40 px-4 py-2 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/10"
+                className="rounded-lg border border-rose-500/40 px-3 py-1.5 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/10"
               >
                 {t('delete')}
               </ConfirmButton>
             </form>
           )}
-
-          <section className="glass p-5">
-            <h2 className="text-lg font-semibold text-white">{t('history')}</h2>
-            <ul className="mt-3 space-y-3">
-              {history.map((h) => (
-                <li key={h.id} className="text-xs">
-                  <p className="text-slate-300">
-                    <span className="font-medium text-slate-200">{fieldLabel(h.field_changed)}</span>: {renderVal(h.field_changed, h.old_value)} → {renderVal(h.field_changed, h.new_value)}
-                  </p>
-                  <p className="text-slate-500">{nameOf(h.changed_by)} · {fmtDateTime(h.created_at)}</p>
-                </li>
-              ))}
-              {history.length === 0 && <li className="text-sm text-slate-500">{t('noHistory')}</li>}
-            </ul>
-          </section>
         </div>
+
+        {/* Mudança rápida de status (continua permitida após a criação) */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {STATUSES.map((s) => (
+            <form action={setDemandStatus} key={s}>
+              <input type="hidden" name="id" value={d.id} />
+              <input type="hidden" name="status" value={s} />
+              <SubmitButton
+                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                  d.status === s ? 'bg-brand text-slate-950' : 'border border-surface-border text-slate-300 hover:bg-slate-800'
+                }`}
+              >
+                {td(`status.${s}`)}
+              </SubmitButton>
+            </form>
+          ))}
+        </div>
+
+        <div className="mt-5 grid gap-5 border-t border-surface-border pt-5 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <h2 className="text-sm font-medium text-slate-400">{t('description')}</h2>
+            <p className="mt-2 whitespace-pre-wrap text-sm text-slate-200">{d.description || t('noDescription')}</p>
+          </div>
+          <div>
+            <h2 className="text-sm font-medium text-slate-400">{t('properties')}</h2>
+            <dl className="mt-2 space-y-1.5 text-sm">
+              <Row label={t('fResponsible')} value={d.responsible?.full_name ?? '—'} />
+              <Row label={t('fPriority')} value={td(`priority.${d.priority}`)} />
+              <Row label={t('fDue')} value={fmtDate(d.due_date, locale, tz)} />
+              <Row label={t('fVisibility')} value={visLabel} />
+              <div className="mt-2 space-y-1.5 border-t border-surface-border pt-2 text-xs text-slate-500">
+                <Row label={t('origin')} value={d.origin?.full_name ?? '—'} />
+                <Row label={t('event')} value={d.event?.name ?? '—'} />
+                <Row label={t('created')} value={fmtDateTime(d.created_at, locale, tz)} />
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* Observações (wide) + Histórico */}
+      <div className="mt-5 grid items-start gap-5 lg:grid-cols-3">
+        <section className="glass p-5 lg:col-span-2">
+          <h2 className="text-lg font-semibold text-white">{t('observations')}</h2>
+          <form action={addObservation} className="mt-3 flex flex-col gap-2">
+            <input type="hidden" name="demand_id" value={d.id} />
+            <textarea name="body" rows={2} required placeholder={t('obsPlaceholder')} className={inputCls} />
+            <SubmitButton className="self-end rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+              {t('send')}
+            </SubmitButton>
+          </form>
+          <ul className="mt-4 space-y-3">
+            {observations.map((o) => (
+              <li key={o.id} className="rounded-lg bg-slate-900/40 px-3 py-2">
+                <p className="text-sm text-slate-200">{o.body}</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  {o.author?.full_name ?? '—'} · {fmtDateTime(o.created_at, locale, tz)}
+                </p>
+              </li>
+            ))}
+            {observations.length === 0 && <li className="text-sm text-slate-500">{t('noObservations')}</li>}
+          </ul>
+        </section>
+
+        <section className="glass p-5">
+          <h2 className="text-lg font-semibold text-white">{t('history')}</h2>
+          <ul className="mt-3 space-y-3">
+            {history.map((h) => (
+              <li key={h.id} className="text-xs">
+                <p className="text-slate-300">
+                  <span className="font-medium text-slate-200">{fieldLabel(h.field_changed)}</span>: {renderVal(h.field_changed, h.old_value)} → {renderVal(h.field_changed, h.new_value)}
+                </p>
+                <p className="text-slate-500">{nameOf(h.changed_by)} · {fmtDateTime(h.created_at, locale, tz)}</p>
+              </li>
+            ))}
+            {history.length === 0 && <li className="text-sm text-slate-500">{t('noHistory')}</li>}
+          </ul>
+        </section>
       </div>
     </div>
   )
