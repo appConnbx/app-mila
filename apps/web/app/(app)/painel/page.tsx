@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { streakFromDates } from '@/lib/streak'
 import { StatTable, type StatRow } from './_stat-table'
+import { DrillTable, type DrillArea } from './_drill-table'
 
 type AggPerson = {
   id: string
@@ -17,6 +18,7 @@ type AggPerson = {
 type AggGroup = {
   id: string
   name: string
+  area_id?: string | null
   total: number
   working: number
   overdue: number
@@ -61,40 +63,54 @@ export default async function PainelPage() {
     const streak = streakFromDates(p.active_days ?? [])
     return { id: p.id, name: p.name, total: p.total, working: p.working, overdue: p.overdue, done: p.done, streak, score: p.done + streak }
   })
-  const streakById = new Map(personRows.map((r) => [r.id, r.streak]))
+  const personById = new Map(personRows.map((r) => [r.id, r]))
+  const groupStreak = (ids: string[] | undefined) =>
+    (ids ?? []).reduce((sum, pid) => sum + (personById.get(pid)?.streak ?? 0), 0)
 
-  // Chama do grupo = soma das chamas dos seus integrantes (com demanda no escopo).
-  const groupRows = (groups: AggGroup[] | undefined): StatRow[] =>
-    (groups ?? []).map((g) => ({
-      id: g.id,
-      name: g.name,
-      total: g.total,
-      working: g.working,
-      overdue: g.overdue,
-      done: g.done,
-      streak: (g.person_ids ?? []).reduce((sum, pid) => sum + (streakById.get(pid) ?? 0), 0),
-    }))
-  const areaRows = groupRows(mgr?.by_area)
-  const teamRows = groupRows(mgr?.by_team)
+  // Árvore: área → equipes → pessoas (números agregados no nível de equipe).
+  const teamsByArea = new Map<string, AggGroup[]>()
+  for (const team of mgr?.by_team ?? []) {
+    const key = team.area_id ?? ''
+    if (!teamsByArea.has(key)) teamsByArea.set(key, [])
+    teamsByArea.get(key)!.push(team)
+  }
+  const tree: DrillArea[] = (mgr?.by_area ?? []).map((a) => ({
+    id: a.id,
+    name: a.name,
+    total: a.total,
+    working: a.working,
+    overdue: a.overdue,
+    done: a.done,
+    streak: groupStreak(a.person_ids),
+    teams: (teamsByArea.get(a.id) ?? []).map((tm) => ({
+      id: tm.id,
+      name: tm.name,
+      total: tm.total,
+      working: tm.working,
+      overdue: tm.overdue,
+      done: tm.done,
+      streak: groupStreak(tm.person_ids),
+      people: (tm.person_ids ?? [])
+        .map((pid) => personById.get(pid))
+        .filter((p): p is NonNullable<typeof p> => !!p),
+    })),
+  }))
 
   // Ranking de engajamento (pontuação = concluídas + chama).
   const engaged = personRows.filter((r) => r.total > 0).sort((a, b) => b.score - a.score)
   const top10 = engaged.slice(0, 10)
-  const topIds = new Set(top10.map((r) => r.id))
-  const bottom10 = engaged.length > 10
-    ? [...engaged].reverse().filter((r) => !topIds.has(r.id)).slice(0, 10)
-    : []
+  const bottom10 = [...engaged].reverse().slice(0, 10)
 
-  const rankList = (rows: typeof engaged, offsetFromEnd = false) => (
+  const rankList = (rows: typeof engaged, fromBottom = false) => (
     <div className="mt-3 space-y-2">
       {rows.map((r, i) => {
-        const rank = offsetFromEnd ? engaged.length - i : i + 1
+        const rank = fromBottom ? engaged.length - i : i + 1
         return (
           <div key={r.id} className="glass flex items-center gap-3 px-4 py-3">
-            <span className={`grid h-7 w-7 place-items-center rounded-full text-sm font-bold ${!offsetFromEnd && i === 0 ? 'bg-brand text-slate-950' : 'bg-slate-800 text-slate-300'}`}>{rank}</span>
-            <span className="flex-1 font-medium text-slate-100">{r.name}</span>
-            <span className="text-xs text-slate-500">✓ {r.done} · 🔥 {r.streak}</span>
-            <span className="text-sm font-bold text-brand">{r.score} {t('points')}</span>
+            <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-bold ${!fromBottom && i === 0 ? 'bg-brand text-slate-950' : 'bg-slate-800 text-slate-300'}`}>{rank}</span>
+            <span className="min-w-0 flex-1 truncate font-medium text-slate-100">{r.name}</span>
+            <span className="shrink-0 text-xs text-slate-500">✓ {r.done} · 🔥 {r.streak}</span>
+            <span className="shrink-0 text-sm font-bold text-brand">{r.score} {t('points')}</span>
           </div>
         )
       })}
@@ -122,37 +138,34 @@ export default async function PainelPage() {
             <Kpi label={t('genOverdue')} value={mgr.overall.overdue} accent="text-red-400" />
           </div>
 
-          {/* Por área */}
-          {areaRows.length > 0 && (
+          {/* Estrutura em cascata: área → equipe → pessoa */}
+          {tree.length > 0 ? (
             <>
-              <h2 className="mt-8 text-lg font-semibold text-white">{t('byArea')}</h2>
-              <StatTable rows={areaRows} nameLabel={t('colArea')} />
+              <h2 className="mt-8 text-lg font-semibold text-white">{t('byStructure')}</h2>
+              <p className="text-sm text-slate-400">{t('byStructureHint')}</p>
+              <DrillTable areas={tree} />
+            </>
+          ) : (
+            // Sem áreas (ex.: instância família): tabela simples por pessoa.
+            <>
+              <h2 className="mt-8 text-lg font-semibold text-white">{t('byPerson')}</h2>
+              <StatTable rows={personRows} nameLabel={t('colPerson')} streakFirst />
             </>
           )}
 
-          {/* Por equipe */}
-          {teamRows.length > 0 && (
-            <>
-              <h2 className="mt-8 text-lg font-semibold text-white">{t('byTeam')}</h2>
-              <StatTable rows={teamRows} nameLabel={t('colTeamName')} />
-            </>
-          )}
-
-          {/* Por pessoa (chama na 1ª coluna) */}
-          <h2 className="mt-8 text-lg font-semibold text-white">{t('byPerson')}</h2>
-          <StatTable rows={personRows} nameLabel={t('colPerson')} streakFirst />
-
-          {/* Ranking de engajamento (pontuação = concluídas + chama) */}
-          <h2 className="mt-8 text-lg font-semibold text-white">{t('talentsTop')}</h2>
-          <p className="text-sm text-slate-400">{t('talentsScoreHint')}</p>
-          {rankList(top10)}
-
-          {bottom10.length > 0 && (
-            <>
-              <h2 className="mt-8 text-lg font-semibold text-white">{t('talentsBottom')}</h2>
+          {/* Rankings lado a lado (pontuação = concluídas + chama) */}
+          <div className="mt-8 grid items-start gap-6 lg:grid-cols-2">
+            <div>
+              <h2 className="text-lg font-semibold text-white">{t('talentsTop')}</h2>
+              <p className="text-sm text-slate-400">{t('talentsScoreHint')}</p>
+              {rankList(top10)}
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-white">{t('talentsBottom')}</h2>
+              <p className="text-sm text-slate-400">{t('talentsScoreHint')}</p>
               {rankList(bottom10, true)}
-            </>
-          )}
+            </div>
+          </div>
         </>
       )}
     </div>
