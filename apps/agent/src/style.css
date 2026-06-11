@@ -1,6 +1,9 @@
 /* MILA Agente — widget glass. O blur real vem do acrílico nativo (Rust);
    aqui só tinta translúcida + bordas. Fundo da página precisa ser transparente. */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+/* hidden SEMPRE vence display:flex das views (sem isto, login e lista
+   apareciam sobrepostos ao deslogar). */
+[hidden] { display: none !important; }
 :root {
   --graphite: 15 23 42;
   --cyan: #22d3ee;
@@ -127,7 +130,13 @@ body.expanded #pill { display: none; }
   border-radius: 12px;
   padding: 9px 11px; margin-bottom: 7px;
 }
-.item.new-flash { border-color: var(--cyan); box-shadow: 0 0 10px rgba(34,211,238,.3); }
+/* Demanda ainda não vista (nunca exibida com o painel aberto) */
+.item.unseen {
+  border-color: rgba(34, 211, 238, 0.55);
+  background: rgba(34, 211, 238, 0.07);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.18);
+}
+.chip.nova { background: var(--cyan); color: #0f172a; }
 .item-title { color: #fff; font-weight: 600; line-height: 1.3; word-break: break-word; }
 .item-desc {
   color: var(--muted);

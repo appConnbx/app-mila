@@ -18,14 +18,20 @@ const btnLogout = $<HTMLButtonElement>('btn-logout')
 
 // ---------------- Estado ----------------
 let expanded = false
-let pinned = false // login aberto ou formulário em uso: não recolhe
+let pinned = false // tela de login: não recolhe
+let mouseInside = false
 let knownIds: Set<string> | null = null // null = ainda sem primeira carga
-let unseen = 0
 let demands: Demand[] = []
 let holdings: Holding[] = []
 let collapseTimer: number | undefined
 let pollTimer: number | undefined
 let pendingRelaunch = false
+
+// "Vistas": demandas já exibidas com o painel aberto (persistido entre sessões).
+const seen = new Set<string>(JSON.parse(localStorage.getItem('mila_seen') ?? '[]') as string[])
+function persistSeen() {
+  localStorage.setItem('mila_seen', JSON.stringify([...seen]))
+}
 
 // ---------------- Janela: dock + expand/collapse ----------------
 async function dockToEdge() {
@@ -51,12 +57,21 @@ async function expand() {
   await win.setSize(new LogicalSize(EXPANDED.w, EXPANDED.h))
   document.body.classList.add('expanded')
   panel.hidden = false
-  clearUnseen()
+  pill.classList.remove('pulse')
   void refresh()
 }
 
 async function collapse() {
   if (!expanded || pinned) return
+  // O usuário viu a lista: marca tudo como visto.
+  let changed = false
+  for (const d of demands) {
+    if (!seen.has(d.id)) {
+      seen.add(d.id)
+      changed = true
+    }
+  }
+  if (changed) persistSeen()
   // Atualização baixada enquanto o painel estava em uso: aplica agora.
   if (pendingRelaunch) {
     await relaunch()
@@ -75,56 +90,51 @@ async function collapse() {
 
 function scheduleCollapse() {
   window.clearTimeout(collapseTimer)
-  collapseTimer = window.setTimeout(() => void collapse(), 450)
+  collapseTimer = window.setTimeout(() => {
+    // Só recolhe se o mouse realmente saiu (cliques/re-render não fecham).
+    if (!mouseInside) void collapse()
+  }, 450)
 }
 
 document.body.addEventListener('mouseenter', () => {
+  mouseInside = true
   window.clearTimeout(collapseTimer)
   void expand()
 })
-document.body.addEventListener('mouseleave', scheduleCollapse)
-// Enquanto digita, não recolhe
-document.body.addEventListener('focusin', (e) => {
-  if ((e.target as HTMLElement).matches('input, select, textarea')) pinned = true
-})
-document.body.addEventListener('focusout', () => {
-  pinned = !viewLogin.hidden // login mantém aberto
-  if (!pinned) scheduleCollapse()
+document.body.addEventListener('mouseleave', () => {
+  mouseInside = false
+  scheduleCollapse()
 })
 
-// ---------------- Notificação visual ----------------
-function clearUnseen() {
-  unseen = 0
-  pill.classList.remove('pulse')
+// ---------------- Dados ----------------
+function updateBadge() {
   pillCount.hidden = demands.length === 0
   pillCount.textContent = String(demands.length)
 }
 
-function flashNew(count: number) {
-  unseen += count
-  pill.classList.add('pulse')
-  pillCount.hidden = false
-  pillCount.textContent = String(demands.length)
-}
-
-// ---------------- Dados ----------------
 async function refresh() {
   try {
     const fresh = await fetchPending()
     const freshIds = new Set(fresh.map((d) => d.id))
-    if (knownIds) {
-      const novas = fresh.filter((d) => !knownIds!.has(d.id))
-      if (novas.length > 0 && !expanded) flashNew(novas.length)
-      renderList(fresh, novas.map((d) => d.id))
-    } else {
-      renderList(fresh, [])
-    }
+    const firstLoad = knownIds === null
+    const novas = firstLoad ? [] : fresh.filter((d) => !knownIds!.has(d.id))
+
     demands = fresh
     knownIds = freshIds
-    if (!pill.classList.contains('pulse')) {
-      pillCount.hidden = demands.length === 0
-      pillCount.textContent = String(demands.length)
+
+    // Limpa "vistas" de demandas que saíram da lista (finalizadas etc.).
+    let pruned = false
+    for (const id of [...seen]) {
+      if (!freshIds.has(id)) {
+        seen.delete(id)
+        pruned = true
+      }
     }
+    if (pruned) persistSeen()
+
+    renderList(fresh)
+    updateBadge() // contador sempre em dia, mesmo recolhido
+    if (novas.length > 0 && !expanded) pill.classList.add('pulse')
   } catch {
     // Sem rede / sessão caiu: mantém o que tem; próxima rodada tenta de novo.
   }
@@ -133,6 +143,10 @@ async function refresh() {
 function startPolling() {
   window.clearInterval(pollTimer)
   pollTimer = window.setInterval(() => void refresh(), POLL_MS)
+}
+
+function stopPolling() {
+  window.clearInterval(pollTimer)
 }
 
 function fmtDue(due: string | null): { label: string; cls: string } | null {
@@ -147,7 +161,7 @@ function fmtDue(due: string | null): { label: string; cls: string } | null {
   return { label: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }), cls: '' }
 }
 
-function renderList(items: Demand[], newIds: string[]) {
+function renderList(items: Demand[]) {
   listEl.innerHTML = ''
   if (items.length === 0) {
     const p = document.createElement('p')
@@ -157,8 +171,10 @@ function renderList(items: Demand[], newIds: string[]) {
     return
   }
   for (const d of items) {
+    const isUnseen = !seen.has(d.id)
     const card = document.createElement('div')
-    card.className = 'item' + (newIds.includes(d.id) ? ' new-flash' : '')
+    card.className = 'item' + (isUnseen ? ' unseen' : '')
+
     const title = document.createElement('div')
     title.className = 'item-title'
     title.textContent = d.title
@@ -174,10 +190,22 @@ function renderList(items: Demand[], newIds: string[]) {
 
     const meta = document.createElement('div')
     meta.className = 'item-meta'
+    if (isUnseen) {
+      const nv = document.createElement('span')
+      nv.className = 'chip nova'
+      nv.textContent = 'nova'
+      meta.appendChild(nv)
+    }
     const inst = document.createElement('span')
     inst.className = 'chip' + (d.holding_kind === 'family' ? ' family' : '')
     inst.textContent = d.holding_name
     meta.appendChild(inst)
+    if (d.status === 'trabalhando') {
+      const st = document.createElement('span')
+      st.className = 'chip working'
+      st.textContent = 'em andamento'
+      meta.appendChild(st)
+    }
     if (d.priority === 'alta') {
       const pr = document.createElement('span')
       pr.className = 'chip prio-alta'
@@ -220,13 +248,6 @@ function renderList(items: Demand[], newIds: string[]) {
     actions.appendChild(mk('✓', 'Concluir demanda', 'done', 'finalizada'))
     meta.appendChild(actions)
 
-    if (d.status === 'trabalhando') {
-      const st = document.createElement('span')
-      st.className = 'chip working'
-      st.textContent = 'em andamento'
-      meta.insertBefore(st, actions)
-    }
-
     card.appendChild(meta)
     listEl.appendChild(card)
   }
@@ -259,6 +280,9 @@ async function showMain() {
     o.textContent = h.name
     sel.appendChild(o)
   }
+  // Padrão: instância corporativa pré-selecionada (se existir).
+  const corp = holdings.find((h) => h.kind === 'corporate')
+  if (corp) sel.value = corp.id
   // Primeiro login: liga "iniciar com o Windows" uma única vez (usuário pode desligar).
   try {
     if (!localStorage.getItem('mila_autostart_done')) {
@@ -295,10 +319,15 @@ $<HTMLFormElement>('login-form').addEventListener('submit', async (e) => {
 })
 
 btnLogout.addEventListener('click', async () => {
-  window.clearInterval(pollTimer)
+  stopPolling()
   await supabase.auth.signOut()
+  // Saiu da conta: zera tudo que era do usuário (lista, contador, formulário).
   demands = []
   knownIds = null
+  listEl.innerHTML = ''
+  updateBadge()
+  pill.classList.remove('pulse')
+  ;($<HTMLFormElement>('quick-form')).reset()
   showLogin()
 })
 
