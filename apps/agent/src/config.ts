@@ -7,5 +7,5 @@ export const SUPABASE_ANON_KEY = 'sb_publishable_daqXhyvWAQUfS-Gp6mApIg_JZBZTfz2
 export const COLLAPSED = { w: 30, h: 200 }
 export const EXPANDED = { w: 380, h: 560 }
 
-// Polling leve (1 RPC por ciclo).
-export const POLL_MS = 45_000
+// Polling leve (1 RPC por ciclo) — 20s para a notificação chegar rápido.
+export const POLL_MS = 20_000

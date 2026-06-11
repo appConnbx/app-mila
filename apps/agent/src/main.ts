@@ -1,6 +1,6 @@
 import { getCurrentWindow, currentMonitor, LogicalSize, LogicalPosition } from '@tauri-apps/api/window'
 import { enable as autostartEnable, disable as autostartDisable, isEnabled as autostartIsEnabled } from '@tauri-apps/plugin-autostart'
-import { supabase, fetchPending, fetchHoldings, createDemand, type Demand, type Holding } from './supabase'
+import { supabase, fetchPending, fetchHoldings, createDemand, setDemandStatus, type Demand, type DemandStatus, type Holding } from './supabase'
 import { COLLAPSED, EXPANDED, POLL_MS } from './config'
 
 const win = getCurrentWindow()
@@ -154,18 +154,22 @@ function renderList(items: Demand[], newIds: string[]) {
     const title = document.createElement('div')
     title.className = 'item-title'
     title.textContent = d.title
+    card.appendChild(title)
+
+    if (d.description) {
+      const desc = document.createElement('div')
+      desc.className = 'item-desc'
+      desc.textContent = d.description
+      desc.title = d.description
+      card.appendChild(desc)
+    }
+
     const meta = document.createElement('div')
     meta.className = 'item-meta'
     const inst = document.createElement('span')
     inst.className = 'chip' + (d.holding_kind === 'family' ? ' family' : '')
     inst.textContent = d.holding_name
     meta.appendChild(inst)
-    if (d.status === 'trabalhando') {
-      const st = document.createElement('span')
-      st.className = 'chip working'
-      st.textContent = 'em andamento'
-      meta.appendChild(st)
-    }
     if (d.priority === 'alta') {
       const pr = document.createElement('span')
       pr.className = 'chip prio-alta'
@@ -179,7 +183,42 @@ function renderList(items: Demand[], newIds: string[]) {
       dd.textContent = due.label
       meta.appendChild(dd)
     }
-    card.appendChild(title)
+
+    // Ações de status: nova ⇄ trabalhando, e concluir.
+    const actions = document.createElement('span')
+    actions.className = 'item-actions'
+    const mk = (label: string, titleTxt: string, cls: string, next: DemandStatus) => {
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = `st-btn ${cls}`
+      b.textContent = label
+      b.title = titleTxt
+      b.addEventListener('click', async () => {
+        b.disabled = true
+        try {
+          await setDemandStatus(d.id, next)
+          await refresh()
+        } catch {
+          b.disabled = false
+        }
+      })
+      return b
+    }
+    if (d.status === 'nova') {
+      actions.appendChild(mk('▶', 'Começar a trabalhar', 'start', 'trabalhando'))
+    } else {
+      actions.appendChild(mk('⏸', 'Voltar para nova', 'pause', 'nova'))
+    }
+    actions.appendChild(mk('✓', 'Concluir demanda', 'done', 'finalizada'))
+    meta.appendChild(actions)
+
+    if (d.status === 'trabalhando') {
+      const st = document.createElement('span')
+      st.className = 'chip working'
+      st.textContent = 'em andamento'
+      meta.insertBefore(st, actions)
+    }
+
     card.appendChild(meta)
     listEl.appendChild(card)
   }

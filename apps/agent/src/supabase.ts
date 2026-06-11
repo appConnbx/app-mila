@@ -13,11 +13,14 @@ export type Demand = {
   holding_name: string
   holding_kind: string
   title: string
+  description: string | null
   status: 'nova' | 'trabalhando'
   priority: 'baixa' | 'media' | 'alta'
   due_date: string | null
   created_at: string
 }
+
+export type DemandStatus = 'nova' | 'trabalhando' | 'finalizada'
 
 export type Holding = { id: string; name: string; kind: string }
 
@@ -40,6 +43,14 @@ export async function createDemand(holdingId: string, title: string, dueDate: st
     p_description: null,
     p_due_date: dueDate,
     p_priority: 'media',
+  })
+  if (error) throw error
+}
+
+export async function setDemandStatus(demandId: string, status: DemandStatus) {
+  const { error } = await supabase.rpc('agent_set_status', {
+    p_demand_id: demandId,
+    p_status: status,
   })
   if (error) throw error
 }

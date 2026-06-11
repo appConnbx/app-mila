@@ -18,14 +18,10 @@ pub fn run() {
             None,
         ))
         .setup(|app| {
-            let window = app.get_webview_window("main").expect("janela main");
-
-            // Vidro: acrílico nativo do Windows com tinta grafite translúcida.
-            #[cfg(target_os = "windows")]
-            {
-                use window_vibrancy::apply_acrylic;
-                let _ = apply_acrylic(&window, Some((10, 16, 30, 140)));
-            }
+            // Sem acrílico nativo: ele pinta o retângulo inteiro da janela e
+            // "vaza" nos cantos arredondados. O vidro vem do CSS translúcido
+            // sobre a janela transparente — cantos limpos.
+            let _window = app.get_webview_window("main").expect("janela main");
 
             // Bandeja: única forma de encerrar o widget (não há janela com X).
             let quit = MenuItem::with_id(app, "quit", "Sair do MILA", true, None::<&str>)?;
