@@ -36,11 +36,16 @@ export async function fetchHoldings(): Promise<Holding[]> {
   return (data ?? []) as Holding[]
 }
 
-export async function createDemand(holdingId: string, title: string, dueDate: string | null) {
+export async function createDemand(
+  holdingId: string,
+  title: string,
+  dueDate: string | null,
+  description: string | null = null,
+) {
   const { error } = await supabase.rpc('agent_create_demand', {
     p_holding_id: holdingId,
     p_title: title,
-    p_description: null,
+    p_description: description,
     p_due_date: dueDate,
     p_priority: 'media',
   })

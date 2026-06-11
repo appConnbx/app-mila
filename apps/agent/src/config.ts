@@ -9,3 +9,9 @@ export const EXPANDED = { w: 380, h: 560 }
 
 // Polling leve (1 RPC por ciclo) — 20s para a notificação chegar rápido.
 export const POLL_MS = 20_000
+
+// Backend do MILA (rota de transcrição de voz, autenticada por sessão).
+export const APP_BASE_URL = 'https://www.appmila.co'
+
+// Gravação de voz: limite de segurança por demanda.
+export const MAX_RECORD_MS = 60_000

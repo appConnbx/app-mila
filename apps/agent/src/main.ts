@@ -3,7 +3,7 @@ import { enable as autostartEnable, disable as autostartDisable, isEnabled as au
 import { check as checkUpdate } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { supabase, fetchPending, fetchHoldings, createDemand, setDemandStatus, type Demand, type DemandStatus, type Holding } from './supabase'
-import { COLLAPSED, EXPANDED, POLL_MS } from './config'
+import { COLLAPSED, EXPANDED, POLL_MS, APP_BASE_URL, MAX_RECORD_MS } from './config'
 
 const win = getCurrentWindow()
 
@@ -328,10 +328,21 @@ btnLogout.addEventListener('click', async () => {
   updateBadge()
   pill.classList.remove('pulse')
   ;($<HTMLFormElement>('quick-form')).reset()
+  clearVoice()
   showLogin()
 })
 
 // ---------------- Criação rápida ----------------
+// Transcrição longa: o começo vira o título e o texto completo vai na descrição.
+let voiceDescription: string | null = null
+
+function clearVoice() {
+  voiceDescription = null
+  const hint = $<HTMLParagraphElement>('quick-hint')
+  hint.hidden = true
+  hint.textContent = ''
+}
+
 $<HTMLFormElement>('quick-form').addEventListener('submit', async (e) => {
   e.preventDefault()
   const titleEl = $<HTMLInputElement>('quick-title')
@@ -344,15 +355,107 @@ $<HTMLFormElement>('quick-form').addEventListener('submit', async (e) => {
   errEl.hidden = true
   btn.disabled = true
   try {
-    await createDemand(holdingId, title, dueEl.value || null)
+    await createDemand(holdingId, title, dueEl.value || null, voiceDescription)
     titleEl.value = ''
     dueEl.value = ''
+    clearVoice()
     await refresh()
   } catch {
     errEl.textContent = 'Não foi possível criar. Tente novamente.'
     errEl.hidden = false
   } finally {
     btn.disabled = false
+  }
+})
+
+// ---------------- Voz → demanda ----------------
+const micBtn = $<HTMLButtonElement>('quick-mic')
+let recorder: MediaRecorder | null = null
+let recChunks: Blob[] = []
+let recTimer: number | undefined
+
+function quickError(msg: string) {
+  const errEl = $<HTMLParagraphElement>('quick-error')
+  errEl.textContent = msg
+  errEl.hidden = false
+}
+
+function applyTranscript(text: string) {
+  const titleEl = $<HTMLInputElement>('quick-title')
+  const clean = text.replace(/\s+/g, ' ').trim()
+  if (clean.length > 180) {
+    titleEl.value = clean.slice(0, 177) + '…'
+    voiceDescription = clean
+    const hint = $<HTMLParagraphElement>('quick-hint')
+    hint.textContent = 'Transcrição completa será anexada como descrição.'
+    hint.hidden = false
+  } else {
+    titleEl.value = clean
+    voiceDescription = null
+  }
+  titleEl.focus()
+}
+
+async function transcribe(blob: Blob) {
+  micBtn.disabled = true
+  micBtn.textContent = '…'
+  try {
+    const { data } = await supabase.auth.getSession()
+    const token = data.session?.access_token
+    if (!token) throw new Error('sem sessão')
+    const fd = new FormData()
+    fd.append('file', blob, 'audio.webm')
+    const res = await fetch(`${APP_BASE_URL}/api/agent/transcribe`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    if (res.status === 503) {
+      quickError('Transcrição por voz ainda não configurada.')
+      return
+    }
+    if (!res.ok) throw new Error(String(res.status))
+    const out = (await res.json()) as { text?: string }
+    if (out.text) applyTranscript(out.text)
+  } catch {
+    quickError('Não foi possível transcrever. Tente novamente.')
+  } finally {
+    micBtn.disabled = false
+    micBtn.textContent = '🎤'
+  }
+}
+
+micBtn.addEventListener('click', async () => {
+  // Gravando → clique para e envia.
+  if (recorder?.state === 'recording') {
+    recorder.stop()
+    return
+  }
+  $<HTMLParagraphElement>('quick-error').hidden = true
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    recChunks = []
+    recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) recChunks.push(e.data)
+    }
+    recorder.onstop = () => {
+      stream.getTracks().forEach((t) => t.stop())
+      window.clearTimeout(recTimer)
+      micBtn.classList.remove('recording')
+      micBtn.title = 'Ditar demanda por voz'
+      pinned = !viewLogin.hidden
+      void transcribe(new Blob(recChunks, { type: 'audio/webm' }))
+    }
+    recorder.start()
+    pinned = true // não recolher enquanto grava
+    micBtn.classList.add('recording')
+    micBtn.title = 'Gravando… clique para parar'
+    recTimer = window.setTimeout(() => {
+      if (recorder?.state === 'recording') recorder.stop()
+    }, MAX_RECORD_MS)
+  } catch {
+    quickError('Microfone indisponível ou sem permissão.')
   }
 })
 
