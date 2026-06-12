@@ -570,7 +570,7 @@ $<HTMLButtonElement>('btn-refresh').addEventListener('click', () => void refresh
 
 // Acesso completo pelo sistema web — abre no navegador padrão (fora do widget).
 $<HTMLButtonElement>('open-web').addEventListener('click', () => {
-  void openUrl('https://www.appmila.co/login')
+  openUrl('https://www.appmila.co/login').catch((e) => console.error('openUrl', e))
 })
 
 $<HTMLInputElement>('chk-autostart').addEventListener('change', async (e) => {
