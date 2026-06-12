@@ -1,4 +1,5 @@
 import 'react-native-url-polyfill/auto'
+import { AppState } from 'react-native'
 import { createClient } from '@supabase/supabase-js'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SUPABASE_URL, SUPABASE_ANON_KEY, APP_BASE_URL } from './config'
@@ -12,6 +13,15 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     autoRefreshToken: true,
     detectSessionInUrl: false,
   },
+})
+
+// Padrão oficial do Supabase em React Native: o renovador de token só roda
+// com o app em primeiro plano (sem isto, o access token vence em 1h e as
+// chamadas manuais com Bearer começam a falhar com 401).
+supabase.auth.startAutoRefresh()
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') supabase.auth.startAutoRefresh()
+  else supabase.auth.stopAutoRefresh()
 })
 
 export type Demand = {
@@ -76,16 +86,27 @@ export async function setDemandStatus(demandId: string, status: DemandStatus) {
 
 /** Envia o áudio gravado para a rota de transcrição (Bearer da sessão). */
 export async function transcribeAudio(uri: string): Promise<string> {
+  const send = async (token: string) => {
+    const fd = new FormData()
+    fd.append('file', { uri, name: 'audio.m4a', type: 'audio/m4a' } as unknown as Blob)
+    return fetch(`${APP_BASE_URL}/api/agent/transcribe`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+  }
+
   const { data } = await supabase.auth.getSession()
   const token = data.session?.access_token
   if (!token) throw new Error('sem-sessao')
-  const fd = new FormData()
-  fd.append('file', { uri, name: 'audio.m4a', type: 'audio/m4a' } as unknown as Blob)
-  const res = await fetch(`${APP_BASE_URL}/api/agent/transcribe`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: fd,
-  })
+  let res = await send(token)
+  // Token venceu entre o getSession e o envio: renova e tenta 1x de novo.
+  if (res.status === 401) {
+    const { data: refreshed } = await supabase.auth.refreshSession()
+    const fresh = refreshed.session?.access_token
+    if (!fresh) throw new Error('sem-sessao')
+    res = await send(fresh)
+  }
   if (res.status === 503) throw new Error('nao-configurada')
   if (!res.ok) throw new Error(String(res.status))
   const out = (await res.json()) as { text?: string }
