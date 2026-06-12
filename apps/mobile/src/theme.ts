@@ -1,0 +1,23 @@
+// Tema MILA (mesma identidade do agente desktop e do web).
+export const C = {
+  bg: '#0F172A',
+  card: 'rgba(255,255,255,0.05)',
+  cardBorder: 'rgba(255,255,255,0.10)',
+  cyan: '#22D3EE',
+  cyanDim: 'rgba(34,211,238,0.15)',
+  orange: '#F97316',
+  orangeDim: 'rgba(249,115,22,0.16)',
+  white: '#FFFFFF',
+  light: '#E2E8F0',
+  muted: '#94A3B8',
+  faint: '#64748B',
+  red: '#F43F5E',
+  redDim: 'rgba(244,63,94,0.15)',
+  redText: '#FDA4AF',
+  amber: '#FBBF24',
+  amberDim: 'rgba(251,191,36,0.15)',
+  green: '#4ADE80',
+  greenDim: 'rgba(34,197,94,0.2)',
+  blueDim: 'rgba(59,130,246,0.18)',
+  blueText: '#93C5FD',
+}

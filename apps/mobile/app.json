@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "MILA",
+    "slug": "mila-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "mila",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0F172A",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "co.appmila.mobile"
+    },
+    "android": {
+      "package": "co.appmila.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#0F172A",
+        "foregroundImage": "./assets/icon.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "O MILA usa o microfone para criar demandas por voz."
+        }
+      ],
+      "expo-secure-store",
+      "expo-localization"
+    ]
+  }
+}
