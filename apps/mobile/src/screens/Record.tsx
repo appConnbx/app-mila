@@ -7,9 +7,10 @@ import {
   setAudioModeAsync,
 } from 'expo-audio'
 import { transcribeAudio, splitTranscript, createDemand, type Holding } from '../api'
-import { t } from '../i18n'
+import { t, useLang } from '../i18n'
 import { C } from '../theme'
 import { MIC_HOLD_MS } from '../config'
+import { MicIcon, XIcon } from '../components/icons'
 
 type Phase = 'idle' | 'recording' | 'transcribing' | 'preview' | 'creating' | 'done' | 'error'
 
@@ -26,6 +27,7 @@ export function RecordModal({
   onClose: () => void
   onCreated: () => void
 }) {
+  useLang() // re-renderiza quando o idioma da instância chega
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)
   const [phase, setPhase] = useState<Phase>('idle')
   const [status, setStatus] = useState('')
@@ -173,7 +175,8 @@ export function RecordModal({
                 {preview}
               </Text>
               <Pressable style={s.refuseBtn} onPress={refuse}>
-                <Text style={s.refuseText}>{t('voiceRefuse')}</Text>
+                <XIcon size={13} color={C.redText} />
+                <Text style={s.refuseText}>{t('voiceRefuse').replace('✕ ', '')}</Text>
               </Pressable>
             </>
           ) : (
@@ -183,7 +186,7 @@ export function RecordModal({
               onPressOut={() => void stopHold()}
               disabled={busy || phase === 'done'}
             >
-              <Text style={[s.holdIcon, recording && s.holdIconRec]}>🎤</Text>
+              <MicIcon size={recording ? 42 : 38} color={recording ? C.redText : C.cyan} />
             </Pressable>
           )}
 
@@ -245,8 +248,6 @@ const s = StyleSheet.create({
     transform: [{ scale: 1.1 }],
   },
   holdBtnBusy: { opacity: 0.55 },
-  holdIcon: { fontSize: 38 },
-  holdIconRec: { fontSize: 42 },
   preview: {
     color: C.light,
     fontStyle: 'italic',
@@ -256,6 +257,9 @@ const s = StyleSheet.create({
     paddingHorizontal: 8,
   },
   refuseBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
     borderWidth: 1,
     borderColor: 'rgba(244,63,94,0.5)',
     backgroundColor: C.redDim,

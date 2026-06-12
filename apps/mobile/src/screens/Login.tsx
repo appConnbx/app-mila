@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { supabase } from '../api'
-import { t } from '../i18n'
+import { t, useLang } from '../i18n'
 import { C } from '../theme'
 
 export function Login() {
+  useLang() // re-renderiza se o idioma mudar
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)

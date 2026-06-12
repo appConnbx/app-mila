@@ -19,10 +19,11 @@ import {
   type DemandStatus,
   type Holding,
 } from '../api'
-import { t, lang, applyHoldingsLang } from '../i18n'
+import { t, lang, applyHoldingsLang, useLang } from '../i18n'
 import { C } from '../theme'
 import { POLL_MS } from '../config'
 import { RecordModal } from './Record'
+import { MicIcon, PlayIcon, PauseIcon, CheckIcon } from '../components/icons'
 
 function fmtDue(due: string | null): { label: string; bg: string; color: string } | null {
   if (!due) return null
@@ -56,8 +57,22 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
   const [creating, setCreating] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
   const [recordOpen, setRecordOpen] = useState(false)
-  const [, force] = useState(0) // re-render após troca de idioma
+  const uiLang = useLang() // re-renderiza quando o idioma da instância chega
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const holdingsRef = useRef<Holding[]>([])
+
+  const loadHoldings = useCallback(async () => {
+    try {
+      const hs = await fetchHoldings()
+      holdingsRef.current = hs
+      setHoldings(hs)
+      applyHoldingsLang(hs)
+      const corp = hs.find((h) => h.kind === 'corporate') ?? hs[0]
+      if (corp) setSelHolding((cur) => cur ?? corp.id)
+    } catch {
+      /* tenta no próximo ciclo */
+    }
+  }, [])
 
   const refresh = useCallback(async () => {
     try {
@@ -65,22 +80,14 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
     } catch {
       /* offline: mantém o que tem */
     }
-  }, [])
+    // Instâncias ainda não carregadas (ex.: rede falhou no boot): tenta de novo.
+    if (holdingsRef.current.length === 0) void loadHoldings()
+  }, [loadHoldings])
 
   // Carga inicial: instâncias (idioma) + lista + polling + retomada do app.
   useEffect(() => {
-    void (async () => {
-      try {
-        const hs = await fetchHoldings()
-        setHoldings(hs)
-        if (applyHoldingsLang(hs)) force((n) => n + 1)
-        const corp = hs.find((h) => h.kind === 'corporate') ?? hs[0]
-        if (corp) setSelHolding(corp.id)
-      } catch {
-        /* tenta no próximo ciclo */
-      }
-      void refresh()
-    })()
+    void loadHoldings()
+    void refresh()
     pollRef.current = setInterval(() => void refresh(), POLL_MS)
     const sub = AppState.addEventListener('change', (st) => {
       if (st === 'active') void refresh()
@@ -89,7 +96,7 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
       if (pollRef.current) clearInterval(pollRef.current)
       sub.remove()
     }
-  }, [refresh])
+  }, [refresh, loadHoldings])
 
   // Deep link do widget (mila://record): abre o gravador direto.
   useEffect(() => {
@@ -146,15 +153,15 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
           <View style={s.actions}>
             {d.status === 'nova' ? (
               <Pressable style={s.stBtn} onPress={() => void setStatus(d, 'trabalhando')}>
-                <Text style={s.stBtnText}>▶</Text>
+                <PlayIcon size={13} color={C.light} />
               </Pressable>
             ) : (
               <Pressable style={s.stBtn} onPress={() => void setStatus(d, 'nova')}>
-                <Text style={s.stBtnText}>⏸</Text>
+                <PauseIcon size={13} color={C.light} />
               </Pressable>
             )}
             <Pressable style={[s.stBtn, s.stBtnDone]} onPress={() => void setStatus(d, 'finalizada')}>
-              <Text style={[s.stBtnText, { color: C.green }]}>✓</Text>
+              <CheckIcon size={13} color={C.green} />
             </Pressable>
           </View>
         </View>
@@ -218,6 +225,7 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
       </Text>
       <FlatList
         data={demands}
+        extraData={uiLang}
         keyExtractor={(d) => d.id}
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -237,7 +245,7 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
 
       {/* Botão de voz (FAB) */}
       <Pressable style={s.fab} onPress={() => setRecordOpen(true)}>
-        <Text style={s.fabIcon}>🎤</Text>
+        <MicIcon size={28} color={C.bg} />
       </Pressable>
 
       <RecordModal
@@ -327,7 +335,6 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   stBtnDone: { borderColor: 'rgba(34,197,94,0.4)', backgroundColor: C.greenDim },
-  stBtnText: { color: C.light, fontSize: 12 },
   fab: {
     position: 'absolute',
     right: 20,
@@ -344,5 +351,4 @@ const s = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 4 },
   },
-  fabIcon: { fontSize: 26 },
 })

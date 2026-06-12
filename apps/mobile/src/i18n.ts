@@ -1,6 +1,7 @@
 // i18n do app mobile (mesma regra do agente desktop): o idioma vem da
 // configuração da instância (holdings.language); em divergência, a
 // CORPORATIVA prevalece. Antes do login: último conhecido ou o do sistema.
+import { useSyncExternalStore } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export type Lang = 'pt-BR' | 'en' | 'es'
@@ -126,6 +127,23 @@ export type I18nKey = keyof (typeof DICT)['pt-BR']
 
 let current: Lang = 'pt-BR'
 
+// Reatividade: telas que usam useLang() re-renderizam quando o idioma muda
+// (ex.: ao carregar as instâncias e a corporativa definir outro idioma).
+const listeners = new Set<() => void>()
+function emit() {
+  listeners.forEach((l) => l())
+}
+
+export function useLang(): Lang {
+  return useSyncExternalStore(
+    (cb) => {
+      listeners.add(cb)
+      return () => listeners.delete(cb)
+    },
+    () => current,
+  )
+}
+
 export function lang(): Lang {
   return current
 }
@@ -142,12 +160,14 @@ export async function initLang(systemLocale: string | null) {
   const saved = await AsyncStorage.getItem('mila_lang')
   if (isLang(saved)) {
     current = saved
+    emit()
     return
   }
   const sys = systemLocale ?? 'pt'
   if (sys.startsWith('pt')) current = 'pt-BR'
   else if (sys.startsWith('es')) current = 'es'
   else current = 'en'
+  emit()
 }
 
 /** Idioma das instâncias: corporativa prevalece. Retorna se mudou. */
@@ -159,5 +179,6 @@ export function applyHoldingsLang(
   if (!isLang(pick) || pick === current) return false
   current = pick
   void AsyncStorage.setItem('mila_lang', pick)
+  emit()
   return true
 }
