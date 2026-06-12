@@ -14,8 +14,7 @@
     "exitInstance": "Salir de {name}",
     "exit": "Salir",
     "profile": "Perfil",
-    "orgchart": "Organigrama",
-    "admin": "Admin"
+    "orgchart": "Organigrama"
   },
   "orgchart": {
     "title": "Organigrama",

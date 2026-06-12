@@ -14,8 +14,7 @@
     "exitInstance": "Exit {name}",
     "exit": "Exit",
     "profile": "Profile",
-    "orgchart": "Org chart",
-    "admin": "Admin"
+    "orgchart": "Org chart"
   },
   "orgchart": {
     "title": "Org chart",
