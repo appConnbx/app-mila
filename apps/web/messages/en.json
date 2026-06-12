@@ -378,7 +378,7 @@
     "hero": {
       "badge": "Work and personal life, in one account",
       "headline": "Never lose a task again <hl>for lack of a note</hl>",
-      "subtitle": "MILA turns conversations, meetings and decisions into organized execution. Capture on the spot, delegate to the right person and track until done — at work and at home.",
+      "subtitle": "MILA turns conversations, meetings and decisions into organized execution — on the web, on the desktop agent and on your phone. Capture in seconds, even by voice, delegate with an owner and deadline, and track to done.",
       "emailPlaceholder": "Your best email",
       "cta": "Get started",
       "finePrint": "Set up in minutes · Plans for companies and families · Cancel anytime"
@@ -407,6 +407,21 @@
         { "p": "“I forgot to write it down and missed it.”", "r": "Capture in seconds. What goes in doesn't disappear." },
         { "p": "“I don't know what the team is doing.”", "r": "Track progress in real time, by person, team and area." }
       ]
+    },
+    "eco": {
+      "kicker": "Practicality",
+      "title": "Capture a task in seconds, wherever you are",
+      "subtitle": "MILA's edge is practicality: ideas don't wait for you to open a system. Web, desktop and phone — always one tap away.",
+      "voiceTitle": "Voice tasks",
+      "voiceDesc": "Hold the mic, speak for up to 10 seconds and release: the transcript becomes a task due tomorrow. Review or discard before it's created.",
+      "voiceHint": "On desktop and mobile",
+      "desktopTitle": "Desktop Agent for Windows",
+      "desktopDesc": "A discreet glass pill on the edge of your screen: pending tasks always in sight, quick capture, and a pulse of light when something new lands on you.",
+      "desktopHint": "Free · updates itself",
+      "mobileTitle": "Mobile app (iOS & Android)",
+      "mobileDesc": "Your tasks in your pocket: pending list, status changes and voice — same account everywhere.",
+      "mobileHint": "Coming to the stores",
+      "cta": "I want that practicality"
     },
     "how": {
       "kicker": "It's that simple",
@@ -478,6 +493,12 @@
     },
     "footer": {
       "tagline": "Turns scattered tasks, meetings and decisions into organized execution.",
+      "company": "APP MILA is a CONNBX product — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brazil",
+      "support": "Support",
+      "sales": "Sales",
+      "corporate": "Corporate",
+      "privacy": "Privacy Policy",
+      "security": "Security",
       "copyright": "© 2026 MILA. All rights reserved."
     }
   },

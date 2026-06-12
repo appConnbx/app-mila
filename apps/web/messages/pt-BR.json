@@ -378,7 +378,7 @@
     "hero": {
       "badge": "Trabalho e vida pessoal, na mesma conta",
       "headline": "Nunca mais perca uma demanda <hl>por falta de anotação</hl>",
-      "subtitle": "O MILA transforma conversas, reuniões e decisões em execução organizada. Capture na hora, delegue para quem é responsável e acompanhe até concluir — na empresa e em casa.",
+      "subtitle": "O MILA transforma conversas, reuniões e decisões em execução organizada — no sistema web, no agente desktop e no app do celular. Capture em segundos, até por voz, delegue com responsável e prazo e acompanhe até concluir.",
       "emailPlaceholder": "Seu melhor e-mail",
       "cta": "Começar agora",
       "finePrint": "Comece em minutos · Planos para empresas e famílias · Cancele quando quiser"
@@ -407,6 +407,21 @@
         { "p": "“Esqueci de anotar e passou.”", "r": "Capture em segundos. O que entra, não some." },
         { "p": "“Não sei o que a equipe está fazendo.”", "r": "Acompanhe o andamento em tempo real, por pessoa, equipe e área." }
       ]
+    },
+    "eco": {
+      "kicker": "Praticidade",
+      "title": "Capture a demanda em segundos, de onde você estiver",
+      "subtitle": "A vantagem do MILA é a praticidade: a ideia não espera você abrir um sistema. Web, desktop e celular — sempre a um toque.",
+      "voiceTitle": "Demanda por voz",
+      "voiceDesc": "Segure o microfone, fale por até 10 segundos e solte: a transcrição vira demanda com prazo para amanhã. Revise ou recuse antes de criar.",
+      "voiceHint": "No desktop e no celular",
+      "desktopTitle": "Agente Desktop para Windows",
+      "desktopDesc": "Uma pílula de vidro discreta na lateral da tela: suas pendências sempre à vista, criação rápida e um pulso de luz quando algo novo chega para você.",
+      "desktopHint": "Grátis · atualiza sozinho",
+      "mobileTitle": "App no celular (iOS e Android)",
+      "mobileDesc": "Suas demandas no bolso: lista de pendências, mudança de status e voz — com a mesma conta em todos os lugares.",
+      "mobileHint": "Em breve nas lojas",
+      "cta": "Quero essa praticidade"
     },
     "how": {
       "kicker": "Simples assim",
@@ -478,6 +493,12 @@
     },
     "footer": {
       "tagline": "Transforma demandas soltas, reuniões e decisões em execução organizada.",
+      "company": "APP MILA é um produto CONNBX — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brasil",
+      "support": "Suporte",
+      "sales": "Comercial",
+      "corporate": "Institucional",
+      "privacy": "Política de Privacidade",
+      "security": "Segurança",
       "copyright": "© 2026 MILA. Todos os direitos reservados."
     }
   },

@@ -24,9 +24,10 @@ export default function PrivacidadePage() {
 
         <P>
           O APP MILA («MILA», «nós») é uma plataforma de gestão de demandas para empresas e
-          famílias, operada por Olivaldo Serafim Filho Consultoria em Tecnologia da Informação
-          LTDA. Esta política explica, em conformidade com a LGPD (Lei nº 13.709/2018), como
-          tratamos seus dados no site, no sistema web, no aplicativo móvel e no agente desktop.
+          famílias — um produto CONNBX, operado por Olivaldo Serafim Filho Consultoria em
+          Tecnologia da Informação LTDA, CNPJ 49.848.097/0001-86, Piracicaba/SP. Esta política
+          explica, em conformidade com a LGPD (Lei nº 13.709/2018), como tratamos seus dados no
+          site, no sistema web, no aplicativo móvel e no agente desktop.
         </P>
 
         <H>1. Dados que coletamos</H>
@@ -82,7 +83,7 @@ export default function PrivacidadePage() {
         <P>
           Você pode solicitar confirmação de tratamento, acesso, correção, anonimização,
           portabilidade, exclusão e informações sobre compartilhamento, além de revogar
-          consentimentos. Atendemos pelo canal: <strong>app@connbx.com.br</strong>.
+          consentimentos. Atendemos pelo canal: <strong>help@appmila.co</strong>.
         </P>
 
         <H>8. Segurança</H>
@@ -94,7 +95,7 @@ export default function PrivacidadePage() {
         <H>9. Alterações</H>
         <P>
           Esta política pode ser atualizada; a versão vigente estará sempre nesta página, com a
-          data acima. Dúvidas: <strong>app@connbx.com.br</strong>.
+          data acima. Dúvidas: <strong>help@appmila.co</strong>.
         </P>
       </div>
     </div>

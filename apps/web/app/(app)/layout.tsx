@@ -30,33 +30,38 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const messages = await getMessages()
   const initial = (user.email ?? '?').charAt(0).toUpperCase()
 
-  const { data: profData } = await supabase.from('profiles').select('avatar_url').eq('auth_user_id', user.id).maybeSingle()
-  const avatarUrl = (profData as unknown as { avatar_url: string | null } | null)?.avatar_url ?? null
-
   const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
   let holding: Holding | null = null
   let isHoldingAdmin = false
   let isManager = false
 
+  // Uma "onda" só de consultas (eram até 5 idas sequenciais ao banco por
+  // navegação — principal causa da lentidão percebida).
+  const profilePromise = supabase.from('profiles').select('avatar_url').eq('auth_user_id', user.id).maybeSingle()
+
   if (activeHolding) {
-    const { data: hData } = await supabase.from('holdings').select('name, kind, legal_name').eq('id', activeHolding).single()
-    holding = hData as unknown as Holding | null
-    const { data: admin } = await sb.rpc('is_holding_admin')
-    isHoldingAdmin = !!admin
-    // Dashboard gerencial: admin de qualquer nível (holding/org/área/equipe).
-    const { data: mgr } = await sb.rpc('is_manager')
-    isManager = !!mgr
+    const [hRes, adminRes, mgrRes, accessRes] = await Promise.all([
+      supabase.from('holdings').select('name, kind, legal_name').eq('id', activeHolding).single(),
+      sb.rpc('is_holding_admin'),
+      sb.rpc('is_manager'), // dashboard gerencial: admin de qualquer nível
+      isHome ? Promise.resolve({ data: true }) : sb.rpc('holding_has_active_access'),
+    ])
+    holding = hRes.data as unknown as Holding | null
+    isHoldingAdmin = !!adminRes.data
+    isManager = !!mgrRes.data
 
     if (!isHome) {
       // Guard de assinatura ativa.
-      const { data: hasAccess } = await sb.rpc('holding_has_active_access')
-      if (!hasAccess) redirect('/assinatura')
+      if (!accessRes.data) redirect('/assinatura')
       // Onboarding de 1º acesso (corporativo Hotmart): configurar dados da holding.
       if (isHoldingAdmin && holding?.kind === 'corporate' && !holding?.legal_name && !pathname.startsWith('/estrutura/holding')) {
         redirect('/estrutura/holding?onboarding=1')
       }
     }
   }
+
+  const { data: profData } = await profilePromise
+  const avatarUrl = (profData as unknown as { avatar_url: string | null } | null)?.avatar_url ?? null
 
   const isFamily = holding?.kind === 'family'
   const navItems = [

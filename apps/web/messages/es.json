@@ -378,7 +378,7 @@
     "hero": {
       "badge": "Trabajo y vida personal, en una sola cuenta",
       "headline": "Nunca más pierdas una tarea <hl>por falta de una nota</hl>",
-      "subtitle": "MILA convierte conversaciones, reuniones y decisiones en ejecución organizada. Captura al instante, delega a quien corresponde y haz seguimiento hasta terminar — en la empresa y en casa.",
+      "subtitle": "MILA convierte conversaciones, reuniones y decisiones en ejecución organizada — en la web, en el agente de escritorio y en tu teléfono. Captura en segundos, incluso por voz, delega con responsable y plazo y haz seguimiento hasta concluir.",
       "emailPlaceholder": "Tu mejor correo",
       "cta": "Comenzar ahora",
       "finePrint": "Configura en minutos · Planes para empresas y familias · Cancela cuando quieras"
@@ -407,6 +407,21 @@
         { "p": "“Olvidé anotarlo y se me pasó.”", "r": "Captura en segundos. Lo que entra, no desaparece." },
         { "p": "“No sé qué está haciendo el equipo.”", "r": "Haz seguimiento en tiempo real, por persona, equipo y área." }
       ]
+    },
+    "eco": {
+      "kicker": "Practicidad",
+      "title": "Captura la tarea en segundos, estés donde estés",
+      "subtitle": "La ventaja de MILA es la practicidad: la idea no espera a que abras un sistema. Web, escritorio y teléfono — siempre a un toque.",
+      "voiceTitle": "Tareas por voz",
+      "voiceDesc": "Mantén el micrófono, habla hasta 10 segundos y suelta: la transcripción se vuelve una tarea con plazo para mañana. Revisa o rechaza antes de crear.",
+      "voiceHint": "En escritorio y móvil",
+      "desktopTitle": "Agente de Escritorio para Windows",
+      "desktopDesc": "Una píldora de vidrio discreta al borde de la pantalla: tus pendientes siempre a la vista, creación rápida y un pulso de luz cuando te llega algo nuevo.",
+      "desktopHint": "Gratis · se actualiza solo",
+      "mobileTitle": "App móvil (iOS y Android)",
+      "mobileDesc": "Tus tareas en el bolsillo: lista de pendientes, cambio de estado y voz — con la misma cuenta en todas partes.",
+      "mobileHint": "Pronto en las tiendas",
+      "cta": "Quiero esa practicidad"
     },
     "how": {
       "kicker": "Así de simple",
@@ -478,6 +493,12 @@
     },
     "footer": {
       "tagline": "Convierte tareas sueltas, reuniones y decisiones en ejecución organizada.",
+      "company": "APP MILA es un producto CONNBX — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brasil",
+      "support": "Soporte",
+      "sales": "Ventas",
+      "corporate": "Institucional",
+      "privacy": "Política de Privacidad",
+      "security": "Seguridad",
       "copyright": "© 2026 MILA. Todos los derechos reservados."
     }
   },

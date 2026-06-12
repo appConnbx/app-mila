@@ -241,6 +241,64 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ---------------- PRATICIDADE: VOZ + DESKTOP + MOBILE ---------------- */}
+      <section id="praticidade" className="mx-auto max-w-6xl px-4 py-12">
+        <div className="text-center">
+          <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('eco.kicker')}</p>
+          <h2 className="mt-2 text-3xl font-bold text-white">{t('eco.title')}</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-slate-400">{t('eco.subtitle')}</p>
+        </div>
+
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {/* Voz (destaque) */}
+          <div className="glass glow-top relative overflow-hidden border-brand/40 p-6">
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand/15">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-brand" aria-hidden>
+                <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z" />
+              </svg>
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-white">{t('eco.voiceTitle')}</h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{t('eco.voiceDesc')}</p>
+            <p className="mt-3 text-xs font-medium text-brand">{t('eco.voiceHint')}</p>
+          </div>
+
+          {/* Agente Desktop */}
+          <div className="glass p-6">
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand/15">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-brand" aria-hidden>
+                <rect x="3" y="4" width="18" height="12" rx="2" />
+                <path d="M8 20h8M12 16v4" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-white">{t('eco.desktopTitle')}</h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{t('eco.desktopDesc')}</p>
+            <p className="mt-3 text-xs font-medium text-slate-500">{t('eco.desktopHint')}</p>
+          </div>
+
+          {/* App Mobile */}
+          <div className="glass p-6">
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand/15">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-brand" aria-hidden>
+                <rect x="7" y="2" width="10" height="20" rx="2.5" />
+                <path d="M11 18h2" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-white">{t('eco.mobileTitle')}</h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{t('eco.mobileDesc')}</p>
+            <p className="mt-3 text-xs font-medium text-slate-500">{t('eco.mobileHint')}</p>
+          </div>
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <a
+            href="#planos"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
+          >
+            {t('eco.cta')} <Arrow className="h-4 w-4" />
+          </a>
+        </div>
+      </section>
+
       {/* ---------------- COMO FUNCIONA ---------------- */}
       <section id="como" className="mx-auto max-w-6xl px-4 py-12">
         <div className="text-center">
@@ -436,7 +494,19 @@ export default async function LandingPage() {
           </div>
         </div>
         <div className="border-t border-white/5">
-          <div className="mx-auto max-w-6xl px-4 py-5 text-xs text-slate-500">
+          <div className="mx-auto max-w-6xl space-y-2 px-4 py-6 text-xs text-slate-500">
+            <p>{t('footer.company')}</p>
+            <p>
+              {t('footer.support')}: <a href="mailto:help@appmila.co" className="text-slate-400 hover:text-white">help@appmila.co</a>
+              {' · '}
+              {t('footer.sales')}: <a href="mailto:sales@appmila.co" className="text-slate-400 hover:text-white">sales@appmila.co</a>
+              {' · '}
+              {t('footer.corporate')}: <a href="mailto:mail@connbx.com.br" className="text-slate-400 hover:text-white">mail@connbx.com.br</a>
+            </p>
+            <p className="flex flex-wrap gap-x-5 gap-y-1">
+              <Link href="/privacidade" className="hover:text-white">{t('footer.privacy')}</Link>
+              <Link href="/seguranca" className="hover:text-white">{t('footer.security')}</Link>
+            </p>
             <p>{t('footer.copyright')}</p>
           </div>
         </div>
