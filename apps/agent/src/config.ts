@@ -14,7 +14,5 @@ export const POLL_MS = 20_000
 // Backend do MILA (rota de transcrição de voz, autenticada por sessão).
 export const APP_BASE_URL = 'https://www.appmila.co'
 
-// Gravação de voz: limite por demanda no formulário (clique liga/desliga)
-// e no segure-e-fale da pílula (solta ou estoura 10s = cria).
-export const MAX_RECORD_MS = 60_000
+// Gravação de voz (segure-e-fale da pílula): solta ou estoura 10s = cria.
 export const MIC_HOLD_MS = 10_000

@@ -3,7 +3,7 @@ import { enable as autostartEnable, disable as autostartDisable, isEnabled as au
 import { check as checkUpdate } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { supabase, fetchPending, fetchHoldings, createDemand, setDemandStatus, type Demand, type DemandStatus, type Holding } from './supabase'
-import { COLLAPSED, EXPANDED, MIC, POLL_MS, APP_BASE_URL, MAX_RECORD_MS, MIC_HOLD_MS } from './config'
+import { COLLAPSED, EXPANDED, MIC, POLL_MS, APP_BASE_URL, MIC_HOLD_MS } from './config'
 
 const win = getCurrentWindow()
 
@@ -359,7 +359,6 @@ btnLogout.addEventListener('click', async () => {
   updateBadge()
   pill.classList.remove('pulse')
   ;($<HTMLFormElement>('quick-form')).reset()
-  clearVoice()
   showLogin()
 })
 
@@ -390,15 +389,6 @@ function splitTranscript(text: string): { title: string; description: string | n
 }
 
 // ---------------- Criação rápida (formulário) ----------------
-let voiceDescription: string | null = null
-
-function clearVoice() {
-  voiceDescription = null
-  const hint = $<HTMLParagraphElement>('quick-hint')
-  hint.hidden = true
-  hint.textContent = ''
-}
-
 $<HTMLFormElement>('quick-form').addEventListener('submit', async (e) => {
   e.preventDefault()
   const titleEl = $<HTMLInputElement>('quick-title')
@@ -411,84 +401,15 @@ $<HTMLFormElement>('quick-form').addEventListener('submit', async (e) => {
   errEl.hidden = true
   btn.disabled = true
   try {
-    await createDemand(holdingId, title, dueEl.value || null, voiceDescription)
+    await createDemand(holdingId, title, dueEl.value || null)
     titleEl.value = ''
     dueEl.value = ''
-    clearVoice()
     await refresh()
   } catch {
     errEl.textContent = 'Não foi possível criar. Tente novamente.'
     errEl.hidden = false
   } finally {
     btn.disabled = false
-  }
-})
-
-function quickError(msg: string) {
-  const errEl = $<HTMLParagraphElement>('quick-error')
-  errEl.textContent = msg
-  errEl.hidden = false
-}
-
-// Microfone do formulário: clique liga/desliga (até 60s), preenche para revisão.
-const micBtn = $<HTMLButtonElement>('quick-mic')
-let recorder: MediaRecorder | null = null
-let recChunks: Blob[] = []
-let recTimer: number | undefined
-
-micBtn.addEventListener('click', async () => {
-  if (recorder?.state === 'recording') {
-    recorder.stop()
-    return
-  }
-  $<HTMLParagraphElement>('quick-error').hidden = true
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    recChunks = []
-    recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
-    recorder.ondataavailable = (e) => {
-      if (e.data.size > 0) recChunks.push(e.data)
-    }
-    recorder.onstop = async () => {
-      stream.getTracks().forEach((t) => t.stop())
-      window.clearTimeout(recTimer)
-      micBtn.classList.remove('recording')
-      micBtn.title = 'Ditar demanda por voz'
-      pinned = !viewLogin.hidden
-      micBtn.disabled = true
-      micBtn.textContent = '…'
-      try {
-        const text = await transcribeBlob(new Blob(recChunks, { type: 'audio/webm' }))
-        const { title, description } = splitTranscript(text)
-        const titleEl = $<HTMLInputElement>('quick-title')
-        titleEl.value = title
-        voiceDescription = description
-        if (description) {
-          const hint = $<HTMLParagraphElement>('quick-hint')
-          hint.textContent = 'Transcrição completa será anexada como descrição.'
-          hint.hidden = false
-        }
-        titleEl.focus()
-      } catch (err) {
-        quickError(
-          (err as Error).message === 'nao-configurada'
-            ? 'Transcrição por voz ainda não configurada.'
-            : 'Não foi possível transcrever. Tente novamente.',
-        )
-      } finally {
-        micBtn.disabled = false
-        micBtn.textContent = '🎤'
-      }
-    }
-    recorder.start()
-    pinned = true // não recolher enquanto grava
-    micBtn.classList.add('recording')
-    micBtn.title = 'Gravando… clique para parar'
-    recTimer = window.setTimeout(() => {
-      if (recorder?.state === 'recording') recorder.stop()
-    }, MAX_RECORD_MS)
-  } catch {
-    quickError('Microfone indisponível ou sem permissão.')
   }
 })
 
