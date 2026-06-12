@@ -2,6 +2,7 @@ import { getCurrentWindow, currentMonitor, LogicalSize, LogicalPosition } from '
 import { enable as autostartEnable, disable as autostartDisable, isEnabled as autostartIsEnabled } from '@tauri-apps/plugin-autostart'
 import { check as checkUpdate } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
+import { openUrl } from '@tauri-apps/plugin-opener'
 import { supabase, fetchPending, fetchHoldings, createDemand, setDemandStatus, type Demand, type DemandStatus, type Holding } from './supabase'
 import { COLLAPSED, EXPANDED, MIC, POLL_MS, APP_BASE_URL, MIC_HOLD_MS } from './config'
 import { t, lang, initLang, applyHoldingsLang, applyStatic } from './i18n'
@@ -566,6 +567,11 @@ holdBtn.addEventListener('pointercancel', () => void holdStop())
 holdBtn.addEventListener('pointerleave', () => void holdStop())
 
 $<HTMLButtonElement>('btn-refresh').addEventListener('click', () => void refresh())
+
+// Acesso completo pelo sistema web — abre no navegador padrão (fora do widget).
+$<HTMLButtonElement>('open-web').addEventListener('click', () => {
+  void openUrl('https://www.appmila.co/login')
+})
 
 $<HTMLInputElement>('chk-autostart').addEventListener('change', async (e) => {
   const on = (e.target as HTMLInputElement).checked

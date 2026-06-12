@@ -44,6 +44,7 @@ const DICT = {
     refreshTitle: 'Atualizar',
     logoutTitle: 'Sair da conta',
     autostart: 'Iniciar com o Windows',
+    webTip: 'Para o acesso completo e todas as funcionalidades, use o sistema web. Clique para abrir.',
   },
   en: {
     pillTitle: 'MILA — your tasks',
@@ -84,6 +85,7 @@ const DICT = {
     refreshTitle: 'Refresh',
     logoutTitle: 'Sign out',
     autostart: 'Start with Windows',
+    webTip: 'For full access and every feature, use the web app. Click to open.',
   },
   es: {
     pillTitle: 'MILA — tus tareas',
@@ -124,6 +126,7 @@ const DICT = {
     refreshTitle: 'Actualizar',
     logoutTitle: 'Cerrar sesión',
     autostart: 'Iniciar con Windows',
+    webTip: 'Para el acceso completo y todas las funciones, usa el sistema web. Haz clic para abrir.',
   },
 } as const
 
@@ -188,6 +191,7 @@ export function applyStatic() {
   set('quick-btn', (el) => (el.title = t('createTitle')))
   set('btn-refresh', (el) => (el.title = t('refreshTitle')))
   set('btn-logout', (el) => (el.title = t('logoutTitle')))
+  set('web-tip', (el) => (el.textContent = t('webTip')))
   const auto = document.querySelector('.autostart')
   if (auto) {
     // mantém o checkbox, troca só o texto
