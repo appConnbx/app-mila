@@ -10,7 +10,7 @@ import { transcribeAudio, splitTranscript, createDemand, tomorrowISO, type Holdi
 import { t, useLang } from '../i18n'
 import { C } from '../theme'
 import { MIC_HOLD_MS } from '../config'
-import { MicIcon, XIcon } from '../components/icons'
+import { MicIcon, XIcon, CheckIcon } from '../components/icons'
 
 type Phase = 'idle' | 'recording' | 'transcribing' | 'preview' | 'creating' | 'done' | 'error'
 
@@ -178,10 +178,22 @@ export function RecordModal({
               <Text style={s.preview} numberOfLines={4}>
                 {preview}
               </Text>
-              <Pressable style={s.refuseBtn} onPress={refuse}>
-                <XIcon size={13} color={C.redText} />
-                <Text style={s.refuseText}>{t('voiceRefuse').replace('✕ ', '')}</Text>
-              </Pressable>
+              <View style={s.reviewRow}>
+                <Pressable style={s.refuseBtn} onPress={refuse}>
+                  <XIcon size={13} color={C.redText} />
+                  <Text style={s.refuseText}>{t('voiceRefuse').replace('✕ ', '')}</Text>
+                </Pressable>
+                <Pressable
+                  style={s.acceptBtn}
+                  onPress={() => {
+                    clearTimers()
+                    void accept(preview)
+                  }}
+                >
+                  <CheckIcon size={13} color={C.green} />
+                  <Text style={s.acceptText}>{t('voiceAccept').replace('✓ ', '')}</Text>
+                </Pressable>
+              </View>
             </>
           ) : (
             <Pressable
@@ -260,6 +272,7 @@ const s = StyleSheet.create({
     lineHeight: 20,
     paddingHorizontal: 8,
   },
+  reviewRow: { flexDirection: 'row', gap: 10 },
   refuseBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -272,6 +285,18 @@ const s = StyleSheet.create({
     paddingVertical: 9,
   },
   refuseText: { color: C.redText, fontWeight: '700', fontSize: 14 },
+  acceptBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    borderWidth: 1,
+    borderColor: 'rgba(34,197,94,0.5)',
+    backgroundColor: 'rgba(34,197,94,0.14)',
+    borderRadius: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 9,
+  },
+  acceptText: { color: C.green, fontWeight: '700', fontSize: 14 },
   bar: {
     width: '100%',
     height: 4,

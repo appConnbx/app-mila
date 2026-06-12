@@ -508,6 +508,9 @@ $<HTMLButtonElement>('mic-reject').addEventListener('click', () => {
   pinned = false
 })
 
+// "OK": aceita na hora, sem esperar a contagem terminar.
+$<HTMLButtonElement>('mic-accept').addEventListener('click', () => void acceptPreview())
+
 async function holdStop() {
   if (holdRecorder?.state === 'recording') holdRecorder.stop()
 }

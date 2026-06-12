@@ -20,6 +20,7 @@ const DICT = {
     micUnavailable: 'Microfone indisponível ou sem permissão.',
     micCountdown: 'Criando em {s}s — recuse se não ficou bom.',
     micRefuse: '✕ Recusar',
+    micAccept: '✓ OK',
     micRefused: 'Descartada — grave outra se quiser.',
     loginHint: 'Entre com a mesma conta do MILA web.',
     email: 'E-mail',
@@ -61,6 +62,7 @@ const DICT = {
     micUnavailable: 'Microphone unavailable or no permission.',
     micCountdown: "Creating in {s}s — discard if it's wrong.",
     micRefuse: '✕ Discard',
+    micAccept: '✓ OK',
     micRefused: 'Discarded — record another if you like.',
     loginHint: 'Sign in with the same MILA web account.',
     email: 'Email',
@@ -102,6 +104,7 @@ const DICT = {
     micUnavailable: 'Micrófono no disponible o sin permiso.',
     micCountdown: 'Creando en {s}s — rechaza si no quedó bien.',
     micRefuse: '✕ Rechazar',
+    micAccept: '✓ OK',
     micRefused: 'Descartada — graba otra si quieres.',
     loginHint: 'Entra con la misma cuenta de MILA web.',
     email: 'Correo',
@@ -181,6 +184,7 @@ export function applyStatic() {
   set('pill-mic', (el) => (el.title = t('pillMicTitle')))
   set('hold-btn', (el) => (el.title = t('pillMicTitle')))
   set('mic-reject', (el) => (el.textContent = t('micRefuse')))
+  set('mic-accept', (el) => (el.textContent = t('micAccept')))
   document.querySelector('.mic-title')!.textContent = t('micTitle')
   set('login-email', (el) => ((el as HTMLInputElement).placeholder = t('email')))
   set('login-password', (el) => ((el as HTMLInputElement).placeholder = t('password')))
