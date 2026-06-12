@@ -114,9 +114,13 @@ export function RecordModal({
       showPreview(text)
     } catch (err) {
       setPhase('error')
-      setStatus(
-        (err as Error).message === 'nao-configurada' ? t('voiceNotConfigured') : t('voiceFailed'),
-      )
+      const m = (err as Error).message
+      if (m === 'nao-configurada') {
+        setStatus(t('voiceNotConfigured'))
+      } else {
+        // Inclui o código para diagnóstico (ex.: 502 = provedor, 422 = silêncio).
+        setStatus(`${t('voiceFailed')} [${m}]`)
+      }
     }
   }
 
