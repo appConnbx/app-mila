@@ -44,6 +44,13 @@ export default async function DashboardPage() {
   const overview = (ovRes.data ?? { counts: { pending: 0, working: 0, overdue: 0, done: 0 }, daily: [] }) as Overview
   const instances = (instRes.data ?? []) as Instance[]
 
+  // Logos das instâncias (foto de perfil da holding) para os cards.
+  const { data: logoData } = await supabase
+    .from('holdings')
+    .select('id, logo_url')
+    .in('id', instances.map((i) => i.holding_id).length ? instances.map((i) => i.holding_id) : ['00000000-0000-0000-0000-000000000000'])
+  const logoOf = new Map((logoData as unknown as { id: string; logo_url: string | null }[] | null ?? []).map((h) => [h.id, h.logo_url]))
+
   // Perfil (para o cabeçalho da home)
   const {
     data: { user },
@@ -148,9 +155,14 @@ export default async function DashboardPage() {
                     <input type="hidden" name="holding_id" value={it.holding_id} />
                     <SubmitButton mode="overlay" className="group glass w-full p-5 text-left transition hover:border-brand/60">
                       <div className="flex items-start justify-between">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-lg font-bold text-brand">
-                          {it.holding_name.charAt(0).toUpperCase()}
-                        </div>
+                        {logoOf.get(it.holding_id) ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={logoOf.get(it.holding_id) as string} alt={it.holding_name} className="h-11 w-11 rounded-xl object-cover ring-1 ring-white/10" />
+                        ) : (
+                          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-lg font-bold text-brand">
+                            {it.holding_name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
                         <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${kindCls}`}>{kindLabel}</span>
                       </div>
                       <h3 className="mt-4 text-lg font-semibold text-white">{it.holding_name}</h3>

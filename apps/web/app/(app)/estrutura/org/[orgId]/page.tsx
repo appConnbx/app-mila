@@ -5,9 +5,10 @@ import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { createArea } from '../../actions'
 import { Breadcrumb, Card, ScopeAdmins, StructureSettings, StatusBadge, inputCls, btnCls } from '../../_components'
+import { LogoUploader } from '../../_logo-uploader'
 import { SubmitButton } from '@/components/pending'
 
-type Named = { id: string; name: string; is_active: boolean }
+type Named = { id: string; name: string; is_active: boolean; logo_url: string | null }
 type Person = { id: string; full_name: string }
 type Membership = { id: string; person_id: string }
 
@@ -19,7 +20,7 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
   if (!holdingId) redirect('/dashboard')
 
   const supabase = await createClient()
-  const { data: orgData } = await supabase.from('organizations').select('id, name, is_active').eq('id', orgId).single()
+  const { data: orgData } = await supabase.from('organizations').select('id, name, is_active, logo_url').eq('id', orgId).single()
   const org = orgData as unknown as Named | null
   if (!org) redirect('/estrutura')
 
@@ -44,6 +45,9 @@ export default async function OrgPage({ params }: { params: Promise<{ orgId: str
       <p className="mt-1 text-sm text-slate-400">{t('orgScope')}</p>
 
       <div className="mt-6 space-y-5">
+        {/* 0) Logo da organização */}
+        <LogoUploader kind="organization" id={orgId} name={org.name} initialUrl={org.logo_url} />
+
         {/* 1) Configurações */}
         <StructureSettings kind="organization" id={orgId} name={org.name} isActive={org.is_active} redirectAfterDelete="/estrutura" />
 

@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { updateHolding } from '../actions'
 import { Breadcrumb, Card, inputCls, btnCls } from '../_components'
+import { LogoUploader } from '../_logo-uploader'
 import { SubmitButton } from '@/components/pending'
 import { TIMEZONES } from '@/lib/datetime'
 
@@ -17,6 +18,7 @@ type Holding = {
   phone: string | null
   timezone: string | null
   language: string | null
+  logo_url: string | null
 }
 
 const LANGUAGES = [
@@ -37,7 +39,7 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
   const supabase = await createClient()
   const { data } = await supabase
     .from('holdings')
-    .select('id, name, kind, legal_name, tax_id, contact_email, phone, timezone, language')
+    .select('id, name, kind, legal_name, tax_id, contact_email, phone, timezone, language, logo_url')
     .eq('id', holdingId)
     .single()
   const h = data as unknown as Holding | null
@@ -56,7 +58,11 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
         </div>
       )}
 
-      <form action={updateHolding} className="mt-6">
+      <div className="mt-6">
+        <LogoUploader kind="holding" id={h.id} name={h.name} initialUrl={h.logo_url} />
+      </div>
+
+      <form action={updateHolding} className="mt-5">
         <Card title={t('holdingData')}>
           <div>
             <label htmlFor="name" className={labelCls}>{t('hName')}</label>

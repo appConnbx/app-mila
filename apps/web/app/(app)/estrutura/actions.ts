@@ -31,6 +31,30 @@ function revalidate() {
   revalidatePath('/pessoas')
 }
 
+// ---------------------------------------------------------------- Logo (foto de perfil)
+// Salva a URL pública (já enviada ao storage no cliente) na holding ativa ou
+// numa organização dela. RLS garante que só admin do escopo consegue gravar.
+export async function setEntityLogo(formData: FormData) {
+  const { holdingId, supabase } = await ctx()
+  if (!holdingId) return
+  const kind = String(formData.get('kind') ?? '')
+  const url = String(formData.get('logo_url') ?? '').trim() || null
+  if (kind === 'holding') {
+    await supabase.from('holdings').update({ logo_url: url } as never).eq('id', holdingId)
+  } else if (kind === 'organization') {
+    const id = String(formData.get('id') ?? '')
+    if (!id) return
+    await supabase
+      .from('organizations')
+      .update({ logo_url: url } as never)
+      .eq('id', id)
+      .eq('holding_id', holdingId)
+  } else {
+    return
+  }
+  revalidate()
+}
+
 // ---------------------------------------------------------------- Holding
 export async function updateHolding(formData: FormData) {
   const { holdingId, supabase } = await ctx()
