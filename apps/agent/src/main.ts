@@ -79,6 +79,7 @@ async function expandTo(next: 'panel' | 'mic') {
   pill.classList.remove('pulse')
   if (next === 'panel') void refresh()
   if (next === 'mic') {
+    exitPreview() // limpa revisão antiga, se houver
     const h = defaultHolding()
     $<HTMLParagraphElement>('mic-target').textContent = h ? `→ ${h.name}` : ''
     micStatus(t('micHoldHint'), '')
@@ -432,6 +433,72 @@ function micStatus(msg: string, cls: '' | 'ok' | 'err') {
   el.className = `mic-status ${cls}`.trim()
 }
 
+// Revisão pós-gravação: o áudio é aceito por padrão (contagem regressiva);
+// "Recusar" descarta antes de criar.
+let previewTimer: number | undefined
+let previewText: string | null = null
+let previewCount = 0
+
+function exitPreview() {
+  window.clearInterval(previewTimer)
+  previewText = null
+  $<HTMLParagraphElement>('mic-preview').hidden = true
+  $<HTMLDivElement>('mic-actions').hidden = true
+  holdBtn.hidden = false
+}
+
+function showPreview(text: string) {
+  previewText = text
+  const pv = $<HTMLParagraphElement>('mic-preview')
+  pv.textContent = text
+  pv.title = text
+  pv.hidden = false
+  $<HTMLDivElement>('mic-actions').hidden = false
+  holdBtn.hidden = true
+  previewCount = 3
+  micStatus(t('micCountdown').replace('{s}', String(previewCount)), '')
+  previewTimer = window.setInterval(() => {
+    previewCount -= 1
+    if (previewCount <= 0) {
+      void acceptPreview()
+      return
+    }
+    micStatus(t('micCountdown').replace('{s}', String(previewCount)), '')
+  }, 1000)
+}
+
+async function acceptPreview() {
+  window.clearInterval(previewTimer)
+  const text = previewText
+  exitPreview()
+  if (!text) return
+  holdBtn.classList.add('busy')
+  micStatus(t('micCreating'), '')
+  try {
+    const { title, description } = splitTranscript(text)
+    const h = defaultHolding()
+    if (!h) throw new Error('sem-instancia')
+    await createDemand(h.id, title, null, description)
+    await refresh()
+    micStatus(`${t('micCreated')}: ${title.slice(0, 40)}${title.length > 40 ? '…' : ''}`, 'ok')
+    window.setTimeout(() => {
+      pinned = false
+      if (!mouseInside) void collapse()
+    }, 1400)
+  } catch {
+    micStatus(t('micFailed'), 'err')
+    pinned = false
+  } finally {
+    holdBtn.classList.remove('busy')
+  }
+}
+
+$<HTMLButtonElement>('mic-reject').addEventListener('click', () => {
+  exitPreview()
+  micStatus(t('micRefused'), '')
+  pinned = false
+})
+
 async function holdStop() {
   if (holdRecorder?.state === 'recording') holdRecorder.stop()
 }
@@ -463,23 +530,14 @@ holdBtn.addEventListener('pointerdown', async (e) => {
       micStatus(t('micTranscribing'), '')
       try {
         const text = await transcribeBlob(new Blob(holdChunks, { type: 'audio/webm' }))
-        const { title, description } = splitTranscript(text)
-        const h = defaultHolding()
-        if (!h) throw new Error('sem-instancia')
-        micStatus(t('micCreating'), '')
-        await createDemand(h.id, title, null, description)
-        await refresh()
-        micStatus(`${t('micCreated')}: ${title.slice(0, 40)}${title.length > 40 ? '…' : ''}`, 'ok')
-        window.setTimeout(() => {
-          pinned = false
-          if (!mouseInside) void collapse()
-        }, 1400)
+        holdBtn.classList.remove('busy')
+        // Aceito por padrão: contagem regressiva cria sozinho; Recusar aborta.
+        showPreview(text)
       } catch (err) {
+        holdBtn.classList.remove('busy')
         const m = (err as Error).message
         micStatus(m === 'nao-configurada' ? t('micNotConfigured') : t('micFailed'), 'err')
         pinned = false
-      } finally {
-        holdBtn.classList.remove('busy')
       }
     }
     holdRecorder.start()
