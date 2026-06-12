@@ -42,6 +42,10 @@ export async function updateHolding(formData: FormData) {
     contact_email: String(formData.get('contact_email') ?? '').trim() || null,
     phone: String(formData.get('phone') ?? '').trim() || null,
     timezone: String(formData.get('timezone') ?? '').trim() || 'America/Sao_Paulo',
+    // Idioma padrão da instância (o agente desktop usa; corporativa prevalece).
+    language: ['pt-BR', 'en', 'es'].includes(String(formData.get('language')))
+      ? String(formData.get('language'))
+      : 'pt-BR',
   }
   if (!patch.name) return
   await supabase.from('holdings').update(patch as never).eq('id', holdingId)

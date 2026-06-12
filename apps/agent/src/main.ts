@@ -4,6 +4,7 @@ import { check as checkUpdate } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { supabase, fetchPending, fetchHoldings, createDemand, setDemandStatus, type Demand, type DemandStatus, type Holding } from './supabase'
 import { COLLAPSED, EXPANDED, MIC, POLL_MS, APP_BASE_URL, MIC_HOLD_MS } from './config'
+import { t, lang, initLang, applyHoldingsLang, applyStatic } from './i18n'
 
 const win = getCurrentWindow()
 
@@ -80,7 +81,7 @@ async function expandTo(next: 'panel' | 'mic') {
   if (next === 'mic') {
     const h = defaultHolding()
     $<HTMLParagraphElement>('mic-target').textContent = h ? `→ ${h.name}` : ''
-    micStatus('Segure o botão e fale (até 10s)', '')
+    micStatus(t('micHoldHint'), '')
   }
 }
 
@@ -185,10 +186,10 @@ function fmtDue(due: string | null): { label: string; cls: string } | null {
   const d = new Date(due + 'T00:00:00')
   const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
   const diff = Math.round((d.getTime() - t0) / 86_400_000)
-  if (diff < 0) return { label: 'atrasada', cls: 'overdue' }
-  if (diff === 0) return { label: 'hoje', cls: 'today' }
-  if (diff === 1) return { label: 'amanhã', cls: '' }
-  return { label: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }), cls: '' }
+  if (diff < 0) return { label: t('dueOverdue'), cls: 'overdue' }
+  if (diff === 0) return { label: t('dueToday'), cls: 'today' }
+  if (diff === 1) return { label: t('dueTomorrow'), cls: '' }
+  return { label: d.toLocaleDateString(lang(), { day: '2-digit', month: '2-digit' }), cls: '' }
 }
 
 function renderList(items: Demand[]) {
@@ -196,7 +197,7 @@ function renderList(items: Demand[]) {
   if (items.length === 0) {
     const p = document.createElement('p')
     p.className = 'empty'
-    p.textContent = 'Nenhuma demanda pendente. 🎉'
+    p.textContent = t('emptyList')
     listEl.appendChild(p)
     return
   }
@@ -223,7 +224,7 @@ function renderList(items: Demand[]) {
     if (isUnseen) {
       const nv = document.createElement('span')
       nv.className = 'chip nova'
-      nv.textContent = 'nova'
+      nv.textContent = t('chipNew')
       meta.appendChild(nv)
     }
     const inst = document.createElement('span')
@@ -233,13 +234,13 @@ function renderList(items: Demand[]) {
     if (d.status === 'trabalhando') {
       const st = document.createElement('span')
       st.className = 'chip working'
-      st.textContent = 'em andamento'
+      st.textContent = t('chipWorking')
       meta.appendChild(st)
     }
     if (d.priority === 'alta') {
       const pr = document.createElement('span')
       pr.className = 'chip prio-alta'
-      pr.textContent = 'alta'
+      pr.textContent = t('chipHigh')
       meta.appendChild(pr)
     }
     const due = fmtDue(d.due_date)
@@ -271,11 +272,11 @@ function renderList(items: Demand[]) {
       return b
     }
     if (d.status === 'nova') {
-      actions.appendChild(mk('▶', 'Começar a trabalhar', 'start', 'trabalhando'))
+      actions.appendChild(mk('▶', t('startWork'), 'start', 'trabalhando'))
     } else {
-      actions.appendChild(mk('⏸', 'Voltar para nova', 'pause', 'nova'))
+      actions.appendChild(mk('⏸', t('backToNew'), 'pause', 'nova'))
     }
-    actions.appendChild(mk('✓', 'Concluir demanda', 'done', 'finalizada'))
+    actions.appendChild(mk('✓', t('finish'), 'done', 'finalizada'))
     meta.appendChild(actions)
 
     card.appendChild(meta)
@@ -302,6 +303,8 @@ async function showMain() {
   } catch {
     holdings = []
   }
+  // Idioma da instância (corporativa prevalece) — retraduz a interface.
+  if (applyHoldingsLang(holdings)) applyStatic()
   const sel = $<HTMLSelectElement>('quick-holding')
   sel.innerHTML = ''
   for (const h of holdings) {
@@ -334,14 +337,14 @@ $<HTMLFormElement>('login-form').addEventListener('submit', async (e) => {
   const errEl = $<HTMLParagraphElement>('login-error')
   errEl.hidden = true
   btn.disabled = true
-  btn.textContent = 'Entrando…'
+  btn.textContent = t('signingIn')
   const email = $<HTMLInputElement>('login-email').value.trim()
   const password = $<HTMLInputElement>('login-password').value
   const { error } = await supabase.auth.signInWithPassword({ email, password })
   btn.disabled = false
-  btn.textContent = 'Entrar'
+  btn.textContent = t('signIn')
   if (error) {
-    errEl.textContent = 'E-mail ou senha inválidos.'
+    errEl.textContent = t('badCredentials')
     errEl.hidden = false
     return
   }
@@ -406,7 +409,7 @@ $<HTMLFormElement>('quick-form').addEventListener('submit', async (e) => {
     dueEl.value = ''
     await refresh()
   } catch {
-    errEl.textContent = 'Não foi possível criar. Tente novamente.'
+    errEl.textContent = t('createFailed')
     errEl.hidden = false
   } finally {
     btn.disabled = false
@@ -453,32 +456,27 @@ holdBtn.addEventListener('pointerdown', async (e) => {
       const duration = Date.now() - holdStart
       if (duration < 500) {
         pinned = false
-        micStatus('Muito curto — segure enquanto fala.', 'err')
+        micStatus(t('micTooShort'), 'err')
         return
       }
       holdBtn.classList.add('busy')
-      micStatus('Transcrevendo…', '')
+      micStatus(t('micTranscribing'), '')
       try {
         const text = await transcribeBlob(new Blob(holdChunks, { type: 'audio/webm' }))
         const { title, description } = splitTranscript(text)
         const h = defaultHolding()
         if (!h) throw new Error('sem-instancia')
-        micStatus('Criando demanda…', '')
+        micStatus(t('micCreating'), '')
         await createDemand(h.id, title, null, description)
         await refresh()
-        micStatus(`✓ Criada: ${title.slice(0, 40)}${title.length > 40 ? '…' : ''}`, 'ok')
+        micStatus(`${t('micCreated')}: ${title.slice(0, 40)}${title.length > 40 ? '…' : ''}`, 'ok')
         window.setTimeout(() => {
           pinned = false
           if (!mouseInside) void collapse()
         }, 1400)
       } catch (err) {
         const m = (err as Error).message
-        micStatus(
-          m === 'nao-configurada'
-            ? 'Transcrição ainda não configurada.'
-            : 'Não deu certo — tente de novo.',
-          'err',
-        )
+        micStatus(m === 'nao-configurada' ? t('micNotConfigured') : t('micFailed'), 'err')
         pinned = false
       } finally {
         holdBtn.classList.remove('busy')
@@ -487,14 +485,14 @@ holdBtn.addEventListener('pointerdown', async (e) => {
     holdRecorder.start()
     pinned = true // gravação em curso: não recolhe nem com mouse fora
     holdBtn.classList.add('recording')
-    micStatus('Gravando… solte para criar.', '')
+    micStatus(t('micRecording'), '')
     // Barra de progresso de 10s (CSS transition linear).
     micBarFill.classList.remove('running')
     micBarFill.style.width = '0%'
     requestAnimationFrame(() => micBarFill.classList.add('running'))
     holdTimer = window.setTimeout(() => void holdStop(), MIC_HOLD_MS)
   } catch {
-    micStatus('Microfone indisponível ou sem permissão.', 'err')
+    micStatus(t('micUnavailable'), 'err')
   }
 })
 holdBtn.addEventListener('pointerup', () => void holdStop())
@@ -533,6 +531,8 @@ async function autoUpdate() {
 
 // ---------------- Boot ----------------
 async function boot() {
+  initLang()
+  applyStatic()
   await dockToEdge()
   const { data } = await supabase.auth.getSession()
   if (data.session) {

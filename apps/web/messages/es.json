@@ -296,6 +296,8 @@
     "contactEmail": "Correo de contacto",
     "timezone": "Zona horaria",
     "timezoneHint": "Se aplica a cómo se muestran fechas y horas en esta instancia.",
+    "language": "Idioma predeterminado",
+    "languageHint": "Lo usa el agente de escritorio. Si las instancias difieren, prevalece la corporativa.",
     "save": "Guardar",
     "openFolder": "Abrir",
     "familyTitle": "Personas de la familia",

@@ -16,7 +16,14 @@ type Holding = {
   contact_email: string | null
   phone: string | null
   timezone: string | null
+  language: string | null
 }
+
+const LANGUAGES = [
+  { value: 'pt-BR', label: 'Português (Brasil)' },
+  { value: 'en', label: 'English' },
+  { value: 'es', label: 'Español' },
+]
 
 const labelCls = 'block text-sm font-medium text-slate-300'
 
@@ -30,7 +37,7 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
   const supabase = await createClient()
   const { data } = await supabase
     .from('holdings')
-    .select('id, name, kind, legal_name, tax_id, contact_email, phone, timezone')
+    .select('id, name, kind, legal_name, tax_id, contact_email, phone, timezone, language')
     .eq('id', holdingId)
     .single()
   const h = data as unknown as Holding | null
@@ -73,12 +80,21 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
             <label htmlFor="contact_email" className={labelCls}>{t('contactEmail')}</label>
             <input id="contact_email" name="contact_email" type="email" defaultValue={h.contact_email ?? ''} className={`mt-1 ${inputCls}`} />
           </div>
-          <div>
-            <label htmlFor="timezone" className={labelCls}>{t('timezone')}</label>
-            <select id="timezone" name="timezone" defaultValue={h.timezone ?? 'America/Sao_Paulo'} className={`mt-1 ${inputCls}`}>
-              {TIMEZONES.map((tz) => <option key={tz} value={tz}>{tz}</option>)}
-            </select>
-            <p className="mt-1 text-xs text-slate-500">{t('timezoneHint')}</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="timezone" className={labelCls}>{t('timezone')}</label>
+              <select id="timezone" name="timezone" defaultValue={h.timezone ?? 'America/Sao_Paulo'} className={`mt-1 ${inputCls}`}>
+                {TIMEZONES.map((tz) => <option key={tz} value={tz}>{tz}</option>)}
+              </select>
+              <p className="mt-1 text-xs text-slate-500">{t('timezoneHint')}</p>
+            </div>
+            <div>
+              <label htmlFor="language" className={labelCls}>{t('language')}</label>
+              <select id="language" name="language" defaultValue={h.language ?? 'pt-BR'} className={`mt-1 ${inputCls}`}>
+                {LANGUAGES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
+              </select>
+              <p className="mt-1 text-xs text-slate-500">{t('languageHint')}</p>
+            </div>
           </div>
           <div className="flex justify-end pt-2">
             <SubmitButton className={btnCls}>{t('save')}</SubmitButton>

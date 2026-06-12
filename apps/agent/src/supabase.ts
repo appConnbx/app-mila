@@ -22,7 +22,7 @@ export type Demand = {
 
 export type DemandStatus = 'nova' | 'trabalhando' | 'finalizada'
 
-export type Holding = { id: string; name: string; kind: string }
+export type Holding = { id: string; name: string; kind: string; language: string | null }
 
 export async function fetchPending(): Promise<Demand[]> {
   const { data, error } = await supabase.rpc('agent_pending_demands')

@@ -296,6 +296,8 @@
     "contactEmail": "E-mail de contato",
     "timezone": "Fuso horário",
     "timezoneHint": "Aplica-se à exibição de datas e horas desta instância.",
+    "language": "Idioma padrão",
+    "languageHint": "Usado pelo agente desktop. Em divergência, a instância corporativa prevalece.",
     "save": "Salvar",
     "openFolder": "Abrir",
     "familyTitle": "Pessoas da família",

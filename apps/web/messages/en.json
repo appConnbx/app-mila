@@ -296,6 +296,8 @@
     "contactEmail": "Contact email",
     "timezone": "Time zone",
     "timezoneHint": "Applies to how dates and times are shown for this instance.",
+    "language": "Default language",
+    "languageHint": "Used by the desktop agent. When instances differ, the corporate one prevails.",
     "save": "Save",
     "openFolder": "Open",
     "familyTitle": "Family members",
