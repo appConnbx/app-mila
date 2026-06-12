@@ -6,7 +6,7 @@ import {
   requestRecordingPermissionsAsync,
   setAudioModeAsync,
 } from 'expo-audio'
-import { transcribeAudio, splitTranscript, createDemand, type Holding } from '../api'
+import { transcribeAudio, splitTranscript, createDemand, tomorrowISO, type Holding } from '../api'
 import { t, useLang } from '../i18n'
 import { C } from '../theme'
 import { MIC_HOLD_MS } from '../config'
@@ -142,7 +142,7 @@ export function RecordModal({
     try {
       if (!holding) throw new Error('sem-instancia')
       const { title, description } = splitTranscript(text)
-      await createDemand(holding.id, title, description)
+      await createDemand(holding.id, title, description, tomorrowISO())
       onCreated()
       setPhase('done')
       setStatus(`${t('voiceCreated')}: ${title.slice(0, 40)}${title.length > 40 ? '…' : ''}`)

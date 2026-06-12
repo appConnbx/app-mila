@@ -392,6 +392,14 @@ function splitTranscript(text: string): { title: string; description: string | n
   return { title: clean, description: null }
 }
 
+/** Demanda por voz nasce com prazo no dia seguinte. */
+function tomorrowISO(): string {
+  const d = new Date(Date.now() + 86_400_000)
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${m}-${dd}`
+}
+
 // ---------------- Criação rápida (formulário) ----------------
 $<HTMLFormElement>('quick-form').addEventListener('submit', async (e) => {
   e.preventDefault()
@@ -478,7 +486,7 @@ async function acceptPreview() {
     const { title, description } = splitTranscript(text)
     const h = defaultHolding()
     if (!h) throw new Error('sem-instancia')
-    await createDemand(h.id, title, null, description)
+    await createDemand(h.id, title, tomorrowISO(), description)
     await refresh()
     micStatus(`${t('micCreated')}: ${title.slice(0, 40)}${title.length > 40 ? '…' : ''}`, 'ok')
     window.setTimeout(() => {

@@ -81,16 +81,18 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
             <input id="contact_email" name="contact_email" type="email" defaultValue={h.contact_email ?? ''} className={`mt-1 ${inputCls}`} />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
+            {/* key força a remontagem após salvar: select não-controlado
+                manteria o valor antigo no DOM mesmo com a página revalidada. */}
             <div>
               <label htmlFor="timezone" className={labelCls}>{t('timezone')}</label>
-              <select id="timezone" name="timezone" defaultValue={h.timezone ?? 'America/Sao_Paulo'} className={`mt-1 ${inputCls}`}>
+              <select key={h.timezone ?? 'tz'} id="timezone" name="timezone" defaultValue={h.timezone ?? 'America/Sao_Paulo'} className={`mt-1 ${inputCls}`}>
                 {TIMEZONES.map((tz) => <option key={tz} value={tz}>{tz}</option>)}
               </select>
               <p className="mt-1 text-xs text-slate-500">{t('timezoneHint')}</p>
             </div>
             <div>
               <label htmlFor="language" className={labelCls}>{t('language')}</label>
-              <select id="language" name="language" defaultValue={h.language ?? 'pt-BR'} className={`mt-1 ${inputCls}`}>
+              <select key={h.language ?? 'lang'} id="language" name="language" defaultValue={h.language ?? 'pt-BR'} className={`mt-1 ${inputCls}`}>
                 {LANGUAGES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
               </select>
               <p className="mt-1 text-xs text-slate-500">{t('languageHint')}</p>

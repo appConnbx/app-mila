@@ -46,15 +46,24 @@ export async function createDemand(
   holdingId: string,
   title: string,
   description: string | null = null,
+  dueDate: string | null = null,
 ) {
   const { error } = await supabase.rpc('agent_create_demand', {
     p_holding_id: holdingId,
     p_title: title,
     p_description: description,
-    p_due_date: null,
+    p_due_date: dueDate,
     p_priority: 'media',
   })
   if (error) throw error
+}
+
+/** Demanda por voz nasce com prazo no dia seguinte. */
+export function tomorrowISO(): string {
+  const d = new Date(Date.now() + 86_400_000)
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${m}-${dd}`
 }
 
 export async function setDemandStatus(demandId: string, status: DemandStatus) {
