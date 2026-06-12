@@ -9,10 +9,20 @@ name = "mila_agent_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2", features = [] }
+# Pin temporário da família tauri 2.11.1 / tauri-utils 2.9.1: a 2.9.2
+# (jun/2026) introduziu um E0119 de coerência (AssetKey × time) que quebra a
+# compilação. Travamos o conjunto consistente que compilava. Os crates internos
+# (macros/codegen/runtime) precisam ser fixados juntos porque se referenciam com
+# `^` e, soltos, puxam a 2.9.2. Reavaliar quando o upstream corrigir.
+tauri-build = { version = "=2.6.1", features = [] }
+tauri-codegen = "=2.6.1"
 
 [dependencies]
-tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri = { version = "=2.11.1", features = ["tray-icon", "image-png"] }
+tauri-utils = "=2.9.1"
+tauri-macros = "=2.6.1"
+tauri-runtime = "=2.11.1"
+tauri-runtime-wry = "=2.11.1"
 tauri-plugin-autostart = "2"
 tauri-plugin-single-instance = "2"
 tauri-plugin-updater = "2"
