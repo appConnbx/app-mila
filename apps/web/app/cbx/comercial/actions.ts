@@ -34,9 +34,9 @@ export async function addNote(formData: FormData) {
   const body = String(formData.get('body') ?? '').trim()
   if (!holding || !body) return
   const supabase = await createClient()
-  await (supabase as unknown as Rpc).rpc('cbx_add_client_note', { p_holding: holding, p_body: body })
+  const { data } = await (supabase as unknown as Rpc).rpc('cbx_add_client_note', { p_holding: holding, p_body: body })
   revalidatePath(`/cbx/comercial/${holding}`)
-  redirect(`/cbx/comercial/${holding}?ok=nota`)
+  redirect(`/cbx/comercial/${holding}?${data?.ok ? 'ok=nota' : `err=${data?.reason ?? 'erro'}`}`)
 }
 
 /** Altera a licença do cliente (planos Hotmart, VIP CONNBX ou limite custom). */
