@@ -3,7 +3,7 @@ import { enable as autostartEnable, disable as autostartDisable, isEnabled as au
 import { check as checkUpdate } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { supabase, fetchPending, fetchHoldings, createDemand, setDemandStatus, type Demand, type DemandStatus, type Holding } from './supabase'
-import { COLLAPSED, EXPANDED, POLL_MS, APP_BASE_URL, MAX_RECORD_MS } from './config'
+import { COLLAPSED, EXPANDED, MIC, POLL_MS, APP_BASE_URL, MAX_RECORD_MS, MIC_HOLD_MS } from './config'
 
 const win = getCurrentWindow()
 
@@ -11,14 +11,16 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const pill = $<HTMLDivElement>('pill')
 const pillCount = $<HTMLSpanElement>('pill-count')
 const panel = $<HTMLDivElement>('panel')
+const micPanel = $<HTMLDivElement>('micpanel')
 const viewLogin = $<HTMLElement>('view-login')
 const viewMain = $<HTMLElement>('view-main')
 const listEl = $<HTMLDivElement>('list')
 const btnLogout = $<HTMLButtonElement>('btn-logout')
 
 // ---------------- Estado ----------------
-let expanded = false
-let pinned = false // tela de login: não recolhe
+type Mode = 'collapsed' | 'panel' | 'mic'
+let mode: Mode = 'collapsed'
+let pinned = false // tela de login ou gravação em curso: não recolhe
 let mouseInside = false
 let knownIds: Set<string> | null = null // null = ainda sem primeira carga
 let demands: Demand[] = []
@@ -33,7 +35,23 @@ function persistSeen() {
   localStorage.setItem('mila_seen', JSON.stringify([...seen]))
 }
 
-// ---------------- Janela: dock + expand/collapse ----------------
+// Instância padrão para criação (corporativa primeiro).
+function defaultHolding(): Holding | undefined {
+  return holdings.find((h) => h.kind === 'corporate') ?? holdings[0]
+}
+
+// ---------------- Janela: dock + modos ----------------
+// panel: cresce centralizado na vertical. mic: cresce ancorado na base
+// (o mini-painel "nasce" do botão de microfone da pílula).
+function deltas(m: 'panel' | 'mic') {
+  const s = m === 'panel' ? EXPANDED : MIC
+  return {
+    s,
+    dx: s.w - COLLAPSED.w,
+    dy: m === 'panel' ? Math.round((s.h - COLLAPSED.h) / 2) : s.h - COLLAPSED.h,
+  }
+}
+
 async function dockToEdge() {
   const monitor = await currentMonitor()
   if (!monitor) return
@@ -46,46 +64,53 @@ async function dockToEdge() {
   await win.setPosition(new LogicalPosition(x, y))
 }
 
-async function expand() {
-  if (expanded) return
-  expanded = true
+async function expandTo(next: 'panel' | 'mic') {
+  if (mode !== 'collapsed') return
+  mode = next
+  const { s, dx, dy } = deltas(next)
   const scale = await win.scaleFactor()
   const pos = (await win.outerPosition()).toLogical(scale)
-  await win.setPosition(
-    new LogicalPosition(pos.x - (EXPANDED.w - COLLAPSED.w), pos.y - Math.round((EXPANDED.h - COLLAPSED.h) / 2)),
-  )
-  await win.setSize(new LogicalSize(EXPANDED.w, EXPANDED.h))
+  await win.setPosition(new LogicalPosition(pos.x - dx, pos.y - dy))
+  await win.setSize(new LogicalSize(s.w, s.h))
   document.body.classList.add('expanded')
-  panel.hidden = false
+  panel.hidden = next !== 'panel'
+  micPanel.hidden = next !== 'mic'
   pill.classList.remove('pulse')
-  void refresh()
+  if (next === 'panel') void refresh()
+  if (next === 'mic') {
+    const h = defaultHolding()
+    $<HTMLParagraphElement>('mic-target').textContent = h ? `→ ${h.name}` : ''
+    micStatus('Segure o botão e fale (até 10s)', '')
+  }
 }
 
 async function collapse() {
-  if (!expanded || pinned) return
+  if (mode === 'collapsed' || pinned) return
   // O usuário viu a lista: marca tudo como visto.
-  let changed = false
-  for (const d of demands) {
-    if (!seen.has(d.id)) {
-      seen.add(d.id)
-      changed = true
+  if (mode === 'panel') {
+    let changed = false
+    for (const d of demands) {
+      if (!seen.has(d.id)) {
+        seen.add(d.id)
+        changed = true
+      }
     }
+    if (changed) persistSeen()
   }
-  if (changed) persistSeen()
   // Atualização baixada enquanto o painel estava em uso: aplica agora.
   if (pendingRelaunch) {
     await relaunch()
     return
   }
-  expanded = false
+  const { dx, dy } = deltas(mode)
+  mode = 'collapsed'
   document.body.classList.remove('expanded')
   panel.hidden = true
+  micPanel.hidden = true
   const scale = await win.scaleFactor()
   const pos = (await win.outerPosition()).toLogical(scale)
   await win.setSize(new LogicalSize(COLLAPSED.w, COLLAPSED.h))
-  await win.setPosition(
-    new LogicalPosition(pos.x + (EXPANDED.w - COLLAPSED.w), pos.y + Math.round((EXPANDED.h - COLLAPSED.h) / 2)),
-  )
+  await win.setPosition(new LogicalPosition(pos.x + dx, pos.y + dy))
 }
 
 function scheduleCollapse() {
@@ -99,11 +124,16 @@ function scheduleCollapse() {
 document.body.addEventListener('mouseenter', () => {
   mouseInside = true
   window.clearTimeout(collapseTimer)
-  void expand()
 })
 document.body.addEventListener('mouseleave', () => {
   mouseInside = false
   scheduleCollapse()
+})
+$<HTMLDivElement>('pill-top').addEventListener('mouseenter', () => void expandTo('panel'))
+$<HTMLDivElement>('pill-mic').addEventListener('mouseenter', () => {
+  // Sem sessão, o painel abre no login.
+  if (holdings.length === 0) void expandTo('panel')
+  else void expandTo('mic')
 })
 
 // ---------------- Dados ----------------
@@ -134,7 +164,7 @@ async function refresh() {
 
     renderList(fresh)
     updateBadge() // contador sempre em dia, mesmo recolhido
-    if (novas.length > 0 && !expanded) pill.classList.add('pulse')
+    if (novas.length > 0 && mode !== 'panel') pill.classList.add('pulse')
   } catch {
     // Sem rede / sessão caiu: mantém o que tem; próxima rodada tenta de novo.
   }
@@ -259,7 +289,7 @@ function showLogin() {
   viewMain.hidden = true
   btnLogout.hidden = true
   pinned = true
-  void expand()
+  void expandTo('panel')
 }
 
 async function showMain() {
@@ -281,7 +311,7 @@ async function showMain() {
     sel.appendChild(o)
   }
   // Padrão: instância corporativa pré-selecionada (se existir).
-  const corp = holdings.find((h) => h.kind === 'corporate')
+  const corp = defaultHolding()
   if (corp) sel.value = corp.id
   // Primeiro login: liga "iniciar com o Windows" uma única vez (usuário pode desligar).
   try {
@@ -323,6 +353,7 @@ btnLogout.addEventListener('click', async () => {
   await supabase.auth.signOut()
   // Saiu da conta: zera tudo que era do usuário (lista, contador, formulário).
   demands = []
+  holdings = []
   knownIds = null
   listEl.innerHTML = ''
   updateBadge()
@@ -332,8 +363,33 @@ btnLogout.addEventListener('click', async () => {
   showLogin()
 })
 
-// ---------------- Criação rápida ----------------
-// Transcrição longa: o começo vira o título e o texto completo vai na descrição.
+// ---------------- Transcrição (compartilhada) ----------------
+async function transcribeBlob(blob: Blob): Promise<string> {
+  const { data } = await supabase.auth.getSession()
+  const token = data.session?.access_token
+  if (!token) throw new Error('sem-sessao')
+  const fd = new FormData()
+  fd.append('file', blob, 'audio.webm')
+  const res = await fetch(`${APP_BASE_URL}/api/agent/transcribe`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: fd,
+  })
+  if (res.status === 503) throw new Error('nao-configurada')
+  if (!res.ok) throw new Error(String(res.status))
+  const out = (await res.json()) as { text?: string }
+  const text = (out.text ?? '').trim()
+  if (!text) throw new Error('vazio')
+  return text
+}
+
+function splitTranscript(text: string): { title: string; description: string | null } {
+  const clean = text.replace(/\s+/g, ' ').trim()
+  if (clean.length > 180) return { title: clean.slice(0, 177) + '…', description: clean }
+  return { title: clean, description: null }
+}
+
+// ---------------- Criação rápida (formulário) ----------------
 let voiceDescription: string | null = null
 
 function clearVoice() {
@@ -368,65 +424,19 @@ $<HTMLFormElement>('quick-form').addEventListener('submit', async (e) => {
   }
 })
 
-// ---------------- Voz → demanda ----------------
-const micBtn = $<HTMLButtonElement>('quick-mic')
-let recorder: MediaRecorder | null = null
-let recChunks: Blob[] = []
-let recTimer: number | undefined
-
 function quickError(msg: string) {
   const errEl = $<HTMLParagraphElement>('quick-error')
   errEl.textContent = msg
   errEl.hidden = false
 }
 
-function applyTranscript(text: string) {
-  const titleEl = $<HTMLInputElement>('quick-title')
-  const clean = text.replace(/\s+/g, ' ').trim()
-  if (clean.length > 180) {
-    titleEl.value = clean.slice(0, 177) + '…'
-    voiceDescription = clean
-    const hint = $<HTMLParagraphElement>('quick-hint')
-    hint.textContent = 'Transcrição completa será anexada como descrição.'
-    hint.hidden = false
-  } else {
-    titleEl.value = clean
-    voiceDescription = null
-  }
-  titleEl.focus()
-}
-
-async function transcribe(blob: Blob) {
-  micBtn.disabled = true
-  micBtn.textContent = '…'
-  try {
-    const { data } = await supabase.auth.getSession()
-    const token = data.session?.access_token
-    if (!token) throw new Error('sem sessão')
-    const fd = new FormData()
-    fd.append('file', blob, 'audio.webm')
-    const res = await fetch(`${APP_BASE_URL}/api/agent/transcribe`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: fd,
-    })
-    if (res.status === 503) {
-      quickError('Transcrição por voz ainda não configurada.')
-      return
-    }
-    if (!res.ok) throw new Error(String(res.status))
-    const out = (await res.json()) as { text?: string }
-    if (out.text) applyTranscript(out.text)
-  } catch {
-    quickError('Não foi possível transcrever. Tente novamente.')
-  } finally {
-    micBtn.disabled = false
-    micBtn.textContent = '🎤'
-  }
-}
+// Microfone do formulário: clique liga/desliga (até 60s), preenche para revisão.
+const micBtn = $<HTMLButtonElement>('quick-mic')
+let recorder: MediaRecorder | null = null
+let recChunks: Blob[] = []
+let recTimer: number | undefined
 
 micBtn.addEventListener('click', async () => {
-  // Gravando → clique para e envia.
   if (recorder?.state === 'recording') {
     recorder.stop()
     return
@@ -439,13 +449,36 @@ micBtn.addEventListener('click', async () => {
     recorder.ondataavailable = (e) => {
       if (e.data.size > 0) recChunks.push(e.data)
     }
-    recorder.onstop = () => {
+    recorder.onstop = async () => {
       stream.getTracks().forEach((t) => t.stop())
       window.clearTimeout(recTimer)
       micBtn.classList.remove('recording')
       micBtn.title = 'Ditar demanda por voz'
       pinned = !viewLogin.hidden
-      void transcribe(new Blob(recChunks, { type: 'audio/webm' }))
+      micBtn.disabled = true
+      micBtn.textContent = '…'
+      try {
+        const text = await transcribeBlob(new Blob(recChunks, { type: 'audio/webm' }))
+        const { title, description } = splitTranscript(text)
+        const titleEl = $<HTMLInputElement>('quick-title')
+        titleEl.value = title
+        voiceDescription = description
+        if (description) {
+          const hint = $<HTMLParagraphElement>('quick-hint')
+          hint.textContent = 'Transcrição completa será anexada como descrição.'
+          hint.hidden = false
+        }
+        titleEl.focus()
+      } catch (err) {
+        quickError(
+          (err as Error).message === 'nao-configurada'
+            ? 'Transcrição por voz ainda não configurada.'
+            : 'Não foi possível transcrever. Tente novamente.',
+        )
+      } finally {
+        micBtn.disabled = false
+        micBtn.textContent = '🎤'
+      }
     }
     recorder.start()
     pinned = true // não recolher enquanto grava
@@ -458,6 +491,94 @@ micBtn.addEventListener('click', async () => {
     quickError('Microfone indisponível ou sem permissão.')
   }
 })
+
+// ---------------- Segure-e-fale (mini-painel da pílula) ----------------
+// Segura = grava (até 10s, com efeito); solta = transcreve e CRIA direto
+// na instância padrão (corporativa).
+const holdBtn = $<HTMLButtonElement>('hold-btn')
+const micBarFill = $<HTMLDivElement>('mic-bar-fill')
+let holdRecorder: MediaRecorder | null = null
+let holdChunks: Blob[] = []
+let holdTimer: number | undefined
+let holdStart = 0
+
+function micStatus(msg: string, cls: '' | 'ok' | 'err') {
+  const el = $<HTMLParagraphElement>('mic-status')
+  el.textContent = msg
+  el.className = `mic-status ${cls}`.trim()
+}
+
+async function holdStop() {
+  if (holdRecorder?.state === 'recording') holdRecorder.stop()
+}
+
+holdBtn.addEventListener('pointerdown', async (e) => {
+  e.preventDefault()
+  if (holdRecorder?.state === 'recording' || holdBtn.classList.contains('busy')) return
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    holdChunks = []
+    holdStart = Date.now()
+    holdRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+    holdRecorder.ondataavailable = (ev) => {
+      if (ev.data.size > 0) holdChunks.push(ev.data)
+    }
+    holdRecorder.onstop = async () => {
+      stream.getTracks().forEach((t) => t.stop())
+      window.clearTimeout(holdTimer)
+      holdBtn.classList.remove('recording')
+      micBarFill.classList.remove('running')
+      micBarFill.style.width = '0%'
+      const duration = Date.now() - holdStart
+      if (duration < 500) {
+        pinned = false
+        micStatus('Muito curto — segure enquanto fala.', 'err')
+        return
+      }
+      holdBtn.classList.add('busy')
+      micStatus('Transcrevendo…', '')
+      try {
+        const text = await transcribeBlob(new Blob(holdChunks, { type: 'audio/webm' }))
+        const { title, description } = splitTranscript(text)
+        const h = defaultHolding()
+        if (!h) throw new Error('sem-instancia')
+        micStatus('Criando demanda…', '')
+        await createDemand(h.id, title, null, description)
+        await refresh()
+        micStatus(`✓ Criada: ${title.slice(0, 40)}${title.length > 40 ? '…' : ''}`, 'ok')
+        window.setTimeout(() => {
+          pinned = false
+          if (!mouseInside) void collapse()
+        }, 1400)
+      } catch (err) {
+        const m = (err as Error).message
+        micStatus(
+          m === 'nao-configurada'
+            ? 'Transcrição ainda não configurada.'
+            : 'Não deu certo — tente de novo.',
+          'err',
+        )
+        pinned = false
+      } finally {
+        holdBtn.classList.remove('busy')
+      }
+    }
+    holdRecorder.start()
+    pinned = true // gravação em curso: não recolhe nem com mouse fora
+    holdBtn.classList.add('recording')
+    micStatus('Gravando… solte para criar.', '')
+    // Barra de progresso de 10s (CSS transition linear).
+    micBarFill.classList.remove('running')
+    micBarFill.style.width = '0%'
+    requestAnimationFrame(() => micBarFill.classList.add('running'))
+    holdTimer = window.setTimeout(() => void holdStop(), MIC_HOLD_MS)
+  } catch {
+    micStatus('Microfone indisponível ou sem permissão.', 'err')
+  }
+})
+holdBtn.addEventListener('pointerup', () => void holdStop())
+holdBtn.addEventListener('pointercancel', () => void holdStop())
+holdBtn.addEventListener('pointerleave', () => void holdStop())
 
 $<HTMLButtonElement>('btn-refresh').addEventListener('click', () => void refresh())
 
@@ -479,7 +600,7 @@ async function autoUpdate() {
     const update = await checkUpdate()
     if (!update) return
     await update.downloadAndInstall()
-    if (!expanded && !pinned) {
+    if (mode === 'collapsed' && !pinned) {
       await relaunch()
     } else {
       pendingRelaunch = true

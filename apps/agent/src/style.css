@@ -30,8 +30,25 @@ body {
   border-right: none;
   border-radius: 14px 0 0 14px;
   display: flex; flex-direction: column;
+  overflow: hidden;
+}
+/* Zona superior (~80%): abre o painel completo */
+#pill-top {
+  flex: 1;
+  display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 8px;
 }
+#pill-top:hover { background: rgba(34, 211, 238, 0.08); }
+/* Base (~20%): microfone — abre o segure-e-fale */
+#pill-mic {
+  flex: none;
+  height: 40px;
+  display: grid; place-items: center;
+  border-top: 1px solid rgba(34, 211, 238, 0.25);
+  color: var(--cyan);
+}
+#pill-mic svg { width: 15px; height: 15px; }
+#pill-mic:hover { background: rgba(34, 211, 238, 0.18); }
 .pill-m {
   color: var(--cyan);
   font-weight: 900; font-size: 15px;
@@ -54,6 +71,64 @@ body {
   0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); background: rgba(15, 23, 42, 0.78); }
   50% { box-shadow: 0 0 18px 2px rgba(34, 211, 238, 0.65); background: rgba(14, 60, 72, 0.85); }
 }
+
+/* ---------- Mini-painel de voz (segure-e-fale) ---------- */
+#micpanel {
+  height: 100%; width: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 16px;
+  padding: 14px;
+}
+.mic-title { font-weight: 700; color: #fff; font-size: 13px; }
+#hold-btn {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 2px solid rgba(34, 211, 238, 0.6);
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--cyan);
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  touch-action: none;
+  user-select: none;
+}
+#hold-btn svg { width: 26px; height: 26px; pointer-events: none; }
+#hold-btn:hover { background: rgba(34, 211, 238, 0.2); }
+/* Efeito de gravação: botão vermelho com ondas pulsando */
+#hold-btn.recording {
+  transform: scale(1.12);
+  border-color: #f43f5e;
+  background: rgba(244, 63, 94, 0.25);
+  color: #fda4af;
+  animation: holdrec 1s ease-out infinite;
+}
+@keyframes holdrec {
+  0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.55); }
+  100% { box-shadow: 0 0 0 18px rgba(244, 63, 94, 0); }
+}
+#hold-btn.busy { opacity: 0.6; cursor: wait; }
+#mic-bar {
+  width: 100%; height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+#mic-bar-fill {
+  height: 100%; width: 0%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--cyan), #f43f5e);
+}
+#mic-bar-fill.running {
+  width: 100%;
+  transition: width 10s linear;
+}
+.mic-status { font-size: 11px; color: var(--muted); text-align: center; }
+.mic-status.ok { color: #4ade80; }
+.mic-status.err { color: #fda4af; }
+.mic-target { font-size: 10px; color: var(--cyan); }
 
 /* ---------- Painel (expandido) ---------- */
 body.expanded #pill { display: none; }
