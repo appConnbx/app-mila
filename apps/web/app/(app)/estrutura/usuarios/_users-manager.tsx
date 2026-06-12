@@ -35,12 +35,18 @@ export type HoldingUser = {
   has_active_session: boolean
 }
 
+type SortKey = 'name' | 'lastLogin' | 'status'
+
 export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash?: { kind: 'ok' | 'err'; text: string }; tz?: string }) {
   const t = useTranslations('structure')
   const locale = useLocale()
   const [openId, setOpenId] = useState<string | null>(null)
   const [q, setQ] = useState('')
   const [pw, setPw] = useState('')
+  const [sortKey, setSortKey] = useState<SortKey>('name')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
+  const [page, setPage] = useState(1)
+  const PAGE_SIZE = 10
 
   const fmt = (iso: string | null) => fmtDateTime(iso, locale, tz)
 
@@ -54,6 +60,33 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
         u.teams.some((tm) => tm.toLowerCase().includes(s)),
     )
   }, [q, users])
+
+  // Ordenação por coluna (nome, último acesso, status). Online conta como o
+  // acesso mais recente para a coluna de login.
+  const sorted = useMemo(() => {
+    const dir = sortDir === 'asc' ? 1 : -1
+    const loginValue = (u: HoldingUser) =>
+      u.has_active_session ? Number.MAX_SAFE_INTEGER : u.last_sign_in_at ? Date.parse(u.last_sign_in_at) : 0
+    return [...filtered].sort((a, b) => {
+      if (sortKey === 'name') return a.full_name.localeCompare(b.full_name) * dir
+      if (sortKey === 'status') return (Number(a.is_active) - Number(b.is_active)) * dir
+      return (loginValue(a) - loginValue(b)) * dir
+    })
+  }, [filtered, sortKey, sortDir])
+
+  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE))
+  const curPage = Math.min(page, pageCount)
+  const pageRows = sorted.slice((curPage - 1) * PAGE_SIZE, curPage * PAGE_SIZE)
+
+  const toggleSort = (key: SortKey) => {
+    if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+    setPage(1)
+  }
+  const sortArrow = (key: SortKey) => (sortKey === key ? (sortDir === 'asc' ? ' ↑' : ' ↓') : '')
 
   const open = users.find((u) => u.id === openId) ?? null
   const reassignCandidates = users.filter((u) => u.id !== openId && u.is_active)
@@ -84,7 +117,7 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
           <span aria-hidden>🔎</span>
           <input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => { setQ(e.target.value); setPage(1) }}
             placeholder={t('searchPlaceholder')}
             className="w-56 bg-transparent text-sm text-white outline-none placeholder:text-slate-500 sm:w-72"
           />
@@ -102,15 +135,21 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
         <table className="w-full min-w-[820px] text-sm">
           <thead>
             <tr className="border-b border-white/10">
-              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t('colUser')}</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                <button type="button" onClick={() => toggleSort('name')} className="uppercase tracking-wide transition hover:text-slate-200">{t('colUser')}{sortArrow('name')}</button>
+              </th>
               <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t('colTeams')}</th>
-              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t('colLastLogin')}</th>
-              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t('colStatus')}</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                <button type="button" onClick={() => toggleSort('lastLogin')} className="uppercase tracking-wide transition hover:text-slate-200">{t('colLastLogin')}{sortArrow('lastLogin')}</button>
+              </th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                <button type="button" onClick={() => toggleSort('status')} className="uppercase tracking-wide transition hover:text-slate-200">{t('colStatus')}{sortArrow('status')}</button>
+              </th>
               <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500">{t('colActions')}</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((u) => (
+            {pageRows.map((u) => (
               <tr key={u.id} className={`border-b border-white/5 last:border-0 ${u.is_active ? '' : 'opacity-55'}`}>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
@@ -158,7 +197,7 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
                 </td>
               </tr>
             ))}
-            {filtered.length === 0 && (
+            {sorted.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-4 py-10 text-center text-sm text-slate-500">{t('none')}</td>
               </tr>
@@ -166,6 +205,21 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
           </tbody>
         </table>
       </div>
+
+      {/* Paginação (10 por página) */}
+      {pageCount > 1 && (
+        <div className="mt-4 flex items-center justify-between gap-3 text-sm text-slate-400">
+          <span>{t('pagInfo', { page: curPage, total: pageCount })}</span>
+          <div className="flex gap-2">
+            <Button size="sm" variant="secondary" disabled={curPage <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
+              {t('pagPrev')}
+            </Button>
+            <Button size="sm" variant="secondary" disabled={curPage >= pageCount} onClick={() => setPage((p) => Math.min(pageCount, p + 1))}>
+              {t('pagNext')}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Drawer de edição */}
       {open && (

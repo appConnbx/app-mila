@@ -21,6 +21,15 @@ type Holding = {
   logo_url: string | null
 }
 
+type License = {
+  plan_name: string | null
+  seat_limit: number | null
+  used: number | null
+  available: number | null
+  is_unlimited: boolean
+  status: string | null
+}
+
 const LANGUAGES = [
   { value: 'pt-BR', label: 'Português (Brasil)' },
   { value: 'en', label: 'English' },
@@ -45,6 +54,10 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
   const h = data as unknown as Holding | null
   if (!h) redirect('/estrutura')
 
+  const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: License[] | null }> }
+  const { data: licRows } = await sb.rpc('holding_license')
+  const lic = (licRows ?? [])[0] ?? null
+
   return (
     <div className="mx-auto max-w-2xl">
       <Breadcrumb items={[{ href: '/estrutura', label: t('title') }, { label: t('holdingMgmt') }]} />
@@ -57,6 +70,34 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
           <p className="mt-1 text-sm text-slate-300">{t('onboardingDesc')}</p>
         </div>
       )}
+
+      {/* Licenciamento da conta */}
+      <div className="mt-6">
+        <Card title={t('licenseTitle')}>
+          {lic && lic.plan_name ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <p className="text-[11px] uppercase tracking-wide text-slate-500">{t('licensePlan')}</p>
+                <p className="mt-1 text-lg font-bold text-white">{lic.plan_name}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <p className="text-[11px] uppercase tracking-wide text-slate-500">{t('licenseLimit')}</p>
+                <p className="mt-1 text-lg font-bold text-white">{lic.is_unlimited ? t('licenseUnlimited') : lic.seat_limit}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <p className="text-[11px] uppercase tracking-wide text-slate-500">{t('licenseUsed')}</p>
+                <p className="mt-1 text-lg font-bold text-white">{lic.used ?? 0}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <p className="text-[11px] uppercase tracking-wide text-slate-500">{t('licenseAvailable')}</p>
+                <p className="mt-1 text-lg font-bold text-emerald-300">{lic.is_unlimited ? '∞' : (lic.available ?? 0)}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-slate-400">{t('licenseNone')}</p>
+          )}
+        </Card>
+      </div>
 
       <div className="mt-6">
         <LogoUploader kind="holding" id={h.id} name={h.name} initialUrl={h.logo_url} />

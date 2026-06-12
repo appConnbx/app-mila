@@ -26,6 +26,8 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
     : err === 'pwshort' ? { kind: 'err' as const, text: t('msgPwShort') }
     : err === 'noemail' ? { kind: 'err' as const, text: t('msgNoEmail') }
     : err === 'forbidden' ? { kind: 'err' as const, text: t('msgForbidden') }
+    : err === 'seat_limit' ? { kind: 'err' as const, text: t('msgSeatLimit') }
+    : err === 'create' ? { kind: 'err' as const, text: t('msgCreateFailed') }
     : err ? { kind: 'err' as const, text: t('msgDeleteError') }
     : undefined
 

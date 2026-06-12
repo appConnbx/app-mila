@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const pathname = (await headers()).get('x-pathname') ?? ''
   const activeHolding = (await cookies()).get(ACTIVE_HOLDING_COOKIE)?.value
   // "Home" = área inicial (dashboard pessoal + seleção): sem nav de instância.
-  const isHome = !activeHolding || pathname === '/dashboard' || pathname.startsWith('/assinatura') || pathname.startsWith('/perfil')
+  const isHome = !activeHolding || pathname === '/dashboard' || pathname.startsWith('/assinatura') || pathname.startsWith('/perfil') || pathname.startsWith('/admin')
 
   const t = await getTranslations()
   const locale = (await getLocale()) as Locale
@@ -38,6 +38,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // Uma "onda" só de consultas (eram até 5 idas sequenciais ao banco por
   // navegação — principal causa da lentidão percebida).
   const profilePromise = supabase.from('profiles').select('avatar_url').eq('auth_user_id', user.id).maybeSingle()
+  const adminPromise = sb.rpc('is_platform_admin')
 
   if (activeHolding) {
     const [hRes, adminRes, mgrRes, accessRes] = await Promise.all([
@@ -62,6 +63,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const { data: profData } = await profilePromise
   const avatarUrl = (profData as unknown as { avatar_url: string | null } | null)?.avatar_url ?? null
+  const { data: isPlatformAdmin } = await adminPromise
 
   const isFamily = holding?.kind === 'family'
   const navItems = [
@@ -93,6 +95,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                   <span className="sm:hidden">{t('nav.exit')}</span>
                 </SubmitButton>
               </form>
+            )}
+            {isPlatformAdmin && (
+              <Link
+                href="/admin"
+                title={t('nav.admin')}
+                className="rounded-lg border border-brand/40 bg-brand/10 px-3 py-1.5 text-sm font-semibold text-brand transition hover:bg-brand/20"
+              >
+                {t('nav.admin')}
+              </Link>
             )}
             <LanguageSwitcher current={locale} />
             <span className="hidden text-sm text-slate-400 md:inline">{user.email}</span>

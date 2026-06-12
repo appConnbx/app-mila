@@ -138,11 +138,19 @@ export async function createPerson(formData: FormData) {
   }
   if (!organization_id) return
 
-  const { data: inserted } = await supabase
+  const { data: inserted, error } = await supabase
     .from('people')
     .insert({ holding_id: holdingId, organization_id, full_name, email, role_title, can_delegate } as never)
     .select('id')
     .single()
+
+  // O trigger app.enforce_seat_limit bloqueia além do limite do plano; antes
+  // disso a falha era silenciosa (parecia "não cadastra"). Agora avisa.
+  if (error) {
+    revalidate()
+    const seat = /limite/i.test(error.message ?? '')
+    redirect(`/estrutura/usuarios?err=${seat ? 'seat_limit' : 'create'}`)
+  }
 
   const personId = (inserted as unknown as { id: string } | null)?.id
   if (personId && aliasesRaw) {
