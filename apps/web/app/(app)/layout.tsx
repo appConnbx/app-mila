@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const pathname = (await headers()).get('x-pathname') ?? ''
   const activeHolding = (await cookies()).get(ACTIVE_HOLDING_COOKIE)?.value
   // "Home" = área inicial (dashboard pessoal + seleção): sem nav de instância.
-  const isHome = !activeHolding || pathname === '/dashboard' || pathname.startsWith('/assinatura') || pathname.startsWith('/perfil') || pathname.startsWith('/admin')
+  const isHome = !activeHolding || pathname === '/dashboard' || pathname.startsWith('/assinatura') || pathname.startsWith('/perfil')
 
   const t = await getTranslations()
   const locale = (await getLocale()) as Locale

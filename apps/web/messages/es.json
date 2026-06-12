@@ -184,8 +184,16 @@
     "colStatus": "Estado",
     "empty": "Aún no hay demandas en esta instancia.",
     "overdueSuffix": " (atrasada)",
-    "status": { "nova": "Nueva", "trabalhando": "En curso", "finalizada": "Finalizada" },
-    "priority": { "alta": "Alta", "media": "Media", "baixa": "Baja" },
+    "status": {
+      "nova": "Nueva",
+      "trabalhando": "En curso",
+      "finalizada": "Finalizada"
+    },
+    "priority": {
+      "alta": "Alta",
+      "media": "Media",
+      "baixa": "Baja"
+    },
     "tabActive": "Activas",
     "tabArchived": "Completadas",
     "tabMine": "Mías",
@@ -377,28 +385,6 @@
     "licenseLifetime": "Vitalicia",
     "licenseNone": "Sin licencia activa por el momento."
   },
-  "admin": {
-    "title": "Administración CONNBX",
-    "desc": "Consola del súper-administrador: licenciamiento de todas las cuentas.",
-    "colHolding": "Cuenta",
-    "colKind": "Tipo",
-    "colPlan": "Plan actual",
-    "colUsage": "Uso",
-    "colLicense": "Licenciar",
-    "kindCorporate": "Corporativo",
-    "kindFamily": "Familia",
-    "unlimited": "Ilimitado",
-    "noPlan": "Sin plan",
-    "plan": "Plan",
-    "seatsOverride": "Límite personalizado (opcional)",
-    "seatsHint": "Deja en blanco para usar el límite del plan. VIP CONNBX siempre es ilimitado.",
-    "apply": "Aplicar licencia",
-    "applied": "Licencia actualizada.",
-    "lifetime": "Vitalicia",
-    "used": "en uso",
-    "empty": "Ninguna cuenta encontrada.",
-    "forbidden": "Acceso restringido al súper-administrador."
-  },
   "billing": {
     "title": "Suscripción inactiva",
     "desc": "Esta instancia no tiene un plan activo en este momento. Reactiva la suscripción para volver a acceder a las demandas y al equipo.",
@@ -444,9 +430,18 @@
       "title": "¿Cuántas tareas has perdido esta semana?",
       "desc": "Todo lo que se acuerda con prisa y no se convierte en tarea, simplemente desaparece. El costo no es solo el olvido — es el retrabajo, la insistencia y la confianza que se pierde.",
       "items": [
-        { "p": "“Creí que alguien lo resolvería.”", "r": "Cada tarea tiene un responsable claro. Nada queda en el aire." },
-        { "p": "“Olvidé anotarlo y se me pasó.”", "r": "Captura en segundos. Lo que entra, no desaparece." },
-        { "p": "“No sé qué está haciendo el equipo.”", "r": "Haz seguimiento en tiempo real, por persona, equipo y área." }
+        {
+          "p": "“Creí que alguien lo resolvería.”",
+          "r": "Cada tarea tiene un responsable claro. Nada queda en el aire."
+        },
+        {
+          "p": "“Olvidé anotarlo y se me pasó.”",
+          "r": "Captura en segundos. Lo que entra, no desaparece."
+        },
+        {
+          "p": "“No sé qué está haciendo el equipo.”",
+          "r": "Haz seguimiento en tiempo real, por persona, equipo y área."
+        }
       ]
     },
     "eco": {
@@ -468,10 +463,26 @@
       "kicker": "Así de simple",
       "title": "De la conversación a la conclusión, en 4 pasos",
       "steps": [
-        { "n": "01", "t": "Captura", "d": "Anota la tarea al instante — por texto, en segundos. Suelta o dentro de un evento." },
-        { "n": "02", "t": "Delega", "d": "Define el responsable, plazo y prioridad. Para ti o para alguien del equipo." },
-        { "n": "03", "t": "Sigue", "d": "Mira el estado de todo en paneles por persona, equipo, área y organización." },
-        { "n": "04", "t": "Concluye", "d": "Registra lo hecho. El historial se guarda y se convierte en indicador de productividad." }
+        {
+          "n": "01",
+          "t": "Captura",
+          "d": "Anota la tarea al instante — por texto, en segundos. Suelta o dentro de un evento."
+        },
+        {
+          "n": "02",
+          "t": "Delega",
+          "d": "Define el responsable, plazo y prioridad. Para ti o para alguien del equipo."
+        },
+        {
+          "n": "03",
+          "t": "Sigue",
+          "d": "Mira el estado de todo en paneles por persona, equipo, área y organización."
+        },
+        {
+          "n": "04",
+          "t": "Concluye",
+          "d": "Registra lo hecho. El historial se guarda y se convierte en indicador de productividad."
+        }
       ]
     },
     "contexts": {

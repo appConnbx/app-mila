@@ -184,8 +184,16 @@
     "colStatus": "Status",
     "empty": "No demands in this instance yet.",
     "overdueSuffix": " (overdue)",
-    "status": { "nova": "New", "trabalhando": "In progress", "finalizada": "Done" },
-    "priority": { "alta": "High", "media": "Medium", "baixa": "Low" },
+    "status": {
+      "nova": "New",
+      "trabalhando": "In progress",
+      "finalizada": "Done"
+    },
+    "priority": {
+      "alta": "High",
+      "media": "Medium",
+      "baixa": "Low"
+    },
     "tabActive": "Active",
     "tabArchived": "Completed",
     "tabMine": "Mine",
@@ -377,28 +385,6 @@
     "licenseLifetime": "Lifetime",
     "licenseNone": "No active license at the moment."
   },
-  "admin": {
-    "title": "CONNBX Administration",
-    "desc": "Super-admin console: licensing for every account.",
-    "colHolding": "Account",
-    "colKind": "Type",
-    "colPlan": "Current plan",
-    "colUsage": "Usage",
-    "colLicense": "License",
-    "kindCorporate": "Corporate",
-    "kindFamily": "Family",
-    "unlimited": "Unlimited",
-    "noPlan": "No plan",
-    "plan": "Plan",
-    "seatsOverride": "Custom limit (optional)",
-    "seatsHint": "Leave blank to use the plan limit. VIP CONNBX is always unlimited.",
-    "apply": "Apply license",
-    "applied": "License updated.",
-    "lifetime": "Lifetime",
-    "used": "in use",
-    "empty": "No accounts found.",
-    "forbidden": "Restricted to the super-admin."
-  },
   "billing": {
     "title": "Subscription inactive",
     "desc": "This instance has no active plan right now. Reactivate the subscription to access demands and your team again.",
@@ -444,9 +430,18 @@
       "title": "How many tasks have you lost this week?",
       "desc": "Everything agreed on the fly that never becomes a task simply vanishes. The cost isn't just forgetting — it's the rework, the chasing and the trust you lose.",
       "items": [
-        { "p": "“I thought someone would handle it.”", "r": "Every task has a clear owner. Nothing is left hanging." },
-        { "p": "“I forgot to write it down and missed it.”", "r": "Capture in seconds. What goes in doesn't disappear." },
-        { "p": "“I don't know what the team is doing.”", "r": "Track progress in real time, by person, team and area." }
+        {
+          "p": "“I thought someone would handle it.”",
+          "r": "Every task has a clear owner. Nothing is left hanging."
+        },
+        {
+          "p": "“I forgot to write it down and missed it.”",
+          "r": "Capture in seconds. What goes in doesn't disappear."
+        },
+        {
+          "p": "“I don't know what the team is doing.”",
+          "r": "Track progress in real time, by person, team and area."
+        }
       ]
     },
     "eco": {
@@ -468,10 +463,26 @@
       "kicker": "It's that simple",
       "title": "From conversation to done, in 4 steps",
       "steps": [
-        { "n": "01", "t": "Capture", "d": "Note the task right away — by text, in seconds. Standalone or inside an event." },
-        { "n": "02", "t": "Delegate", "d": "Set the owner, due date and priority. For you or for someone on the team." },
-        { "n": "03", "t": "Track", "d": "See the status of everything in dashboards by person, team, area and organization." },
-        { "n": "04", "t": "Complete", "d": "Record what was done. History is saved and becomes a productivity metric." }
+        {
+          "n": "01",
+          "t": "Capture",
+          "d": "Note the task right away — by text, in seconds. Standalone or inside an event."
+        },
+        {
+          "n": "02",
+          "t": "Delegate",
+          "d": "Set the owner, due date and priority. For you or for someone on the team."
+        },
+        {
+          "n": "03",
+          "t": "Track",
+          "d": "See the status of everything in dashboards by person, team, area and organization."
+        },
+        {
+          "n": "04",
+          "t": "Complete",
+          "d": "Record what was done. History is saved and becomes a productivity metric."
+        }
       ]
     },
     "contexts": {

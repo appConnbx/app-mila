@@ -184,8 +184,16 @@
     "colStatus": "Status",
     "empty": "Nenhuma demanda nesta instância ainda.",
     "overdueSuffix": " (atrasada)",
-    "status": { "nova": "Nova", "trabalhando": "Trabalhando", "finalizada": "Finalizada" },
-    "priority": { "alta": "Alta", "media": "Média", "baixa": "Baixa" },
+    "status": {
+      "nova": "Nova",
+      "trabalhando": "Trabalhando",
+      "finalizada": "Finalizada"
+    },
+    "priority": {
+      "alta": "Alta",
+      "media": "Média",
+      "baixa": "Baixa"
+    },
     "tabActive": "Ativas",
     "tabArchived": "Concluídas",
     "tabMine": "Minhas",
@@ -377,28 +385,6 @@
     "licenseLifetime": "Vitalícia",
     "licenseNone": "Sem licença ativa no momento."
   },
-  "admin": {
-    "title": "Administração CONNBX",
-    "desc": "Console do super-administrador: licenciamento de todas as contas.",
-    "colHolding": "Conta",
-    "colKind": "Tipo",
-    "colPlan": "Plano atual",
-    "colUsage": "Uso",
-    "colLicense": "Licenciar",
-    "kindCorporate": "Corporativo",
-    "kindFamily": "Família",
-    "unlimited": "Ilimitado",
-    "noPlan": "Sem plano",
-    "plan": "Plano",
-    "seatsOverride": "Limite personalizado (opcional)",
-    "seatsHint": "Deixe em branco para usar o limite do plano. VIP CONNBX é sempre ilimitado.",
-    "apply": "Aplicar licença",
-    "applied": "Licença atualizada.",
-    "lifetime": "Vitalícia",
-    "used": "em uso",
-    "empty": "Nenhuma conta encontrada.",
-    "forbidden": "Acesso restrito ao super-administrador."
-  },
   "billing": {
     "title": "Assinatura inativa",
     "desc": "Esta instância não tem um plano ativo no momento. Reative a assinatura para voltar a acessar as demandas e a equipe.",
@@ -444,9 +430,18 @@
       "title": "Quantas demandas você já perdeu esta semana?",
       "desc": "Tudo que é combinado na correria e não vira tarefa, simplesmente some. O custo não é só o esquecimento — é o retrabalho, a cobrança e a confiança que se perde.",
       "items": [
-        { "p": "“Achei que alguém ia resolver.”", "r": "Toda demanda tem um responsável claro. Nada fica no ar." },
-        { "p": "“Esqueci de anotar e passou.”", "r": "Capture em segundos. O que entra, não some." },
-        { "p": "“Não sei o que a equipe está fazendo.”", "r": "Acompanhe o andamento em tempo real, por pessoa, equipe e área." }
+        {
+          "p": "“Achei que alguém ia resolver.”",
+          "r": "Toda demanda tem um responsável claro. Nada fica no ar."
+        },
+        {
+          "p": "“Esqueci de anotar e passou.”",
+          "r": "Capture em segundos. O que entra, não some."
+        },
+        {
+          "p": "“Não sei o que a equipe está fazendo.”",
+          "r": "Acompanhe o andamento em tempo real, por pessoa, equipe e área."
+        }
       ]
     },
     "eco": {
@@ -468,10 +463,26 @@
       "kicker": "Simples assim",
       "title": "Da conversa à conclusão, em 4 passos",
       "steps": [
-        { "n": "01", "t": "Capture", "d": "Anote a demanda na hora — por texto, em segundos. Avulsa ou dentro de um evento." },
-        { "n": "02", "t": "Delegue", "d": "Defina o responsável, prazo e prioridade. Para você ou para alguém da equipe." },
-        { "n": "03", "t": "Acompanhe", "d": "Veja o status de tudo em painéis por pessoa, equipe, área e organização." },
-        { "n": "04", "t": "Conclua", "d": "Registre o que foi feito. O histórico fica salvo e vira indicador de produtividade." }
+        {
+          "n": "01",
+          "t": "Capture",
+          "d": "Anote a demanda na hora — por texto, em segundos. Avulsa ou dentro de um evento."
+        },
+        {
+          "n": "02",
+          "t": "Delegue",
+          "d": "Defina o responsável, prazo e prioridade. Para você ou para alguém da equipe."
+        },
+        {
+          "n": "03",
+          "t": "Acompanhe",
+          "d": "Veja o status de tudo em painéis por pessoa, equipe, área e organização."
+        },
+        {
+          "n": "04",
+          "t": "Conclua",
+          "d": "Registre o que foi feito. O histórico fica salvo e vira indicador de produtividade."
+        }
       ]
     },
     "contexts": {

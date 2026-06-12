@@ -44,6 +44,20 @@ export async function updateSession(request: NextRequest) {
   const isPublic =
     path === '/' || PUBLIC_PREFIXES.some((p) => path.startsWith(p))
 
+  // Portal interno CONNBX: não revela a própria existência. Sem sessão → 404
+  // (nunca redirect para /login) e sempre noindex. O guard de staff fica no layout.
+  if (path === '/cbx' || path.startsWith('/cbx/')) {
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/cbx-nao-existe' // rota inexistente → 404 padrão
+      const nf = NextResponse.rewrite(url, { status: 404 })
+      nf.headers.set('X-Robots-Tag', 'noindex, nofollow')
+      return nf
+    }
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return response
+  }
+
   if (!user && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
