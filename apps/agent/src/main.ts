@@ -463,7 +463,7 @@ function showPreview(text: string) {
   pv.hidden = false
   $<HTMLDivElement>('mic-actions').hidden = false
   holdBtn.hidden = true
-  previewCount = 3
+  previewCount = 5
   micStatus(t('micCountdown').replace('{s}', String(previewCount)), '')
   previewTimer = window.setInterval(() => {
     previewCount -= 1

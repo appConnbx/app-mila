@@ -123,7 +123,7 @@ export function RecordModal({
   function showPreview(text: string) {
     setPreview(text)
     setPhase('preview')
-    let count = 3
+    let count = 5
     setStatus(t('voiceCountdown').replace('{s}', String(count)))
     countTimer.current = setInterval(() => {
       count -= 1
