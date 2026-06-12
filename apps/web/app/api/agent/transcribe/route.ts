@@ -10,29 +10,46 @@ export const dynamic = 'force-dynamic'
 
 const MAX_BYTES = 15 * 1024 * 1024 // ~15MB (60s de opus fica muito abaixo disso)
 
+// CORS: o widget chama esta rota do webview (origem http://tauri.localhost).
+// Auth é por header Bearer (sem cookies), então liberar origem é seguro.
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'authorization, content-type',
+  'Access-Control-Max-Age': '86400',
+}
+
+function json(body: unknown, status: number) {
+  return NextResponse.json(body, { status, headers: CORS })
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS })
+}
+
 export async function POST(request: NextRequest) {
   const apiKey = process.env.STT_API_KEY
   if (!apiKey) {
-    return NextResponse.json({ error: 'transcrição não configurada' }, { status: 503 })
+    return json({ error: 'transcrição não configurada' }, 503)
   }
 
   // Usuário autenticado (token de sessão do widget).
   const auth = request.headers.get('authorization') ?? ''
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : null
-  if (!token) return NextResponse.json({ error: 'não autenticado' }, { status: 401 })
+  if (!token) return json({ error: 'não autenticado' }, 401)
   const admin = createAdminClient()
   const { data, error } = await admin.auth.getUser(token)
   if (error || !data.user) {
-    return NextResponse.json({ error: 'não autenticado' }, { status: 401 })
+    return json({ error: 'não autenticado' }, 401)
   }
 
   const form = await request.formData().catch(() => null)
   const file = form?.get('file')
   if (!(file instanceof Blob)) {
-    return NextResponse.json({ error: 'arquivo ausente' }, { status: 400 })
+    return json({ error: 'arquivo ausente' }, 400)
   }
   if (file.size > MAX_BYTES) {
-    return NextResponse.json({ error: 'áudio muito grande' }, { status: 413 })
+    return json({ error: 'áudio muito grande' }, 413)
   }
 
   const base = process.env.STT_BASE_URL ?? 'https://api.groq.com/openai/v1'
@@ -48,10 +65,10 @@ export async function POST(request: NextRequest) {
     body: fd,
   })
   if (!res.ok) {
-    return NextResponse.json({ error: 'falha na transcrição' }, { status: 502 })
+    return json({ error: 'falha na transcrição' }, 502)
   }
   const out = (await res.json()) as { text?: string }
   const text = (out.text ?? '').trim()
-  if (!text) return NextResponse.json({ error: 'nada reconhecido' }, { status: 422 })
-  return NextResponse.json({ text })
+  if (!text) return json({ error: 'nada reconhecido' }, 422)
+  return json({ text }, 200)
 }
