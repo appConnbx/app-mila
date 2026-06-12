@@ -30,6 +30,7 @@ export type HoldingUser = {
   can_delegate: boolean
   is_admin: boolean
   teams: string[]
+  avatar_url: string | null
   last_sign_in_at: string | null
   has_active_session: boolean
 }
@@ -113,7 +114,7 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
               <tr key={u.id} className={`border-b border-white/5 last:border-0 ${u.is_active ? '' : 'opacity-55'}`}>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <Avatar name={u.full_name} size="sm" />
+                    <Avatar name={u.full_name} size="sm" src={u.avatar_url} />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-slate-100">{u.full_name}</span>
@@ -173,7 +174,7 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
           <div className="glass glow-top relative h-full w-full max-w-md overflow-y-auto p-6 sm:rounded-l-2xl">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <Avatar name={open.full_name} />
+                <Avatar name={open.full_name} src={open.avatar_url} />
                 <div>
                   <h3 className="text-lg font-semibold text-white">{t('editUser')}</h3>
                   <p className="text-xs text-slate-500">{open.email ?? '—'}</p>

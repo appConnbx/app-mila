@@ -7,8 +7,25 @@ import { Avatar } from '@/components/ui'
 type Person = { name: string; avatar_url: string | null; headline: string | null; phone: string | null; skills: string[] }
 type Team = { id: string; name: string; is_active: boolean; admins: Person[]; members: Person[] }
 type Area = { id: string; name: string; is_active: boolean; admins: Person[]; teams: Team[] }
-type Org = { id: string; name: string; is_active: boolean; admins: Person[]; areas: Area[] }
-export type ChartData = { holding_name?: string; holding_admins?: Person[]; orgs: Org[] }
+type Org = { id: string; name: string; is_active: boolean; logo_url: string | null; admins: Person[]; areas: Area[] }
+export type ChartData = { holding_name?: string; holding_logo?: string | null; holding_admins?: Person[]; orgs: Org[] }
+
+// Logo de holding/organização com fallback para a inicial.
+function NodeLogo({ url, name, size }: { url: string | null | undefined; name: string; size: number }) {
+  const cls = 'shrink-0 rounded-lg object-cover ring-1 ring-white/10'
+  if (url) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={url} alt={name} className={cls} style={{ width: size, height: size }} />
+  }
+  return (
+    <span
+      className="grid shrink-0 place-items-center rounded-lg bg-brand/15 font-bold text-brand"
+      style={{ width: size, height: size, fontSize: size * 0.5 }}
+    >
+      {name.charAt(0).toUpperCase()}
+    </span>
+  )
+}
 
 type Selected = { type: string; name: string; admins: Person[]; members?: Person[] } | null
 
@@ -46,10 +63,13 @@ export function OrgChart({ data }: { data: ChartData }) {
           <button
             type="button"
             onClick={() => setSel({ type: t('holdingLabel'), name: data.holding_name!, admins: data.holding_admins ?? [] })}
-            className="glass glow-top rounded-xl px-5 py-3 text-center transition hover:border-brand/50"
+            className="glass glow-top flex items-center gap-3 rounded-xl px-5 py-3 text-left transition hover:border-brand/50"
           >
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-brand">{t('holdingLabel')}</p>
-            <p className="text-lg font-bold text-white">{data.holding_name}</p>
+            <NodeLogo url={data.holding_logo} name={data.holding_name} size={44} />
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-brand">{t('holdingLabel')}</p>
+              <p className="text-lg font-bold text-white">{data.holding_name}</p>
+            </div>
           </button>
         </div>
       )}
@@ -65,6 +85,7 @@ export function OrgChart({ data }: { data: ChartData }) {
                 onClick={() => setSel({ type: t('orgLabel'), name: o.name, admins: o.admins })}
                 className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm transition hover:border-brand/50 hover:bg-white/[0.08]"
               >
+                <NodeLogo url={o.logo_url} name={o.name} size={22} />
                 <span className="text-[10px] font-semibold uppercase tracking-wide text-brand">{t('orgLabel')}</span>
                 <span className="font-medium text-slate-100">{o.name}</span>
               </button>
