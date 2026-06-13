@@ -248,8 +248,8 @@ export default async function LandingPage() {
     { name: 'Enterprise', users: t('plans.enterpriseUsers'), price: isBR ? '1.500' : '500', href: checkout('9gacabk6', 'g901biby') },
   ]
   const familyPlans = [
-    { name: 'Family', users: t('plans.familyUsers'), price: isBR ? '37' : '9', href: checkout('f7nrog01', 'gmafnne4') },
-    { name: 'Family Plus', users: t('plans.familyPlusUsers'), price: isBR ? '50' : '13', href: checkout('d3c9cwha', 'e4qsc1yt') },
+    { name: 'Family', users: t('plans.familyUsers'), price: isBR ? '37' : '9', href: checkout('f7nrog01', 'gmafnne4'), featured: true },
+    { name: 'Family Plus', users: t('plans.familyPlusUsers'), price: isBR ? '50' : '13', href: checkout('d3c9cwha', 'e4qsc1yt'), featured: false },
   ]
 
   return (
@@ -462,10 +462,15 @@ export default async function LandingPage() {
           <p className="text-sm text-slate-400">{t('plans.corpSub')}</p>
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {corpPlans.map((p) => (
-              <div key={p.name} className={`glass relative flex flex-col p-6 ${p.featured ? 'glow-top border-brand/40' : ''}`}>
+              <div
+                key={p.name}
+                className={`glass relative flex flex-col p-6 ${
+                  p.featured ? 'glow-top border-brand/50 ring-2 ring-brand/40 lg:-mt-2 lg:mb-2' : ''
+                }`}
+              >
                 {p.featured && (
-                  <span className="absolute -top-3 left-6 rounded-full bg-brand px-3 py-0.5 text-[11px] font-bold text-slate-950">
-                    {t('plans.featuredTag')}
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand px-3 py-0.5 text-[11px] font-bold text-slate-950">
+                    ⭐ {t('plans.featuredTag')}
                   </span>
                 )}
                 <p className="text-sm font-semibold text-white">{p.name}</p>
@@ -474,6 +479,7 @@ export default async function LandingPage() {
                   {cur}{p.price}
                   <span className="text-base font-medium text-slate-400">{t('plans.perMonth')}</span>
                 </p>
+                {p.featured && <p className="mt-1.5 text-xs font-medium text-brand">{t('plans.corpPopular')}</p>}
                 <a
                   href={p.href}
                   target="_blank"
@@ -511,37 +517,31 @@ export default async function LandingPage() {
           </p>
         </div>
 
-        {/* Family Free + planos família */}
+        {/* Planos família — Family em destaque (mais escolhido) */}
         <div className="mt-12">
           <h3 className="text-lg font-semibold text-white">{t('plans.familyTitle')}</h3>
           <p className="text-sm text-slate-400">{t('plans.familySub')}</p>
 
-          {/* Family Free — cadastro direto, sem Hotmart */}
-          <div className="mt-5 flex flex-col items-start justify-between gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-6 sm:flex-row sm:items-center">
-            <div>
-              <span className="inline-flex items-center rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">
-                {t('plans.freeBadge')}
-              </span>
-              <p className="mt-2 text-lg font-bold text-white">{t('plans.freeName')}</p>
-              <p className="text-sm text-slate-400">{t('plans.freeDesc')}</p>
-            </div>
-            <Link
-              href="/comecar-gratis"
-              className="shrink-0 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
-            >
-              {t('plans.freeCta')}
-            </Link>
-          </div>
-
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             {familyPlans.map((p) => (
-              <div key={p.name} className="glass flex flex-col p-6">
+              <div
+                key={p.name}
+                className={`glass relative flex flex-col p-6 ${
+                  p.featured ? 'border-orange-400/50 ring-2 ring-orange-400/40' : ''
+                }`}
+              >
+                {p.featured && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-orange-500 px-3 py-0.5 text-[11px] font-bold text-slate-950">
+                    ⭐ {t('plans.featuredTag')}
+                  </span>
+                )}
                 <p className="text-sm font-semibold text-white">{p.name}</p>
                 <p className="text-xs text-slate-400">{p.users}</p>
                 <p className="mt-4 text-3xl font-extrabold text-white">
                   {cur}{p.price}
                   <span className="text-base font-medium text-slate-400">{t('plans.perMonth')}</span>
                 </p>
+                {p.featured && <p className="mt-1.5 text-xs font-medium text-orange-300">{t('plans.familyPopular')}</p>}
                 <a
                   href={p.href}
                   target="_blank"
@@ -552,6 +552,22 @@ export default async function LandingPage() {
                 </a>
               </div>
             ))}
+          </div>
+
+          {/* Family Free — opção de entrada, discreta e por último */}
+          <div className="mt-5 flex flex-col items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-2 text-sm text-slate-400">
+              <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-semibold text-emerald-300">
+                {t('plans.freeBadge')}
+              </span>
+              <span><b className="text-slate-200">{t('plans.freeName')}</b> — {t('plans.freeDesc')}</span>
+            </div>
+            <Link
+              href="/comecar-gratis"
+              className="shrink-0 rounded-lg border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+            >
+              {t('plans.freeCta')}
+            </Link>
           </div>
         </div>
 

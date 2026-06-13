@@ -11,14 +11,21 @@ type Dict = Record<string, string>
 type Step = 'audience' | 'bizSize' | 'bizPerk' | 'famSize' | 'reflect' | 'doubt' | 'result'
 type PlanId = keyof Plans | 'free'
 
-function Opt({ title, sub, onClick }: { title: string; sub?: string; onClick: () => void }) {
+function Opt({ title, sub, badge, onClick }: { title: string; sub?: string; badge?: string; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left transition hover:border-brand/50 hover:bg-white/[0.06]"
+      className={`group flex w-full items-center justify-between gap-4 rounded-2xl border p-5 text-left transition ${
+        badge
+          ? 'border-brand/50 bg-brand/[0.06] ring-1 ring-brand/30 hover:bg-brand/[0.1]'
+          : 'border-white/10 bg-white/[0.03] hover:border-brand/50 hover:bg-white/[0.06]'
+      }`}
     >
       <span>
+        {badge && (
+          <span className="mb-1.5 inline-block rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold text-slate-950">⭐ {badge}</span>
+        )}
         <span className="block text-base font-semibold text-white">{title}</span>
         {sub && <span className="mt-0.5 block text-sm text-slate-400">{sub}</span>}
       </span>
@@ -74,7 +81,7 @@ export function StartWizard({ dict, plans, cur, freeHref }: { dict: Dict; plans:
       {step === 'bizSize' && (
         <div className="mt-6 space-y-3">
           <Opt title={dict.bizUpTo20} onClick={() => { setPlanId('starter'); go('bizPerk') }} />
-          <Opt title={dict.bizUpTo50} onClick={() => { setPlanId('growth'); go('bizPerk') }} />
+          <Opt title={dict.bizUpTo50} badge={dict.mostChosen} onClick={() => { setPlanId('growth'); go('bizPerk') }} />
           <Opt title={dict.bizUpTo200} onClick={() => { setPlanId('scale'); go('bizPerk') }} />
           <Opt title={dict.bizUnlimited} onClick={() => { setPlanId('enterprise'); go('bizPerk') }} />
         </div>
@@ -97,10 +104,10 @@ export function StartWizard({ dict, plans, cur, freeHref }: { dict: Dict; plans:
       {/* Família — tamanho */}
       {step === 'famSize' && (
         <div className="mt-6 space-y-3">
-          <Opt title={dict.famJustMe} onClick={() => { setPlanId('free'); go('result') }} />
-          <Opt title={dict.famUpTo5} onClick={() => { setPlanId('family'); go('reflect') }} />
+          <Opt title={dict.famUpTo5} badge={dict.mostChosen} onClick={() => { setPlanId('family'); go('reflect') }} />
           <Opt title={dict.famUpTo10} onClick={() => { setPlanId('familyplus'); go('reflect') }} />
           <Opt title={dict.famMore} onClick={() => { setPlanId('familyplus'); go('reflect') }} />
+          <Opt title={dict.famJustMe} onClick={() => { setPlanId('free'); go('result') }} />
         </div>
       )}
 
