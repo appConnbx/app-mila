@@ -80,7 +80,7 @@ export default async function DashboardPage() {
           <p className="truncate text-sm text-slate-400">{prof?.headline || t('profileSubtitle')}</p>
           {profileIncomplete && <p className="mt-1 text-xs text-amber-400">{t('profileNudge')}</p>}
         </div>
-        <Button href="/perfil" variant={profileIncomplete ? 'primary' : 'secondary'} size="sm">{t('editProfile')}</Button>
+        <Button href="/profile" variant={profileIncomplete ? 'primary' : 'secondary'} size="sm">{t('editProfile')}</Button>
       </div>
 
       {/* ---------- Dashboard pessoal ---------- */}

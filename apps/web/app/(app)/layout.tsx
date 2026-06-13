@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const pathname = (await headers()).get('x-pathname') ?? ''
   const activeHolding = (await cookies()).get(ACTIVE_HOLDING_COOKIE)?.value
   // "Home" = área inicial (dashboard pessoal + seleção): sem nav de instância.
-  const isHome = !activeHolding || pathname === '/dashboard' || pathname.startsWith('/assinatura') || pathname.startsWith('/perfil')
+  const isHome = !activeHolding || pathname === '/dashboard' || pathname.startsWith('/subscription') || pathname.startsWith('/profile')
 
   const t = await getTranslations()
   const locale = (await getLocale()) as Locale
@@ -52,10 +52,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
     if (!isHome) {
       // Guard de assinatura ativa.
-      if (!accessRes.data) redirect('/assinatura')
+      if (!accessRes.data) redirect('/subscription')
       // Onboarding de 1º acesso (corporativo Hotmart): configurar dados da holding.
-      if (isHoldingAdmin && holding?.kind === 'corporate' && !holding?.legal_name && !pathname.startsWith('/estrutura/holding')) {
-        redirect('/estrutura/holding?onboarding=1')
+      if (isHoldingAdmin && holding?.kind === 'corporate' && !holding?.legal_name && !pathname.startsWith('/structure/holding')) {
+        redirect('/structure/holding?onboarding=1')
       }
     }
   }
@@ -66,12 +66,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const isFamily = holding?.kind === 'family'
   const navItems = [
     // Dashboard (gerencial) para administradores de qualquer nível.
-    ...(isManager ? [{ href: '/painel', label: t('nav.panel') }] : []),
-    { href: '/demandas', label: t('nav.demands') },
-    ...(!isFamily ? [{ href: '/eventos', label: t('nav.events') }] : []),
+    ...(isManager ? [{ href: '/panel', label: t('nav.panel') }] : []),
+    { href: '/tasks', label: t('nav.demands') },
+    ...(!isFamily ? [{ href: '/events', label: t('nav.events') }] : []),
     // Organograma: visível a todos (corporativo).
-    ...(!isFamily ? [{ href: '/organograma', label: t('nav.orgchart') }] : []),
-    ...(isHoldingAdmin ? [{ href: '/estrutura', label: t('nav.structure') }] : []),
+    ...(!isFamily ? [{ href: '/org-chart', label: t('nav.orgchart') }] : []),
+    ...(isHoldingAdmin ? [{ href: '/structure', label: t('nav.structure') }] : []),
   ]
 
   return (
@@ -80,7 +80,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <header className="sticky top-0 z-10 border-b border-white/5 bg-surface/70 backdrop-blur-xl">
         {/* Linha 1: marca + ações */}
         <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <Link href={isHome ? '/dashboard' : '/demandas'} className="flex shrink-0 items-center gap-2">
+          <Link href={isHome ? '/dashboard' : '/tasks'} className="flex shrink-0 items-center gap-2">
             <span className="text-xl font-bold tracking-tight text-white">MILA</span>
             <span className="h-4 w-1 rounded-full bg-brand" />
           </Link>
@@ -96,7 +96,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             )}
             <LanguageSwitcher current={locale} />
             <span className="hidden text-sm text-slate-400 md:inline">{user.email}</span>
-            <Link href="/perfil" title={t('nav.profile')} className="shrink-0">
+            <Link href="/profile" title={t('nav.profile')} className="shrink-0">
               {avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={avatarUrl} alt={t('nav.profile')} className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10 transition hover:ring-brand/50" />

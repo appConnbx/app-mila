@@ -9,7 +9,8 @@ const nextConfig = {
   // preservam links já compartilhados/indexados (ex.: política de privacidade
   // referenciada pelas lojas de app).
   async redirects() {
-    const map = {
+    // Slugs simples (públicos).
+    const simple = {
       '/privacidade': '/privacy',
       '/seguranca': '/security',
       '/bem-vindo': '/welcome',
@@ -17,8 +18,20 @@ const nextConfig = {
       '/recuperar': '/forgot-password',
       '/br-empresa': '/br-business',
       '/br-pessoal': '/br-personal',
+      '/organograma': '/org-chart',
+      '/painel': '/panel',
+      '/perfil': '/profile',
+      '/assinatura': '/subscription',
     }
-    return Object.entries(map).map(([source, destination]) => ({ source, destination, permanent: true }))
+    return [
+      ...Object.entries(simple).map(([source, destination]) => ({ source, destination, permanent: true })),
+      // Rotas internas com subrotas — específicos antes dos curingas (ordem importa).
+      { source: '/demandas/nova', destination: '/tasks/new', permanent: true },
+      { source: '/demandas/:path*', destination: '/tasks/:path*', permanent: true },
+      { source: '/estrutura/usuarios', destination: '/structure/users', permanent: true },
+      { source: '/estrutura/:path*', destination: '/structure/:path*', permanent: true },
+      { source: '/eventos/:path*', destination: '/events/:path*', permanent: true },
+    ]
   },
 }
 
