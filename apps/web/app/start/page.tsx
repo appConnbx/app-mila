@@ -14,7 +14,7 @@ const DICT_KEYS = [
   'mostChosen',
   'bizSizeTitle', 'bizUpTo20', 'bizUpTo50', 'bizUpTo200', 'bizUnlimited',
   'bizPerkTitle', 'bizPerkDesc', 'bizPerkCta',
-  'famSizeTitle', 'famJustMe', 'famUpTo5', 'famUpTo10', 'famMore',
+  'famSizeTitle', 'famJustMe', 'famUpTo5', 'famUpTo10',
   'reflectTitle', 'reflectForget', 'reflectChase', 'reflectScatter', 'reflectAck', 'continue',
   'doubtTitle', 'doubtDesc', 'doubtCta',
   'resultTitle', 'recommendedBadge', 'perMonth', 'startCta', 'refund', 'perkLine',

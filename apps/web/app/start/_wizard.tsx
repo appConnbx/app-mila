@@ -106,7 +106,6 @@ export function StartWizard({ dict, plans, freeHref }: { dict: Dict; plans: Plan
         <div className="mt-6 space-y-3">
           <Opt title={dict.famUpTo5} onClick={() => { setPlanId('family'); go('reflect') }} />
           <Opt title={dict.famUpTo10} badge={dict.mostChosen} onClick={() => { setPlanId('familyplus'); go('reflect') }} />
-          <Opt title={dict.famMore} onClick={() => { setPlanId('familyplus'); go('reflect') }} />
           <Opt title={dict.famJustMe} onClick={() => { setPlanId('free'); go('result') }} />
         </div>
       )}
