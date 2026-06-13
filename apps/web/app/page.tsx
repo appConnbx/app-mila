@@ -114,6 +114,40 @@ async function DashboardMockup() {
   )
 }
 
+/* ---------- Mockup do gadget no computador + voz ---------- */
+async function GadgetMockup() {
+  const t = await getTranslations('landing')
+  return (
+    <div className="glass glow-top relative mx-auto w-full max-w-2xl overflow-hidden p-4">
+      {/* "tela" do computador */}
+      <div className="relative h-64 rounded-xl border border-white/5 bg-gradient-to-br from-slate-900 to-slate-950 sm:h-72">
+        <div className="pointer-events-none absolute -left-10 top-10 h-40 w-40 rounded-full bg-brand/10 blur-3xl" />
+        {/* gadget de fácil acesso, encostado na borda direita */}
+        <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col items-center gap-2 rounded-l-2xl border border-white/10 bg-white/[0.06] px-2.5 py-3 backdrop-blur">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-brand text-[11px] font-black text-slate-950">M</span>
+          <span className="rounded-full bg-rose-500/80 px-1.5 text-[10px] font-bold text-white">3</span>
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-brand/15 text-brand">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden>
+              <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z" />
+            </svg>
+          </span>
+        </div>
+        {/* balão: demanda capturada por voz */}
+        <div className="absolute right-20 top-1/2 w-56 -translate-y-1/2 rounded-xl border border-white/10 bg-slate-900/90 p-3 shadow-xl">
+          <p className="flex items-center gap-1.5 text-[11px] font-medium text-brand">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" /> {t('eco.voiceTitle')}
+          </p>
+          <p className="mt-1.5 text-xs text-slate-100">“{t('mockup.row2Title')}”</p>
+          <div className="mt-2 flex items-center gap-1.5">
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-slate-300">{t('mockup.kpiInProgress')}</span>
+            <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] text-brand">amanhã</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ===================================================================== */
 
 export default async function LandingPage() {
@@ -153,8 +187,8 @@ export default async function LandingPage() {
           <Logo />
           <div className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
             <a href="#como" className="transition hover:text-white">{t('nav.how')}</a>
-            <a href="#contextos" className="transition hover:text-white">{t('nav.contexts')}</a>
-            <a href="#planos" className="transition hover:text-white">{t('nav.plans')}</a>
+            <a href="#empresas" className="transition hover:text-white">{t('nav.business')}</a>
+            <a href="#pessoal" className="transition hover:text-white">{t('nav.personal')}</a>
             <a href="#afiliados" className="transition hover:text-white">{t('nav.affiliates')}</a>
           </div>
           <div className="flex items-center gap-2">
@@ -249,7 +283,17 @@ export default async function LandingPage() {
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">{t('eco.subtitle')}</p>
         </div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
+        {/* Imagem: o gadget de fácil acesso na borda do computador capturando por voz */}
+        <div className="mt-8">
+          <GadgetMockup />
+        </div>
+
+        {/* Vale igual para empresas e uso pessoal */}
+        <p className="mx-auto mt-6 max-w-2xl rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-center text-sm text-slate-300">
+          {t('eco.bothNote')}
+        </p>
+
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
           {/* Voz (destaque) */}
           <div className="glass glow-top relative overflow-hidden border-brand/40 p-6">
             <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand/15">
@@ -291,7 +335,7 @@ export default async function LandingPage() {
 
         <div className="mt-8 flex justify-center">
           <a
-            href="#planos"
+            href="#empresas"
             className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
           >
             {t('eco.cta')} <Arrow className="h-4 w-4" />
@@ -316,70 +360,34 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ---------------- DOIS CONTEXTOS ---------------- */}
-      <section id="contextos" className="mx-auto max-w-6xl px-4 py-16">
+      {/* ---------------- EMPRESAS ---------------- */}
+      <section id="empresas" className="mx-auto max-w-6xl px-4 py-16">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-white">{t('contexts.title')}</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-400">{t('contexts.subtitle')}</p>
+          <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('contexts.corpKicker')}</p>
+          <h2 className="mt-2 text-3xl font-bold text-white">{t('contexts.corpTitle')}</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-slate-400">{t('contexts.corpDesc')}</p>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          {/* Corporativo */}
-          <div className="glass glow-top relative overflow-hidden p-8">
-            <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/10 blur-3xl" />
-            <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('contexts.corpKicker')}</p>
-            <h3 className="mt-2 text-2xl font-bold text-white">{t('contexts.corpTitle')}</h3>
-            <p className="mt-3 text-slate-400">{t('contexts.corpDesc')}</p>
-            <ul className="mt-5 space-y-2.5 text-sm">
-              {corpBullets.map((i) => (
-                <li key={i} className="flex items-start gap-2.5 text-slate-300">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" /> {i}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 rounded-lg border border-white/5 bg-white/[0.02] p-3 text-sm text-slate-300">
-              {t.rich('contexts.corpResult', bold)}
-            </p>
-          </div>
-
-          {/* Família */}
-          <div className="glass relative overflow-hidden p-8">
-            <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-orange-500/10 blur-3xl" />
-            <p className="text-sm font-semibold uppercase tracking-wider text-orange-300">{t('contexts.familyKicker')}</p>
-            <h3 className="mt-2 text-2xl font-bold text-white">{t('contexts.familyTitle')}</h3>
-            <p className="mt-3 text-slate-400">{t('contexts.familyDesc')}</p>
-            <ul className="mt-5 space-y-2.5 text-sm">
-              {familyBullets.map((i) => (
-                <li key={i} className="flex items-start gap-2.5 text-slate-300">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-orange-300" /> {i}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 rounded-lg border border-white/5 bg-white/[0.02] p-3 text-sm text-slate-300">
-              {t.rich('contexts.familyResult', bold)}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------- PLANOS ---------------- */}
-      <section id="planos" className="mx-auto max-w-6xl px-4 py-16">
-        <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('plans.kicker')}</p>
-          <h2 className="mt-2 text-3xl font-bold text-white">{t('plans.title')}</h2>
-          <p className="mx-auto mt-3 max-w-xl text-slate-400">{t('plans.subtitle')}</p>
+        <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
+          <ul className="space-y-2.5 text-sm">
+            {corpBullets.map((i) => (
+              <li key={i} className="flex items-start gap-2.5 text-slate-300">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" /> {i}
+              </li>
+            ))}
+          </ul>
+          <p className="rounded-lg border border-white/5 bg-white/[0.02] p-4 text-sm text-slate-300">
+            {t.rich('contexts.corpResult', bold)}
+          </p>
         </div>
 
-        {/* Corporativo — 4 planos */}
-        <div className="mt-10">
+        {/* Planos corporativos */}
+        <div className="mt-12">
           <h3 className="text-lg font-semibold text-white">{t('plans.corpTitle')}</h3>
           <p className="text-sm text-slate-400">{t('plans.corpSub')}</p>
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {corpPlans.map((p) => (
-              <div
-                key={p.name}
-                className={`glass relative flex flex-col p-6 ${p.featured ? 'glow-top border-brand/40' : ''}`}
-              >
+              <div key={p.name} className={`glass relative flex flex-col p-6 ${p.featured ? 'glow-top border-brand/40' : ''}`}>
                 {p.featured && (
                   <span className="absolute -top-3 left-6 rounded-full bg-brand px-3 py-0.5 text-[11px] font-bold text-slate-950">
                     {t('plans.featuredTag')}
@@ -396,9 +404,7 @@ export default async function LandingPage() {
                   target="_blank"
                   rel="noreferrer"
                   className={`mt-5 block rounded-xl px-4 py-2.5 text-center text-sm font-semibold transition ${
-                    p.featured
-                      ? 'bg-brand text-slate-950 hover:bg-brand-500'
-                      : 'border border-white/10 text-slate-200 hover:bg-white/5'
+                    p.featured ? 'bg-brand text-slate-950 hover:bg-brand-500' : 'border border-white/10 text-slate-200 hover:bg-white/5'
                   }`}
                 >
                   {t('plans.start')}
@@ -407,8 +413,30 @@ export default async function LandingPage() {
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Família — Free + 2 planos */}
+      {/* ---------------- USO PESSOAL ---------------- */}
+      <section id="pessoal" className="mx-auto max-w-6xl px-4 py-16">
+        <div className="text-center">
+          <p className="text-sm font-semibold uppercase tracking-wider text-orange-300">{t('contexts.familyKicker')}</p>
+          <h2 className="mt-2 text-3xl font-bold text-white">{t('contexts.familyTitle')}</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-slate-400">{t('contexts.familyDesc')}</p>
+        </div>
+
+        <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
+          <ul className="space-y-2.5 text-sm">
+            {familyBullets.map((i) => (
+              <li key={i} className="flex items-start gap-2.5 text-slate-300">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-orange-300" /> {i}
+              </li>
+            ))}
+          </ul>
+          <p className="rounded-lg border border-white/5 bg-white/[0.02] p-4 text-sm text-slate-300">
+            {t.rich('contexts.familyResult', bold)}
+          </p>
+        </div>
+
+        {/* Family Free + planos família */}
         <div className="mt-12">
           <h3 className="text-lg font-semibold text-white">{t('plans.familyTitle')}</h3>
           <p className="text-sm text-slate-400">{t('plans.familySub')}</p>
@@ -505,7 +533,8 @@ export default async function LandingPage() {
           </div>
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-slate-400">
             <a href="#como" className="transition hover:text-white">{t('nav.how')}</a>
-            <a href="#planos" className="transition hover:text-white">{t('nav.plans')}</a>
+            <a href="#empresas" className="transition hover:text-white">{t('nav.business')}</a>
+            <a href="#pessoal" className="transition hover:text-white">{t('nav.personal')}</a>
             <a href="#afiliados" className="transition hover:text-white">{t('nav.affiliates')}</a>
             <Link href="/login" className="transition hover:text-white">{t('nav.signIn')}</Link>
             <LanguageSwitcher current={locale} />

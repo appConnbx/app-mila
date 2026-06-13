@@ -64,9 +64,9 @@
     "profileSubtitle": "Completa tu perfil: foto, celular y habilidades.",
     "profileNudge": "Tu perfil está incompleto — agrega foto, celular y habilidades.",
     "agentTitle": "Agente MILA para Windows",
-    "agentDesc": "Un widget de vidrio al borde de la pantalla: tus tareas pendientes siempre a la vista, creación rápida y alerta visual cuando te llega algo nuevo. Entra con la misma cuenta.",
+    "agentDesc": "Un gadget de fácil acceso al borde de la pantalla: tus tareas pendientes siempre a la vista, creación rápida y alerta visual cuando te llega algo nuevo. Entra con la misma cuenta.",
     "agentCta": "Descargar para Windows",
-    "agentNote": "Gratis · Windows 10/11 · se actualiza solo"
+    "agentNote": "En todos los planes · Windows 10/11 · se actualiza solo"
   },
   "panel": {
     "title": "Panel",
@@ -305,7 +305,7 @@
     "timezone": "Zona horaria",
     "timezoneHint": "Se aplica a cómo se muestran fechas y horas en esta instancia.",
     "language": "Idioma predeterminado",
-    "languageHint": "Lo usa el agente de escritorio. Si las instancias difieren, prevalece la corporativa.",
+    "languageHint": "Lo usa el agente para computadora. Si las instancias difieren, prevalece la corporativa.",
     "logoLabel": "Foto de perfil",
     "logoChange": "Subir / cambiar foto",
     "logoRemove": "Quitar",
@@ -397,6 +397,8 @@
     "nav": {
       "how": "Cómo funciona",
       "contexts": "Empresas y Familias",
+      "business": "Empresas",
+      "personal": "Uso personal",
       "plans": "Planes",
       "affiliates": "Recomienda y Gana",
       "signIn": "Entrar",
@@ -405,7 +407,7 @@
     "hero": {
       "badge": "Trabajo y vida personal, en una sola cuenta",
       "headline": "Nunca más pierdas una tarea <hl>por falta de una nota</hl>",
-      "subtitle": "MILA convierte conversaciones, reuniones y decisiones en ejecución organizada — en la web, en el agente de escritorio y en tu teléfono. Captura en segundos, incluso por voz, delega con responsable y plazo y haz seguimiento hasta concluir.",
+      "subtitle": "MILA convierte conversaciones, reuniones y decisiones en ejecución organizada — en la web, en el agente para computadora y en tu teléfono. Captura en segundos, incluso por voz, delega con responsable y plazo y haz seguimiento hasta concluir.",
       "emailPlaceholder": "Tu mejor correo",
       "cta": "Comenzar ahora",
       "finePrint": "Configura en minutos · Planes para empresas y familias · Cancela cuando quieras"
@@ -447,13 +449,14 @@
     "eco": {
       "kicker": "Practicidad",
       "title": "Captura la tarea en segundos, estés donde estés",
-      "subtitle": "La ventaja de MILA es la practicidad: la idea no espera a que abras un sistema. Web, escritorio y teléfono — siempre a un toque.",
+      "subtitle": "La ventaja de MILA es la practicidad: la idea no espera a que abras un sistema. Web, computadora y teléfono — siempre a un toque.",
+      "bothNote": "Funciona igual para empresas (planes corporativos) y para uso personal (planes familia).",
       "voiceTitle": "Tareas por voz",
       "voiceDesc": "Mantén el micrófono, habla hasta 10 segundos y suelta: la transcripción se vuelve una tarea con plazo para mañana. Revisa o rechaza antes de crear.",
-      "voiceHint": "En escritorio y móvil",
-      "desktopTitle": "Agente de Escritorio para Windows",
-      "desktopDesc": "Una píldora de vidrio discreta al borde de la pantalla: tus pendientes siempre a la vista, creación rápida y un pulso de luz cuando te llega algo nuevo.",
-      "desktopHint": "Gratis · se actualiza solo",
+      "voiceHint": "En computadora y móvil",
+      "desktopTitle": "Agente para Computadora (Windows)",
+      "desktopDesc": "Un gadget de fácil acceso, discreto al borde de la pantalla: tus pendientes siempre a la vista, creación rápida y un pulso de luz cuando te llega algo nuevo.",
+      "desktopHint": "En todos los planes · se actualiza solo",
       "mobileTitle": "App móvil (iOS y Android)",
       "mobileDesc": "Tus tareas en el bolsillo: lista de pendientes, cambio de estado y voz — con la misma cuenta en todas partes.",
       "mobileHint": "Pronto en las tiendas",
@@ -529,7 +532,7 @@
       "familyUsers": "hasta 5 personas",
       "familyPlusUsers": "hasta 10 personas",
       "familyCta": "Comenzar con la familia",
-      "freeBadge": "Gratis para siempre",
+      "freeBadge": "Gratis y sin anuncios",
       "freeName": "Family Free",
       "freeDesc": "1 usuario y hasta 15 demandas por día. Sin tarjeta, empieza en 1 minuto.",
       "freeCta": "Crear cuenta gratuita",

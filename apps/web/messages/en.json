@@ -64,9 +64,9 @@
     "profileSubtitle": "Complete your profile: photo, phone and skills.",
     "profileNudge": "Your profile is incomplete — add a photo, phone and skills.",
     "agentTitle": "MILA Agent for Windows",
-    "agentDesc": "A glass widget on the edge of your screen: your pending tasks always in sight, quick capture, and a visual alert when something new lands on you. Sign in with the same account.",
+    "agentDesc": "A handy gadget on the edge of your screen: your pending tasks always in sight, quick capture, and a visual alert when something new lands on you. Sign in with the same account.",
     "agentCta": "Download for Windows",
-    "agentNote": "Free · Windows 10/11 · updates itself"
+    "agentNote": "On all plans · Windows 10/11 · updates itself"
   },
   "panel": {
     "title": "Dashboard",
@@ -305,7 +305,7 @@
     "timezone": "Time zone",
     "timezoneHint": "Applies to how dates and times are shown for this instance.",
     "language": "Default language",
-    "languageHint": "Used by the desktop agent. When instances differ, the corporate one prevails.",
+    "languageHint": "Used by the computer agent. When instances differ, the corporate one prevails.",
     "logoLabel": "Profile photo",
     "logoChange": "Upload / change photo",
     "logoRemove": "Remove",
@@ -397,6 +397,8 @@
     "nav": {
       "how": "How it works",
       "contexts": "Companies & Families",
+      "business": "Companies",
+      "personal": "Personal use",
       "plans": "Pricing",
       "affiliates": "Refer & Earn",
       "signIn": "Sign in",
@@ -405,7 +407,7 @@
     "hero": {
       "badge": "Work and personal life, in one account",
       "headline": "Never lose a task again <hl>for lack of a note</hl>",
-      "subtitle": "MILA turns conversations, meetings and decisions into organized execution — on the web, on the desktop agent and on your phone. Capture in seconds, even by voice, delegate with an owner and deadline, and track to done.",
+      "subtitle": "MILA turns conversations, meetings and decisions into organized execution — on the web, on the computer agent and on your phone. Capture in seconds, even by voice, delegate with an owner and deadline, and track to done.",
       "emailPlaceholder": "Your best email",
       "cta": "Get started",
       "finePrint": "Set up in minutes · Plans for companies and families · Cancel anytime"
@@ -447,13 +449,14 @@
     "eco": {
       "kicker": "Practicality",
       "title": "Capture a task in seconds, wherever you are",
-      "subtitle": "MILA's edge is practicality: ideas don't wait for you to open a system. Web, desktop and phone — always one tap away.",
+      "subtitle": "MILA's edge is practicality: ideas don't wait for you to open a system. Web, computer and phone — always one tap away.",
+      "bothNote": "Works the same for companies (corporate plans) and personal use (family plans).",
       "voiceTitle": "Voice tasks",
       "voiceDesc": "Hold the mic, speak for up to 10 seconds and release: the transcript becomes a task due tomorrow. Review or discard before it's created.",
-      "voiceHint": "On desktop and mobile",
-      "desktopTitle": "Desktop Agent for Windows",
-      "desktopDesc": "A discreet glass pill on the edge of your screen: pending tasks always in sight, quick capture, and a pulse of light when something new lands on you.",
-      "desktopHint": "Free · updates itself",
+      "voiceHint": "On computer and mobile",
+      "desktopTitle": "Computer Agent (Windows)",
+      "desktopDesc": "A handy gadget, discreet on the edge of your screen: pending tasks always in sight, quick capture, and a pulse of light when something new lands on you.",
+      "desktopHint": "On all plans · updates itself",
       "mobileTitle": "Mobile app (iOS & Android)",
       "mobileDesc": "Your tasks in your pocket: pending list, status changes and voice — same account everywhere.",
       "mobileHint": "Coming to the stores",
@@ -529,7 +532,7 @@
       "familyUsers": "up to 5 people",
       "familyPlusUsers": "up to 10 people",
       "familyCta": "Start with the family",
-      "freeBadge": "Free forever",
+      "freeBadge": "Free, no ads",
       "freeName": "Family Free",
       "freeDesc": "1 user and up to 15 demands per day. No card, start in 1 minute.",
       "freeCta": "Create free account",
