@@ -47,7 +47,26 @@
     "add": "Add",
     "save": "Save profile",
     "saving": "Saving…",
-    "saved": "Profile saved."
+    "saved": "Profile saved.",
+    "famTitle": "Your family account — employee benefit",
+    "famDesc": "As an employee, you're entitled to a VIP CONNBX family account (up to 10 people), free while you're part of the company. Create it with your personal email:",
+    "famName": "Your family's name",
+    "famEmail": "Your personal email",
+    "famPassword": "Password",
+    "famConfirm": "Confirm password",
+    "famMismatch": "Passwords don't match.",
+    "famCreate": "Create my family account",
+    "famNote": "It's a separate login, with your personal email.",
+    "famHaveTitle": "Family account active",
+    "famHaveDesc": "You already have your VIP CONNBX family account. Log in with your personal email at appmila.co/login to access it.",
+    "famOk": "Family account created! Log in with your personal email to access it.",
+    "famErrCampos": "Fill in the name and email.",
+    "famErrSenha": "Password must be at least 6 characters.",
+    "famErrConfirm": "Passwords don't match.",
+    "famErrNotcorp": "Only employees of a corporate account can create the free family.",
+    "famErrExists": "You already have a family account.",
+    "famErrAuth": "Couldn't create the login. Check the email.",
+    "famErrGenerico": "Couldn't complete it. Please try again."
   },
   "home": {
     "title": "Personal overview",
@@ -391,7 +410,12 @@
     "suspended": "If you just subscribed, it may take a moment for the payment to be confirmed.",
     "manage": "Manage subscription",
     "switch": "Switch instance",
-    "help": "Contact support"
+    "help": "Contact support",
+    "renewTitle": "Your license has expired",
+    "renewDescCorp": "To use MILA with your team again, choose a plan below. Your data is kept safe.",
+    "renewDescFamily": "To use MILA again, choose a plan below. Your data is kept safe.",
+    "renewSponsored": "Your family account was a benefit tied to your work account, which is no longer active. Get a plan to continue.",
+    "renewFreeHint": "Prefer to start for free?"
   },
   "start": {
     "title": "Let's find the right MILA for you",

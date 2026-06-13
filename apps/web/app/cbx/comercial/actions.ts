@@ -58,6 +58,55 @@ export async function setLicense(formData: FormData) {
   redirect(`/cbx/comercial/${holding}?${data?.ok ? 'ok=licenca' : `err=${data?.reason ?? 'erro'}`}`)
 }
 
+/** Ativa/desativa um usuário da instância do cliente (super admin). */
+export async function cbxSetUserActive(formData: FormData) {
+  const person = String(formData.get('person_id') ?? '')
+  const holding = String(formData.get('holding_id') ?? '')
+  const active = String(formData.get('active') ?? '') === '1'
+  if (!person || !holding) return
+  const supabase = await createClient()
+  await (supabase as unknown as Rpc).rpc('cbx_set_person_active', { p_person: person, p_active: active })
+  revalidatePath(`/cbx/comercial/${holding}`)
+  redirect(`/cbx/comercial/${holding}?ok=user`)
+}
+
+/** Define/forcaa a senha de um usuário da instância (super admin). Cria o acesso
+ *  se a pessoa ainda não tiver login (usa o e-mail dela). */
+export async function cbxSetUserPassword(formData: FormData) {
+  const person = String(formData.get('person_id') ?? '')
+  const holding = String(formData.get('holding_id') ?? '')
+  const password = String(formData.get('password') ?? '')
+  if (!person || !holding) return
+  if (password.length < 6) redirect(`/cbx/comercial/${holding}?err=pwshort`)
+
+  const supabase = await createClient()
+  const sb = supabase as unknown as {
+    rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: { auth_user_id?: string | null; email?: string | null; forbidden?: boolean } | null }>
+  }
+  const { data } = await sb.rpc('cbx_person_auth', { p_person: person })
+  if (!data || data.forbidden) redirect(`/cbx/comercial/${holding}?err=forbidden`)
+
+  const admin = createAdminClient()
+  if (data.auth_user_id) {
+    await admin.auth.admin.updateUserById(data.auth_user_id, { password })
+  } else if (data.email) {
+    const { data: created } = await admin.auth.admin.createUser({ email: data.email, password, email_confirm: true })
+    let uid = created?.user?.id ?? null
+    if (!uid) {
+      const sbAdmin = admin as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: string | null }> }
+      const { data: existing } = await sbAdmin.rpc('auth_user_id_by_email', { p_email: data.email })
+      uid = existing ?? null
+      if (uid) await admin.auth.admin.updateUserById(uid, { password })
+    }
+    if (uid) await admin.from('people').update({ auth_user_id: uid } as never).eq('id', person)
+    else redirect(`/cbx/comercial/${holding}?err=pwfail`)
+  } else {
+    redirect(`/cbx/comercial/${holding}?err=noemail`)
+  }
+  revalidatePath(`/cbx/comercial/${holding}`)
+  redirect(`/cbx/comercial/${holding}?ok=pw`)
+}
+
 /** Cria um cliente manualmente: instância + usuário admin + licença. */
 export async function createClientAccount(formData: FormData) {
   const me = await cbxMe()

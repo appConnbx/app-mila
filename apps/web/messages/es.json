@@ -47,7 +47,26 @@
     "add": "Agregar",
     "save": "Guardar perfil",
     "saving": "Guardando…",
-    "saved": "Perfil guardado."
+    "saved": "Perfil guardado.",
+    "famTitle": "Tu cuenta familia — beneficio del colaborador",
+    "famDesc": "Como colaborador, tienes derecho a una cuenta familia VIP CONNBX (hasta 10 personas), gratis mientras seas parte de la empresa. Créala con tu correo personal:",
+    "famName": "Nombre de tu familia",
+    "famEmail": "Tu correo personal",
+    "famPassword": "Contraseña",
+    "famConfirm": "Confirmar contraseña",
+    "famMismatch": "Las contraseñas no coinciden.",
+    "famCreate": "Crear mi cuenta familia",
+    "famNote": "Es un inicio de sesión separado, con tu correo personal.",
+    "famHaveTitle": "Cuenta familia activa",
+    "famHaveDesc": "Ya tienes tu cuenta familia VIP CONNBX. Inicia sesión con tu correo personal en appmila.co/login para acceder.",
+    "famOk": "¡Cuenta familia creada! Inicia sesión con tu correo personal para acceder.",
+    "famErrCampos": "Completa el nombre y el correo.",
+    "famErrSenha": "La contraseña debe tener al menos 6 caracteres.",
+    "famErrConfirm": "Las contraseñas no coinciden.",
+    "famErrNotcorp": "Solo los colaboradores de una cuenta corporativa pueden crear la familia gratuita.",
+    "famErrExists": "Ya tienes una cuenta familia.",
+    "famErrAuth": "No se pudo crear el acceso. Revisa el correo.",
+    "famErrGenerico": "No se pudo completar. Inténtalo de nuevo."
   },
   "home": {
     "title": "Visión general personal",
@@ -391,7 +410,12 @@
     "suspended": "Si acabas de suscribirte, puede tardar unos instantes en confirmarse el pago.",
     "manage": "Gestionar suscripción",
     "switch": "Cambiar de instancia",
-    "help": "Contactar al soporte"
+    "help": "Contactar al soporte",
+    "renewTitle": "Tu licencia expiró",
+    "renewDescCorp": "Para volver a usar MILA con tu equipo, elige un plan abajo. Tus datos siguen guardados.",
+    "renewDescFamily": "Para volver a usar MILA, elige un plan abajo. Tus datos siguen guardados.",
+    "renewSponsored": "Tu cuenta familia era un beneficio vinculado a tu cuenta de trabajo, que ya no está activa. Contrata un plan para continuar.",
+    "renewFreeHint": "¿Prefieres empezar gratis?"
   },
   "start": {
     "title": "Encontremos el MILA ideal para ti",

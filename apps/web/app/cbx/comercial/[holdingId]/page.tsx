@@ -4,7 +4,13 @@ import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, Kpi, Pill, btnCbx, inputCbx, labelCbx, fmtDate } from '../../_ui'
 import { ClientProfileForm } from '../_profile-form'
-import { saveProfile, addNote, setLicense } from '../actions'
+import { PasswordField } from '../../_password-field'
+import { saveProfile, addNote, setLicense, cbxSetUserActive, cbxSetUserPassword } from '../actions'
+
+type InstanceUser = {
+  id: string; full_name: string; email: string | null; role_title: string | null
+  is_active: boolean; is_admin: boolean; has_login: boolean; last_sign_in_at: string | null
+}
 
 type Detail = {
   ok: boolean
@@ -36,6 +42,11 @@ const FLASH: Record<string, { ok?: string; err?: string }> = {
   nota: { ok: 'Anotação registrada.' },
   licenca: { ok: 'Licença atualizada.' },
   criado: { ok: 'Cliente criado com sucesso. Repasse o acesso ao administrador.' },
+  user: { ok: 'Usuário atualizado.' },
+  pw: { ok: 'Senha definida. Repasse ao usuário.' },
+  pwshort: { err: 'A senha precisa ter ao menos 6 caracteres.' },
+  pwfail: { err: 'Não foi possível definir a senha.' },
+  noemail: { err: 'Cadastre um e-mail para o usuário antes de definir a senha.' },
   forbidden: { err: 'Sem permissão para esta ação.' },
   erro: { err: 'Não deu certo. Tente novamente.' },
 }
@@ -56,15 +67,18 @@ export default async function FichaClientePage({
 
   const supabase = await createClient()
   const sb = supabase as unknown as { rpc: (n: string, a?: Record<string, unknown>) => Promise<{ data: unknown }> }
-  const [detailRes, plansRes, typesRes] = await Promise.all([
+  const [detailRes, plansRes, typesRes, usersRes] = await Promise.all([
     sb.rpc('cbx_client_detail', { p_holding: holdingId }),
     sb.rpc('admin_list_plans'),
     sb.rpc('cbx_list_business_types', { p_all: false }),
+    sb.rpc('cbx_holding_users', { p_holding: holdingId }),
   ])
   const d = detailRes.data as Detail | null
   if (!d?.ok || !d.holding) notFound()
   const plans = (plansRes.data as Plan[] | null) ?? []
   const businessTypes = ((typesRes.data as { name: string }[] | null) ?? []).map((b) => b.name)
+  const users = (usersRes.data as InstanceUser[] | null) ?? []
+  const canManageUsers = hasPerm(me, 'SUPORTE') || hasPerm(me, 'COMERCIAL')
   const h = d.holding
   const lic = d.license
   const p = d.profile
@@ -187,6 +201,51 @@ export default async function FichaClientePage({
           ))}
           {d.notes.length === 0 && <li className="text-sm text-slate-500">Nenhuma anotação ainda.</li>}
         </ul>
+      </CbxCard>
+
+      {/* Usuários da instância (super admin) */}
+      <CbxCard title={`Usuários da instância (${users.length})`}>
+        <div className="space-y-2">
+          {users.map((u) => (
+            <div key={u.id} className={`rounded-xl border border-white/10 bg-slate-900/40 p-3 ${u.is_active ? '' : 'opacity-60'}`}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-semibold text-slate-100">
+                    {u.full_name} {u.is_admin && <Pill tone="info">admin</Pill>}
+                  </p>
+                  <p className="text-xs text-slate-500">{u.email ?? 'sem e-mail'} · {u.has_login ? 'tem acesso' : 'sem login'}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Pill tone={u.is_active ? 'ok' : undefined}>{u.is_active ? 'Ativo' : 'Inativo'}</Pill>
+                  {canManageUsers && (
+                    <form action={cbxSetUserActive}>
+                      <input type="hidden" name="holding_id" value={h.id} />
+                      <input type="hidden" name="person_id" value={u.id} />
+                      <input type="hidden" name="active" value={u.is_active ? '0' : '1'} />
+                      <button className="text-xs text-slate-400 underline-offset-2 transition hover:text-white hover:underline">
+                        {u.is_active ? 'Desativar' : 'Reativar'}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+              {canManageUsers && u.email && (
+                <form action={cbxSetUserPassword} className="mt-2 flex items-end gap-2 border-t border-white/5 pt-2">
+                  <input type="hidden" name="holding_id" value={h.id} />
+                  <input type="hidden" name="person_id" value={u.id} />
+                  <div className="flex-1">
+                    <label className="block text-[10px] uppercase tracking-wide text-slate-500">Definir senha (super admin)</label>
+                    <div className="mt-1"><PasswordField placeholder="Nova senha (mín. 6)" /></div>
+                  </div>
+                  <button className="shrink-0 rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10">
+                    Definir
+                  </button>
+                </form>
+              )}
+            </div>
+          ))}
+          {users.length === 0 && <p className="text-sm text-slate-500">Nenhum usuário nesta instância.</p>}
+        </div>
       </CbxCard>
     </div>
   )

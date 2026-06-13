@@ -3,14 +3,26 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { ProfileEditor } from './_editor'
+import { FamilyAccount } from './_family-account'
 
-export default async function PerfilPage() {
+export default async function PerfilPage({ searchParams }: { searchParams: Promise<{ famOk?: string; famErr?: string }> }) {
   const t = await getTranslations('profile')
+  const { famOk, famErr } = await searchParams
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const sb = supabase as unknown as {
+    rpc: (n: string) => Promise<{ data: { person_id: string | null; is_corporate: boolean; family_holding: string | null } | null }>
+  }
+  const { data: famStatus } = await sb.rpc('my_sponsored_family_status')
+  const FAM_ERR: Record<string, string> = {
+    campos: 'famErrCampos', senha: 'famErrSenha', confirm: 'famErrConfirm',
+    notcorp: 'famErrNotcorp', exists: 'famErrExists', auth: 'famErrAuth',
+  }
+  const famErrMsg = famErr ? t((FAM_ERR[famErr] ?? 'famErrGenerico') as 'famErrGenerico') : null
 
   const { data: profData } = await supabase
     .from('profiles')
@@ -38,6 +50,32 @@ export default async function PerfilPage() {
           }}
         />
       </div>
+
+      {/* Conta família do colaborador (VIP CONNBX FAMILY) */}
+      {famOk && (
+        <div className="mt-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+          {t('famOk')}
+        </div>
+      )}
+      {famErrMsg && (
+        <div className="mt-6 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
+          {famErrMsg}
+        </div>
+      )}
+
+      {famStatus?.is_corporate && (
+        famStatus.family_holding ? (
+          <section className="glass mt-6 p-6">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🎁</span>
+              <h2 className="text-lg font-semibold text-white">{t('famHaveTitle')}</h2>
+            </div>
+            <p className="mt-2 text-sm text-slate-400">{t('famHaveDesc')}</p>
+          </section>
+        ) : (
+          <FamilyAccount defaultName={name} />
+        )
+      )}
     </div>
   )
 }

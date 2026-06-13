@@ -1,7 +1,9 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient()
@@ -25,4 +27,51 @@ export async function updateProfile(formData: FormData) {
 
   revalidatePath('/perfil')
   revalidatePath('/dashboard')
+}
+
+/**
+ * Colaborador corporativo cria sua conta família (VIP CONNBX FAMILY) com um
+ * e-mail pessoal. A licença fica atrelada a ele: se sair/for desativado da
+ * empresa, a família perde o acesso. É um login separado (e-mail pessoal).
+ */
+export async function createMyFamily(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const name = String(formData.get('name') ?? '').trim()
+  const email = String(formData.get('email') ?? '').trim().toLowerCase()
+  const password = String(formData.get('password') ?? '')
+  const confirm = String(formData.get('confirm') ?? '')
+  if (!name || !email) redirect('/perfil?famErr=campos')
+  if (password.length < 6) redirect('/perfil?famErr=senha')
+  if (password !== confirm) redirect('/perfil?famErr=confirm')
+
+  const sb = supabase as unknown as {
+    rpc: (n: string) => Promise<{ data: { person_id: string | null; is_corporate: boolean; family_holding: string | null } | null }>
+  }
+  const { data: status } = await sb.rpc('my_sponsored_family_status')
+  if (!status?.is_corporate || !status.person_id) redirect('/perfil?famErr=notcorp')
+  if (status.family_holding) redirect('/perfil?famErr=exists')
+
+  const admin = createAdminClient()
+  const { data: created } = await admin.auth.admin.createUser({ email, password, email_confirm: true })
+  let uid = created?.user?.id ?? null
+  if (!uid) {
+    // e-mail já tem conta: reaproveita o id (sem trocar a senha existente)
+    const sbAdmin = admin as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: string | null }> }
+    const { data: existing } = await sbAdmin.rpc('auth_user_id_by_email', { p_email: email })
+    uid = existing ?? null
+  }
+  if (!uid) redirect('/perfil?famErr=auth')
+
+  const sbProv = admin as unknown as {
+    rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: { ok: boolean; reason?: string } | null }>
+  }
+  const { data: prov } = await sbProv.rpc('provision_sponsored_family', {
+    p_sponsor_person: status.person_id, p_name: name, p_email: email, p_auth_user_id: uid,
+  })
+  if (!prov?.ok) redirect(`/perfil?famErr=${prov?.reason ?? 'generico'}`)
+  revalidatePath('/perfil')
+  redirect('/perfil?famOk=1')
 }
