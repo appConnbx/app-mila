@@ -16,6 +16,9 @@ export async function GET(req: NextRequest) {
   const plan = url.searchParams.get('plan') ?? ''
   const next = safeNext(url.searchParams.get('next'))
   const origin = process.env.APP_BASE_URL || url.origin
+  // Idioma do comprador, derivado da página de origem (en/es/pt) — usado no e-mail
+  // de criar senha e na página de boas-vindas.
+  const lang = next.startsWith('/en') ? 'en' : next.startsWith('/es') ? 'es' : 'pt-BR'
 
   if (!PLANS.has(plan)) {
     return NextResponse.redirect(`${origin}${next}?erro=plano`, { status: 303 })
@@ -28,9 +31,10 @@ export async function GET(req: NextRequest) {
       'line_items[0][quantity]': 1,
       allow_promotion_codes: true,
       billing_address_collection: 'auto',
-      success_url: `${origin}/login?assinatura=ok`,
+      success_url: `${origin}/bem-vindo?lang=${lang}`,
       cancel_url: `${origin}${next}?checkout=cancelado`,
       'metadata[mila_plan]': plan,
+      'metadata[mila_lang]': lang,
       'subscription_data[metadata][mila_plan]': plan,
     })
     return NextResponse.redirect(session.url, { status: 303 })

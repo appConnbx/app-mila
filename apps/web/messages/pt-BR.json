@@ -172,7 +172,30 @@
     "subtitle": "Gestão de demandas e produtividade",
     "email": "E-mail",
     "password": "Senha",
-    "submit": "Entrar"
+    "submit": "Entrar",
+    "forgot": "Esqueci minha senha"
+  },
+  "access": {
+    "welcomeTitle": "Pagamento confirmado! 🎉",
+    "welcomeBody": "Enviamos um e-mail para você criar sua senha e acessar a sua conta. Confira sua caixa de entrada (e o spam).",
+    "welcomeHint": "Não chegou em alguns minutos? Você pode definir a senha pela opção \"Esqueci minha senha\" na tela de entrada.",
+    "welcomeLoginCta": "Ir para a tela de entrada",
+    "setTitle": "Crie sua senha",
+    "setSubtitle": "Defina uma senha para acessar a sua conta MILA.",
+    "setPlaceholder": "Nova senha (mín. 6 caracteres)",
+    "setConfirmPlaceholder": "Confirme a senha",
+    "setMismatch": "As senhas não conferem.",
+    "setShort": "A senha precisa ter ao menos 6 caracteres.",
+    "setSubmit": "Criar senha e entrar",
+    "setSaving": "Salvando…",
+    "setInvalidTitle": "Link inválido ou expirado",
+    "setInvalidBody": "Este link não é mais válido. Solicite um novo abaixo.",
+    "setRequestNew": "Solicitar novo link",
+    "recoverTitle": "Recuperar acesso",
+    "recoverSubtitle": "Informe seu e-mail e enviaremos um link para você criar uma nova senha.",
+    "recoverEmail": "Seu e-mail",
+    "recoverSubmit": "Enviar link",
+    "recoverSent": "Se houver uma conta com esse e-mail, enviamos um link para criar a senha. Confira sua caixa de entrada."
   },
   "instances": {
     "title": "Minhas instâncias",

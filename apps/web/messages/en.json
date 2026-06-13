@@ -172,7 +172,30 @@
     "subtitle": "Demand management and productivity",
     "email": "Email",
     "password": "Password",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "forgot": "Forgot my password"
+  },
+  "access": {
+    "welcomeTitle": "Payment confirmed! 🎉",
+    "welcomeBody": "We've emailed you a link to create your password and access your account. Check your inbox (and spam).",
+    "welcomeHint": "Didn't arrive in a few minutes? You can set your password via \"Forgot my password\" on the sign-in screen.",
+    "welcomeLoginCta": "Go to the sign-in screen",
+    "setTitle": "Create your password",
+    "setSubtitle": "Set a password to access your MILA account.",
+    "setPlaceholder": "New password (min. 6 characters)",
+    "setConfirmPlaceholder": "Confirm password",
+    "setMismatch": "Passwords don't match.",
+    "setShort": "Password must be at least 6 characters.",
+    "setSubmit": "Create password and sign in",
+    "setSaving": "Saving…",
+    "setInvalidTitle": "Invalid or expired link",
+    "setInvalidBody": "This link is no longer valid. Request a new one below.",
+    "setRequestNew": "Request a new link",
+    "recoverTitle": "Recover access",
+    "recoverSubtitle": "Enter your email and we'll send you a link to create a new password.",
+    "recoverEmail": "Your email",
+    "recoverSubmit": "Send link",
+    "recoverSent": "If an account exists for that email, we've sent a link to create your password. Check your inbox."
   },
   "instances": {
     "title": "My instances",

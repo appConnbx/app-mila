@@ -172,7 +172,30 @@
     "subtitle": "Gestión de demandas y productividad",
     "email": "Correo",
     "password": "Contraseña",
-    "submit": "Entrar"
+    "submit": "Entrar",
+    "forgot": "Olvidé mi contraseña"
+  },
+  "access": {
+    "welcomeTitle": "¡Pago confirmado! 🎉",
+    "welcomeBody": "Te enviamos un correo con un enlace para crear tu contraseña y acceder a tu cuenta. Revisa tu bandeja (y el spam).",
+    "welcomeHint": "¿No llegó en unos minutos? Puedes definir la contraseña con \"Olvidé mi contraseña\" en la pantalla de acceso.",
+    "welcomeLoginCta": "Ir a la pantalla de acceso",
+    "setTitle": "Crea tu contraseña",
+    "setSubtitle": "Define una contraseña para acceder a tu cuenta MILA.",
+    "setPlaceholder": "Nueva contraseña (mín. 6 caracteres)",
+    "setConfirmPlaceholder": "Confirma la contraseña",
+    "setMismatch": "Las contraseñas no coinciden.",
+    "setShort": "La contraseña debe tener al menos 6 caracteres.",
+    "setSubmit": "Crear contraseña y entrar",
+    "setSaving": "Guardando…",
+    "setInvalidTitle": "Enlace inválido o expirado",
+    "setInvalidBody": "Este enlace ya no es válido. Solicita uno nuevo abajo.",
+    "setRequestNew": "Solicitar un nuevo enlace",
+    "recoverTitle": "Recuperar acceso",
+    "recoverSubtitle": "Indica tu correo y te enviaremos un enlace para crear una nueva contraseña.",
+    "recoverEmail": "Tu correo",
+    "recoverSubmit": "Enviar enlace",
+    "recoverSent": "Si existe una cuenta con ese correo, enviamos un enlace para crear la contraseña. Revisa tu bandeja."
   },
   "instances": {
     "title": "Mis instancias",

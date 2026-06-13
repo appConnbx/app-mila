@@ -9,6 +9,8 @@ type CookieToSet = { name: string; value: string; options: CookieOptions }
 // /api/agent = download do agente desktop (redirect público para a release).
 const PUBLIC_PREFIXES = [
   '/login', '/auth', '/affiliates', '/api/hotmart', '/api/agent', '/privacidade', '/seguranca', '/start',
+  // Primeiro acesso / recuperação de senha (pós-compra).
+  '/bem-vindo', '/definir-senha', '/recuperar',
   // Checkout (visitante anônimo) e webhook (Stripe) são públicos; /api/stripe/portal NÃO.
   '/api/stripe/checkout', '/api/stripe/webhook',
   // Páginas de vendas para anúncios (públicas, por idioma/segmento).

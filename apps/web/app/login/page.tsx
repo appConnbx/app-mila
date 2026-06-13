@@ -47,6 +47,12 @@ export default async function LoginPage({
             {t('submit')}
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <a href="/recuperar" className="text-xs text-slate-500 transition hover:text-slate-300">
+            {t('forgot')}
+          </a>
+        </div>
       </div>
     </main>
   )

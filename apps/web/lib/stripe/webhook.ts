@@ -49,9 +49,11 @@ async function planIdBySlug(admin: Admin, slug: string): Promise<string | null> 
   return data?.[0]?.id ?? null
 }
 
-async function ensureAuthUser(admin: Admin, email: string): Promise<string | null> {
+async function ensureAuthUser(admin: Admin, email: string, lang?: string): Promise<string | null> {
   const base = process.env.APP_BASE_URL ?? 'https://www.appmila.co'
-  const { data, error } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo: `${base}/login` })
+  const langQs = lang ? `&lang=${encodeURIComponent(lang)}` : ''
+  const redirectTo = `${base}/auth/confirm?next=${encodeURIComponent('/definir-senha')}${langQs}`
+  const { data, error } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo })
   if (!error && data?.user?.id) return data.user.id
   const { data: existing } = await (admin as unknown as RpcAdmin).rpc('auth_user_id_by_email', { p_email: email })
   return (existing as string | null) ?? null
@@ -93,7 +95,7 @@ export async function processStripeEvent(admin: Admin, event: Any): Promise<Stri
       periodEnd = toIso(sub.current_period_end)
     } catch { /* segue sem o período; subscription.updated ajusta depois */ }
 
-    const authUserId = await ensureAuthUser(admin, email)
+    const authUserId = await ensureAuthUser(admin, email, obj.metadata?.mila_lang)
     const { data, error } = await (admin as unknown as RpcAdmin).rpc('provision_subscription', {
       p_plan_id: planId,
       p_provider: 'stripe',
