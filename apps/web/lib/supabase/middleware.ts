@@ -7,7 +7,7 @@ type CookieToSet = { name: string; value: string; options: CookieOptions }
 // Rotas públicas (sem exigir login). A landing comercial é a raiz "/".
 // /api/hotmart = webhook da Hotmart (autenticado por hottok, não por sessão).
 // /api/agent = download do agente desktop (redirect público para a release).
-const PUBLIC_PREFIXES = ['/login', '/auth', '/affiliates', '/api/hotmart', '/api/agent', '/privacidade', '/seguranca', '/comecar-gratis']
+const PUBLIC_PREFIXES = ['/login', '/auth', '/affiliates', '/api/hotmart', '/api/agent', '/privacidade', '/seguranca', '/comecar-gratis', '/start']
 
 /** Renova a sessão e protege rotas (redireciona para /login se não autenticado). */
 export async function updateSession(request: NextRequest) {

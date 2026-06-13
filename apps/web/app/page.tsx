@@ -5,7 +5,6 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Aurora } from '@/components/ui'
 import type { Locale } from '@/i18n/config'
-import { startNow } from './_actions'
 
 export const metadata: Metadata = {
   title: 'MILA — Nunca mais perca uma demanda',
@@ -122,12 +121,15 @@ function MicGlyph({ className = '' }: { className?: string }) {
   )
 }
 
+// Altura única para os três mockups da galeria (todos do mesmo tamanho).
+const MOCK_FRAME = 'glass relative h-80 w-full overflow-hidden p-4'
+
 /* ---------- Mockup: gadget de fácil acesso no computador (Windows) ---------- */
 async function GadgetMockup() {
   const t = await getTranslations('landing')
   return (
-    <div className="glass relative h-full w-full overflow-hidden p-3">
-      <div className="relative h-56 rounded-xl border border-white/5 bg-gradient-to-br from-slate-900 to-slate-950">
+    <div className={MOCK_FRAME}>
+      <div className="relative h-full w-full rounded-xl border border-white/5 bg-gradient-to-br from-slate-900 to-slate-950">
         <div className="pointer-events-none absolute -left-8 top-8 h-32 w-32 rounded-full bg-brand/10 blur-3xl" />
         {/* gadget encostado na borda direita */}
         <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col items-center gap-1.5 rounded-l-2xl border border-white/10 bg-white/[0.06] px-2 py-2.5 backdrop-blur">
@@ -136,12 +138,12 @@ async function GadgetMockup() {
           <span className="grid h-6 w-6 place-items-center rounded-md bg-brand/15 text-brand"><MicGlyph className="h-3.5 w-3.5" /></span>
         </div>
         {/* balão: demanda capturada por voz */}
-        <div className="absolute right-12 top-1/2 w-40 -translate-y-1/2 rounded-xl border border-white/10 bg-slate-900/90 p-2.5 shadow-xl">
-          <p className="flex items-center gap-1.5 text-[10px] font-medium text-brand">
+        <div className="absolute right-12 top-1/2 w-44 -translate-y-1/2 rounded-xl border border-white/10 bg-slate-900/90 p-3 shadow-xl">
+          <p className="flex items-center gap-1.5 text-[11px] font-medium text-brand">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" /> {t('eco.voiceTitle')}
           </p>
-          <p className="mt-1 text-[11px] leading-snug text-slate-100">“{t('mockup.row2Title')}”</p>
-          <div className="mt-1.5 flex items-center gap-1">
+          <p className="mt-1 text-xs leading-snug text-slate-100">“{t('mockup.row2Title')}”</p>
+          <div className="mt-2 flex items-center gap-1">
             <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] text-slate-300">{t('mockup.kpiInProgress')}</span>
             <span className="rounded-full bg-brand/10 px-1.5 py-0.5 text-[9px] text-brand">amanhã</span>
           </div>
@@ -160,20 +162,61 @@ async function MobileMockup() {
     { t: t('row1Title'), s: t('kpiOpen') },
   ]
   return (
-    <div className="glass relative grid h-full w-full place-items-center overflow-hidden p-3">
-      <div className="relative mx-auto h-56 w-32 rounded-[1.6rem] border border-white/10 bg-gradient-to-b from-slate-900 to-slate-950 p-2 shadow-xl">
-        <div className="mx-auto mb-2 h-1 w-8 rounded-full bg-white/15" />
-        <div className="space-y-1.5">
+    <div className={`${MOCK_FRAME} grid place-items-center`}>
+      <div className="relative mx-auto h-full w-36 rounded-[1.8rem] border border-white/10 bg-gradient-to-b from-slate-900 to-slate-950 p-2.5 shadow-xl">
+        <div className="mx-auto mb-2.5 h-1 w-9 rounded-full bg-white/15" />
+        <div className="space-y-2">
           {rows.map((r, i) => (
-            <div key={i} className="rounded-lg border border-white/5 bg-white/[0.03] px-2 py-1.5">
-              <p className="truncate text-[9px] font-medium text-slate-100">{r.t}</p>
-              <span className="mt-0.5 inline-block rounded-full bg-brand/10 px-1.5 text-[8px] text-brand">{r.s}</span>
+            <div key={i} className="rounded-lg border border-white/5 bg-white/[0.03] px-2 py-2">
+              <p className="truncate text-[10px] font-medium text-slate-100">{r.t}</p>
+              <span className="mt-1 inline-block rounded-full bg-brand/10 px-1.5 text-[9px] text-brand">{r.s}</span>
             </div>
           ))}
         </div>
         {/* botão de voz em evidência */}
-        <div className="absolute bottom-3 left-1/2 grid h-11 w-11 -translate-x-1/2 place-items-center rounded-full bg-brand text-slate-950 shadow-lg ring-4 ring-brand/25">
+        <div className="absolute bottom-4 left-1/2 grid h-12 w-12 -translate-x-1/2 place-items-center rounded-full bg-brand text-slate-950 shadow-lg ring-4 ring-brand/25">
           <MicGlyph className="h-5 w-5" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Mockup compacto: sistema web (mesma altura dos demais) ---------- */
+async function WebMockup() {
+  const t = await getTranslations('landing.mockup')
+  const bars = [44, 66, 52, 78, 60, 90, 72, 96]
+  return (
+    <div className={`${MOCK_FRAME} flex flex-col`}>
+      <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+        <div className="flex items-center gap-2">
+          <span className="grid h-6 w-6 place-items-center rounded-md bg-brand text-[10px] font-black text-slate-950">M</span>
+          <span className="text-xs font-semibold text-white">{t('title')}</span>
+        </div>
+        <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-300">{t('onTrack')}</span>
+      </div>
+      <div className="mt-3 grid grid-cols-4 gap-1.5">
+        {[
+          { l: t('kpiOpen'), v: '23', c: 'text-white' },
+          { l: t('kpiInProgress'), v: '11', c: 'text-amber-300' },
+          { l: t('kpiOverdue'), v: '02', c: 'text-rose-300' },
+          { l: t('kpiDone'), v: '47', c: 'text-emerald-300' },
+        ].map((k) => (
+          <div key={k.l} className="rounded-lg border border-white/5 bg-white/[0.02] p-2">
+            <p className="truncate text-[9px] text-slate-400">{k.l}</p>
+            <p className={`mt-0.5 text-base font-bold ${k.c}`}>{k.v}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 flex flex-1 flex-col rounded-lg border border-white/5 bg-white/[0.02] p-3">
+        <div className="flex items-center justify-between">
+          <p className="text-[11px] font-medium text-slate-300">{t('chartTitle')}</p>
+          <p className="text-[10px] text-slate-500">{t('chartDelta')}</p>
+        </div>
+        <div className="mt-2 flex flex-1 items-end gap-1.5">
+          {bars.map((h, i) => (
+            <div key={i} className="flex-1 rounded-t bg-gradient-to-t from-brand-700/40 to-brand" style={{ height: `${h}%` }} />
+          ))}
         </div>
       </div>
     </div>
@@ -227,7 +270,7 @@ export default async function LandingPage() {
               {t('nav.signIn')}
             </Link>
             <Link
-              href="/login"
+              href="/start"
               className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
             >
               {t('nav.start')}
@@ -260,21 +303,20 @@ export default async function LandingPage() {
 
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-400">{t('hero.subtitle')}</p>
 
-            <form action={startNow} className="mt-7 flex max-w-md flex-col gap-2 sm:flex-row">
-              <input
-                type="email"
-                name="email"
-                placeholder={t('hero.emailPlaceholder')}
-                aria-label="E-mail"
-                className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-brand focus:ring-1 focus:ring-brand"
-              />
-              <button
-                type="submit"
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/start"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
               >
                 {t('hero.cta')} <Arrow className="h-4 w-4" />
-              </button>
-            </form>
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center rounded-xl border border-white/10 px-6 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/5"
+              >
+                {t('nav.signIn')}
+              </Link>
+            </div>
             <p className="mt-3 text-xs text-slate-500">{t('hero.finePrint')}</p>
           </div>
 
@@ -324,7 +366,7 @@ export default async function LandingPage() {
             <figcaption className="text-center text-sm font-medium text-slate-300">{t('eco.capMobile')}</figcaption>
           </figure>
           <figure className="space-y-3">
-            <DashboardMockup />
+            <WebMockup />
             <figcaption className="text-center text-sm font-medium text-slate-300">{t('eco.capWeb')}</figcaption>
           </figure>
         </div>
@@ -403,6 +445,15 @@ export default async function LandingPage() {
           <p className="rounded-lg border border-white/5 bg-white/[0.02] p-4 text-sm text-slate-300">
             {t.rich('contexts.corpResult', bold)}
           </p>
+        </div>
+
+        {/* Bônus: Family Plus para cada colaborador */}
+        <div className="mt-6 flex items-start gap-4 rounded-2xl border border-brand/30 bg-brand/[0.06] p-6">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand/15 text-2xl">🎁</span>
+          <div>
+            <p className="text-base font-semibold text-white">{t('contexts.corpPerkTitle')}</p>
+            <p className="mt-1 text-sm text-slate-300">{t.rich('contexts.corpPerkDesc', bold)}</p>
+          </div>
         </div>
 
         {/* Planos corporativos */}
@@ -539,7 +590,7 @@ export default async function LandingPage() {
           <p className="mx-auto mt-3 max-w-xl text-slate-400">{t('finalCta.subtitle')}</p>
           <div className="mt-7 flex justify-center">
             <Link
-              href="/login"
+              href="/start"
               className="inline-flex items-center gap-2 rounded-xl bg-brand px-7 py-3.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
             >
               {t('finalCta.cta')} <Arrow className="h-4 w-4" />
