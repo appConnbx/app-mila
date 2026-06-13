@@ -142,7 +142,7 @@ async function GadgetMockup() {
           <p className="flex items-center gap-1.5 text-[11px] font-medium text-brand">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" /> {t('eco.voiceTitle')}
           </p>
-          <p className="mt-1 text-xs leading-snug text-slate-100">“{t('mockup.row2Title')}”</p>
+          <p className="mt-1 text-xs leading-snug text-slate-100">“{t('eco.gadgetExample')}”</p>
           <div className="mt-2 flex items-center gap-1">
             <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] text-slate-300">{t('mockup.kpiInProgress')}</span>
             <span className="rounded-full bg-brand/10 px-1.5 py-0.5 text-[9px] text-brand">amanhã</span>
@@ -237,20 +237,53 @@ export default async function LandingPage() {
   // Preço e checkout por locale: pt-BR → produto Brasil (R$); en/es → International (US$).
   const isBR = locale === 'pt-BR'
   const cur = isBR ? 'R$' : 'US$'
-  const checkout = (offBR: string, offINTL: string) =>
+  const perMonth = t('plans.perMonth')
+  // BR: produtos anuais via Hotmart (corp 12x; família total anual + 12x).
+  // INTL: venda direta via Stripe (assinatura mensal). Hotmart fica só para afiliados.
+  // TODO(hotmart-br): ao recriar as ofertas BR como ANUAL/12x, trocar os off= BR pelos novos códigos.
+  const checkout = (offBR: string, plan: string) =>
     isBR
       ? `https://pay.hotmart.com/P106262837P?off=${offBR}`
-      : `https://pay.hotmart.com/Y106267582L?off=${offINTL}`
+      : `/api/stripe/checkout?plan=${plan}&next=%2F`
   const corpPlans = [
-    { name: 'Starter', users: t('plans.starterUsers'), price: isBR ? '200' : '80', href: checkout('hcxkobrb', 'gwlaaeei') },
-    { name: 'Growth', users: t('plans.growthUsers'), price: isBR ? '300' : '150', href: checkout('7d5lrof8', 'qqkl7a6p'), featured: true },
-    { name: 'Scale', users: t('plans.scaleUsers'), price: isBR ? '1.000' : '400', href: checkout('u7x98fyz', 'v7x1xwst') },
-    { name: 'Enterprise', users: t('plans.enterpriseUsers'), price: isBR ? '1.500' : '500', href: checkout('9gacabk6', 'g901biby') },
+    { name: 'Starter', users: t('plans.starterUsers'), intl: '87', brParcela: '297', brTotal: '3.564', href: checkout('hcxkobrb', 'starter') },
+    { name: 'Growth', users: t('plans.growthUsers'), intl: '167', brParcela: '497', brTotal: '5.964', href: checkout('7d5lrof8', 'growth') },
+    { name: 'Scale', users: t('plans.scaleUsers'), intl: '337', brParcela: '697', brTotal: '8.364', href: checkout('u7x98fyz', 'scale'), featured: true },
+    { name: 'Enterprise', users: t('plans.enterpriseUsers'), intl: '667', brParcela: '1.117', brTotal: '13.404', href: checkout('9gacabk6', 'enterprise') },
   ]
   const familyPlans = [
-    { name: 'Family', users: t('plans.familyUsers'), price: isBR ? '37' : '9', href: checkout('f7nrog01', 'gmafnne4'), featured: true },
-    { name: 'Family Plus', users: t('plans.familyPlusUsers'), price: isBR ? '50' : '13', href: checkout('d3c9cwha', 'e4qsc1yt'), featured: false },
+    { name: 'Family', users: t('plans.familyUsers'), intl: '13', brAnnual: '97', brParcela: '8,08', href: checkout('f7nrog01', 'family') },
+    { name: 'Family Plus', users: t('plans.familyPlusUsers'), intl: '17', brAnnual: '127', brParcela: '10,58', href: checkout('d3c9cwha', 'family_plus'), featured: true },
   ]
+
+  // Bloco de preço: INTL (assinatura/mês) · BR corp (12x + à vista) · BR família (anual + 12x).
+  type PlanLike = { intl: string; brParcela?: string; brTotal?: string; brAnnual?: string }
+  const priceBlock = (p: PlanLike) => {
+    if (!isBR)
+      return (
+        <p className="mt-4 text-3xl font-extrabold text-white">
+          {cur}{p.intl}<span className="text-base font-medium text-slate-400">{perMonth}</span>
+        </p>
+      )
+    if (p.brAnnual)
+      return (
+        <div className="mt-4">
+          <p className="text-3xl font-extrabold text-white">
+            R${p.brAnnual}<span className="text-base font-medium text-slate-400">/ano</span>
+          </p>
+          <p className="mt-0.5 text-xs text-slate-400">ou 12x de R${p.brParcela}</p>
+        </div>
+      )
+    return (
+      <div className="mt-4">
+        <p className="flex items-baseline gap-1.5">
+          <span className="text-sm font-medium text-slate-400">12x</span>
+          <span className="text-3xl font-extrabold text-white">R${p.brParcela}</span>
+        </p>
+        <p className="mt-0.5 text-xs text-slate-400">ou R${p.brTotal} à vista · plano anual</p>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen overflow-x-hidden text-slate-200">
@@ -475,10 +508,7 @@ export default async function LandingPage() {
                 )}
                 <p className="text-sm font-semibold text-white">{p.name}</p>
                 <p className="text-xs text-slate-400">{p.users}</p>
-                <p className="mt-4 text-3xl font-extrabold text-white">
-                  {cur}{p.price}
-                  <span className="text-base font-medium text-slate-400">{t('plans.perMonth')}</span>
-                </p>
+                {priceBlock(p)}
                 {p.featured && <p className="mt-1.5 text-xs font-medium text-brand">{t('plans.corpPopular')}</p>}
                 <a
                   href={p.href}
@@ -537,10 +567,7 @@ export default async function LandingPage() {
                 )}
                 <p className="text-sm font-semibold text-white">{p.name}</p>
                 <p className="text-xs text-slate-400">{p.users}</p>
-                <p className="mt-4 text-3xl font-extrabold text-white">
-                  {cur}{p.price}
-                  <span className="text-base font-medium text-slate-400">{t('plans.perMonth')}</span>
-                </p>
+                {priceBlock(p)}
                 {p.featured && <p className="mt-1.5 text-xs font-medium text-orange-300">{t('plans.familyPopular')}</p>}
                 <a
                   href={p.href}

@@ -552,6 +552,7 @@
       "capWindows": "Gadget para Windows",
       "capMobile": "App móvil",
       "capWeb": "Sistema web",
+      "gadgetExample": "Enviar la propuesta al cliente antes de las 17h",
       "voiceTitle": "Tareas por voz",
       "voiceDesc": "Mantén el micrófono, habla hasta 10 segundos y suelta: la transcripción se vuelve una tarea con plazo para mañana. Revisa o rechaza antes de crear.",
       "voiceHint": "En computadora y móvil",

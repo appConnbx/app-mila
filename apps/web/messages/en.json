@@ -552,6 +552,7 @@
       "capWindows": "Windows gadget",
       "capMobile": "Mobile app",
       "capWeb": "Web app",
+      "gadgetExample": "Send the client proposal by 5 PM",
       "voiceTitle": "Voice tasks",
       "voiceDesc": "Hold the mic, speak for up to 10 seconds and release: the transcript becomes a task due tomorrow. Review or discard before it's created.",
       "voiceHint": "On computer and mobile",

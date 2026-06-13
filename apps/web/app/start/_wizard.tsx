@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-type Plan = { name: string; price: string; users: string; href: string }
+type Plan = { name: string; users: string; href: string; priceMain: string; priceUnit: string; priceSub: string }
 type Plans = {
   starter: Plan; growth: Plan; scale: Plan; enterprise: Plan; family: Plan; familyplus: Plan
 }
@@ -34,7 +34,7 @@ function Opt({ title, sub, badge, onClick }: { title: string; sub?: string; badg
   )
 }
 
-export function StartWizard({ dict, plans, cur, freeHref }: { dict: Dict; plans: Plans; cur: string; freeHref: string }) {
+export function StartWizard({ dict, plans, freeHref }: { dict: Dict; plans: Plans; freeHref: string }) {
   const [step, setStep] = useState<Step>('audience')
   const [history, setHistory] = useState<Step[]>([])
   const [audience, setAudience] = useState<'business' | 'personal' | null>(null)
@@ -81,8 +81,8 @@ export function StartWizard({ dict, plans, cur, freeHref }: { dict: Dict; plans:
       {step === 'bizSize' && (
         <div className="mt-6 space-y-3">
           <Opt title={dict.bizUpTo20} onClick={() => { setPlanId('starter'); go('bizPerk') }} />
-          <Opt title={dict.bizUpTo50} badge={dict.mostChosen} onClick={() => { setPlanId('growth'); go('bizPerk') }} />
-          <Opt title={dict.bizUpTo200} onClick={() => { setPlanId('scale'); go('bizPerk') }} />
+          <Opt title={dict.bizUpTo50} onClick={() => { setPlanId('growth'); go('bizPerk') }} />
+          <Opt title={dict.bizUpTo200} badge={dict.mostChosen} onClick={() => { setPlanId('scale'); go('bizPerk') }} />
           <Opt title={dict.bizUnlimited} onClick={() => { setPlanId('enterprise'); go('bizPerk') }} />
         </div>
       )}
@@ -104,8 +104,8 @@ export function StartWizard({ dict, plans, cur, freeHref }: { dict: Dict; plans:
       {/* Família — tamanho */}
       {step === 'famSize' && (
         <div className="mt-6 space-y-3">
-          <Opt title={dict.famUpTo5} badge={dict.mostChosen} onClick={() => { setPlanId('family'); go('reflect') }} />
-          <Opt title={dict.famUpTo10} onClick={() => { setPlanId('familyplus'); go('reflect') }} />
+          <Opt title={dict.famUpTo5} onClick={() => { setPlanId('family'); go('reflect') }} />
+          <Opt title={dict.famUpTo10} badge={dict.mostChosen} onClick={() => { setPlanId('familyplus'); go('reflect') }} />
           <Opt title={dict.famMore} onClick={() => { setPlanId('familyplus'); go('reflect') }} />
           <Opt title={dict.famJustMe} onClick={() => { setPlanId('free'); go('result') }} />
         </div>
@@ -170,9 +170,10 @@ export function StartWizard({ dict, plans, cur, freeHref }: { dict: Dict; plans:
           <h2 className="mt-3 text-2xl font-bold text-white">{plans[planId].name}</h2>
           <p className="text-sm text-slate-400">{plans[planId].users}</p>
           <p className="mt-4 text-4xl font-extrabold text-white">
-            {cur}{plans[planId].price}
-            <span className="text-base font-medium text-slate-400">{dict.perMonth}</span>
+            {plans[planId].priceMain}
+            <span className="text-base font-medium text-slate-400">{plans[planId].priceUnit}</span>
           </p>
+          {plans[planId].priceSub && <p className="mt-1 text-xs text-slate-400">{plans[planId].priceSub}</p>}
           <a href={plans[planId].href} target="_blank" rel="noreferrer"
             className="mt-5 block rounded-xl bg-brand px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-brand-500">
             {dict.startCta}

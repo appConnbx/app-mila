@@ -552,6 +552,7 @@
       "capWindows": "Gadget para Windows",
       "capMobile": "Aplicativo mobile",
       "capWeb": "Sistema web",
+      "gadgetExample": "Enviar proposta ao cliente até as 17h",
       "voiceTitle": "Demanda por voz",
       "voiceDesc": "Segure o microfone, fale por até 10 segundos e solte: a transcrição vira demanda com prazo para amanhã. Revise ou recuse antes de criar.",
       "voiceHint": "No computador e no celular",

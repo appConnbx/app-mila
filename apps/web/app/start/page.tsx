@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 
 const DICT_KEYS = [
   'title', 'subtitle', 'back', 'q1Title', 'q1Business', 'q1BusinessSub', 'q1Personal', 'q1PersonalSub',
+  'mostChosen',
   'bizSizeTitle', 'bizUpTo20', 'bizUpTo50', 'bizUpTo200', 'bizUnlimited',
   'bizPerkTitle', 'bizPerkDesc', 'bizPerkCta',
   'famSizeTitle', 'famJustMe', 'famUpTo5', 'famUpTo10', 'famMore',
@@ -25,18 +26,30 @@ export default async function StartPage() {
   const tl = await getTranslations('landing')
   const locale = (await getLocale()) as Locale
   const isBR = locale === 'pt-BR'
-  const cur = isBR ? 'R$' : 'US$'
 
-  const checkout = (offBR: string, offINTL: string) =>
-    isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `https://pay.hotmart.com/Y106267582L?off=${offINTL}`
+  // BR: Hotmart. INTL: venda direta via Stripe. Hotmart fica só para afiliados.
+  // TODO(hotmart-br): ao recriar as ofertas BR como ANUAL/12x, trocar os off= BR pelos novos códigos.
+  const checkout = (offBR: string, plan: string) =>
+    isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `/api/stripe/checkout?plan=${plan}&next=%2Fstart`
+  const perMonth = tl('plans.perMonth')
+
+  // Corporativo BR = anual em 12x; Família BR = total anual + opção 12x; INTL = assinatura mensal.
+  const corp = (intl: string, parcela: string, total: string) =>
+    isBR
+      ? { priceMain: `R$${parcela}`, priceUnit: '', priceSub: `12x · ou R$${total} à vista (plano anual)` }
+      : { priceMain: `US$${intl}`, priceUnit: perMonth, priceSub: '' }
+  const fam = (intl: string, annual: string, parcela: string) =>
+    isBR
+      ? { priceMain: `R$${annual}`, priceUnit: '/ano', priceSub: `ou 12x de R$${parcela}` }
+      : { priceMain: `US$${intl}`, priceUnit: perMonth, priceSub: '' }
 
   const plans = {
-    starter: { name: 'Starter', price: isBR ? '200' : '80', users: tl('plans.starterUsers'), href: checkout('hcxkobrb', 'gwlaaeei') },
-    growth: { name: 'Growth', price: isBR ? '300' : '150', users: tl('plans.growthUsers'), href: checkout('7d5lrof8', 'qqkl7a6p') },
-    scale: { name: 'Scale', price: isBR ? '1.000' : '400', users: tl('plans.scaleUsers'), href: checkout('u7x98fyz', 'v7x1xwst') },
-    enterprise: { name: 'Enterprise', price: isBR ? '1.500' : '500', users: tl('plans.enterpriseUsers'), href: checkout('9gacabk6', 'g901biby') },
-    family: { name: 'Family', price: isBR ? '37' : '9', users: tl('plans.familyUsers'), href: checkout('f7nrog01', 'gmafnne4') },
-    familyplus: { name: 'Family Plus', price: isBR ? '50' : '13', users: tl('plans.familyPlusUsers'), href: checkout('d3c9cwha', 'e4qsc1yt') },
+    starter: { name: 'Starter', users: tl('plans.starterUsers'), href: checkout('hcxkobrb', 'starter'), ...corp('87', '297', '3.564') },
+    growth: { name: 'Growth', users: tl('plans.growthUsers'), href: checkout('7d5lrof8', 'growth'), ...corp('167', '497', '5.964') },
+    scale: { name: 'Scale', users: tl('plans.scaleUsers'), href: checkout('u7x98fyz', 'scale'), ...corp('337', '697', '8.364') },
+    enterprise: { name: 'Enterprise', users: tl('plans.enterpriseUsers'), href: checkout('9gacabk6', 'enterprise'), ...corp('667', '1.117', '13.404') },
+    family: { name: 'Family', users: tl('plans.familyUsers'), href: checkout('f7nrog01', 'family'), ...fam('13', '97', '8,08') },
+    familyplus: { name: 'Family Plus', users: tl('plans.familyPlusUsers'), href: checkout('d3c9cwha', 'family_plus'), ...fam('17', '127', '10,58') },
   }
 
   const dict = Object.fromEntries(DICT_KEYS.map((k) => [k, t(k)])) as Record<string, string>
@@ -49,7 +62,7 @@ export default async function StartPage() {
           <span className="text-lg font-bold tracking-tight text-white">MILA</span>
         </Link>
       </div>
-      <StartWizard dict={dict} plans={plans} cur={cur} freeHref="/start-family-free" />
+      <StartWizard dict={dict} plans={plans} freeHref="/start-family-free" />
     </main>
   )
 }

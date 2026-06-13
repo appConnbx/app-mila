@@ -11,8 +11,9 @@ export default async function AssinaturaPage() {
   const isBR = locale === 'pt-BR'
   const cur = isBR ? 'R$' : 'US$'
 
-  const checkout = (offBR: string, offINTL: string) =>
-    isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `https://pay.hotmart.com/Y106267582L?off=${offINTL}`
+  // BR: Hotmart. INTL: venda direta via Stripe.
+  const checkout = (offBR: string, plan: string) =>
+    isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `/api/stripe/checkout?plan=${plan}&next=%2Fassinatura`
 
   const supabase = await createClient()
   const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: { kind?: string; plan_slug?: string } | null }> }
@@ -20,17 +21,44 @@ export default async function AssinaturaPage() {
   const isFamily = (ctx?.kind ?? 'corporate') === 'family'
   const sponsored = ctx?.plan_slug === 'connbx-family-sponsored'
 
+  // TODO(hotmart-br): ao recriar as ofertas BR como ANUAL/12x, trocar os off= BR pelos novos códigos.
   const corpPlans = [
-    { name: 'Starter', users: tl('plans.starterUsers'), price: isBR ? '200' : '80', href: checkout('hcxkobrb', 'gwlaaeei'), featured: false },
-    { name: 'Growth', users: tl('plans.growthUsers'), price: isBR ? '300' : '150', href: checkout('7d5lrof8', 'qqkl7a6p'), featured: true },
-    { name: 'Scale', users: tl('plans.scaleUsers'), price: isBR ? '1.000' : '400', href: checkout('u7x98fyz', 'v7x1xwst'), featured: false },
-    { name: 'Enterprise', users: tl('plans.enterpriseUsers'), price: isBR ? '1.500' : '500', href: checkout('9gacabk6', 'g901biby'), featured: false },
+    { name: 'Starter', users: tl('plans.starterUsers'), intl: '87', brParcela: '297', brTotal: '3.564', href: checkout('hcxkobrb', 'starter'), featured: false },
+    { name: 'Growth', users: tl('plans.growthUsers'), intl: '167', brParcela: '497', brTotal: '5.964', href: checkout('7d5lrof8', 'growth'), featured: false },
+    { name: 'Scale', users: tl('plans.scaleUsers'), intl: '337', brParcela: '697', brTotal: '8.364', href: checkout('u7x98fyz', 'scale'), featured: true },
+    { name: 'Enterprise', users: tl('plans.enterpriseUsers'), intl: '667', brParcela: '1.117', brTotal: '13.404', href: checkout('9gacabk6', 'enterprise'), featured: false },
   ]
   const familyPlans = [
-    { name: 'Family', users: tl('plans.familyUsers'), price: isBR ? '37' : '9', href: checkout('f7nrog01', 'gmafnne4'), featured: true },
-    { name: 'Family Plus', users: tl('plans.familyPlusUsers'), price: isBR ? '50' : '13', href: checkout('d3c9cwha', 'e4qsc1yt'), featured: false },
+    { name: 'Family', users: tl('plans.familyUsers'), intl: '13', brAnnual: '97', brParcela: '8,08', href: checkout('f7nrog01', 'family'), featured: false },
+    { name: 'Family Plus', users: tl('plans.familyPlusUsers'), intl: '17', brAnnual: '127', brParcela: '10,58', href: checkout('d3c9cwha', 'family_plus'), featured: true },
   ]
   const plans = isFamily ? familyPlans : corpPlans
+
+  type PlanLike = { intl: string; brParcela?: string; brTotal?: string; brAnnual?: string }
+  const priceBlock = (p: PlanLike) => {
+    if (!isBR)
+      return (
+        <p className="mt-4 text-3xl font-extrabold text-white">
+          {cur}{p.intl}<span className="text-base font-medium text-slate-400">{tl('plans.perMonth')}</span>
+        </p>
+      )
+    if (p.brAnnual)
+      return (
+        <div className="mt-4">
+          <p className="text-3xl font-extrabold text-white">R${p.brAnnual}<span className="text-base font-medium text-slate-400">/ano</span></p>
+          <p className="mt-0.5 text-xs text-slate-400">ou 12x de R${p.brParcela}</p>
+        </div>
+      )
+    return (
+      <div className="mt-4">
+        <p className="flex items-baseline gap-1.5">
+          <span className="text-sm font-medium text-slate-400">12x</span>
+          <span className="text-3xl font-extrabold text-white">R${p.brParcela}</span>
+        </p>
+        <p className="mt-0.5 text-xs text-slate-400">ou R${p.brTotal} à vista · plano anual</p>
+      </div>
+    )
+  }
   const desc = sponsored ? t('renewSponsored') : isFamily ? t('renewDescFamily') : t('renewDescCorp')
 
   return (
@@ -51,9 +79,7 @@ export default async function AssinaturaPage() {
             )}
             <p className="text-sm font-semibold text-white">{p.name}</p>
             <p className="text-xs text-slate-400">{p.users}</p>
-            <p className="mt-4 text-3xl font-extrabold text-white">
-              {cur}{p.price}<span className="text-base font-medium text-slate-400">{tl('plans.perMonth')}</span>
-            </p>
+            {priceBlock(p)}
             <a
               href={p.href}
               target="_blank"
@@ -77,9 +103,15 @@ export default async function AssinaturaPage() {
 
       <div className="mx-auto mt-8 flex max-w-sm flex-col items-center gap-2">
         <Button href="/dashboard" variant="secondary" className="w-full">{t('switch')}</Button>
-        <a href="https://consumer.hotmart.com/purchases" target="_blank" rel="noopener noreferrer" className="text-xs text-slate-500 transition hover:text-slate-300">
-          {t('manage')}
-        </a>
+        {isBR ? (
+          <a href="https://consumer.hotmart.com/purchases" target="_blank" rel="noopener noreferrer" className="text-xs text-slate-500 transition hover:text-slate-300">
+            {t('manage')}
+          </a>
+        ) : (
+          <a href="/api/stripe/portal" className="text-xs text-slate-500 transition hover:text-slate-300">
+            {t('manage')}
+          </a>
+        )}
         <a href="mailto:help@appmila.co" className="text-xs text-slate-500 transition hover:text-slate-300">{t('help')}</a>
       </div>
     </div>
