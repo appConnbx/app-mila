@@ -29,19 +29,26 @@ const INTL_SLUG: Record<string, string> = {
 }
 
 // status do Stripe → subscription_status do MILA.
+// incomplete/unpaid NÃO concedem acesso (suspenso); past_due mantém até o fim do período.
 function mapStatus(s?: string): string {
   switch (s) {
     case 'active': return 'active'
     case 'trialing': return 'trialing'
-    case 'past_due':
+    case 'past_due': return 'past_due'
     case 'unpaid':
-    case 'incomplete': return 'past_due'
-    case 'canceled':
-    case 'incomplete_expired': return 'canceled'
+    case 'incomplete':
+    case 'incomplete_expired': return 'suspended'
+    case 'canceled': return 'canceled'
     default: return 'active'
   }
 }
 const toIso = (epochSecs?: number | null) => (epochSecs ? new Date(epochSecs * 1000).toISOString() : null)
+
+// current_period_end migrou para o item da assinatura na API atual (2025+);
+// lê do item com fallback para a raiz (contas em API antiga).
+function periodEndOf(sub: Any): string | null {
+  return toIso(sub?.items?.data?.[0]?.current_period_end ?? sub?.current_period_end)
+}
 
 async function planIdBySlug(admin: Admin, slug: string): Promise<string | null> {
   const sb = admin as unknown as { from: (t: string) => { select: (c: string) => { eq: (c: string, v: string) => { limit: (n: number) => Promise<{ data: { id: string }[] | null }> } } } }
@@ -70,6 +77,26 @@ async function updateSub(admin: Admin, id: string, patch: Record<string, unknown
   await sb.from('subscriptions').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id)
 }
 
+// Reembolso/disputa não trazem a subscription direto — resolve pela do customer.
+async function findSubByCustomer(admin: Admin, customerId: string) {
+  const sb = admin as unknown as Any
+  const { data } = await sb
+    .from('subscriptions')
+    .select('id, holding_id')
+    .eq('external_transaction', customerId)
+    .eq('provider', 'stripe')
+    .order('created_at', { ascending: false })
+    .limit(1)
+  return (data?.[0] as { id: string; holding_id: string } | undefined) ?? null
+}
+
+// Corta acesso imediatamente (espelha o tratamento de reembolso da Hotmart).
+async function suspendAccess(admin: Admin, sub: { id: string; holding_id: string }) {
+  await updateSub(admin, sub.id, { status: 'suspended' })
+  const sb = admin as unknown as { from: (t: string) => { update: (v: Record<string, unknown>) => { eq: (c: string, v: string) => Promise<unknown> } } }
+  await sb.from('holdings').update({ status: 'suspended' }).eq('id', sub.holding_id)
+}
+
 export async function processStripeEvent(admin: Admin, event: Any): Promise<StripeResult> {
   const type = String(event?.type ?? '')
   const obj = event?.data?.object ?? {}
@@ -91,9 +118,11 @@ export async function processStripeEvent(admin: Admin, event: Any): Promise<Stri
     // Busca o período atual da assinatura (uma chamada à API).
     let periodEnd: string | null = null
     try {
-      const sub = await stripeApi<{ current_period_end?: number }>('GET', `/subscriptions/${subId}`)
-      periodEnd = toIso(sub.current_period_end)
-    } catch { /* segue sem o período; subscription.updated ajusta depois */ }
+      const sub = await stripeApi<Any>('GET', `/subscriptions/${subId}`)
+      periodEnd = periodEndOf(sub)
+    } catch (e) {
+      console.warn('stripe: falha ao ler período da assinatura', subId, e instanceof Error ? e.message : e)
+    }
 
     const authUserId = await ensureAuthUser(admin, email, obj.metadata?.mila_lang)
     const { data, error } = await (admin as unknown as RpcAdmin).rpc('provision_subscription', {
@@ -118,7 +147,7 @@ export async function processStripeEvent(admin: Admin, event: Any): Promise<Stri
     if (!sub) return { status: 'ignorado', message: 'assinatura não encontrada' }
     await updateSub(admin, sub.id, {
       status: mapStatus(obj.status),
-      current_period_end: toIso(obj.current_period_end) ?? undefined,
+      current_period_end: periodEndOf(obj) ?? undefined,
       canceled_at: obj.cancel_at_period_end ? new Date().toISOString() : null,
     })
     return { status: 'processado', holdingId: sub.holding_id, subscriptionId: sub.id }
@@ -131,7 +160,7 @@ export async function processStripeEvent(admin: Admin, event: Any): Promise<Stri
     await updateSub(admin, sub.id, {
       status: 'canceled',
       canceled_at: new Date().toISOString(),
-      current_period_end: toIso(obj.current_period_end) ?? undefined,
+      current_period_end: periodEndOf(obj) ?? undefined,
     })
     return { status: 'processado', holdingId: sub.holding_id, subscriptionId: sub.id }
   }
@@ -143,6 +172,38 @@ export async function processStripeEvent(admin: Admin, event: Any): Promise<Stri
     const sub = await findSubByCode(admin, subId)
     if (!sub) return { status: 'ignorado', message: 'assinatura não encontrada' }
     await updateSub(admin, sub.id, { status: 'past_due' })
+    return { status: 'processado', holdingId: sub.holding_id, subscriptionId: sub.id }
+  }
+
+  // ----- Reembolso TOTAL: corta acesso -----
+  if (type === 'charge.refunded') {
+    if (obj.amount_refunded != null && obj.amount != null && obj.amount_refunded < obj.amount) {
+      return { status: 'ignorado', message: 'reembolso parcial' }
+    }
+    const customerId = typeof obj.customer === 'string' ? obj.customer : obj.customer?.id
+    if (!customerId) return { status: 'ignorado', message: 'sem customer' }
+    const sub = await findSubByCustomer(admin, customerId)
+    if (!sub) return { status: 'ignorado', message: 'assinatura não encontrada' }
+    await suspendAccess(admin, sub)
+    return { status: 'processado', holdingId: sub.holding_id, subscriptionId: sub.id }
+  }
+
+  // ----- Disputa/chargeback aberto: corta acesso -----
+  if (type === 'charge.dispute.created') {
+    const chargeId = typeof obj.charge === 'string' ? obj.charge : obj.charge?.id
+    let customerId = typeof obj.customer === 'string' ? obj.customer : obj.customer?.id
+    if (!customerId && chargeId) {
+      try {
+        const ch = await stripeApi<Any>('GET', `/charges/${chargeId}`)
+        customerId = typeof ch.customer === 'string' ? ch.customer : ch.customer?.id
+      } catch (e) {
+        console.warn('stripe: falha ao resolver charge da disputa', chargeId, e instanceof Error ? e.message : e)
+      }
+    }
+    if (!customerId) return { status: 'ignorado', message: 'sem customer' }
+    const sub = await findSubByCustomer(admin, customerId)
+    if (!sub) return { status: 'ignorado', message: 'assinatura não encontrada' }
+    await suspendAccess(admin, sub)
     return { status: 'processado', holdingId: sub.holding_id, subscriptionId: sub.id }
   }
 

@@ -244,7 +244,7 @@ export default async function LandingPage() {
   const checkout = (offBR: string, plan: string) =>
     isBR
       ? `https://pay.hotmart.com/P106262837P?off=${offBR}`
-      : `/api/stripe/checkout?plan=${plan}&next=%2F`
+      : `/subscribe?plan=${plan}&next=%2F&lang=${locale}`
   const corpPlans = [
     { name: 'Starter', users: t('plans.starterUsers'), intl: '87', brParcela: '297', brTotal: '3.564', href: checkout('hcxkobrb', 'starter') },
     { name: 'Growth', users: t('plans.growthUsers'), intl: '167', brParcela: '497', brTotal: '5.964', href: checkout('7d5lrof8', 'growth') },

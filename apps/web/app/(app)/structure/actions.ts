@@ -28,7 +28,7 @@ async function ctx() {
 
 function revalidate() {
   revalidatePath('/structure', 'layout')
-  revalidatePath('/pessoas')
+  revalidatePath('/structure/users')
 }
 
 // ---------------------------------------------------------------- Logo (foto de perfil)

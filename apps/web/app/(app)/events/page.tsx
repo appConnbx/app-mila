@@ -53,7 +53,7 @@ export default async function EventosPage({ searchParams }: { searchParams: Prom
       .select('id, name, status, event_date, owner_id, owner:owner_id(full_name)')
       .order('event_date', { ascending: false, nullsFirst: false })
       .order('opened_at', { ascending: false }),
-    supabase.from('demands').select('event_id, status'),
+    supabase.from('demands').select('event_id, status').not('event_id', 'is', null),
     supabase.from('event_participants').select('event_id').eq('person_id', me ?? ''),
   ])
   const allEvents = (eventsRes.data ?? []) as unknown as EventRow[]

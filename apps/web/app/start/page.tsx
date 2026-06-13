@@ -30,7 +30,7 @@ export default async function StartPage() {
   // BR: Hotmart. INTL: venda direta via Stripe. Hotmart fica só para afiliados.
   // TODO(hotmart-br): ao recriar as ofertas BR como ANUAL/12x, trocar os off= BR pelos novos códigos.
   const checkout = (offBR: string, plan: string) =>
-    isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `/api/stripe/checkout?plan=${plan}&next=%2Fstart`
+    isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `/subscribe?plan=${plan}&next=%2Fstart&lang=${locale}`
   const perMonth = tl('plans.perMonth')
 
   // Corporativo BR = anual em 12x; Família BR = total anual + opção 12x; INTL = assinatura mensal.

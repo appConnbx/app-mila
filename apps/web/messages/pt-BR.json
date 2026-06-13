@@ -195,7 +195,17 @@
     "recoverSubtitle": "Informe seu e-mail e enviaremos um link para você criar uma nova senha.",
     "recoverEmail": "Seu e-mail",
     "recoverSubmit": "Enviar link",
-    "recoverSent": "Se houver uma conta com esse e-mail, enviamos um link para criar a senha. Confira sua caixa de entrada."
+    "recoverSent": "Se houver uma conta com esse e-mail, enviamos um link para criar a senha. Confira sua caixa de entrada.",
+    "subTitle": "Finalizar assinatura",
+    "subPlanLine": "Plano {plan} · {price}/mês",
+    "subEmailLabel": "Seu e-mail",
+    "subEmailHint": "Será o login da sua conta. Use um e-mail que você acessa.",
+    "subSubmit": "Continuar para o pagamento",
+    "subSending": "Aguarde…",
+    "subExistsTitle": "Você já tem uma conta MILA",
+    "subExistsBody": "Esse e-mail já tem acesso. Entre na sua conta para assinar ou gerenciar seu plano por lá.",
+    "subLoginCta": "Entrar na minha conta",
+    "subErr": "Algo deu errado. Tente novamente."
   },
   "instances": {
     "title": "Minhas instâncias",

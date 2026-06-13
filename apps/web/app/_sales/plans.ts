@@ -27,9 +27,12 @@ const INTL_FAM = [
   { name: 'Family Plus', plan: 'family_plus', usd: '17' },
 ]
 
-// Checkout direto via Stripe (internacional). next = página para voltar se cancelar.
-const stripeHref = (plan: string, next: string) =>
-  `/api/stripe/checkout?plan=${plan}&next=${encodeURIComponent(next)}`
+// Assinatura internacional: passa pelo gate /subscribe (valida e-mail) antes do Stripe.
+// O idioma é derivado da página de origem (next).
+const stripeHref = (plan: string, next: string) => {
+  const lang = next.startsWith('/en') ? 'en' : next.startsWith('/es') ? 'es' : 'pt-BR'
+  return `/subscribe?plan=${plan}&next=${encodeURIComponent(next)}&lang=${lang}`
+}
 
 const CORP_FEATURED = 2 // Scale
 const FAM_FEATURED = 1 // Family Plus

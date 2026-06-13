@@ -11,8 +11,8 @@ const PUBLIC_PREFIXES = [
   '/login', '/auth', '/affiliates', '/api/hotmart', '/api/agent', '/privacy', '/security', '/start',
   // Primeiro acesso / recuperação de senha (pós-compra).
   '/welcome', '/create-password', '/forgot-password',
-  // Checkout (visitante anônimo) e webhook (Stripe) são públicos; /api/stripe/portal NÃO.
-  '/api/stripe/checkout', '/api/stripe/webhook',
+  // Gate de assinatura, checkout (visitante anônimo) e webhook (Stripe) são públicos; /api/stripe/portal NÃO.
+  '/subscribe', '/api/stripe/checkout', '/api/stripe/webhook',
   // Páginas de vendas para anúncios (públicas, por idioma/segmento).
   '/br-business', '/br-personal', '/en-business', '/en-personal', '/es-business', '/es-personal',
 ]

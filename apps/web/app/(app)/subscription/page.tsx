@@ -11,9 +11,9 @@ export default async function AssinaturaPage() {
   const isBR = locale === 'pt-BR'
   const cur = isBR ? 'R$' : 'US$'
 
-  // BR: Hotmart. INTL: venda direta via Stripe.
+  // BR: Hotmart. INTL: gate /subscribe (valida e-mail) antes do Stripe.
   const checkout = (offBR: string, plan: string) =>
-    isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `/api/stripe/checkout?plan=${plan}&next=%2Fassinatura`
+    isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `/subscribe?plan=${plan}&next=%2Fsubscription&lang=${locale}`
 
   const supabase = await createClient()
   const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: { kind?: string; plan_slug?: string } | null }> }

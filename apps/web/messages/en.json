@@ -195,7 +195,17 @@
     "recoverSubtitle": "Enter your email and we'll send you a link to create a new password.",
     "recoverEmail": "Your email",
     "recoverSubmit": "Send link",
-    "recoverSent": "If an account exists for that email, we've sent a link to create your password. Check your inbox."
+    "recoverSent": "If an account exists for that email, we've sent a link to create your password. Check your inbox.",
+    "subTitle": "Complete your subscription",
+    "subPlanLine": "{plan} plan · {price}/mo",
+    "subEmailLabel": "Your email",
+    "subEmailHint": "This will be your account login. Use an email you can access.",
+    "subSubmit": "Continue to payment",
+    "subSending": "Please wait…",
+    "subExistsTitle": "You already have a MILA account",
+    "subExistsBody": "This email already has access. Sign in to subscribe or manage your plan from there.",
+    "subLoginCta": "Sign in to my account",
+    "subErr": "Something went wrong. Please try again."
   },
   "instances": {
     "title": "My instances",

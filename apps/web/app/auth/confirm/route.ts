@@ -15,7 +15,9 @@ export async function GET(req: NextRequest) {
   const type = url.searchParams.get('type') as EmailOtpType | null
   const code = url.searchParams.get('code')
   const lang = url.searchParams.get('lang') ?? ''
-  const next = url.searchParams.get('next') || '/create-password'
+  // Só aceita caminho interno (evita open-redirect via next=//evil.com).
+  const rawNext = url.searchParams.get('next') || '/create-password'
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/create-password'
 
   const supabase = await createClient()
   let ok = false
