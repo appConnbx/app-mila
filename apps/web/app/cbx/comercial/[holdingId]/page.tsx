@@ -3,13 +3,15 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, Kpi, Pill, btnCbx, inputCbx, labelCbx, fmtDate } from '../../_ui'
+import { streakFromDates } from '@/lib/streak'
 import { ClientProfileForm } from '../_profile-form'
-import { PasswordField } from '../../_password-field'
-import { saveProfile, addNote, setLicense, cbxSetUserActive, cbxSetUserPassword } from '../actions'
+import { InstanceUsers } from '../_instance-users'
+import { saveProfile, addNote, setLicense } from '../actions'
 
 type InstanceUser = {
   id: string; full_name: string; email: string | null; role_title: string | null
-  is_active: boolean; is_admin: boolean; has_login: boolean; last_sign_in_at: string | null
+  is_active: boolean; is_admin: boolean; has_login: boolean
+  created_at: string; last_sign_in_at: string | null; active_days: string[]
 }
 
 type Detail = {
@@ -78,6 +80,11 @@ export default async function FichaClientePage({
   const plans = (plansRes.data as Plan[] | null) ?? []
   const businessTypes = ((typesRes.data as { name: string }[] | null) ?? []).map((b) => b.name)
   const users = (usersRes.data as InstanceUser[] | null) ?? []
+  const userRows = users.map((u) => ({
+    id: u.id, full_name: u.full_name, email: u.email, is_active: u.is_active,
+    is_admin: u.is_admin, has_login: u.has_login, created_at: u.created_at,
+    streak: streakFromDates(u.active_days ?? []),
+  }))
   const canManageUsers = hasPerm(me, 'SUPORTE') || hasPerm(me, 'COMERCIAL')
   const h = d.holding
   const lic = d.license
@@ -204,49 +211,7 @@ export default async function FichaClientePage({
       </CbxCard>
 
       {/* Usuários da instância (super admin) */}
-      <CbxCard title={`Usuários da instância (${users.length})`}>
-        <div className="space-y-2">
-          {users.map((u) => (
-            <div key={u.id} className={`rounded-xl border border-white/10 bg-slate-900/40 p-3 ${u.is_active ? '' : 'opacity-60'}`}>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <p className="text-sm font-semibold text-slate-100">
-                    {u.full_name} {u.is_admin && <Pill tone="info">admin</Pill>}
-                  </p>
-                  <p className="text-xs text-slate-500">{u.email ?? 'sem e-mail'} · {u.has_login ? 'tem acesso' : 'sem login'}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Pill tone={u.is_active ? 'ok' : undefined}>{u.is_active ? 'Ativo' : 'Inativo'}</Pill>
-                  {canManageUsers && (
-                    <form action={cbxSetUserActive}>
-                      <input type="hidden" name="holding_id" value={h.id} />
-                      <input type="hidden" name="person_id" value={u.id} />
-                      <input type="hidden" name="active" value={u.is_active ? '0' : '1'} />
-                      <button className="text-xs text-slate-400 underline-offset-2 transition hover:text-white hover:underline">
-                        {u.is_active ? 'Desativar' : 'Reativar'}
-                      </button>
-                    </form>
-                  )}
-                </div>
-              </div>
-              {canManageUsers && u.email && (
-                <form action={cbxSetUserPassword} className="mt-2 flex items-end gap-2 border-t border-white/5 pt-2">
-                  <input type="hidden" name="holding_id" value={h.id} />
-                  <input type="hidden" name="person_id" value={u.id} />
-                  <div className="flex-1">
-                    <label className="block text-[10px] uppercase tracking-wide text-slate-500">Definir senha (super admin)</label>
-                    <div className="mt-1"><PasswordField placeholder="Nova senha (mín. 6)" /></div>
-                  </div>
-                  <button className="shrink-0 rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10">
-                    Definir
-                  </button>
-                </form>
-              )}
-            </div>
-          ))}
-          {users.length === 0 && <p className="text-sm text-slate-500">Nenhum usuário nesta instância.</p>}
-        </div>
-      </CbxCard>
+      <InstanceUsers holdingId={h.id} rows={userRows} canManage={canManageUsers} />
     </div>
   )
 }
