@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Field, fieldClasses, Aurora } from '@/components/ui'
+import { PasswordInput } from '@/components/password-input'
 import type { Locale } from '@/i18n/config'
 import { login } from './actions'
 
@@ -37,7 +38,7 @@ export default async function LoginPage({
             <input id="email" name="email" type="email" required autoComplete="email" className={fieldClasses} />
           </Field>
           <Field label={t('password')} htmlFor="password">
-            <input id="password" name="password" type="password" required autoComplete="current-password" className={fieldClasses} />
+            <PasswordInput id="password" name="password" required autoComplete="current-password" className={fieldClasses} />
           </Field>
           <button
             type="submit"

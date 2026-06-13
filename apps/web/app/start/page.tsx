@@ -49,7 +49,7 @@ export default async function StartPage() {
           <span className="text-lg font-bold tracking-tight text-white">MILA</span>
         </Link>
       </div>
-      <StartWizard dict={dict} plans={plans} cur={cur} freeHref="/comecar-gratis" />
+      <StartWizard dict={dict} plans={plans} cur={cur} freeHref="/start-family-free" />
     </main>
   )
 }

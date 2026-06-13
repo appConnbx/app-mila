@@ -563,7 +563,7 @@ export default async function LandingPage() {
               <span><b className="text-slate-200">{t('plans.freeName')}</b> — {t('plans.freeDesc')}</span>
             </div>
             <Link
-              href="/comecar-gratis"
+              href="/start-family-free"
               className="shrink-0 rounded-lg border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
             >
               {t('plans.freeCta')}
