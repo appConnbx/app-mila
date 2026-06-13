@@ -114,34 +114,66 @@ async function DashboardMockup() {
   )
 }
 
-/* ---------- Mockup do gadget no computador + voz ---------- */
+function MicGlyph({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z" />
+    </svg>
+  )
+}
+
+/* ---------- Mockup: gadget de fácil acesso no computador (Windows) ---------- */
 async function GadgetMockup() {
   const t = await getTranslations('landing')
   return (
-    <div className="glass glow-top relative mx-auto w-full max-w-2xl overflow-hidden p-4">
-      {/* "tela" do computador */}
-      <div className="relative h-64 rounded-xl border border-white/5 bg-gradient-to-br from-slate-900 to-slate-950 sm:h-72">
-        <div className="pointer-events-none absolute -left-10 top-10 h-40 w-40 rounded-full bg-brand/10 blur-3xl" />
-        {/* gadget de fácil acesso, encostado na borda direita */}
-        <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col items-center gap-2 rounded-l-2xl border border-white/10 bg-white/[0.06] px-2.5 py-3 backdrop-blur">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-brand text-[11px] font-black text-slate-950">M</span>
-          <span className="rounded-full bg-rose-500/80 px-1.5 text-[10px] font-bold text-white">3</span>
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-brand/15 text-brand">
-            <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden>
-              <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z" />
-            </svg>
-          </span>
+    <div className="glass relative h-full w-full overflow-hidden p-3">
+      <div className="relative h-56 rounded-xl border border-white/5 bg-gradient-to-br from-slate-900 to-slate-950">
+        <div className="pointer-events-none absolute -left-8 top-8 h-32 w-32 rounded-full bg-brand/10 blur-3xl" />
+        {/* gadget encostado na borda direita */}
+        <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col items-center gap-1.5 rounded-l-2xl border border-white/10 bg-white/[0.06] px-2 py-2.5 backdrop-blur">
+          <span className="grid h-6 w-6 place-items-center rounded-md bg-brand text-[10px] font-black text-slate-950">M</span>
+          <span className="rounded-full bg-rose-500/80 px-1.5 text-[9px] font-bold text-white">3</span>
+          <span className="grid h-6 w-6 place-items-center rounded-md bg-brand/15 text-brand"><MicGlyph className="h-3.5 w-3.5" /></span>
         </div>
         {/* balão: demanda capturada por voz */}
-        <div className="absolute right-20 top-1/2 w-56 -translate-y-1/2 rounded-xl border border-white/10 bg-slate-900/90 p-3 shadow-xl">
-          <p className="flex items-center gap-1.5 text-[11px] font-medium text-brand">
+        <div className="absolute right-12 top-1/2 w-40 -translate-y-1/2 rounded-xl border border-white/10 bg-slate-900/90 p-2.5 shadow-xl">
+          <p className="flex items-center gap-1.5 text-[10px] font-medium text-brand">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" /> {t('eco.voiceTitle')}
           </p>
-          <p className="mt-1.5 text-xs text-slate-100">“{t('mockup.row2Title')}”</p>
-          <div className="mt-2 flex items-center gap-1.5">
-            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-slate-300">{t('mockup.kpiInProgress')}</span>
-            <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] text-brand">amanhã</span>
+          <p className="mt-1 text-[11px] leading-snug text-slate-100">“{t('mockup.row2Title')}”</p>
+          <div className="mt-1.5 flex items-center gap-1">
+            <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] text-slate-300">{t('mockup.kpiInProgress')}</span>
+            <span className="rounded-full bg-brand/10 px-1.5 py-0.5 text-[9px] text-brand">amanhã</span>
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Mockup: app no celular com microfone em evidência ---------- */
+async function MobileMockup() {
+  const t = await getTranslations('landing.mockup')
+  const rows = [
+    { t: t('row1Title'), s: t('kpiInProgress') },
+    { t: t('row2Title'), s: 'amanhã' },
+    { t: t('row1Title'), s: t('kpiOpen') },
+  ]
+  return (
+    <div className="glass relative grid h-full w-full place-items-center overflow-hidden p-3">
+      <div className="relative mx-auto h-56 w-32 rounded-[1.6rem] border border-white/10 bg-gradient-to-b from-slate-900 to-slate-950 p-2 shadow-xl">
+        <div className="mx-auto mb-2 h-1 w-8 rounded-full bg-white/15" />
+        <div className="space-y-1.5">
+          {rows.map((r, i) => (
+            <div key={i} className="rounded-lg border border-white/5 bg-white/[0.03] px-2 py-1.5">
+              <p className="truncate text-[9px] font-medium text-slate-100">{r.t}</p>
+              <span className="mt-0.5 inline-block rounded-full bg-brand/10 px-1.5 text-[8px] text-brand">{r.s}</span>
+            </div>
+          ))}
+        </div>
+        {/* botão de voz em evidência */}
+        <div className="absolute bottom-3 left-1/2 grid h-11 w-11 -translate-x-1/2 place-items-center rounded-full bg-brand text-slate-950 shadow-lg ring-4 ring-brand/25">
+          <MicGlyph className="h-5 w-5" />
         </div>
       </div>
     </div>
@@ -283,9 +315,20 @@ export default async function LandingPage() {
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">{t('eco.subtitle')}</p>
         </div>
 
-        {/* Imagem: o gadget de fácil acesso na borda do computador capturando por voz */}
-        <div className="mt-8">
-          <GadgetMockup />
+        {/* Galeria: gadget no computador · app no celular · sistema web — cada um com legenda */}
+        <div className="mt-10 grid items-start gap-6 md:grid-cols-3">
+          <figure className="space-y-3">
+            <GadgetMockup />
+            <figcaption className="text-center text-sm font-medium text-slate-300">{t('eco.capWindows')}</figcaption>
+          </figure>
+          <figure className="space-y-3">
+            <MobileMockup />
+            <figcaption className="text-center text-sm font-medium text-slate-300">{t('eco.capMobile')}</figcaption>
+          </figure>
+          <figure className="space-y-3">
+            <DashboardMockup />
+            <figcaption className="text-center text-sm font-medium text-slate-300">{t('eco.capWeb')}</figcaption>
+          </figure>
         </div>
 
         {/* Vale igual para empresas e uso pessoal */}
