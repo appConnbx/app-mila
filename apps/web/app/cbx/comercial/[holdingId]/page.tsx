@@ -83,6 +83,7 @@ export default async function FichaClientePage({
   const userRows = users.map((u) => ({
     id: u.id, full_name: u.full_name, email: u.email, is_active: u.is_active,
     is_admin: u.is_admin, has_login: u.has_login, created_at: u.created_at,
+    last_sign_in_at: u.last_sign_in_at,
     streak: streakFromDates(u.active_days ?? []),
   }))
   const canManageUsers = hasPerm(me, 'SUPORTE') || hasPerm(me, 'COMERCIAL')

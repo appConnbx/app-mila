@@ -13,10 +13,11 @@ export type InstanceUserRow = {
   is_admin: boolean
   has_login: boolean
   created_at: string
+  last_sign_in_at: string | null
   streak: number
 }
 
-type SortKey = 'name' | 'created' | 'streak' | 'status'
+type SortKey = 'name' | 'created' | 'lastlogin' | 'streak' | 'status'
 const PAGE = 20
 
 export function InstanceUsers({ holdingId, rows, canManage }: { holdingId: string; rows: InstanceUserRow[]; canManage: boolean }) {
@@ -36,6 +37,7 @@ export function InstanceUsers({ holdingId, rows, canManage }: { holdingId: strin
     return [...filtered].sort((a, b) => {
       if (sortKey === 'name') return a.full_name.localeCompare(b.full_name) * m
       if (sortKey === 'created') return (Date.parse(a.created_at) - Date.parse(b.created_at)) * m
+      if (sortKey === 'lastlogin') return ((a.last_sign_in_at ? Date.parse(a.last_sign_in_at) : 0) - (b.last_sign_in_at ? Date.parse(b.last_sign_in_at) : 0)) * m
       if (sortKey === 'streak') return (a.streak - b.streak) * m
       return (Number(a.is_active) - Number(b.is_active)) * m
     })
@@ -76,6 +78,7 @@ export function InstanceUsers({ holdingId, rows, canManage }: { holdingId: strin
             <tr className="border-b border-white/10">
               <Th k="name" label="Usuário" />
               <Th k="created" label="Cadastro" />
+              <Th k="lastlogin" label="Último login" />
               <Th k="streak" label="🔥 Chama" />
               <Th k="status" label="Status" />
               <th className={`${thCbx} text-right`}></th>
@@ -89,6 +92,7 @@ export function InstanceUsers({ holdingId, rows, canManage }: { holdingId: strin
                   <p className="text-xs text-slate-500">{u.email ?? 'sem e-mail'}</p>
                 </td>
                 <td className={`${tdCbx} text-slate-400`}>{fmtDate(u.created_at)}</td>
+                <td className={`${tdCbx} text-slate-400`}>{u.last_sign_in_at ? fmtDate(u.last_sign_in_at) : <span className="text-slate-600">nunca</span>}</td>
                 <td className={tdCbx}>
                   {u.streak > 0 ? <span className="font-semibold text-amber-300">🔥 {u.streak}</span> : <span className="text-slate-600">—</span>}
                 </td>
@@ -101,7 +105,7 @@ export function InstanceUsers({ holdingId, rows, canManage }: { holdingId: strin
               </tr>
             ))}
             {sorted.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-sm text-slate-500">Nenhum usuário encontrado.</td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">Nenhum usuário encontrado.</td></tr>
             )}
           </tbody>
         </table>
