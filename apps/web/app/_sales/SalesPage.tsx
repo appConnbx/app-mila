@@ -25,7 +25,6 @@ export type SalesPlan = {
 export type SalesContent = {
   locale: 'pt-BR' | 'en' | 'es'
   accent: 'brand' | 'orange'
-  loginLabel: string
 
   badge: string
   headline: ReactNode
@@ -127,14 +126,9 @@ export function SalesPage({ c }: { c: SalesContent }) {
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">M</span>
             <span className="text-lg font-bold tracking-tight text-white">MILA</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Link href="/login" className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:text-white sm:inline-block">
-              {c.loginLabel}
-            </Link>
-            <a href="#planos" className={`rounded-lg ${a.bg} px-4 py-2 text-sm font-semibold text-slate-950 transition ${a.bgHover}`}>
-              {c.ctaPrimary}
-            </a>
-          </div>
+          <a href="#planos" className={`rounded-lg ${a.bg} px-4 py-2 text-sm font-semibold text-slate-950 transition ${a.bgHover}`}>
+            {c.ctaPrimary}
+          </a>
         </nav>
       </header>
 

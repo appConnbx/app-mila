@@ -19,7 +19,6 @@ const hlOrange = (s: string) => <span className="text-orange-300">{s}</span>
 export const brEmpresa: SalesContent = {
   locale: 'pt-BR',
   accent: 'brand',
-  loginLabel: 'Entrar',
   badge: 'Para empresas e equipes',
   headline: <>Sua equipe {hlBrand('para de perder demanda')} no boca a boca</>,
   subtitle:
@@ -82,7 +81,7 @@ export const brEmpresa: SalesContent = {
 
   faqTitle: 'Perguntas frequentes',
   faqs: [
-    { q: 'Como funciona a cobrança?', a: 'O plano é anual e pode ser parcelado em até 12x no cartão de crédito. O pagamento é processado com segurança pela Hotmart.' },
+    { q: 'Como funciona a cobrança?', a: 'O plano é anual e pode ser parcelado em até 12x no cartão de crédito. O pagamento é processado com segurança em ambiente criptografado.' },
     { q: 'Preciso instalar algo?', a: 'Não é obrigatório. O MILA funciona no navegador. Há também um gadget para Windows e o app de celular, opcionais.' },
     { q: 'O que é o bônus Family Plus?', a: 'Cada colaborador do plano corporativo ganha um plano Family Plus licenciado para organizar a casa e a família, enquanto a empresa mantiver a assinatura.' },
     { q: 'Posso aumentar o número de usuários depois?', a: 'Sim. É só migrar para um plano maior a qualquer momento, conforme a equipe cresce.' },
@@ -95,7 +94,7 @@ export const brEmpresa: SalesContent = {
 
   footerCompany: COMPANY_BR,
   footerDisclaimer:
-    'MILA é um software de organização de demandas e produtividade. Não comercializamos nem prometemos resultados financeiros. Pagamentos processados pela Hotmart.',
+    'MILA é um software de organização de demandas e produtividade. Não comercializamos nem prometemos resultados financeiros. Pagamentos processados em ambiente seguro e criptografado.',
   privacyLabel: 'Política de Privacidade',
   termsLabel: 'Segurança',
   supportEmail: SUPPORT,
@@ -105,7 +104,6 @@ export const brEmpresa: SalesContent = {
 export const brPessoal: SalesContent = {
   locale: 'pt-BR',
   accent: 'orange',
-  loginLabel: 'Entrar',
   badge: 'Para a casa e a família',
   headline: <>Combinados claros, {hlOrange('casa em harmonia')}</>,
   subtitle:
@@ -170,7 +168,7 @@ export const brPessoal: SalesContent = {
 
   faqTitle: 'Perguntas frequentes',
   faqs: [
-    { q: 'Como funciona a cobrança?', a: 'O plano é anual e pode ser parcelado em até 12x no cartão. O pagamento é processado com segurança pela Hotmart.' },
+    { q: 'Como funciona a cobrança?', a: 'O plano é anual e pode ser parcelado em até 12x no cartão. O pagamento é processado com segurança em ambiente criptografado.' },
     { q: 'É difícil de usar?', a: 'Não. Foi feito para ser simples — adiciona as pessoas, anota as tarefas e pronto. Funciona no navegador e no celular.' },
     { q: 'Posso testar de graça?', a: 'Sim. O Family Free permite 1 pessoa e até 15 tarefas por dia, sem cartão.' },
     { q: 'Qual a diferença entre Family e Family Plus?', a: 'O Family atende até 5 pessoas; o Family Plus, até 10. O restante das funções é igual.' },
@@ -183,7 +181,7 @@ export const brPessoal: SalesContent = {
 
   footerCompany: COMPANY_BR,
   footerDisclaimer:
-    'MILA é um software de organização de tarefas e produtividade. Pagamentos processados pela Hotmart.',
+    'MILA é um software de organização de tarefas e produtividade. Pagamentos processados em ambiente seguro e criptografado.',
   privacyLabel: 'Política de Privacidade',
   termsLabel: 'Segurança',
   supportEmail: SUPPORT,
@@ -193,7 +191,6 @@ export const brPessoal: SalesContent = {
 export const enBusiness: SalesContent = {
   locale: 'en',
   accent: 'brand',
-  loginLabel: 'Sign in',
   badge: 'For companies and teams',
   headline: <>Stop letting your team {hlBrand('lose tasks')} in hallway conversations</>,
   subtitle:
@@ -257,7 +254,7 @@ export const enBusiness: SalesContent = {
 
   faqTitle: 'Frequently asked questions',
   faqs: [
-    { q: 'How does billing work?', a: 'A monthly subscription, processed securely by Hotmart. Cancel anytime.' },
+    { q: 'How does billing work?', a: 'A monthly subscription, processed securely. Cancel anytime.' },
     { q: 'Do I need to install anything?', a: 'No. MILA runs in the browser. There is also an optional Windows gadget and a mobile app.' },
     { q: 'What is the Family Plus bonus?', a: 'Every employee on a corporate plan gets a licensed Family Plus to organize home and family, while the company keeps the subscription.' },
     { q: 'Can I add more users later?', a: 'Yes. Move to a larger plan anytime as your team grows.' },
@@ -270,7 +267,7 @@ export const enBusiness: SalesContent = {
 
   footerCompany: COMPANY_INTL,
   footerDisclaimer:
-    'MILA is task-management and productivity software. We do not sell or promise financial results. Payments processed by Hotmart.',
+    'MILA is task-management and productivity software. We do not sell or promise financial results. Payments are processed securely.',
   privacyLabel: 'Privacy Policy',
   termsLabel: 'Security',
   supportEmail: SUPPORT,
@@ -280,7 +277,6 @@ export const enBusiness: SalesContent = {
 export const enPersonal: SalesContent = {
   locale: 'en',
   accent: 'orange',
-  loginLabel: 'Sign in',
   badge: 'For home and family',
   headline: <>Clear agreements, {hlOrange('a calmer home')}</>,
   subtitle:
@@ -347,7 +343,7 @@ export const enPersonal: SalesContent = {
 
   faqTitle: 'Frequently asked questions',
   faqs: [
-    { q: 'How does billing work?', a: 'A monthly subscription, processed securely by Hotmart. Cancel anytime.' },
+    { q: 'How does billing work?', a: 'A monthly subscription, processed securely. Cancel anytime.' },
     { q: 'Is it hard to use?', a: 'No. It was built to be simple — add people, note the tasks, done. Works in the browser and on mobile.' },
     { q: 'Can I try it for free?', a: 'Yes. Family Free allows 1 person and up to 15 tasks per day, no card required.' },
     { q: 'Family vs. Family Plus?', a: 'Family covers up to 5 people; Family Plus, up to 10. Everything else is the same.' },
@@ -359,7 +355,7 @@ export const enPersonal: SalesContent = {
   finalCta: 'Organize my family',
 
   footerCompany: COMPANY_INTL,
-  footerDisclaimer: 'MILA is task-management and productivity software. Payments processed by Hotmart.',
+  footerDisclaimer: 'MILA is task-management and productivity software. Payments are processed securely.',
   privacyLabel: 'Privacy Policy',
   termsLabel: 'Security',
   supportEmail: SUPPORT,
@@ -369,7 +365,6 @@ export const enPersonal: SalesContent = {
 export const esBusiness: SalesContent = {
   locale: 'es',
   accent: 'brand',
-  loginLabel: 'Iniciar sesión',
   badge: 'Para empresas y equipos',
   headline: <>Que tu equipo {hlBrand('deje de perder tareas')} en conversaciones de pasillo</>,
   subtitle:
@@ -433,7 +428,7 @@ export const esBusiness: SalesContent = {
 
   faqTitle: 'Preguntas frecuentes',
   faqs: [
-    { q: '¿Cómo funciona el cobro?', a: 'Una suscripción mensual, procesada de forma segura por Hotmart. Cancela cuando quieras.' },
+    { q: '¿Cómo funciona el cobro?', a: 'Una suscripción mensual, procesada de forma segura. Cancela cuando quieras.' },
     { q: '¿Necesito instalar algo?', a: 'No. MILA funciona en el navegador. También hay un gadget para Windows y una app móvil, opcionales.' },
     { q: '¿Qué es el bono Family Plus?', a: 'Cada empleado del plan corporativo recibe un Family Plus con licencia para organizar el hogar y la familia, mientras la empresa mantenga la suscripción.' },
     { q: '¿Puedo agregar más usuarios después?', a: 'Sí. Cambia a un plan mayor cuando quieras, a medida que crece el equipo.' },
@@ -446,7 +441,7 @@ export const esBusiness: SalesContent = {
 
   footerCompany: COMPANY_INTL,
   footerDisclaimer:
-    'MILA es software de gestión de tareas y productividad. No vendemos ni prometemos resultados financieros. Pagos procesados por Hotmart.',
+    'MILA es software de gestión de tareas y productividad. No vendemos ni prometemos resultados financieros. Pagos procesados de forma segura.',
   privacyLabel: 'Política de Privacidad',
   termsLabel: 'Seguridad',
   supportEmail: SUPPORT,
@@ -456,7 +451,6 @@ export const esBusiness: SalesContent = {
 export const esPersonal: SalesContent = {
   locale: 'es',
   accent: 'orange',
-  loginLabel: 'Iniciar sesión',
   badge: 'Para el hogar y la familia',
   headline: <>Acuerdos claros, {hlOrange('un hogar más tranquilo')}</>,
   subtitle:
@@ -523,7 +517,7 @@ export const esPersonal: SalesContent = {
 
   faqTitle: 'Preguntas frecuentes',
   faqs: [
-    { q: '¿Cómo funciona el cobro?', a: 'Una suscripción mensual, procesada de forma segura por Hotmart. Cancela cuando quieras.' },
+    { q: '¿Cómo funciona el cobro?', a: 'Una suscripción mensual, procesada de forma segura. Cancela cuando quieras.' },
     { q: '¿Es difícil de usar?', a: 'No. Fue hecho para ser simple — agrega personas, anota las tareas y listo. Funciona en el navegador y en el móvil.' },
     { q: '¿Puedo probarlo gratis?', a: 'Sí. Family Free permite 1 persona y hasta 15 tareas por día, sin tarjeta.' },
     { q: '¿Family o Family Plus?', a: 'Family cubre hasta 5 personas; Family Plus, hasta 10. Lo demás es igual.' },
@@ -535,7 +529,7 @@ export const esPersonal: SalesContent = {
   finalCta: 'Organizar mi familia',
 
   footerCompany: COMPANY_INTL,
-  footerDisclaimer: 'MILA es software de gestión de tareas y productividad. Pagos procesados por Hotmart.',
+  footerDisclaimer: 'MILA es software de gestión de tareas y productividad. Pagos procesados de forma segura.',
   privacyLabel: 'Política de Privacidad',
   termsLabel: 'Seguridad',
   supportEmail: SUPPORT,
