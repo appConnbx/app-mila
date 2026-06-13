@@ -529,6 +529,10 @@
       "familyUsers": "hasta 5 personas",
       "familyPlusUsers": "hasta 10 personas",
       "familyCta": "Comenzar con la familia",
+      "freeBadge": "Gratis para siempre",
+      "freeName": "Family Free",
+      "freeDesc": "1 usuario y hasta 15 demandas por día. Sin tarjeta, empieza en 1 minuto.",
+      "freeCta": "Crear cuenta gratuita",
       "refundNote": "Garantía de 7 días — reembolso total si no encaja."
     },
     "affiliates": {

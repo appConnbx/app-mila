@@ -46,9 +46,14 @@ export default async function CbxComercialPage() {
           </p>
         </div>
         {hasPerm(me, 'COMERCIAL') && (
-          <Link href="/cbx/comercial/novo" className={btnCbx}>
-            + Cliente manual
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/cbx/comercial/tipos" className="inline-flex items-center justify-center rounded-lg border border-white/10 px-3 py-1.5 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              Tipos de negócio
+            </Link>
+            <Link href="/cbx/comercial/novo" className={btnCbx}>
+              + Cliente manual
+            </Link>
+          </div>
         )}
       </div>
 
@@ -63,6 +68,7 @@ export default async function CbxComercialPage() {
                 <th className={thCbx}>Tipo de negócio</th>
                 <th className={thCbx}>Região</th>
                 <th className={thCbx}>Status</th>
+                <th className={thCbx}></th>
               </tr>
             </thead>
             <tbody>
@@ -93,11 +99,16 @@ export default async function CbxComercialPage() {
                       {c.sub_status ?? 'sem licença'}
                     </Pill>
                   </td>
+                  <td className={tdCbx}>
+                    <Link href={`/cbx/comercial/${c.holding_id}`} className="text-xs font-semibold text-amber-300 underline-offset-2 hover:underline">
+                      Abrir / editar →
+                    </Link>
+                  </td>
                 </tr>
               ))}
               {clients.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-500">
+                  <td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-500">
                     Nenhum cliente ainda.
                   </td>
                 </tr>

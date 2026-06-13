@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { headers } from 'next/headers'
 import { cbxMe, hasPerm, CBX_AREAS } from './_lib'
+import { CbxNav } from './_nav'
 
 // Portal interno: jamais indexado (o middleware reforça com X-Robots-Tag).
 export const metadata: Metadata = {
@@ -15,7 +15,6 @@ export default async function CbxLayout({ children }: { children: React.ReactNod
   const me = await cbxMe()
   if (!me.is_staff) notFound()
 
-  const pathname = (await headers()).get('x-pathname') ?? ''
   const areas = CBX_AREAS.filter((a) => hasPerm(me, a.perm))
 
   return (
@@ -26,22 +25,7 @@ export default async function CbxLayout({ children }: { children: React.ReactNod
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400 text-sm font-black text-slate-950">CX</span>
             <span className="text-lg font-bold tracking-tight text-white">CONNBX</span>
           </Link>
-          <nav className="flex items-center gap-1 overflow-x-auto">
-            {areas.map((a) => {
-              const active = pathname === a.href || pathname.startsWith(a.href + '/')
-              return (
-                <Link
-                  key={a.href}
-                  href={a.href}
-                  className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                    active ? 'bg-amber-400/15 text-amber-300' : 'text-slate-300 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  {a.label}
-                </Link>
-              )
-            })}
-          </nav>
+          <CbxNav items={areas.map((a) => ({ href: a.href, label: a.label }))} />
           <div className="flex items-center gap-3">
             <span className="hidden text-sm text-slate-400 md:inline">{me.full_name}</span>
             <form action="/auth/signout" method="post">

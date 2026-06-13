@@ -5,23 +5,47 @@ import { CbxCard, Kpi, fmtMoney } from '../_ui'
 
 type Ceo = {
   ok: boolean
-  clients: {
-    total: number; corporativo: number; familia: number; ativos: number
-    by_state: { state: string; country: string | null; count: number }[]
-    by_business_type: { type: string; count: number }[]
+  finance: {
+    mrr_cents: { currency: string; total_cents: number }[]
+    revenue_month: { currency: string; total: number }[]
+    new_subs_month: number
+    new_mrr_cents_month: number
   }
-  tickets: {
-    abertos: number; total: number
-    by_type: { type: string; count: number }[]
+  active: { total: number; corporativo: number; familia_pago: number; familia_free: number }
+  canceled_month: { total: number; corporativo: number; familia_pago: number; familia_free: number }
+  by_state: { state: string; country: string | null; count: number }[]
+  by_business_type: { type: string; count: number }[]
+  support: {
+    open_total: number
+    new_month: number
+    monthly: { month: string; abertos: number; concluidos: number }[]
     by_kind: { kind: string; count: number }[]
   }
 }
-type Finance = {
-  ok: boolean
-  mrr_cents: { currency: string; total_cents: number }[]
-  affiliate_split: { afiliado: number; direta: number }
-  totals: { clientes: number; assinaturas_ativas: number; past_due: number; suspensas: number }
-  monthly_revenue: { month: string; currency: string; total: number }[]
+
+const money = (arr: { currency: string; total_cents?: number; total?: number }[], cents: boolean) => {
+  if (!arr?.length) return 'R$ 0,00'
+  return arr
+    .map((x) => (cents ? fmtMoney(x.total_cents ?? 0, x.currency) : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: x.currency }).format(x.total ?? 0)))
+    .join(' + ')
+}
+
+/** Barras agrupadas abertos/concluídos por mês. */
+function SupportChart({ data }: { data: { month: string; abertos: number; concluidos: number }[] }) {
+  const max = Math.max(...data.flatMap((d) => [d.abertos, d.concluidos]), 1)
+  return (
+    <div className="flex items-end gap-4 overflow-x-auto pb-2" style={{ height: 160 }}>
+      {data.map((d) => (
+        <div key={d.month} className="flex flex-col items-center gap-1">
+          <div className="flex items-end gap-1" style={{ height: 120 }}>
+            <div className="w-4 rounded-t bg-amber-400/80" style={{ height: `${(d.abertos / max) * 100}%` }} title={`${d.abertos} abertos`} />
+            <div className="w-4 rounded-t bg-emerald-400/80" style={{ height: `${(d.concluidos / max) * 100}%` }} title={`${d.concluidos} concluídos`} />
+          </div>
+          <span className="text-[10px] text-slate-500">{d.month.slice(5)}/{d.month.slice(2, 4)}</span>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 export default async function CbxCeoPage() {
@@ -29,15 +53,9 @@ export default async function CbxCeoPage() {
   if (!me.is_staff || !hasPerm(me, 'CEO')) notFound()
 
   const supabase = await createClient()
-  const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: unknown }> }
-  const [ceoRes, finRes] = await Promise.all([sb.rpc('cbx_ceo_summary'), sb.rpc('cbx_finance_summary')])
-  const c = ceoRes.data as Ceo | null
-  const f = finRes.data as Finance | null
+  const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: Ceo | null }> }
+  const { data: c } = await sb.rpc('cbx_ceo_summary')
   if (!c?.ok) notFound()
-
-  const lastRevenue = f?.monthly_revenue?.at(-1)
-  const totalSplit = (f?.affiliate_split?.afiliado ?? 0) + (f?.affiliate_split?.direta ?? 0)
-  const affiliatePct = totalSplit > 0 ? Math.round(((f?.affiliate_split?.afiliado ?? 0) / totalSplit) * 100) : null
 
   return (
     <div className="space-y-6">
@@ -47,37 +65,45 @@ export default async function CbxCeoPage() {
       </div>
 
       {/* Financeiro */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Kpi
-          label="MRR"
-          value={f?.mrr_cents?.length ? f.mrr_cents.map((m) => fmtMoney(m.total_cents, m.currency)).join(' + ') : 'R$ 0,00'}
-          tone="ok"
-        />
-        <Kpi
-          label="Receita no mês"
-          value={lastRevenue ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: lastRevenue.currency }).format(lastRevenue.total) : 'R$ 0,00'}
-        />
-        <Kpi label="Assinaturas ativas" value={f?.totals?.assinaturas_ativas ?? 0} />
-        <Kpi label="Vendas via afiliado" value={affiliatePct == null ? '—' : `${affiliatePct}%`} />
+      <div>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Financeiro</p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Kpi label="MRR" value={money(c.finance.mrr_cents, true)} tone="ok" />
+          <Kpi label="Faturamento (mês até agora)" value={money(c.finance.revenue_month, false)} />
+          <Kpi label="Novas assinaturas (mês)" value={c.finance.new_subs_month} />
+          <Kpi label="MRR das novas (mês)" value={fmtMoney(c.finance.new_mrr_cents_month, 'BRL')} />
+        </div>
       </div>
 
-      {/* Comercial */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Kpi label="Clientes" value={c.clients.total} />
-        <Kpi label="Corporativo" value={c.clients.corporativo} />
-        <Kpi label="Família" value={c.clients.familia} />
-        <Kpi label="Ativos" value={c.clients.ativos} tone="ok" />
+      {/* Base ativa */}
+      <div>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Assinaturas ativas</p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Kpi label="Ativas (total)" value={c.active.total} tone="ok" />
+          <Kpi label="Corporativo" value={c.active.corporativo} />
+          <Kpi label="Família paga" value={c.active.familia_pago} />
+          <Kpi label="Família free" value={c.active.familia_free} />
+        </div>
+      </div>
+
+      {/* Cancelamentos do mês */}
+      <div>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Cancelamentos no mês</p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Kpi label="Total" value={c.canceled_month.total} tone={c.canceled_month.total > 0 ? 'warn' : undefined} />
+          <Kpi label="Corporativo" value={c.canceled_month.corporativo} />
+          <Kpi label="Família paga" value={c.canceled_month.familia_pago} />
+          <Kpi label="Família free" value={c.canceled_month.familia_free} />
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <CbxCard title="Clientes por região">
-          {c.clients.by_state.length === 0 ? (
-            <p className="text-sm text-slate-500">
-              Sem dados de região ainda — o Comercial enriquece o cadastro de cada cliente na ficha (estado/cidade).
-            </p>
+          {c.by_state.length === 0 ? (
+            <p className="text-sm text-slate-500">Sem dados de região ainda — preencha na ficha de cada cliente (Comercial).</p>
           ) : (
             <ul className="space-y-1.5 text-sm">
-              {c.clients.by_state.map((s, i) => (
+              {c.by_state.map((s, i) => (
                 <li key={i} className="flex items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2">
                   <span className="text-slate-200">{s.state}{s.country ? ` · ${s.country}` : ''}</span>
                   <span className="font-semibold text-white">{s.count}</span>
@@ -87,14 +113,12 @@ export default async function CbxCeoPage() {
           )}
         </CbxCard>
 
-        <CbxCard title="Perfil dos clientes (tipo de negócio)">
-          {c.clients.by_business_type.length === 0 ? (
-            <p className="text-sm text-slate-500">
-              Sem dados de perfil ainda — preencha o tipo de negócio na ficha de cada cliente.
-            </p>
+        <CbxCard title="Clientes por tipo de negócio">
+          {c.by_business_type.length === 0 ? (
+            <p className="text-sm text-slate-500">Sem dados de perfil ainda — selecione o tipo de negócio na ficha do cliente.</p>
           ) : (
             <ul className="space-y-1.5 text-sm">
-              {c.clients.by_business_type.map((b, i) => (
+              {c.by_business_type.map((b, i) => (
                 <li key={i} className="flex items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2">
                   <span className="text-slate-200">{b.type}</span>
                   <span className="font-semibold text-white">{b.count}</span>
@@ -103,40 +127,45 @@ export default async function CbxCeoPage() {
             </ul>
           )}
         </CbxCard>
+      </div>
 
-        <CbxCard title="Suporte — visão geral">
-          <div className="grid grid-cols-2 gap-3">
-            <Kpi label="Tickets abertos" value={c.tickets.abertos} tone={c.tickets.abertos > 0 ? 'warn' : 'ok'} />
-            <Kpi label="Total histórico" value={c.tickets.total} />
-          </div>
-          {c.tickets.by_type.length > 0 && (
-            <ul className="mt-3 space-y-1.5 text-sm">
-              {c.tickets.by_type.map((t, i) => (
-                <li key={i} className="flex items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2">
-                  <span className="text-slate-200">{t.type === 'incidente' ? 'Incidentes' : 'Solicitações'}</span>
-                  <span className="font-semibold text-white">{t.count}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CbxCard>
+      {/* Suporte */}
+      <div>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Suporte</p>
+        <div className="mb-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Kpi label="Tickets abertos" value={c.support.open_total} tone={c.support.open_total > 0 ? 'warn' : 'ok'} />
+          <Kpi label="Novos no mês" value={c.support.new_month} />
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <CbxCard title="Abertos × concluídos por mês">
+            {c.support.monthly.length === 0 ? (
+              <p className="text-sm text-slate-500">Nenhum ticket ainda.</p>
+            ) : (
+              <>
+                <SupportChart data={c.support.monthly} />
+                <div className="mt-2 flex gap-4 text-xs text-slate-400">
+                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-amber-400/80" /> Abertos</span>
+                  <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-emerald-400/80" /> Concluídos</span>
+                </div>
+              </>
+            )}
+          </CbxCard>
 
-        <CbxCard title="Tickets por tipo de cliente">
-          {c.tickets.by_kind.length === 0 ? (
-            <p className="text-sm text-slate-500">Nenhum ticket registrado ainda.</p>
-          ) : (
-            <ul className="space-y-1.5 text-sm">
-              {c.tickets.by_kind.map((k, i) => (
-                <li key={i} className="flex items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2">
-                  <span className="text-slate-200">
-                    {k.kind === 'corporate' ? 'Corporativo' : k.kind === 'family' ? 'Família' : k.kind}
-                  </span>
-                  <span className="font-semibold text-white">{k.count}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CbxCard>
+          <CbxCard title="Tickets por tipo de cliente">
+            {c.support.by_kind.length === 0 ? (
+              <p className="text-sm text-slate-500">Nenhum ticket registrado ainda.</p>
+            ) : (
+              <ul className="space-y-1.5 text-sm">
+                {c.support.by_kind.map((k, i) => (
+                  <li key={i} className="flex items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2">
+                    <span className="text-slate-200">{k.kind === 'corporate' ? 'Corporativo' : k.kind === 'family' ? 'Família' : k.kind}</span>
+                    <span className="font-semibold text-white">{k.count}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CbxCard>
+        </div>
       </div>
     </div>
   )

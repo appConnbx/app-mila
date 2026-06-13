@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, Kpi, Pill, btnCbx, inputCbx, labelCbx, fmtDate } from '../../_ui'
+import { ClientProfileForm } from '../_profile-form'
 import { saveProfile, addNote, setLicense } from '../actions'
 
 type Detail = {
@@ -55,13 +56,15 @@ export default async function FichaClientePage({
 
   const supabase = await createClient()
   const sb = supabase as unknown as { rpc: (n: string, a?: Record<string, unknown>) => Promise<{ data: unknown }> }
-  const [detailRes, plansRes] = await Promise.all([
+  const [detailRes, plansRes, typesRes] = await Promise.all([
     sb.rpc('cbx_client_detail', { p_holding: holdingId }),
     sb.rpc('admin_list_plans'),
+    sb.rpc('cbx_list_business_types', { p_all: false }),
   ])
   const d = detailRes.data as Detail | null
   if (!d?.ok || !d.holding) notFound()
   const plans = (plansRes.data as Plan[] | null) ?? []
+  const businessTypes = ((typesRes.data as { name: string }[] | null) ?? []).map((b) => b.name)
   const h = d.holding
   const lic = d.license
   const p = d.profile
@@ -100,43 +103,33 @@ export default async function FichaClientePage({
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Enriquecimento do cadastro */}
         <CbxCard title="Cadastro e inteligência de negócio">
-          <form action={saveProfile} className="space-y-3">
-            <input type="hidden" name="holding_id" value={h.id} />
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <label className={labelCbx}>Tipo de negócio</label>
-                <input name="business_type" defaultValue={p?.business_type ?? ''} placeholder="Ex.: Construtora" disabled={!canEdit} className={`mt-1 ${inputCbx}`} />
-              </div>
-              <div>
-                <label className={labelCbx}>País</label>
-                <input name="country" defaultValue={p?.country ?? ''} placeholder="Brasil" disabled={!canEdit} className={`mt-1 ${inputCbx}`} />
-              </div>
-              <div>
-                <label className={labelCbx}>Estado</label>
-                <input name="state" defaultValue={p?.state ?? ''} placeholder="SP" disabled={!canEdit} className={`mt-1 ${inputCbx}`} />
-              </div>
-              <div>
-                <label className={labelCbx}>Cidade</label>
-                <input name="city" defaultValue={p?.city ?? ''} placeholder="São Paulo" disabled={!canEdit} className={`mt-1 ${inputCbx}`} />
-              </div>
-              <div>
-                <label className={labelCbx}>Contato responsável</label>
-                <input name="contact_name" defaultValue={p?.contact_name ?? ''} disabled={!canEdit} className={`mt-1 ${inputCbx}`} />
-              </div>
-              <div>
-                <label className={labelCbx}>E-mail do contato</label>
-                <input name="contact_email" type="email" defaultValue={p?.contact_email ?? ''} disabled={!canEdit} className={`mt-1 ${inputCbx}`} />
-              </div>
-              <div className="sm:col-span-2">
-                <label className={labelCbx}>Telefone do contato</label>
-                <input name="contact_phone" defaultValue={p?.contact_phone ?? ''} disabled={!canEdit} className={`mt-1 ${inputCbx}`} />
-              </div>
-            </div>
-            {canEdit && <button className={btnCbx}>Salvar cadastro</button>}
-            {p?.updated_by && (
-              <p className="text-xs text-slate-500">Atualizado por {p.updated_by} em {fmtDate(p.updated_at)}</p>
-            )}
-          </form>
+          {canEdit ? (
+            <>
+              <ClientProfileForm
+                holdingId={h.id}
+                businessTypes={businessTypes}
+                action={saveProfile}
+                initial={{
+                  business_type: p?.business_type ?? null,
+                  country: p?.country ?? null,
+                  state: p?.state ?? null,
+                  city: p?.city ?? null,
+                  contact_name: p?.contact_name ?? null,
+                  contact_email: p?.contact_email ?? null,
+                  contact_phone: p?.contact_phone ?? null,
+                }}
+              />
+              {p?.updated_by && (
+                <p className="mt-2 text-xs text-slate-500">Atualizado por {p.updated_by} em {fmtDate(p.updated_at)}</p>
+              )}
+            </>
+          ) : (
+            <dl className="space-y-1.5 text-sm">
+              <div className="flex justify-between gap-3"><dt className="text-slate-500">Tipo de negócio</dt><dd className="text-slate-200">{p?.business_type ?? '—'}</dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-slate-500">Região</dt><dd className="text-slate-200">{[p?.city, p?.state, p?.country].filter(Boolean).join(' / ') || '—'}</dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-slate-500">Contato</dt><dd className="text-slate-200">{p?.contact_name ?? '—'}</dd></div>
+            </dl>
+          )}
         </CbxCard>
 
         <div className="space-y-6">

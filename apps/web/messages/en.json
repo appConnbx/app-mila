@@ -529,6 +529,10 @@
       "familyUsers": "up to 5 people",
       "familyPlusUsers": "up to 10 people",
       "familyCta": "Start with the family",
+      "freeBadge": "Free forever",
+      "freeName": "Family Free",
+      "freeDesc": "1 user and up to 15 demands per day. No card, start in 1 minute.",
+      "freeCta": "Create free account",
       "refundNote": "7-day guarantee — full refund if it's not a fit."
     },
     "affiliates": {

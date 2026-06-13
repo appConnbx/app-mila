@@ -1,0 +1,17 @@
+/** Listas para os seletores de região na ficha do cliente. */
+
+export const COUNTRIES = [
+  'Brasil', 'Portugal', 'Estados Unidos', 'Argentina', 'Chile', 'Colômbia',
+  'México', 'Paraguai', 'Uruguai', 'Espanha', 'Outro',
+]
+
+/** UFs do Brasil (sigla + nome) para o seletor de estado quando país = Brasil. */
+export const BR_STATES = [
+  ['AC', 'Acre'], ['AL', 'Alagoas'], ['AP', 'Amapá'], ['AM', 'Amazonas'],
+  ['BA', 'Bahia'], ['CE', 'Ceará'], ['DF', 'Distrito Federal'], ['ES', 'Espírito Santo'],
+  ['GO', 'Goiás'], ['MA', 'Maranhão'], ['MT', 'Mato Grosso'], ['MS', 'Mato Grosso do Sul'],
+  ['MG', 'Minas Gerais'], ['PA', 'Pará'], ['PB', 'Paraíba'], ['PR', 'Paraná'],
+  ['PE', 'Pernambuco'], ['PI', 'Piauí'], ['RJ', 'Rio de Janeiro'], ['RN', 'Rio Grande do Norte'],
+  ['RS', 'Rio Grande do Sul'], ['RO', 'Rondônia'], ['RR', 'Roraima'], ['SC', 'Santa Catarina'],
+  ['SP', 'São Paulo'], ['SE', 'Sergipe'], ['TO', 'Tocantins'],
+] as const
