@@ -668,8 +668,8 @@ export default async function LandingPage() {
               {t('footer.corporate')}: <a href="mailto:mail@connbx.com.br" className="text-slate-400 hover:text-white">mail@connbx.com.br</a>
             </p>
             <p className="flex flex-wrap gap-x-5 gap-y-1">
-              <Link href="/privacidade" className="hover:text-white">{t('footer.privacy')}</Link>
-              <Link href="/seguranca" className="hover:text-white">{t('footer.security')}</Link>
+              <Link href="/privacy" className="hover:text-white">{t('footer.privacy')}</Link>
+              <Link href="/security" className="hover:text-white">{t('footer.security')}</Link>
             </p>
             <p>{t('footer.copyright')}</p>
           </div>

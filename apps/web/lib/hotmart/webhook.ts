@@ -84,7 +84,7 @@ async function resolvePlanId(admin: Admin, productId?: string, offerCode?: strin
 async function ensureAuthUser(admin: Admin, email: string): Promise<string | null> {
   const base = process.env.APP_BASE_URL ?? 'https://www.appmila.co'
   const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${base}/auth/confirm?next=${encodeURIComponent('/definir-senha')}`,
+    redirectTo: `${base}/auth/confirm?next=${encodeURIComponent('/create-password')}`,
   })
   if (!error && data?.user?.id) return data.user.id
   // já registrado (ou e-mail não enviou): busca o id existente

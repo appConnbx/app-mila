@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const type = url.searchParams.get('type') as EmailOtpType | null
   const code = url.searchParams.get('code')
   const lang = url.searchParams.get('lang') ?? ''
-  const next = url.searchParams.get('next') || '/definir-senha'
+  const next = url.searchParams.get('next') || '/create-password'
 
   const supabase = await createClient()
   let ok = false
@@ -28,6 +28,6 @@ export async function GET(req: NextRequest) {
   }
 
   const langQs = lang ? `${next.includes('?') ? '&' : '?'}lang=${encodeURIComponent(lang)}` : ''
-  const dest = ok ? `${next}${langQs}` : `/definir-senha?erro=link${lang ? `&lang=${encodeURIComponent(lang)}` : ''}`
+  const dest = ok ? `${next}${langQs}` : `/create-password?erro=link${lang ? `&lang=${encodeURIComponent(lang)}` : ''}`
   return NextResponse.redirect(`${origin}${dest.startsWith('/') ? dest : `/${dest}`}`, { status: 303 })
 }

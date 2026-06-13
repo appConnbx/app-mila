@@ -49,7 +49,7 @@ export default async function LoginPage({
         </form>
 
         <div className="mt-4 text-center">
-          <a href="/recuperar" className="text-xs text-slate-500 transition hover:text-slate-300">
+          <a href="/forgot-password" className="text-xs text-slate-500 transition hover:text-slate-300">
             {t('forgot')}
           </a>
         </div>

@@ -8,13 +8,13 @@ type CookieToSet = { name: string; value: string; options: CookieOptions }
 // /api/hotmart = webhook da Hotmart (autenticado por hottok, não por sessão).
 // /api/agent = download do agente desktop (redirect público para a release).
 const PUBLIC_PREFIXES = [
-  '/login', '/auth', '/affiliates', '/api/hotmart', '/api/agent', '/privacidade', '/seguranca', '/start',
+  '/login', '/auth', '/affiliates', '/api/hotmart', '/api/agent', '/privacy', '/security', '/start',
   // Primeiro acesso / recuperação de senha (pós-compra).
-  '/bem-vindo', '/definir-senha', '/recuperar',
+  '/welcome', '/create-password', '/forgot-password',
   // Checkout (visitante anônimo) e webhook (Stripe) são públicos; /api/stripe/portal NÃO.
   '/api/stripe/checkout', '/api/stripe/webhook',
   // Páginas de vendas para anúncios (públicas, por idioma/segmento).
-  '/br-empresa', '/br-pessoal', '/en-business', '/en-personal', '/es-business', '/es-personal',
+  '/br-business', '/br-personal', '/en-business', '/en-personal', '/es-business', '/es-personal',
 ]
 
 /** Renova a sessão e protege rotas (redireciona para /login se não autenticado). */

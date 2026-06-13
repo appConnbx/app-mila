@@ -52,7 +52,7 @@ async function planIdBySlug(admin: Admin, slug: string): Promise<string | null> 
 async function ensureAuthUser(admin: Admin, email: string, lang?: string): Promise<string | null> {
   const base = process.env.APP_BASE_URL ?? 'https://www.appmila.co'
   const langQs = lang ? `&lang=${encodeURIComponent(lang)}` : ''
-  const redirectTo = `${base}/auth/confirm?next=${encodeURIComponent('/definir-senha')}${langQs}`
+  const redirectTo = `${base}/auth/confirm?next=${encodeURIComponent('/create-password')}${langQs}`
   const { data, error } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo })
   if (!error && data?.user?.id) return data.user.id
   const { data: existing } = await (admin as unknown as RpcAdmin).rpc('auth_user_id_by_email', { p_email: email })

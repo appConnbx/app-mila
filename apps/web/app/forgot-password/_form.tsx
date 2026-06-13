@@ -15,7 +15,7 @@ export function RecoverForm({ dict, lang }: { dict: RecoverDict; lang?: string }
     e.preventDefault()
     setLoading(true)
     const supabase = createClient()
-    const next = encodeURIComponent('/definir-senha')
+    const next = encodeURIComponent('/create-password')
     const langQs = lang ? `&lang=${encodeURIComponent(lang)}` : ''
     await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/confirm?next=${next}${langQs}`,

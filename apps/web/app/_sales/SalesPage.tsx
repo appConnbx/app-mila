@@ -347,8 +347,8 @@ export function SalesPage({ c }: { c: SalesContent }) {
           <p className="text-slate-400">{c.footerDisclaimer}</p>
           <p>{c.footerCompany}</p>
           <p className="flex flex-wrap gap-x-5 gap-y-1">
-            <Link href="/privacidade" className="hover:text-white">{c.privacyLabel}</Link>
-            <Link href="/seguranca" className="hover:text-white">{c.termsLabel}</Link>
+            <Link href="/privacy" className="hover:text-white">{c.privacyLabel}</Link>
+            <Link href="/security" className="hover:text-white">{c.termsLabel}</Link>
             <a href={`mailto:${c.supportEmail}`} className="hover:text-white">{c.supportEmail}</a>
           </p>
         </div>

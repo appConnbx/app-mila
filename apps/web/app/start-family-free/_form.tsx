@@ -72,7 +72,7 @@ export function SignupForm({ dict }: { dict: Dict }) {
 
       <p className="text-xs text-slate-500">
         {dict.consentPre}{' '}
-        <a href="/privacidade" className="text-cyan-400 hover:underline">{dict.privacy}</a>.
+        <a href="/privacy" className="text-cyan-400 hover:underline">{dict.privacy}</a>.
       </p>
 
       <button

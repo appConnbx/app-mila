@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       'line_items[0][quantity]': 1,
       allow_promotion_codes: true,
       billing_address_collection: 'auto',
-      success_url: `${origin}/bem-vindo?lang=${lang}`,
+      success_url: `${origin}/welcome?lang=${lang}`,
       cancel_url: `${origin}${next}?checkout=cancelado`,
       'metadata[mila_plan]': plan,
       'metadata[mila_lang]': lang,

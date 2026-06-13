@@ -72,7 +72,7 @@ export default function SegurancaPage() {
         <H>LGPD e privacidade</H>
         <P>
           O tratamento de dados segue a LGPD — detalhes, direitos do titular e canal de contato
-          na nossa <Link href="/privacidade" className="text-brand hover:underline">Política de
+          na nossa <Link href="/privacy" className="text-brand hover:underline">Política de
           Privacidade</Link>.
         </P>
 

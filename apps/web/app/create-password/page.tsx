@@ -33,7 +33,7 @@ export default async function DefinirSenhaPage({
             <h2 className="text-lg font-semibold text-white">{t('setInvalidTitle')}</h2>
             <p className="mt-2 text-sm text-slate-400">{t('setInvalidBody')}</p>
             <Link
-              href={`/recuperar${langQs}`}
+              href={`/forgot-password${langQs}`}
               className="mt-5 inline-block w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
             >
               {t('setRequestNew')}
