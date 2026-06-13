@@ -188,7 +188,6 @@ export default async function LandingPage() {
 
   const bold = { b: (chunks: ReactNode) => <span className="font-semibold text-white">{chunks}</span> }
   const pains = t.raw('triggers.items') as { p: string; r: string }[]
-  const steps = t.raw('how.steps') as { n: string; t: string; d: string }[]
   const corpBullets = t.raw('contexts.corpBullets') as string[]
   const familyBullets = t.raw('contexts.familyBullets') as string[]
 
@@ -218,7 +217,6 @@ export default async function LandingPage() {
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
           <Logo />
           <div className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
-            <a href="#como" className="transition hover:text-white">{t('nav.how')}</a>
             <a href="#empresas" className="transition hover:text-white">{t('nav.business')}</a>
             <a href="#pessoal" className="transition hover:text-white">{t('nav.personal')}</a>
             <a href="#afiliados" className="transition hover:text-white">{t('nav.affiliates')}</a>
@@ -383,23 +381,6 @@ export default async function LandingPage() {
           >
             {t('eco.cta')} <Arrow className="h-4 w-4" />
           </a>
-        </div>
-      </section>
-
-      {/* ---------------- COMO FUNCIONA ---------------- */}
-      <section id="como" className="mx-auto max-w-6xl px-4 py-12">
-        <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-brand">{t('how.kicker')}</p>
-          <h2 className="mt-2 text-3xl font-bold text-white">{t('how.title')}</h2>
-        </div>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((s) => (
-            <div key={s.n} className="glass p-6">
-              <span className="text-sm font-bold text-brand">{s.n}</span>
-              <h3 className="mt-2 text-lg font-semibold text-white">{s.t}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{s.d}</p>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -575,7 +556,6 @@ export default async function LandingPage() {
             <p className="mt-3 max-w-xs text-sm text-slate-500">{t('footer.tagline')}</p>
           </div>
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-slate-400">
-            <a href="#como" className="transition hover:text-white">{t('nav.how')}</a>
             <a href="#empresas" className="transition hover:text-white">{t('nav.business')}</a>
             <a href="#pessoal" className="transition hover:text-white">{t('nav.personal')}</a>
             <a href="#afiliados" className="transition hover:text-white">{t('nav.affiliates')}</a>
