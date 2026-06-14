@@ -46,9 +46,11 @@ export async function updateTicket(formData: FormData) {
 export async function addTicketComment(formData: FormData) {
   const id = String(formData.get('id') ?? '')
   const body = String(formData.get('body') ?? '').trim()
+  // 'client' = interação visível ao cliente; 'internal' = nota interna (padrão).
+  const audience = String(formData.get('audience') ?? 'internal') === 'client' ? 'client' : 'internal'
   if (!id || !body) return
   const supabase = await createClient()
-  await (supabase as unknown as Rpc).rpc('cbx_add_ticket_comment', { p_id: id, p_body: body })
+  await (supabase as unknown as Rpc).rpc('cbx_add_ticket_comment', { p_id: id, p_body: body, p_audience: audience })
   revalidatePath(`/cbx/suporte/${id}`)
   redirect(`/cbx/suporte/${id}?ok=comentado`)
 }

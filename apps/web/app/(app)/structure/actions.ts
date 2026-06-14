@@ -383,18 +383,49 @@ export async function adminSetPassword(formData: FormData) {
   redirect('/structure/users?ok=pwset')
 }
 
+type SupRpc = { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: { ok?: boolean; reason?: string } | null }> }
+
 /** Admin da holding abre um ticket de suporte → alimenta a fila do portal CBX.
- *  A RPC client_open_ticket valida holding_admin e deriva holding/cliente/autor. */
+ *  Cliente NÃO escolhe o tipo (solicitação/incidente) — quem classifica é o CBX. */
 export async function openSupportTicket(formData: FormData) {
   const supabase = await createClient()
   const title = String(formData.get('title') ?? '').trim()
-  const type = String(formData.get('type') ?? 'solicitacao')
   const description = String(formData.get('description') ?? '').trim() || null
-  if (!title) redirect('/structure/holding?support=campos')
-  const sb = supabase as unknown as {
-    rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: { ok?: boolean; reason?: string } | null }>
-  }
-  const { data } = await sb.rpc('client_open_ticket', { p_title: title, p_type: type, p_description: description })
+  if (!title) redirect('/structure/holding?tab=support&support=campos')
+  const { data } = await (supabase as unknown as SupRpc).rpc('client_open_ticket', {
+    p_title: title, p_type: 'solicitacao', p_description: description,
+  })
   revalidatePath('/structure/holding')
-  redirect(`/structure/holding?support=${data?.ok ? 'ok' : data?.reason ?? 'erro'}`)
+  redirect(`/structure/holding?tab=support&support=${data?.ok ? 'ok' : data?.reason ?? 'erro'}`)
+}
+
+/** Cliente responde (interação visível ao suporte) num chamado da sua holding. */
+export async function clientReplyTicket(formData: FormData) {
+  const supabase = await createClient()
+  const id = String(formData.get('id') ?? '')
+  const body = String(formData.get('body') ?? '').trim()
+  if (!id || !body) return
+  await (supabase as unknown as SupRpc).rpc('client_reply_ticket', { p_id: id, p_body: body })
+  revalidatePath('/structure/holding')
+}
+
+/** Cliente fecha o próprio chamado. */
+export async function clientCloseTicket(formData: FormData) {
+  const supabase = await createClient()
+  const id = String(formData.get('id') ?? '')
+  if (!id) return
+  await (supabase as unknown as SupRpc).rpc('client_close_ticket', { p_id: id })
+  revalidatePath('/structure/holding')
+}
+
+type ThreadMsg = { id: string; author: string; body: string; created_at: string; from_support: boolean }
+type Thread = { ok: boolean; ticket?: { id: string; title: string; description: string | null; status: string; created_at: string }; messages?: ThreadMsg[] }
+
+/** Busca a conversa de um chamado (e marca como lido). Retorna dados ao cliente. */
+export async function clientTicketThread(id: string): Promise<Thread | null> {
+  const supabase = await createClient()
+  const sb = supabase as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: Thread | null }> }
+  const { data } = await sb.rpc('client_ticket_thread', { p_id: id })
+  revalidatePath('/structure/holding')
+  return data
 }
