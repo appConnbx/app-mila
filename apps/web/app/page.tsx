@@ -240,20 +240,20 @@ export default async function LandingPage() {
   const perMonth = t('plans.perMonth')
   // BR: produtos anuais via Hotmart (corp 12x; família total anual + 12x).
   // INTL: venda direta via Stripe (assinatura mensal). Hotmart fica só para afiliados.
-  // TODO(hotmart-br): ao recriar as ofertas BR como ANUAL/12x, trocar os off= BR pelos novos códigos.
+  // off= BR = ofertas ANUAIS/12x (recriadas jun/2026); as mensais antigas ficaram só para assinantes.
   const checkout = (offBR: string, plan: string) =>
     isBR
       ? `https://pay.hotmart.com/P106262837P?off=${offBR}`
       : `/subscribe?plan=${plan}&next=%2F&lang=${locale}`
   const corpPlans = [
-    { name: 'Starter', users: t('plans.starterUsers'), intl: '87', brParcela: '297', brTotal: '3.564', href: checkout('hcxkobrb', 'starter') },
-    { name: 'Growth', users: t('plans.growthUsers'), intl: '167', brParcela: '497', brTotal: '5.964', href: checkout('7d5lrof8', 'growth') },
-    { name: 'Scale', users: t('plans.scaleUsers'), intl: '337', brParcela: '697', brTotal: '8.364', href: checkout('u7x98fyz', 'scale'), featured: true },
-    { name: 'Enterprise', users: t('plans.enterpriseUsers'), intl: '667', brParcela: '1.117', brTotal: '13.404', href: checkout('9gacabk6', 'enterprise') },
+    { name: 'Starter', users: t('plans.starterUsers'), intl: '87', brParcela: '297', brTotal: '3.564', href: checkout('wyitwc3d', 'starter') },
+    { name: 'Growth', users: t('plans.growthUsers'), intl: '167', brParcela: '497', brTotal: '5.964', href: checkout('2kxlbff2', 'growth') },
+    { name: 'Scale', users: t('plans.scaleUsers'), intl: '337', brParcela: '697', brTotal: '8.364', href: checkout('abpzxjap', 'scale'), featured: true },
+    { name: 'Enterprise', users: t('plans.enterpriseUsers'), intl: '667', brParcela: '1.117', brTotal: '13.404', href: checkout('yl7fpa6u', 'enterprise') },
   ]
   const familyPlans = [
-    { name: 'Family', users: t('plans.familyUsers'), intl: '13', brAnnual: '97', brParcela: '8,08', href: checkout('f7nrog01', 'family') },
-    { name: 'Family Plus', users: t('plans.familyPlusUsers'), intl: '17', brAnnual: '127', brParcela: '10,58', href: checkout('d3c9cwha', 'family_plus'), featured: true },
+    { name: 'Family', users: t('plans.familyUsers'), intl: '13', brAnnual: '97', brParcela: '8,08', href: checkout('i67ovflk', 'family') },
+    { name: 'Family Plus', users: t('plans.familyPlusUsers'), intl: '17', brAnnual: '127', brParcela: '10,58', href: checkout('tfkn6adh', 'family_plus'), featured: true },
   ]
 
   // Bloco de preço: INTL (assinatura/mês) · BR corp (12x + à vista) · BR família (anual + 12x).

@@ -21,16 +21,16 @@ export default async function AssinaturaPage() {
   const isFamily = (ctx?.kind ?? 'corporate') === 'family'
   const sponsored = ctx?.plan_slug === 'connbx-family-sponsored'
 
-  // TODO(hotmart-br): ao recriar as ofertas BR como ANUAL/12x, trocar os off= BR pelos novos códigos.
+  // off= BR = ofertas ANUAIS/12x (recriadas jun/2026); as mensais antigas ficaram só para assinantes.
   const corpPlans = [
-    { name: 'Starter', users: tl('plans.starterUsers'), intl: '87', brParcela: '297', brTotal: '3.564', href: checkout('hcxkobrb', 'starter'), featured: false },
-    { name: 'Growth', users: tl('plans.growthUsers'), intl: '167', brParcela: '497', brTotal: '5.964', href: checkout('7d5lrof8', 'growth'), featured: false },
-    { name: 'Scale', users: tl('plans.scaleUsers'), intl: '337', brParcela: '697', brTotal: '8.364', href: checkout('u7x98fyz', 'scale'), featured: true },
-    { name: 'Enterprise', users: tl('plans.enterpriseUsers'), intl: '667', brParcela: '1.117', brTotal: '13.404', href: checkout('9gacabk6', 'enterprise'), featured: false },
+    { name: 'Starter', users: tl('plans.starterUsers'), intl: '87', brParcela: '297', brTotal: '3.564', href: checkout('wyitwc3d', 'starter'), featured: false },
+    { name: 'Growth', users: tl('plans.growthUsers'), intl: '167', brParcela: '497', brTotal: '5.964', href: checkout('2kxlbff2', 'growth'), featured: false },
+    { name: 'Scale', users: tl('plans.scaleUsers'), intl: '337', brParcela: '697', brTotal: '8.364', href: checkout('abpzxjap', 'scale'), featured: true },
+    { name: 'Enterprise', users: tl('plans.enterpriseUsers'), intl: '667', brParcela: '1.117', brTotal: '13.404', href: checkout('yl7fpa6u', 'enterprise'), featured: false },
   ]
   const familyPlans = [
-    { name: 'Family', users: tl('plans.familyUsers'), intl: '13', brAnnual: '97', brParcela: '8,08', href: checkout('f7nrog01', 'family'), featured: false },
-    { name: 'Family Plus', users: tl('plans.familyPlusUsers'), intl: '17', brAnnual: '127', brParcela: '10,58', href: checkout('d3c9cwha', 'family_plus'), featured: true },
+    { name: 'Family', users: tl('plans.familyUsers'), intl: '13', brAnnual: '97', brParcela: '8,08', href: checkout('i67ovflk', 'family'), featured: false },
+    { name: 'Family Plus', users: tl('plans.familyPlusUsers'), intl: '17', brAnnual: '127', brParcela: '10,58', href: checkout('tfkn6adh', 'family_plus'), featured: true },
   ]
   const plans = isFamily ? familyPlans : corpPlans
 
