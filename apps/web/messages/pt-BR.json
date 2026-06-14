@@ -733,7 +733,9 @@
       "Confirmar presença no evento de sexta",
       "Pedir orçamento de material novo"
     ],
-    "statusFinalizada": "Finalizada"
+    "statusFinalizada": "Finalizada",
+    "micPrompt": "Para a experiência real, autorize o microfone quando o navegador pedir. Sem permissão, o exemplo fica genérico.",
+    "micDenied": "Microfone não autorizado — mostrando um exemplo genérico."
   },
   "familyBonus": {
     "kicker": "BENEFÍCIO PARA O TIME",

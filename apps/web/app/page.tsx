@@ -237,6 +237,7 @@ export default async function LandingPage() {
     recording: tv('recording'), transcribing: tv('transcribing'), formPlaceholder: tv('formPlaceholder'),
     add: tv('add'), listTitle: tv('listTitle'), empty: tv('empty'),
     statusNova: tv('statusNova'), statusTrabalhando: tv('statusTrabalhando'), statusFinalizada: tv('statusFinalizada'), limit: tv('limit'),
+    micPrompt: tv('micPrompt'), micDenied: tv('micDenied'),
   }
   const voiceSamples = tv.raw('samples') as string[]
 
