@@ -7,7 +7,7 @@ import { finishOnboarding } from './actions'
 
 export const metadata = { title: 'Onboarding · MILA' }
 
-type Pending = { holding_id: string; name: string; kind: 'corporate' | 'family' }
+type Pending = { holding_id: string; name: string; kind: 'corporate' | 'family'; plan_slug: string | null }
 
 function StepDot({ state }: { state: 'done' | 'current' | 'pending' }) {
   if (state === 'done') {
@@ -44,6 +44,7 @@ export default async function OnboardingPage() {
   if (!pending) redirect('/dashboard')
 
   const isFamily = pending.kind === 'family'
+  const isFree = (pending.plan_slug ?? '').includes('free')
   const seg = isFamily ? 'familia' : 'empresa'
   const configBullets = (isFamily ? t.raw('configFamily') : t.raw('configCorp')) as string[]
   const configHint = isFamily ? t('configHintFamily') : t('configHintCorp')
@@ -53,6 +54,13 @@ export default async function OnboardingPage() {
       <p className="text-sm font-semibold uppercase tracking-wider text-brand">MILA</p>
       <h1 className="mt-1 text-3xl font-bold tracking-tight text-white">{t('welcome', { name: pending.name })}</h1>
       <p className="mt-1 text-slate-400">{t('subtitle')}</p>
+
+      {isFree && (
+        <div className="glass mt-6 border border-emerald-400/20 p-4">
+          <p className="text-sm font-semibold text-emerald-300">{t('freeTitle')}</p>
+          <p className="mt-1 text-sm text-slate-300">{t('freeDesc')}</p>
+        </div>
+      )}
 
       <div className="relative mt-8 space-y-6 pl-2">
         <span className="absolute left-[1.05rem] top-2 bottom-2 w-px bg-white/10" aria-hidden />
