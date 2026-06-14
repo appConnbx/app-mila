@@ -182,6 +182,7 @@
     "welcomeLoginCta": "Ir a la pantalla de acceso",
     "setTitle": "Crea tu contraseña",
     "setSubtitle": "Define una contraseña para acceder a tu cuenta MILA.",
+    "setLangLabel": "Idioma de la cuenta",
     "setPlaceholder": "Nueva contraseña (mín. 6 caracteres)",
     "setConfirmPlaceholder": "Confirma la contraseña",
     "setMismatch": "Las contraseñas no coinciden.",

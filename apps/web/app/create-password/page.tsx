@@ -54,6 +54,7 @@ export default async function DefinirSenhaPage({
                 submit: t('setSubmit'),
                 saving: t('setSaving'),
               }}
+              langChoice={lang === 'en' || lang === 'es' ? { label: t('setLangLabel'), initial: lang } : undefined}
             />
           </>
         )}

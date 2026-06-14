@@ -182,6 +182,7 @@
     "welcomeLoginCta": "Go to the sign-in screen",
     "setTitle": "Create your password",
     "setSubtitle": "Set a password to access your MILA account.",
+    "setLangLabel": "Account language",
     "setPlaceholder": "New password (min. 6 characters)",
     "setConfirmPlaceholder": "Confirm password",
     "setMismatch": "Passwords don't match.",

@@ -15,12 +15,13 @@ export type SetPwDict = {
   saving: string
 }
 
-export function SetPasswordForm({ dict }: { dict: SetPwDict }) {
+export function SetPasswordForm({ dict, langChoice }: { dict: SetPwDict; langChoice?: { label: string; initial: string } }) {
   const router = useRouter()
   const [pw, setPw] = useState('')
   const [confirm, setConfirm] = useState('')
   const [err, setErr] = useState('')
   const [loading, setLoading] = useState(false)
+  const [lang, setLang] = useState(langChoice?.initial ?? '')
   const mismatch = confirm.length > 0 && pw !== confirm
 
   async function onSubmit(e: React.FormEvent) {
@@ -36,12 +37,28 @@ export function SetPasswordForm({ dict }: { dict: SetPwDict }) {
       setLoading(false)
       return
     }
+    // Onboarding internacional: persiste o idioma escolhido na conta + cookie de UI.
+    if (langChoice && lang) {
+      try {
+        await (supabase as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<unknown> }).rpc('set_my_language', { p_lang: lang })
+        document.cookie = `mila_locale=${lang}; path=/; max-age=31536000`
+      } catch { /* não bloqueia o acesso */ }
+    }
     router.push('/dashboard')
     router.refresh()
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
+      {langChoice && (
+        <div>
+          <label className="mb-1 block text-sm text-slate-300">{langChoice.label}</label>
+          <select value={lang} onChange={(e) => setLang(e.target.value)} className={fieldClasses}>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+      )}
       <PasswordInput
         name="password"
         value={pw}

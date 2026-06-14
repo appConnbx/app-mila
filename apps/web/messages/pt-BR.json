@@ -182,6 +182,7 @@
     "welcomeLoginCta": "Ir para a tela de entrada",
     "setTitle": "Crie sua senha",
     "setSubtitle": "Defina uma senha para acessar a sua conta MILA.",
+    "setLangLabel": "Idioma da conta",
     "setPlaceholder": "Nova senha (mín. 6 caracteres)",
     "setConfirmPlaceholder": "Confirme a senha",
     "setMismatch": "As senhas não conferem.",
