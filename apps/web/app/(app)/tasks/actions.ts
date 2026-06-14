@@ -113,6 +113,15 @@ export async function setDemandStatus(formData: FormData) {
   revalidatePath(`/tasks/${id}`)
 }
 
+/** Avanço de status inline na lista (chip clicável). Recebe args (não FormData). */
+export async function advanceDemandStatus(id: string, status: 'nova' | 'trabalhando' | 'finalizada') {
+  if (!id || !['nova', 'trabalhando', 'finalizada'].includes(status)) return
+  const supabase = await createClient()
+  await supabase.from('demands').update({ status } as never).eq('id', id)
+  revalidatePath('/tasks')
+  revalidatePath(`/tasks/${id}`)
+}
+
 /** Exclui uma demanda. O RLS (demands_delete) garante: criador ou admin da holding. */
 export async function deleteDemand(formData: FormData) {
   const supabase = await createClient()

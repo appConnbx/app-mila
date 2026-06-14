@@ -27,6 +27,21 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Lista de demandas: ao finalizar pelo chip, a linha some (fade + colapso) antes
+   de migrar para "Concluídas". A altura é fixada via JS (maxHeight) p/ animar. */
+.demand-row {
+  transition: max-height 0.34s ease, opacity 0.3s ease, transform 0.3s ease, margin 0.34s ease, padding 0.34s ease;
+}
+.demand-row.demand-leaving {
+  max-height: 0 !important;
+  opacity: 0;
+  transform: translateY(-6px);
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
 body {
   @apply bg-surface text-slate-200 antialiased;
 }
