@@ -732,7 +732,8 @@
       "Revisar o contrato do fornecedor",
       "Confirmar presença no evento de sexta",
       "Pedir orçamento de material novo"
-    ]
+    ],
+    "statusFinalizada": "Finalizada"
   },
   "familyBonus": {
     "kicker": "BENEFÍCIO PARA O TIME",

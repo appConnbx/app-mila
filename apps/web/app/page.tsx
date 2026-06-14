@@ -236,7 +236,7 @@ export default async function LandingPage() {
     badge: tv('badge'), title: tv('title'), subtitle: tv('subtitle'), holdHint: tv('holdHint'),
     recording: tv('recording'), transcribing: tv('transcribing'), formPlaceholder: tv('formPlaceholder'),
     add: tv('add'), listTitle: tv('listTitle'), empty: tv('empty'),
-    statusNova: tv('statusNova'), statusTrabalhando: tv('statusTrabalhando'), limit: tv('limit'),
+    statusNova: tv('statusNova'), statusTrabalhando: tv('statusTrabalhando'), statusFinalizada: tv('statusFinalizada'), limit: tv('limit'),
   }
   const voiceSamples = tv.raw('samples') as string[]
 
