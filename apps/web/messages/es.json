@@ -758,6 +758,8 @@
   "onboarding": {
     "welcome": "¡Bienvenido a MILA, {name}!",
     "subtitle": "Vamos a dejar todo listo en pocos pasos.",
+    "instancesTitle": "Qué son las instancias",
+    "instancesDesc": "Tu cuenta (tu acceso) puede reunir varias instancias: cada empresa y también tu familia es una instancia. Cambias entre ellas — y es dentro de una instancia donde creas y delegas las tareas. Todo queda vinculado al mismo acceso.",
     "done": "Hecho",
     "now": "Ahora",
     "buyTitle": "Plan contratado",
@@ -770,7 +772,7 @@
     "configCorp": ["Datos de la holding (empresa, zona horaria, idioma y logo)", "Organizaciones", "Áreas", "Equipos y personas", "Crea la primera tarea"],
     "configFamily": ["Datos de la familia (nombre, zona horaria e idioma)", "Miembros: cónyuge, hijos y padres", "Personal de la casa: ama de llaves, cocinero(a), limpieza, jardinero(a), chofer...", "Crea la primera tarea"],
     "manualCta": "Descargar el manual de configuración",
-    "goConfig": "Ir a la configuración",
+    "goConfig": "Entrar y configurar",
     "finish": "Finalizar e ir a la app",
     "skip": "Omitir por ahora"
   },

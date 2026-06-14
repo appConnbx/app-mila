@@ -5,13 +5,28 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 
-/** Conclui (ou pula) o onboarding: marca a holding e leva ao app. */
-export async function finishOnboarding() {
-  const holdingId = (await cookies()).get(ACTIVE_HOLDING_COOKIE)?.value
-  if (!holdingId) redirect('/dashboard')
+/**
+ * Conclui (ou pula) o onboarding. Marca a(s) holding(s) pendente(s) do usuário
+ * via RPC (independe de instância ativa). Se for "entrar e configurar", já
+ * seleciona a instância (cookie) e vai para a estrutura; senão, volta à home.
+ */
+export async function finishOnboarding(formData: FormData) {
+  const goConfig = String(formData.get('go') ?? '') === 'config'
+  const holdingId = String(formData.get('holding_id') ?? '')
+
   const supabase = await createClient()
-  // RLS holdings_update: só holding_admin altera (quem está no onboarding é admin).
-  await supabase.from('holdings').update({ onboarding_done: true } as never).eq('id', holdingId)
+  const sb = supabase as unknown as { rpc: (n: string) => Promise<unknown> }
+  await sb.rpc('finish_my_onboarding')
   revalidatePath('/', 'layout')
+
+  if (goConfig && holdingId) {
+    ;(await cookies()).set(ACTIVE_HOLDING_COOKIE, holdingId, {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+    })
+    redirect('/structure')
+  }
   redirect('/dashboard')
 }
