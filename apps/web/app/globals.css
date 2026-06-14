@@ -27,6 +27,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Impressão do manual: só a área do manual sai no PDF (sem header/nav do app). */
+@media print {
+  body * { visibility: hidden !important; }
+  .manual-print-area, .manual-print-area * { visibility: visible !important; }
+  .manual-print-area { position: absolute; left: 0; top: 0; width: 100%; }
+}
+
 /* Lista de demandas: ao finalizar pelo chip, a linha some (fade + colapso) antes
    de migrar para "Concluídas". A altura é fixada via JS (maxHeight) p/ animar. */
 .demand-row {
