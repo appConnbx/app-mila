@@ -434,6 +434,7 @@ const micBarFill = $<HTMLDivElement>('mic-bar-fill')
 let holdRecorder: MediaRecorder | null = null
 let holdChunks: Blob[] = []
 let holdTimer: number | undefined
+let holdCountTimer: number | undefined // contador regressivo dos 10s da gravação
 let holdStart = 0
 
 function micStatus(msg: string, cls: '' | 'ok' | 'err') {
@@ -529,6 +530,7 @@ holdBtn.addEventListener('pointerdown', async (e) => {
     holdRecorder.onstop = async () => {
       stream.getTracks().forEach((t) => t.stop())
       window.clearTimeout(holdTimer)
+      window.clearInterval(holdCountTimer)
       holdBtn.classList.remove('recording')
       micBarFill.classList.remove('running')
       micBarFill.style.width = '0%'
@@ -555,7 +557,18 @@ holdBtn.addEventListener('pointerdown', async (e) => {
     holdRecorder.start()
     pinned = true // gravação em curso: não recolhe nem com mouse fora
     holdBtn.classList.add('recording')
-    micStatus(t('micRecording'), '')
+    // Contador regressivo dos 10s correndo durante a gravação (+ barra CSS).
+    let secsLeft = Math.round(MIC_HOLD_MS / 1000)
+    micStatus(`${t('micRecording')} · ${secsLeft}s`, '')
+    window.clearInterval(holdCountTimer)
+    holdCountTimer = window.setInterval(() => {
+      secsLeft -= 1
+      if (secsLeft <= 0) {
+        window.clearInterval(holdCountTimer)
+        return
+      }
+      micStatus(`${t('micRecording')} · ${secsLeft}s`, '')
+    }, 1000)
     // Barra de progresso de 10s (CSS transition linear).
     micBarFill.classList.remove('running')
     micBarFill.style.width = '0%'

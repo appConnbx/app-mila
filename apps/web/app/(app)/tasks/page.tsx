@@ -67,7 +67,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   const { data, error } = await supabase
     .from('demands')
     .select('id, title, description, status, priority, due_date, created_at, completed_at, tags, visibility, responsible_id, origin_id, responsible:responsible_id(full_name, auth_user_id), event:event_id(name)')
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: true })
 
   const all = (data ?? []) as unknown as Demand[]
 
@@ -98,7 +98,12 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   const kpiAtrasadas = scope.filter(isOverdue).length
 
   const baseDone = base.filter((d) => d.status === 'finalizada').length
-  const demands = archived ? base.filter((d) => d.status === 'finalizada') : base.filter((d) => d.status !== 'finalizada')
+  // Lista ativa: 'trabalhando' em evidência no topo, depois 'nova'. Dentro de
+  // cada grupo a ordem é a da query (created_at asc = mais antiga primeiro).
+  const STATUS_RANK: Record<Demand['status'], number> = { trabalhando: 0, nova: 1, finalizada: 2 }
+  const demands = (archived ? base.filter((d) => d.status === 'finalizada') : base.filter((d) => d.status !== 'finalizada')).sort(
+    (a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status],
+  )
 
   const q = (params: { tab?: Tab; view?: string }) => {
     const sp = new URLSearchParams()

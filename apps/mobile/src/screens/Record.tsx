@@ -73,10 +73,15 @@ export function RecordModal({
       stopping.current = false
       startedAt.current = Date.now()
       setPhase('recording')
-      setStatus(t('voiceRecording'))
+      const totalSecs = Math.round(MIC_HOLD_MS / 1000)
+      setStatus(`${t('voiceRecording')} · ${totalSecs}s`)
       setProgress(0)
+      // Contador regressivo dos 10s correndo durante a gravação (+ barra).
       tickTimer.current = setInterval(() => {
-        setProgress(Math.min(1, (Date.now() - startedAt.current) / MIC_HOLD_MS))
+        const elapsed = Date.now() - startedAt.current
+        setProgress(Math.min(1, elapsed / MIC_HOLD_MS))
+        const left = Math.max(0, Math.ceil((MIC_HOLD_MS - elapsed) / 1000))
+        setStatus(`${t('voiceRecording')} · ${left}s`)
       }, 100)
       capTimer.current = setTimeout(() => void stopHold(), MIC_HOLD_MS)
     } catch {
