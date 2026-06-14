@@ -13,6 +13,8 @@ const PUBLIC_PREFIXES = [
   '/welcome', '/create-password', '/forgot-password',
   // Gate de assinatura, checkout (visitante anônimo) e webhook (Stripe) são públicos; /api/stripe/portal NÃO.
   '/subscribe', '/api/stripe/checkout', '/api/stripe/webhook',
+  // Transcrição do demo interativo (landing/LPs, visitante anônimo).
+  '/api/demo',
   // Páginas de vendas para anúncios (públicas, por idioma/segmento).
   '/br-business', '/br-personal', '/en-business', '/en-personal', '/es-business', '/es-personal',
   // Landing institucional com idioma fixo por URL (anúncios EN/ES).

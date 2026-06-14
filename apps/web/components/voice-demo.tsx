@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * Demo interativo (sem backend) que simula o "segure-e-fale" do MILA: o visitante
- * segura o microfone (até 10s), solta e uma demanda de exemplo é criada na lista;
- * também dá para inserir por formulário. Máx. 5 itens; cada um alterna para
- * "trabalhando". Mostra a praticidade da ferramenta. Textos vêm por props porque
- * a landing/páginas de venda não estão dentro do provider de i18n do cliente.
+ * Demo interativo do "segure-e-fale" do MILA. Tenta CAPTURA REAL de áudio
+ * (microfone + transcrição via /api/demo/transcribe). Se o visitante negar o
+ * microfone, não tiver suporte, ou a transcrição falhar, cai num exemplo
+ * simulado — o demo nunca quebra. Máx. 5 itens; cada um alterna p/ "trabalhando".
+ * Textos vêm por props (a landing/LPs não estão no provider de i18n do cliente).
  */
 export type VoiceDemoLabels = {
   title: string
@@ -41,6 +41,10 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
   const cap = useRef<ReturnType<typeof setTimeout> | null>(null)
   const sampleIdx = useRef(0)
   const nextId = useRef(1)
+  const recRef = useRef<MediaRecorder | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const chunksRef = useRef<Blob[]>([])
+  const realRef = useRef(false)
   const full = items.length >= MAX
 
   function clearTimers() {
@@ -49,17 +53,24 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
     tick.current = null
     cap.current = null
   }
-  useEffect(() => clearTimers, [])
+  function stopStream() {
+    streamRef.current?.getTracks().forEach((t) => t.stop())
+    streamRef.current = null
+    recRef.current = null
+  }
+  useEffect(() => () => { clearTimers(); stopStream() }, [])
 
   function addItem(title: string) {
-    const t = title.trim()
+    const t = title.trim().slice(0, 120)
     if (!t) return
     setItems((cur) => (cur.length >= MAX ? cur : [...cur, { id: nextId.current++, title: t, status: 'nova' }]))
   }
+  function addSample() {
+    addItem(samples[sampleIdx.current % samples.length])
+    sampleIdx.current += 1
+  }
 
-  function startHold() {
-    if (phase !== 'idle' || full) return
-    setPhase('recording')
+  function startTimers() {
     setProgress(0)
     setSecs(Math.round(HOLD_MS / 1000))
     startedAt.current = Date.now()
@@ -68,27 +79,69 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
       setProgress(Math.min(1, elapsed / HOLD_MS))
       setSecs(Math.max(0, Math.ceil((HOLD_MS - elapsed) / 1000)))
     }, 100)
-    cap.current = setTimeout(stopHold, HOLD_MS)
+    cap.current = setTimeout(() => void stopHold(), HOLD_MS)
   }
 
-  function stopHold() {
+  async function startHold() {
+    if (phase !== 'idle' || full) return
+    setPhase('recording')
+    realRef.current = false
+    chunksRef.current = []
+    startTimers()
+    // Tenta o microfone real (assíncrono; a barra já está correndo).
+    try {
+      const md = navigator.mediaDevices
+      if (!md?.getUserMedia || typeof MediaRecorder === 'undefined') return
+      const stream = await md.getUserMedia({ audio: true })
+      streamRef.current = stream
+      // Se o usuário já soltou durante o prompt de permissão (timers limpos), encerra.
+      if (!tick.current) { stream.getTracks().forEach((t) => t.stop()); return }
+      const mime = ['audio/webm', 'audio/mp4', 'audio/ogg'].find((m) => MediaRecorder.isTypeSupported?.(m))
+      const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined)
+      rec.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data) }
+      recRef.current = rec
+      realRef.current = true
+      rec.start()
+    } catch {
+      realRef.current = false // segue no caminho simulado
+    }
+  }
+
+  async function stopHold() {
     if (phase !== 'recording') return
     const elapsed = Date.now() - startedAt.current
     clearTimers()
     setProgress(0)
-    if (elapsed < 400) {
-      // toque rápido demais: ignora (mesma regra do app real)
+
+    const rec = recRef.current
+    if (realRef.current && rec && rec.state === 'recording') {
+      setPhase('transcribing')
+      const blob = await new Promise<Blob>((resolve) => {
+        rec.onstop = () => resolve(new Blob(chunksRef.current, { type: rec.mimeType || 'audio/webm' }))
+        rec.stop()
+      })
+      stopStream()
+      if (elapsed < 500 || blob.size < 1200) { addSample(); setPhase('idle'); return }
+      try {
+        const fd = new FormData()
+        fd.append('file', blob, 'audio.webm')
+        const res = await fetch('/api/demo/transcribe', { method: 'POST', body: fd })
+        if (!res.ok) throw new Error('stt')
+        const { text: t } = (await res.json()) as { text?: string }
+        if (t && t.trim()) addItem(t)
+        else addSample()
+      } catch {
+        addSample()
+      }
       setPhase('idle')
       return
     }
+
+    // Microfone negado/indisponível → exemplo simulado (curto = ignora).
+    stopStream()
+    if (elapsed < 400) { setPhase('idle'); return }
     setPhase('transcribing')
-    // "transcrição" simulada: pega a próxima frase de exemplo
-    setTimeout(() => {
-      const phrase = samples[sampleIdx.current % samples.length]
-      sampleIdx.current += 1
-      addItem(phrase)
-      setPhase('idle')
-    }, 650)
+    setTimeout(() => { addSample(); setPhase('idle') }, 500)
   }
 
   function toggleStatus(id: number) {
@@ -109,10 +162,10 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
           type="button"
           aria-label={labels.holdHint}
           disabled={phase === 'transcribing' || full}
-          onPointerDown={startHold}
-          onPointerUp={stopHold}
-          onPointerLeave={stopHold}
-          onPointerCancel={stopHold}
+          onPointerDown={() => void startHold()}
+          onPointerUp={() => void stopHold()}
+          onPointerLeave={() => void stopHold()}
+          onPointerCancel={() => void stopHold()}
           className={`grid h-24 w-24 place-items-center rounded-full border-2 transition ${
             phase === 'recording'
               ? 'scale-110 border-rose-400 bg-rose-500/20 text-rose-300'
