@@ -523,6 +523,7 @@
     "errEmailExiste": "An account with this email already exists. Please log in.",
     "errDocExiste": "A free account with this document already exists.",
     "errGenerico": "Couldn't complete the signup. Please try again.",
+    "errMuitas": "Too many attempts. Please wait a few minutes and try again.",
     "goLogin": "Go to login"
   },
   "landing": {

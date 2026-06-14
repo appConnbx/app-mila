@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit, clientIp } from '@/lib/rate-limit'
 
 const BASE = '/start-family-free'
 
@@ -30,6 +31,11 @@ type RpcResult = { ok: boolean; reason?: string; holding_id?: string }
  */
 export async function signupFamilyFree(formData: FormData) {
   if (String(formData.get('website') ?? '') !== '') redirect(`${BASE}?err=generico`)
+
+  // Rate-limit por IP: cadastro grátis cria conta + auto-login (caro/abusável).
+  if (rateLimit(`signup-family:${await clientIp()}`, { windowMs: 600_000, max: 5 })) {
+    redirect(`${BASE}?err=muitas`)
+  }
 
   const name = String(formData.get('name') ?? '').trim()
   const email = String(formData.get('email') ?? '').trim().toLowerCase()

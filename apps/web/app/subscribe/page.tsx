@@ -5,17 +5,20 @@ import { Aurora } from '@/components/ui'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { stripeApi } from '@/lib/stripe/client'
 import { priceId, STRIPE_PRICES_TEST, type MilaPlan } from '@/lib/stripe/catalog'
+import { PLANS } from '@/lib/plans'
+import { rateLimit, clientIp } from '@/lib/rate-limit'
 
 export const metadata = { title: 'Assinar · MILA', robots: { index: false } }
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const PLAN_LABEL: Record<string, string> = {
-  starter: 'Starter', growth: 'Growth', scale: 'Scale', enterprise: 'Enterprise', family: 'Family', family_plus: 'Family Plus',
-}
-const PLAN_USD: Record<string, string> = {
-  starter: 'US$87', growth: 'US$167', scale: 'US$337', enterprise: 'US$667', family: 'US$13', family_plus: 'US$17',
-}
+// Label e preço internacional derivados da fonte única (lib/plans.ts).
+const PLAN_LABEL: Record<string, string> = Object.fromEntries(
+  Object.entries(PLANS).map(([k, v]) => [k, v.label]),
+)
+const PLAN_USD: Record<string, string> = Object.fromEntries(
+  Object.entries(PLANS).map(([k, v]) => [k, `US$${v.usd}`]),
+)
 const VALID = new Set(Object.keys(STRIPE_PRICES_TEST))
 const toLocale = (l?: string) => (l === 'en' ? 'en' : l === 'es' ? 'es' : l === 'pt-BR' ? 'pt-BR' : null)
 const safeNext = (n?: string) => (n && n.startsWith('/') && !n.startsWith('//') ? n : '/')
@@ -41,6 +44,8 @@ export default async function SubscribePage({
     const origin = process.env.APP_BASE_URL || 'https://www.appmila.co'
     const back = (q: string) => `/subscribe?plan=${encodeURIComponent(p)}&lang=${encodeURIComponent(ln)}&next=${encodeURIComponent(nextPath)}&${q}`
     if (!VALID.has(p) || !email) redirect(back('erro=1'))
+    // Rate-limit por IP: cada tentativa abre sessão de checkout no Stripe.
+    if (rateLimit(`subscribe:${await clientIp()}`, { windowMs: 600_000, max: 8 })) redirect(back('erro=1'))
 
     const admin = createAdminClient() as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: unknown }> }
     const { data: existingId } = await admin.rpc('auth_user_id_by_email', { p_email: email })
