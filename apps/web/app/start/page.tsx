@@ -28,7 +28,7 @@ export default async function StartPage() {
   const isBR = locale === 'pt-BR'
 
   // BR: Hotmart. INTL: venda direta via Stripe. Hotmart fica só para afiliados.
-  // TODO(hotmart-br): ao recriar as ofertas BR como ANUAL/12x, trocar os off= BR pelos novos códigos.
+  // off= BR = ofertas ANUAIS/12x (recriadas jun/2026); as mensais antigas ficaram só para assinantes.
   const checkout = (offBR: string, plan: string) =>
     isBR ? `https://pay.hotmart.com/P106262837P?off=${offBR}` : `/subscribe?plan=${plan}&next=%2Fstart&lang=${locale}`
   const perMonth = tl('plans.perMonth')
@@ -44,12 +44,12 @@ export default async function StartPage() {
       : { priceMain: `US$${intl}`, priceUnit: perMonth, priceSub: '' }
 
   const plans = {
-    starter: { name: 'Starter', users: tl('plans.starterUsers'), href: checkout('hcxkobrb', 'starter'), ...corp('87', '297', '3.564') },
-    growth: { name: 'Growth', users: tl('plans.growthUsers'), href: checkout('7d5lrof8', 'growth'), ...corp('167', '497', '5.964') },
-    scale: { name: 'Scale', users: tl('plans.scaleUsers'), href: checkout('u7x98fyz', 'scale'), ...corp('337', '697', '8.364') },
-    enterprise: { name: 'Enterprise', users: tl('plans.enterpriseUsers'), href: checkout('9gacabk6', 'enterprise'), ...corp('667', '1.117', '13.404') },
-    family: { name: 'Family', users: tl('plans.familyUsers'), href: checkout('f7nrog01', 'family'), ...fam('13', '97', '8,08') },
-    familyplus: { name: 'Family Plus', users: tl('plans.familyPlusUsers'), href: checkout('d3c9cwha', 'family_plus'), ...fam('17', '127', '10,58') },
+    starter: { name: 'Starter', users: tl('plans.starterUsers'), href: checkout('wyitwc3d', 'starter'), ...corp('87', '297', '3.564') },
+    growth: { name: 'Growth', users: tl('plans.growthUsers'), href: checkout('2kxlbff2', 'growth'), ...corp('167', '497', '5.964') },
+    scale: { name: 'Scale', users: tl('plans.scaleUsers'), href: checkout('abpzxjap', 'scale'), ...corp('337', '697', '8.364') },
+    enterprise: { name: 'Enterprise', users: tl('plans.enterpriseUsers'), href: checkout('yl7fpa6u', 'enterprise'), ...corp('667', '1.117', '13.404') },
+    family: { name: 'Family', users: tl('plans.familyUsers'), href: checkout('i67ovflk', 'family'), ...fam('13', '97', '8,08') },
+    familyplus: { name: 'Family Plus', users: tl('plans.familyPlusUsers'), href: checkout('tfkn6adh', 'family_plus'), ...fam('17', '127', '10,58') },
   }
 
   const dict = Object.fromEntries(DICT_KEYS.map((k) => [k, t(k)])) as Record<string, string>
