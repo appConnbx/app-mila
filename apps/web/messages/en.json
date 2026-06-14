@@ -465,8 +465,8 @@
     "bizUpTo50": "Up to 50 employees",
     "bizUpTo200": "Up to 200 employees",
     "bizUnlimited": "More than 200",
-    "bizPerkTitle": "A benefit for your team",
-    "bizPerkDesc": "Every employee gets a licensed Family Plus while the company keeps its corporate plan — to organize life at home too. Everyone wins.",
+    "bizPerkTitle": "Your company, a partner in your team life",
+    "bizPerkDesc": "More than a work tool: every employee gets a licensed Family Plus at no extra cost, to organize life at home too. An endomarketing perk that retains talent and positions the company as a partner — for as long as the corporate plan is active.",
     "bizPerkCta": "Great, continue",
     "famSizeTitle": "How many people will use it at home?",
     "famJustMe": "Just me, for now",
@@ -710,5 +710,36 @@
     "ctaKnow": "Discover MILA",
     "ctaApp": "Go to the app",
     "construction": "Page under construction · Check back soon"
+  },
+  "voiceDemo": {
+    "badge": "TRY IT",
+    "title": "Capture a task in seconds",
+    "subtitle": "Hold the mic and speak (up to 10s) — or type. Watch the task appear in the list.",
+    "holdHint": "Hold to record",
+    "recording": "Recording",
+    "transcribing": "Transcribing…",
+    "formPlaceholder": "Or type a task…",
+    "add": "Add",
+    "listTitle": "Your tasks",
+    "empty": "No tasks yet. Record or type the first one.",
+    "statusNova": "New",
+    "statusTrabalhando": "In progress",
+    "limit": "Max 5 in this demo",
+    "samples": [
+      "Send the proposal to the client by 5 PM",
+      "Schedule an alignment meeting with the team",
+      "Take the car for service tomorrow",
+      "Review the supplier contract",
+      "Confirm attendance at Fridays event",
+      "Request a quote for new materials"
+    ]
+  },
+  "familyBonus": {
+    "kicker": "A PERK FOR YOUR TEAM",
+    "title": "Your company, a partner in your employees lives",
+    "desc": "On the corporate plan, every employee gets a licensed MILA Family Plus — at no extra cost, for as long as the company keeps the plan. Bring the same practicality from work to your teams home.",
+    "p1": "Retention-driving perk: a real benefit that follows employees beyond office hours.",
+    "p2": "An organized home means a clearer mind — a more present, productive employee.",
+    "p3": "Already included: the bonus is part of the company plan, no extra fee."
   }
 }

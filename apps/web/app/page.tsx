@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Aurora } from '@/components/ui'
+import { VoiceDemo } from '@/components/voice-demo'
+import { FamilyBonusCallout } from '@/components/family-bonus'
 import type { Locale } from '@/i18n/config'
 
 export const metadata: Metadata = {
@@ -228,6 +230,18 @@ async function WebMockup() {
 export default async function LandingPage() {
   const t = await getTranslations('landing')
   const locale = (await getLocale()) as Locale
+
+  const tv = await getTranslations('voiceDemo')
+  const voiceLabels = {
+    badge: tv('badge'), title: tv('title'), subtitle: tv('subtitle'), holdHint: tv('holdHint'),
+    recording: tv('recording'), transcribing: tv('transcribing'), formPlaceholder: tv('formPlaceholder'),
+    add: tv('add'), listTitle: tv('listTitle'), empty: tv('empty'),
+    statusNova: tv('statusNova'), statusTrabalhando: tv('statusTrabalhando'), limit: tv('limit'),
+  }
+  const voiceSamples = tv.raw('samples') as string[]
+
+  const tfb = await getTranslations('familyBonus')
+  const fbLabels = { kicker: tfb('kicker'), title: tfb('title'), desc: tfb('desc'), p1: tfb('p1'), p2: tfb('p2'), p3: tfb('p3') }
 
   const bold = { b: (chunks: ReactNode) => <span className="font-semibold text-white">{chunks}</span> }
   const pains = t.raw('triggers.items') as { p: string; r: string }[]
@@ -459,6 +473,11 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ---------------- DEMO INTERATIVO (praticidade na prática) ---------------- */}
+      <section className="mx-auto max-w-6xl px-4 pb-8">
+        <VoiceDemo labels={voiceLabels} samples={voiceSamples} />
+      </section>
+
       {/* ---------------- EMPRESAS ---------------- */}
       <section id="empresas" className="mx-auto max-w-6xl px-4 py-16">
         <div className="text-center">
@@ -480,13 +499,9 @@ export default async function LandingPage() {
           </p>
         </div>
 
-        {/* Bônus: Family Plus para cada colaborador */}
-        <div className="mt-6 flex items-start gap-4 rounded-2xl border border-brand/30 bg-brand/[0.06] p-6">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand/15 text-2xl">🎁</span>
-          <div>
-            <p className="text-base font-semibold text-white">{t('contexts.corpPerkTitle')}</p>
-            <p className="mt-1 text-sm text-slate-300">{t.rich('contexts.corpPerkDesc', bold)}</p>
-          </div>
+        {/* Bônus família (endomarketing): empresa parceira da vida do funcionário */}
+        <div className="mt-6">
+          <FamilyBonusCallout labels={fbLabels} />
         </div>
 
         {/* Planos corporativos */}

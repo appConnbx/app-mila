@@ -1,5 +1,8 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import { getTranslations } from 'next-intl/server'
+import { VoiceDemo } from '@/components/voice-demo'
+import { FamilyBonusCallout } from '@/components/family-bonus'
 
 /* =========================================================================
    Motor de página de vendas (LP para anúncios).
@@ -42,6 +45,8 @@ export type SalesContent = {
   solTitle: string
   solDesc: string
   features: { t: string; d: string }[]
+  // LP corporativa: exibe o callout do bônus família (endomarketing).
+  showFamilyBonus?: boolean
 
   howTitle: string
   howSub: string
@@ -92,7 +97,19 @@ function Arrow({ className = '' }: { className?: string }) {
   )
 }
 
-export function SalesPage({ c }: { c: SalesContent }) {
+export async function SalesPage({ c }: { c: SalesContent }) {
+  // Textos do demo interativo (fonte única nas mensagens, pelo locale da LP).
+  const tv = await getTranslations({ locale: c.locale, namespace: 'voiceDemo' })
+  const voiceLabels = {
+    badge: tv('badge'), title: tv('title'), subtitle: tv('subtitle'), holdHint: tv('holdHint'),
+    recording: tv('recording'), transcribing: tv('transcribing'), formPlaceholder: tv('formPlaceholder'),
+    add: tv('add'), listTitle: tv('listTitle'), empty: tv('empty'),
+    statusNova: tv('statusNova'), statusTrabalhando: tv('statusTrabalhando'), limit: tv('limit'),
+  }
+  const voiceSamples = tv.raw('samples') as string[]
+  const tfb = await getTranslations({ locale: c.locale, namespace: 'familyBonus' })
+  const fbLabels = { kicker: tfb('kicker'), title: tfb('title'), desc: tfb('desc'), p1: tfb('p1'), p2: tfb('p2'), p3: tfb('p3') }
+
   // Cores de destaque conforme o segmento.
   const a =
     c.accent === 'orange'
@@ -200,6 +217,18 @@ export function SalesPage({ c }: { c: SalesContent }) {
             </div>
           ))}
         </div>
+
+        {/* DEMO INTERATIVO — o prospect testa a praticidade na hora */}
+        <div className="mt-12">
+          <VoiceDemo labels={voiceLabels} samples={voiceSamples} />
+        </div>
+
+        {/* BÔNUS FAMÍLIA (endomarketing) — só nas LPs corporativas */}
+        {c.showFamilyBonus && (
+          <div className="mt-8">
+            <FamilyBonusCallout labels={fbLabels} />
+          </div>
+        )}
       </section>
 
       {/* COMO FUNCIONA */}
