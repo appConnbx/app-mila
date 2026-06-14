@@ -166,6 +166,15 @@ body {
 .light .border-white\/20 { border-color: rgba(15, 23, 42, 0.16); }
 .light .ring-white\/10 { --tw-ring-color: rgba(15, 23, 42, 0.10); }
 
+/* Chips de marca (organograma: equipes/setores, skills): no claro o tint da
+   marca fica fraco e o texto cyan-claro ilegível. Reforça o tint (continua via
+   --brand-rgb, então respeita corp=ciano e família=verde) e usa texto neutro
+   escuro p/ contraste em qualquer contexto. Dark permanece intocado. */
+.light .bg-brand\/10 { background-color: rgb(var(--brand-rgb) / 0.16); }
+.light .bg-brand\/15 { background-color: rgb(var(--brand-rgb) / 0.18); }
+.light .text-cyan-200 { color: #1e293b; }        /* slate-800 */
+.light .text-cyan-300\/60 { color: #64748b; }    /* slate-500 (contagem) */
+
 /* Card vitrificado no claro: vidro fosco branco */
 .light .glass {
   border-color: rgba(15, 23, 42, 0.08);
