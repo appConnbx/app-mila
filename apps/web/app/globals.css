@@ -9,6 +9,10 @@
   --brand-500-rgb: 6 182 212;    /* #06B6D4 */
   --glow-rgb: 34 211 238;        /* spotlight dos cards */
   --aurora-rgb: 56 130 246;      /* brilho azul do fundo */
+  /* Superfícies (dark = valores atuais; .light sobrescreve abaixo). */
+  --surface-rgb: 11 17 32;       /* #0B1120 */
+  --surface-card-rgb: 17 26 46;  /* #111A2E */
+  --surface-border-rgb: 30 41 59;/* #1E293B */
 }
 
 /* Instância familiar → tema esverdeado (aplicado no wrapper do app). */
@@ -101,6 +105,11 @@ body {
    ====================================================================== */
 .light {
   color-scheme: light;
+  /* Superfícies no claro — afeta todas as variantes (bg-surface, bg-surface/70,
+     border-surface-border, etc.) por serem var-backed no tailwind.config. */
+  --surface-rgb: 248 250 252;      /* slate-50 */
+  --surface-card-rgb: 255 255 255; /* branco */
+  --surface-border-rgb: 226 232 240; /* slate-200 */
 }
 .light body {
   background-color: #f8fafc; /* slate-50 */
@@ -112,11 +121,6 @@ body {
 .light ::selection {
   background: rgba(6, 182, 212, 0.18);
 }
-
-/* Superfícies do tema (classes bg-surface / border-surface-border) */
-.light .bg-surface { background-color: #f8fafc; }
-.light .bg-surface-card { background-color: #ffffff; }
-.light .border-surface-border { border-color: #e2e8f0; }
 
 /* Texto: do mais forte ao mais sutil (contraste sobre fundo claro).
    text-slate-950 (texto escuro sobre cor/brand) NÃO é alterado. */
