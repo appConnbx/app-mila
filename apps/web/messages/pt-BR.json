@@ -825,6 +825,22 @@
       ]
     }
   },
+  "memberOnboarding": {
+    "welcome": "Bem-vindo, {name}!",
+    "subtitle": "Você faz parte de {instance} no MILA. Veja como aproveitar ao máximo.",
+    "canTitle": "O que você pode fazer",
+    "canCorp": ["Receber e acompanhar as demandas que te delegam", "Criar demandas por voz (segure o microfone) ou digitando", "Acompanhar prazos e mudar o status (Trabalhando / Finalizada)", "Ver o que é seu, o que foi delegado e o que é compartilhado"],
+    "canFamily": ["Receber e acompanhar as tarefas da família", "Criar por voz (segure o microfone) ou digitando", "Acompanhar prazos e concluir com um toque", "Tudo no mesmo lugar para a família e a equipe da casa"],
+    "appsTitle": "Instale os apps e ganhe produtividade",
+    "appsDesc": "Para a melhor experiência, use o MILA no celular e no computador.",
+    "mobileTitle": "No celular (Android/iOS)",
+    "mobileDesc": "Registre demandas por voz de onde estiver e receba avisos.",
+    "mobileCta": "Abrir MILA",
+    "agentTitle": "Agente para Windows",
+    "agentDesc": "Um toque na barra para falar e criar a demanda sem abrir o navegador.",
+    "agentCta": "Baixar agente",
+    "start": "Começar a usar"
+  },
   "familyBonus": {
     "kicker": "BENEFÍCIO PARA O TIME",
     "title": "Sua empresa, parceira da vida do funcionário",

@@ -825,6 +825,22 @@
       ]
     }
   },
+  "memberOnboarding": {
+    "welcome": "Welcome, {name}!",
+    "subtitle": "You're part of {instance} on MILA. Here's how to get the most out of it.",
+    "canTitle": "What you can do",
+    "canCorp": ["Receive and track the tasks delegated to you", "Create tasks by voice (hold the microphone) or by typing", "Track due dates and change status (Working / Done)", "See what's yours, what's delegated and what's shared"],
+    "canFamily": ["Receive and track the family's tasks", "Create by voice (hold the microphone) or by typing", "Track due dates and finish with one tap", "Everything in one place for the family and household staff"],
+    "appsTitle": "Install the apps for more productivity",
+    "appsDesc": "For the best experience, use MILA on your phone and computer.",
+    "mobileTitle": "On mobile (Android/iOS)",
+    "mobileDesc": "Capture tasks by voice anywhere and get notified.",
+    "mobileCta": "Open MILA",
+    "agentTitle": "Windows agent",
+    "agentDesc": "One tap on the bar to speak and create a task without opening the browser.",
+    "agentCta": "Download agent",
+    "start": "Start using"
+  },
   "familyBonus": {
     "kicker": "A PERK FOR YOUR TEAM",
     "title": "Your company, a partner in your employees lives",
