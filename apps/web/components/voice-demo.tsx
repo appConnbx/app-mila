@@ -21,11 +21,15 @@ export type VoiceDemoLabels = {
   empty: string
   statusNova: string
   statusTrabalhando: string
+  statusFinalizada: string
   limit: string
   badge: string
 }
 
-type Item = { id: number; title: string; status: 'nova' | 'trabalhando' }
+type Status = 'nova' | 'trabalhando' | 'finalizada'
+type Item = { id: number; title: string; status: Status }
+// Clique no status avança: nova → trabalhando → finalizada → nova (como no app).
+const NEXT_STATUS: Record<Status, Status> = { nova: 'trabalhando', trabalhando: 'finalizada', finalizada: 'nova' }
 
 const HOLD_MS = 10_000
 const MAX = 5
@@ -144,10 +148,8 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
     setTimeout(() => { addSample(); setPhase('idle') }, 500)
   }
 
-  function toggleStatus(id: number) {
-    setItems((cur) =>
-      cur.map((it) => (it.id === id ? { ...it, status: it.status === 'nova' ? 'trabalhando' : 'nova' } : it)),
-    )
+  function cycleStatus(id: number) {
+    setItems((cur) => cur.map((it) => (it.id === id ? { ...it, status: NEXT_STATUS[it.status] } : it)))
   }
 
   return (
@@ -217,22 +219,32 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
           <p className="py-10 text-center text-sm text-slate-500">{labels.empty}</p>
         ) : (
           <ul className="space-y-2">
-            {items.map((it) => (
-              <li key={it.id} className="flex items-center justify-between gap-3 rounded-lg bg-slate-900/40 px-3 py-2">
-                <span className="min-w-0 flex-1 truncate text-sm text-slate-100">{it.title}</span>
-                <button
-                  type="button"
-                  onClick={() => toggleStatus(it.id)}
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold transition ${
-                    it.status === 'trabalhando'
-                      ? 'bg-amber-500/15 text-amber-300 hover:bg-amber-500/25'
-                      : 'bg-sky-500/15 text-sky-300 hover:bg-sky-500/25'
-                  }`}
-                >
-                  {it.status === 'trabalhando' ? labels.statusTrabalhando : labels.statusNova}
-                </button>
-              </li>
-            ))}
+            {items.map((it) => {
+              const done = it.status === 'finalizada'
+              const chipCls = done
+                ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25'
+                : it.status === 'trabalhando'
+                  ? 'bg-amber-500/15 text-amber-300 hover:bg-amber-500/25'
+                  : 'bg-sky-500/15 text-sky-300 hover:bg-sky-500/25'
+              const chipLabel = done ? labels.statusFinalizada : it.status === 'trabalhando' ? labels.statusTrabalhando : labels.statusNova
+              return (
+                <li key={it.id} className="flex items-center justify-between gap-3 rounded-lg bg-slate-900/40 px-3 py-2">
+                  <span className={`min-w-0 flex-1 truncate text-sm ${done ? 'text-slate-500 line-through' : 'text-slate-100'}`}>{it.title}</span>
+                  <button
+                    type="button"
+                    onClick={() => cycleStatus(it.id)}
+                    className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold transition ${chipCls}`}
+                  >
+                    {done && (
+                      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden>
+                        <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                    {chipLabel}
+                  </button>
+                </li>
+              )
+            })}
           </ul>
         )}
       </div>

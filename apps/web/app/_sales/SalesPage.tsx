@@ -104,7 +104,7 @@ export async function SalesPage({ c }: { c: SalesContent }) {
     badge: tv('badge'), title: tv('title'), subtitle: tv('subtitle'), holdHint: tv('holdHint'),
     recording: tv('recording'), transcribing: tv('transcribing'), formPlaceholder: tv('formPlaceholder'),
     add: tv('add'), listTitle: tv('listTitle'), empty: tv('empty'),
-    statusNova: tv('statusNova'), statusTrabalhando: tv('statusTrabalhando'), limit: tv('limit'),
+    statusNova: tv('statusNova'), statusTrabalhando: tv('statusTrabalhando'), statusFinalizada: tv('statusFinalizada'), limit: tv('limit'),
   }
   const voiceSamples = tv.raw('samples') as string[]
   const tfb = await getTranslations({ locale: c.locale, namespace: 'familyBonus' })

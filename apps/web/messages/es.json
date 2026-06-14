@@ -732,7 +732,8 @@
       "Revisar el contrato del proveedor",
       "Confirmar asistencia al evento del viernes",
       "Pedir presupuesto de material nuevo"
-    ]
+    ],
+    "statusFinalizada": "Hecha"
   },
   "familyBonus": {
     "kicker": "UN BENEFICIO PARA TU EQUIPO",

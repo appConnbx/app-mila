@@ -732,7 +732,8 @@
       "Review the supplier contract",
       "Confirm attendance at Fridays event",
       "Request a quote for new materials"
-    ]
+    ],
+    "statusFinalizada": "Done"
   },
   "familyBonus": {
     "kicker": "A PERK FOR YOUR TEAM",
