@@ -382,3 +382,19 @@ export async function adminSetPassword(formData: FormData) {
   revalidate()
   redirect('/structure/users?ok=pwset')
 }
+
+/** Admin da holding abre um ticket de suporte → alimenta a fila do portal CBX.
+ *  A RPC client_open_ticket valida holding_admin e deriva holding/cliente/autor. */
+export async function openSupportTicket(formData: FormData) {
+  const supabase = await createClient()
+  const title = String(formData.get('title') ?? '').trim()
+  const type = String(formData.get('type') ?? 'solicitacao')
+  const description = String(formData.get('description') ?? '').trim() || null
+  if (!title) redirect('/structure/holding?support=campos')
+  const sb = supabase as unknown as {
+    rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: { ok?: boolean; reason?: string } | null }>
+  }
+  const { data } = await sb.rpc('client_open_ticket', { p_title: title, p_type: type, p_description: description })
+  revalidatePath('/structure/holding')
+  redirect(`/structure/holding?support=${data?.ok ? 'ok' : data?.reason ?? 'erro'}`)
+}

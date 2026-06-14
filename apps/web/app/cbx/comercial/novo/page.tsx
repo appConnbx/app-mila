@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, btnCbx, inputCbx, labelCbx } from '../../_ui'
-import { PasswordField } from '../../_password-field'
 import { createClientAccount } from '../actions'
 
 type Plan = {
@@ -94,12 +93,9 @@ export default async function NovoClientePage({ searchParams }: { searchParams: 
                 <input name="admin_email" type="email" required className={`mt-1 ${inputCbx}`} />
               </div>
               <div className="sm:col-span-2">
-                <label className={labelCbx}>Senha inicial</label>
-                <div className="mt-1">
-                  <PasswordField />
-                </div>
-                <p className="mt-1 text-xs text-slate-500">
-                  Anote e repasse ao cliente. Se o e-mail já tiver conta, a senha atual é mantida.
+                <p className="rounded-lg border border-sky-500/20 bg-sky-500/10 px-3 py-2 text-xs text-sky-200">
+                  O cliente recebe um <b>e-mail para criar a senha</b> e concluir o acesso — não defina senha aqui.
+                  Se o e-mail já tiver conta, ela é reaproveitada.
                 </p>
               </div>
             </div>

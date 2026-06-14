@@ -349,6 +349,23 @@
     "holdingMgmtDesc": "Group registration data.",
     "onboardingTitle": "Welcome to MILA! Let's set up your company.",
     "onboardingDesc": "Fill in your holding details below. Then, under Administration, create organizations, areas and teams and register your users (they join the holding and are attached to teams).",
+    "manualTitle": "Setup manual",
+    "manualDesc": "Step-by-step to configure the account. Open online or download as PDF.",
+    "manualDownload": "Open / download manual",
+    "supportTitle": "Support",
+    "supportDesc": "Open a ticket to the CONNBX team and track its status here.",
+    "supportType": "Type",
+    "supportTypeRequest": "Request",
+    "supportTypeIncident": "Issue",
+    "supportSubject": "Subject",
+    "supportSubjectPh": "E.g.: Question about creating teams",
+    "supportMessage": "Description",
+    "supportMessagePh": "Describe what you need, with as much detail as possible.",
+    "supportSend": "Open ticket",
+    "supportOpenList": "Your tickets",
+    "supportOk": "Ticket opened! The CONNBX team has received it.",
+    "supportErr": "Couldn't open the ticket. Please try again.",
+    "ticketStatus": { "aberto": "Open", "em_atendimento": "In progress", "resolvido": "Resolved" },
     "holdingData": "Holding data",
     "hName": "Name",
     "legalName": "Legal name",
@@ -737,6 +754,52 @@
     "statusFinalizada": "Done",
     "micPrompt": "For the real experience, allow the microphone when your browser asks. Without permission, the example stays generic.",
     "micDenied": "Microphone not allowed — showing a generic example."
+  },
+  "onboarding": {
+    "welcome": "Welcome to MILA, {name}!",
+    "subtitle": "Let's get everything ready in a few steps.",
+    "done": "Done",
+    "now": "Now",
+    "buyTitle": "Plan purchased",
+    "buyDesc": "Your subscription is active. Thank you for choosing MILA.",
+    "accessTitle": "First access",
+    "accessDesc": "Your account was created and you're already inside.",
+    "configTitle": "Initial setup",
+    "configHintCorp": "Set up the company structure to start delegating tasks.",
+    "configHintFamily": "Add the members and household staff to organize the family's tasks.",
+    "configCorp": ["Holding details (company, timezone, language and logo)", "Organizations", "Areas", "Teams and people", "Create the first task"],
+    "configFamily": ["Family details (name, timezone and language)", "Members: spouse, children and parents", "Household staff: housekeeper, cook, cleaner, gardener, driver...", "Create the first task"],
+    "manualCta": "Download the setup manual",
+    "goConfig": "Go to setup",
+    "finish": "Finish and go to the app",
+    "skip": "Skip for now"
+  },
+  "manual": {
+    "downloadCta": "Download / Print PDF",
+    "backToApp": "Back",
+    "empresa": {
+      "title": "Setup manual — Company",
+      "intro": "Quick guide to configure your corporate MILA account and start delegating tasks clearly.",
+      "sections": [
+        { "h": "1. Holding details", "items": ["Go to Structure → Manage holding.", "Fill in legal name, tax ID, email, phone, timezone and language.", "Upload the company logo (appears in the org chart and reports)."] },
+        { "h": "2. Organizations", "items": ["Under Structure, create the organizations (companies/units of the group).", "Assign one or more administrators per organization."] },
+        { "h": "3. Areas", "items": ["Within each organization, create the areas (e.g.: Sales, IT, Finance).", "Assign area administrators when needed."] },
+        { "h": "4. Teams and people", "items": ["Create the teams inside each area.", "Register people (name, email, aliases and whether they can delegate).", "Set the members of each team."] },
+        { "h": "5. First task", "items": ["Go to Tasks → New.", "Dictate by voice (hold the microphone) or type.", "Set assignee, due date and priority."] },
+        { "h": "6. Support", "items": ["Under Structure → Manage holding, open a ticket anytime.", "The CONNBX team receives your ticket directly."] }
+      ]
+    },
+    "familia": {
+      "title": "Setup manual — Family",
+      "intro": "Quick guide to organize your family's and household staff's tasks in MILA.",
+      "sections": [
+        { "h": "1. Family details", "items": ["Go to Structure → Manage holding.", "Set the account's name, timezone and language."] },
+        { "h": "2. Family members", "items": ["Register spouse, children and parents.", "Provide the email of anyone who will have their own app access."] },
+        { "h": "3. Household staff", "items": ["Register staff: housekeeper, cook, cleaner, gardener, driver and others.", "Set who can receive and who can delegate tasks."] },
+        { "h": "4. First task", "items": ["Go to Tasks → New.", "Speak holding the microphone or type.", "Set assignee and due date (e.g.: 'Take the car for service tomorrow')."] },
+        { "h": "5. Support", "items": ["Under Structure → Manage holding, open a ticket whenever you need."] }
+      ]
+    }
   },
   "familyBonus": {
     "kicker": "A PERK FOR YOUR TEAM",

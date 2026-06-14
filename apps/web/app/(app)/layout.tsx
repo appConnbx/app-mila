@@ -12,7 +12,7 @@ import { NavLinks } from './_nav'
 import { exitInstance } from './dashboard/actions'
 import type { Locale } from '@/i18n/config'
 
-type Holding = { name: string; kind: 'corporate' | 'family'; legal_name: string | null }
+type Holding = { name: string; kind: 'corporate' | 'family'; legal_name: string | null; onboarding_done: boolean }
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -42,7 +42,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   if (activeHolding) {
     const [hRes, adminRes, mgrRes, accessRes] = await Promise.all([
-      supabase.from('holdings').select('name, kind, legal_name').eq('id', activeHolding).single(),
+      supabase.from('holdings').select('name, kind, legal_name, onboarding_done').eq('id', activeHolding).single(),
       sb.rpc('is_holding_admin'),
       sb.rpc('is_manager'), // dashboard gerencial: admin de qualquer nível
       isHome ? Promise.resolve({ data: true }) : sb.rpc('holding_has_active_access'),
@@ -51,13 +51,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     isHoldingAdmin = !!adminRes.data
     isManager = !!mgrRes.data
 
-    if (!isHome) {
-      // Guard de assinatura ativa.
-      if (!accessRes.data) redirect('/subscription')
-      // Onboarding de 1º acesso (corporativo Hotmart): configurar dados da holding.
-      if (isHoldingAdmin && holding?.kind === 'corporate' && !holding?.legal_name && !pathname.startsWith('/structure/holding')) {
-        redirect('/structure/holding?onboarding=1')
-      }
+    // Guard de assinatura ativa (rotas de instância).
+    if (!isHome && !accessRes.data) redirect('/subscription')
+
+    // Onboarding guiado de 1º acesso (corp + família). Vale em qualquer rota,
+    // exceto a própria trilha, o manual (baixado de lá) e o billing.
+    if (
+      isHoldingAdmin && holding && !holding.onboarding_done &&
+      !pathname.startsWith('/onboarding') &&
+      !pathname.startsWith('/manual') &&
+      !pathname.startsWith('/subscription')
+    ) {
+      redirect('/onboarding')
     }
   }
 

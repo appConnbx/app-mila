@@ -349,6 +349,23 @@
     "holdingMgmtDesc": "Datos de registro del grupo.",
     "onboardingTitle": "¡Bienvenido a MILA! Configuremos tu empresa.",
     "onboardingDesc": "Completa los datos de tu holding abajo. Luego, en Administración, crea organizaciones, áreas y equipos y registra a tus usuarios (entran en la holding y se vinculan a los equipos).",
+    "manualTitle": "Manual de configuración",
+    "manualDesc": "Paso a paso para configurar la cuenta. Ábrelo en línea o descárgalo en PDF.",
+    "manualDownload": "Abrir / descargar manual",
+    "supportTitle": "Soporte",
+    "supportDesc": "Abre un ticket al equipo CONNBX y sigue su estado aquí.",
+    "supportType": "Tipo",
+    "supportTypeRequest": "Solicitud",
+    "supportTypeIncident": "Problema",
+    "supportSubject": "Asunto",
+    "supportSubjectPh": "Ej.: Duda sobre el registro de equipos",
+    "supportMessage": "Descripción",
+    "supportMessagePh": "Describe lo que necesitas, con el máximo de detalle.",
+    "supportSend": "Abrir ticket",
+    "supportOpenList": "Tus tickets",
+    "supportOk": "¡Ticket abierto! El equipo CONNBX ya lo recibió.",
+    "supportErr": "No se pudo abrir el ticket. Inténtalo de nuevo.",
+    "ticketStatus": { "aberto": "Abierto", "em_atendimento": "En atención", "resolvido": "Resuelto" },
     "holdingData": "Datos del grupo",
     "hName": "Nombre",
     "legalName": "Razón social",
@@ -737,6 +754,52 @@
     "statusFinalizada": "Hecha",
     "micPrompt": "Para la experiencia real, permite el micrófono cuando el navegador lo solicite. Sin permiso, el ejemplo será genérico.",
     "micDenied": "Micrófono no autorizado — mostrando un ejemplo genérico."
+  },
+  "onboarding": {
+    "welcome": "¡Bienvenido a MILA, {name}!",
+    "subtitle": "Vamos a dejar todo listo en pocos pasos.",
+    "done": "Hecho",
+    "now": "Ahora",
+    "buyTitle": "Plan contratado",
+    "buyDesc": "Tu suscripción está activa. Gracias por elegir MILA.",
+    "accessTitle": "Primer acceso",
+    "accessDesc": "Tu cuenta fue creada y ya estás dentro del entorno.",
+    "configTitle": "Configuración inicial",
+    "configHintCorp": "Configura la estructura de la empresa para empezar a delegar tareas.",
+    "configHintFamily": "Registra a los miembros y al personal de la casa para organizar las tareas de la familia.",
+    "configCorp": ["Datos de la holding (empresa, zona horaria, idioma y logo)", "Organizaciones", "Áreas", "Equipos y personas", "Crea la primera tarea"],
+    "configFamily": ["Datos de la familia (nombre, zona horaria e idioma)", "Miembros: cónyuge, hijos y padres", "Personal de la casa: ama de llaves, cocinero(a), limpieza, jardinero(a), chofer...", "Crea la primera tarea"],
+    "manualCta": "Descargar el manual de configuración",
+    "goConfig": "Ir a la configuración",
+    "finish": "Finalizar e ir a la app",
+    "skip": "Omitir por ahora"
+  },
+  "manual": {
+    "downloadCta": "Descargar / Imprimir PDF",
+    "backToApp": "Volver",
+    "empresa": {
+      "title": "Manual de configuración — Empresa",
+      "intro": "Guía rápida para configurar tu cuenta corporativa en MILA y empezar a delegar tareas con claridad.",
+      "sections": [
+        { "h": "1. Datos de la holding", "items": ["Ve a Estructura → Gestionar holding.", "Completa razón social, RFC/CNPJ, correo, teléfono, zona horaria e idioma.", "Sube el logo de la empresa (aparece en el organigrama y reportes)."] },
+        { "h": "2. Organizaciones", "items": ["En Estructura, crea las organizaciones (empresas/unidades del grupo).", "Asigna uno o más administradores por organización."] },
+        { "h": "3. Áreas", "items": ["Dentro de cada organización, crea las áreas (ej.: Comercial, TI, Finanzas).", "Asigna administradores de área cuando sea necesario."] },
+        { "h": "4. Equipos y personas", "items": ["Crea los equipos dentro de cada área.", "Registra a las personas (nombre, correo, alias y si pueden delegar).", "Define los miembros de cada equipo."] },
+        { "h": "5. Primera tarea", "items": ["Ve a Tareas → Nueva.", "Dicta por voz (mantén el micrófono) o escribe.", "Define responsable, fecha límite y prioridad."] },
+        { "h": "6. Soporte", "items": ["En Estructura → Gestionar holding, abre un ticket en cualquier momento.", "El equipo CONNBX recibe tu ticket directamente."] }
+      ]
+    },
+    "familia": {
+      "title": "Manual de configuración — Familia",
+      "intro": "Guía rápida para organizar las tareas de tu familia y del personal de la casa en MILA.",
+      "sections": [
+        { "h": "1. Datos de la familia", "items": ["Ve a Estructura → Gestionar holding.", "Define el nombre, la zona horaria y el idioma de la cuenta."] },
+        { "h": "2. Miembros de la familia", "items": ["Registra cónyuge, hijos y padres.", "Indica el correo de quien tendrá su propio acceso a la app."] },
+        { "h": "3. Personal de la casa", "items": ["Registra al personal: ama de llaves, cocinero(a), limpieza, jardinero(a), chofer y otros.", "Define quién puede recibir y quién puede delegar tareas."] },
+        { "h": "4. Primera tarea", "items": ["Ve a Tareas → Nueva.", "Habla manteniendo el micrófono o escribe.", "Define responsable y fecha (ej.: 'Llevar el auto al servicio mañana')."] },
+        { "h": "5. Soporte", "items": ["En Estructura → Gestionar holding, abre un ticket cuando lo necesites."] }
+      ]
+    }
   },
   "familyBonus": {
     "kicker": "UN BENEFICIO PARA TU EQUIPO",

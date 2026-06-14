@@ -117,22 +117,25 @@ export async function createClientAccount(formData: FormData) {
   const plan = String(formData.get('plan_id') ?? '')
   const adminEmail = String(formData.get('admin_email') ?? '').trim().toLowerCase()
   const adminName = String(formData.get('admin_name') ?? '').trim()
-  const password = String(formData.get('password') ?? '')
   const seatsRaw = String(formData.get('seats') ?? '').trim()
   const parsed = parseInt(seatsRaw, 10)
   const seats = seatsRaw === '' || Number.isNaN(parsed) ? null : Math.max(1, parsed)
 
   if (!name || !plan || !adminEmail) redirect('/cbx/comercial/novo?err=campos')
-  if (password.length < 6) redirect('/cbx/comercial/novo?err=senha')
 
+  // Cadastro manual NÃO define senha: o cliente recebe e-mail para criar a senha
+  // e concluir o acesso (mesmo fluxo de Hotmart/Stripe -> /create-password).
+  const origin = process.env.APP_BASE_URL || 'https://www.appmila.co'
   const admin = createAdminClient()
-  const { data: created } = await admin.auth.admin.createUser({ email: adminEmail, password, email_confirm: true })
-  let uid = created?.user?.id ?? null
+  const sbAdmin = admin as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: string | null }> }
+  const { data: existing } = await sbAdmin.rpc('auth_user_id_by_email', { p_email: adminEmail })
+  let uid = existing ?? null
   if (!uid) {
-    // E-mail já cadastrado: reaproveita a conta existente sem trocar a senha.
-    const sbAdmin = admin as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: string | null }> }
-    const { data: existing } = await sbAdmin.rpc('auth_user_id_by_email', { p_email: adminEmail })
-    uid = existing ?? null
+    // Conta nova: convite por e-mail (Supabase envia o link de definir senha).
+    const { data: invited } = await admin.auth.admin.inviteUserByEmail(adminEmail, {
+      redirectTo: `${origin}/auth/confirm?next=/create-password`,
+    })
+    uid = invited?.user?.id ?? null
   }
   if (!uid) redirect('/cbx/comercial/novo?err=auth')
 

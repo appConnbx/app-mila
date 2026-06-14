@@ -1,12 +1,14 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
-import { updateHolding } from '../actions'
+import { updateHolding, openSupportTicket } from '../actions'
 import { Breadcrumb, Card, inputCls, btnCls } from '../_components'
 import { LogoUploader } from '../_logo-uploader'
 import { SubmitButton } from '@/components/pending'
-import { TIMEZONES } from '@/lib/datetime'
+import { Badge } from '@/components/ui'
+import { TIMEZONES, fmtDayMonth } from '@/lib/datetime'
 
 type Holding = {
   id: string
@@ -38,9 +40,12 @@ const LANGUAGES = [
 
 const labelCls = 'block text-sm font-medium text-slate-300'
 
-export default async function HoldingPage({ searchParams }: { searchParams: Promise<{ onboarding?: string }> }) {
+type Ticket = { id: string; title: string; type: string; status: string; created_at: string; resolved_at: string | null }
+
+export default async function HoldingPage({ searchParams }: { searchParams: Promise<{ onboarding?: string; support?: string }> }) {
   const t = await getTranslations('structure')
-  const { onboarding } = await searchParams
+  const locale = await getLocale()
+  const { onboarding, support } = await searchParams
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
   if (!holdingId) redirect('/dashboard')
@@ -54,9 +59,17 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
   const h = data as unknown as Holding | null
   if (!h) redirect('/structure')
 
-  const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: License[] | null }> }
-  const { data: licRows } = await sb.rpc('holding_license')
+  const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: unknown }> }
+  const [{ data: licRows }, { data: adminFlag }, { data: ticketRows }] = await Promise.all([
+    sb.rpc('holding_license') as Promise<{ data: License[] | null }>,
+    sb.rpc('is_holding_admin') as Promise<{ data: boolean | null }>,
+    sb.rpc('client_my_tickets') as Promise<{ data: Ticket[] | null }>,
+  ])
   const lic = (licRows ?? [])[0] ?? null
+  const isAdmin = !!adminFlag
+  const tickets = (ticketRows ?? []) as Ticket[]
+  const manualSeg = h.kind === 'family' ? 'familia' : 'empresa'
+  const ticketStatus: Record<string, 'info' | 'warning' | 'success'> = { aberto: 'info', em_atendimento: 'warning', resolvido: 'success' }
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -98,6 +111,74 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
           )}
         </Card>
       </div>
+
+      {/* Manual de configuração */}
+      <div className="mt-6">
+        <Card title={t('manualTitle')}>
+          <p className="text-sm text-slate-400">{t('manualDesc')}</p>
+          <Link
+            href={`/manual/${manualSeg}`}
+            className="mt-3 inline-flex items-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+          >
+            <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden>
+              <path d="M10 3v10m0 0l-3.5-3.5M10 13l3.5-3.5M4 16h12" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {t('manualDownload')}
+          </Link>
+        </Card>
+      </div>
+
+      {/* Suporte — abertura de ticket (somente admin da holding) */}
+      {isAdmin && (
+        <div className="mt-6">
+          <Card title={t('supportTitle')}>
+            <p className="text-sm text-slate-400">{t('supportDesc')}</p>
+            {support === 'ok' && (
+              <p className="mt-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">{t('supportOk')}</p>
+            )}
+            {support && support !== 'ok' && (
+              <p className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">{t('supportErr')}</p>
+            )}
+            <form action={openSupportTicket} className="mt-4 space-y-3">
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="sm:col-span-2">
+                  <label className={labelCls}>{t('supportSubject')}</label>
+                  <input name="title" required maxLength={120} placeholder={t('supportSubjectPh')} className={`mt-1 ${inputCls}`} />
+                </div>
+                <div>
+                  <label className={labelCls}>{t('supportType')}</label>
+                  <select name="type" defaultValue="solicitacao" className={`mt-1 ${inputCls}`}>
+                    <option value="solicitacao">{t('supportTypeRequest')}</option>
+                    <option value="incidente">{t('supportTypeIncident')}</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className={labelCls}>{t('supportMessage')}</label>
+                <textarea name="description" rows={3} placeholder={t('supportMessagePh')} className={`mt-1 ${inputCls}`} />
+              </div>
+              <div className="flex justify-end">
+                <SubmitButton className={btnCls}>{t('supportSend')}</SubmitButton>
+              </div>
+            </form>
+
+            {tickets.length > 0 && (
+              <div className="mt-5 border-t border-white/10 pt-4">
+                <p className="mb-2 text-sm font-semibold text-slate-200">{t('supportOpenList')}</p>
+                <ul className="space-y-1.5">
+                  {tickets.map((tk) => (
+                    <li key={tk.id} className="flex items-center justify-between gap-3 rounded-lg bg-slate-900/40 px-3 py-2">
+                      <span className="min-w-0 flex-1 truncate text-sm text-slate-200">{tk.title}</span>
+                      <span className="shrink-0 text-xs text-slate-500">{fmtDayMonth(tk.created_at, locale, h.timezone ?? 'America/Sao_Paulo')}</span>
+                      <Badge variant={ticketStatus[tk.status] ?? 'info'} className="shrink-0">{t(`ticketStatus.${tk.status}`)}</Badge>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </Card>
+        </div>
+      )}
 
       <div className="mt-6">
         <LogoUploader kind="holding" id={h.id} name={h.name} initialUrl={h.logo_url} />
