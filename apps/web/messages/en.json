@@ -781,6 +781,7 @@
     "instancesDesc": "Your account (your login) can hold several instances: each company and also your family is an instance. You switch between them — and it's inside an instance that you create and delegate tasks. Everything stays linked to the same login.",
     "done": "Done",
     "now": "Now",
+    "pending": "To do",
     "buyTitle": "Plan purchased",
     "buyDesc": "Your subscription is active. Thank you for choosing MILA.",
     "accessTitle": "First access",

@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../_lib'
-import { CbxCard, Pill, btnCbx, thCbx, tdCbx } from '../_ui'
+import { btnCbx } from '../_ui'
+import { ComercialList } from './_list'
 
 export type ClientRow = {
   holding_id: string
@@ -22,6 +23,9 @@ export type ClientRow = {
   country: string | null
   contact_name: string | null
   created_at: string
+  price_cents: number | null
+  currency: string | null
+  billing_interval: string | null
 }
 
 export default async function CbxComercialPage() {
@@ -32,9 +36,6 @@ export default async function CbxComercialPage() {
   const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: ClientRow[] | null }> }
   const { data } = await sb.rpc('cbx_list_clients')
   const clients = data ?? []
-
-  const region = (c: ClientRow) =>
-    [c.city, c.state, c.country].filter(Boolean).join(' / ') || '—'
 
   return (
     <div className="space-y-6">
@@ -57,66 +58,7 @@ export default async function CbxComercialPage() {
         )}
       </div>
 
-      <CbxCard>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[860px] text-sm">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className={thCbx}>Cliente</th>
-                <th className={thCbx}>Plano</th>
-                <th className={thCbx}>Uso</th>
-                <th className={thCbx}>Tipo de negócio</th>
-                <th className={thCbx}>Região</th>
-                <th className={thCbx}>Status</th>
-                <th className={thCbx}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {clients.map((c) => (
-                <tr key={c.holding_id} className="border-b border-white/5 transition last:border-0 hover:bg-white/[0.03]">
-                  <td className={tdCbx}>
-                    <Link href={`/cbx/comercial/${c.holding_id}`} className="font-semibold text-slate-100 hover:text-amber-300">
-                      {c.name}
-                    </Link>
-                    <p className="text-xs text-slate-500">{c.kind === 'family' ? 'Família' : 'Corporativo'}</p>
-                  </td>
-                  <td className={tdCbx}>
-                    <div className="flex items-center gap-2">
-                      <span className="text-slate-200">{c.plan_name ?? '—'}</span>
-                      {c.is_unlimited && <Pill tone="warn">VIP</Pill>}
-                    </div>
-                    <p className="text-xs text-slate-500">{c.provider ?? ''}</p>
-                  </td>
-                  <td className={tdCbx}>
-                    <span className="text-slate-200">
-                      {c.used ?? 0} / {c.is_unlimited ? '∞' : c.seat_limit ?? '—'}
-                    </span>
-                  </td>
-                  <td className={`${tdCbx} text-slate-300`}>{c.business_type ?? '—'}</td>
-                  <td className={`${tdCbx} text-slate-300`}>{region(c)}</td>
-                  <td className={tdCbx}>
-                    <Pill tone={c.sub_status === 'active' ? 'ok' : c.sub_status ? 'warn' : 'err'}>
-                      {c.sub_status ?? 'sem licença'}
-                    </Pill>
-                  </td>
-                  <td className={tdCbx}>
-                    <Link href={`/cbx/comercial/${c.holding_id}`} className="text-xs font-semibold text-amber-300 underline-offset-2 hover:underline">
-                      Abrir / editar →
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-              {clients.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-500">
-                    Nenhum cliente ainda.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </CbxCard>
+      <ComercialList clients={clients} />
     </div>
   )
 }
