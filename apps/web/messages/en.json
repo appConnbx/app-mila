@@ -733,7 +733,9 @@
       "Confirm attendance at Fridays event",
       "Request a quote for new materials"
     ],
-    "statusFinalizada": "Done"
+    "statusFinalizada": "Done",
+    "micPrompt": "For the real experience, allow the microphone when your browser asks. Without permission, the example stays generic.",
+    "micDenied": "Microphone not allowed — showing a generic example."
   },
   "familyBonus": {
     "kicker": "A PERK FOR YOUR TEAM",

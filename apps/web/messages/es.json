@@ -733,7 +733,9 @@
       "Confirmar asistencia al evento del viernes",
       "Pedir presupuesto de material nuevo"
     ],
-    "statusFinalizada": "Hecha"
+    "statusFinalizada": "Hecha",
+    "micPrompt": "Para la experiencia real, permite el micrófono cuando el navegador lo solicite. Sin permiso, el ejemplo será genérico.",
+    "micDenied": "Micrófono no autorizado — mostrando un ejemplo genérico."
   },
   "familyBonus": {
     "kicker": "UN BENEFICIO PARA TU EQUIPO",

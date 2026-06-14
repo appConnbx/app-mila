@@ -24,6 +24,8 @@ export type VoiceDemoLabels = {
   statusFinalizada: string
   limit: string
   badge: string
+  micPrompt: string
+  micDenied: string
 }
 
 type Status = 'nova' | 'trabalhando' | 'finalizada'
@@ -49,6 +51,10 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
   const streamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const realRef = useRef(false)
+  // Aviso de microfone: 'ask' na 1ª interação (pede autorização p/ experiência real),
+  // 'denied' se negar/não suportar (o exemplo cai no genérico), 'none' quando concedido.
+  const [micNote, setMicNote] = useState<'none' | 'ask' | 'denied'>('none')
+  const askedRef = useRef(false)
   const full = items.length >= MAX
 
   function clearTimers() {
@@ -91,11 +97,13 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
     setPhase('recording')
     realRef.current = false
     chunksRef.current = []
+    // Na 1ª interação, orienta a autorizar o microfone (some quando concedido).
+    if (!askedRef.current) { askedRef.current = true; setMicNote('ask') }
     startTimers()
     // Tenta o microfone real (assíncrono; a barra já está correndo).
     try {
       const md = navigator.mediaDevices
-      if (!md?.getUserMedia || typeof MediaRecorder === 'undefined') return
+      if (!md?.getUserMedia || typeof MediaRecorder === 'undefined') { setMicNote('denied'); return }
       const stream = await md.getUserMedia({ audio: true })
       streamRef.current = stream
       // Se o usuário já soltou durante o prompt de permissão (timers limpos), encerra.
@@ -105,9 +113,11 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
       rec.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data) }
       recRef.current = rec
       realRef.current = true
+      setMicNote('none') // permissão concedida → experiência real
       rec.start()
     } catch {
-      realRef.current = false // segue no caminho simulado
+      realRef.current = false // microfone negado/indisponível → caminho genérico
+      setMicNote('denied')
     }
   }
 
@@ -186,6 +196,20 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
         <p className="h-4 text-xs text-slate-400">
           {phase === 'recording' ? `${labels.recording} · ${secs}s` : phase === 'transcribing' ? labels.transcribing : full ? labels.limit : labels.holdHint}
         </p>
+
+        {micNote !== 'none' && (
+          <p
+            className={`flex items-start gap-1.5 rounded-lg px-3 py-2 text-left text-xs ${
+              micNote === 'denied' ? 'bg-amber-500/10 text-amber-300' : 'bg-sky-500/10 text-sky-300'
+            }`}
+          >
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden className="mt-0.5 shrink-0">
+              <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M8 7.2v3.4M8 5.1h.01" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+            {micNote === 'denied' ? labels.micDenied : labels.micPrompt}
+          </p>
+        )}
 
         <form
           className="flex w-full max-w-[16rem] gap-2"
