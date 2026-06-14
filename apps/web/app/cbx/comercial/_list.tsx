@@ -5,9 +5,10 @@ import Link from 'next/link'
 import type { ClientRow } from './page'
 
 // Faturado ESTIMADO: preço do plano × períodos desde o cadastro (não há montante
-// real em billing_events). VIP/grátis = 0. Rótulo "estim." deixa claro no UI.
+// real em billing_events). Só conta assinaturas ATIVAS (ignora canceladas/suspensas/
+// sem licença); VIP/grátis = 0. Rótulo "estim." deixa claro no UI.
 function estRevenueCents(c: ClientRow): number {
-  if (!c.price_cents || c.is_unlimited) return 0
+  if (!c.price_cents || c.is_unlimited || c.sub_status !== 'active') return 0
   const start = new Date(c.created_at).getTime()
   const elapsed = Date.now() - start
   const annual = /year|annual|anual|ano/i.test(c.billing_interval ?? '')
