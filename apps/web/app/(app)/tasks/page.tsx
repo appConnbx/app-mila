@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Button, Badge, EmptyState, Avatar, Tag } from '@/components/ui'
+import { DemandStatusToggle } from '@/components/demand-status-toggle'
 import { fmtDayMonth } from '@/lib/datetime'
 
 type Demand = {
@@ -152,8 +153,11 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   }
   const monthGroups = Array.from(groupMap.values()).sort((a, b) => b.sort - a.sort)
 
-  // Card de uma demanda (reusado na lista ativa e nos grupos de concluídas)
-  const cardOf = (d: Demand) => {
+  const statusLabels = { nova: t('status.nova'), trabalhando: t('status.trabalhando'), finalizada: t('status.finalizada') }
+
+  // Card de uma demanda (reusado na lista ativa e nos grupos de concluídas).
+  // interactive=true: chip de status clicável + colapso ao finalizar (lista ativa).
+  const cardOf = (d: Demand, interactive = false) => {
     const overdue = isOverdue(d)
     const dl = deadlineLabel(d)
     const prog = deadlineProgress(d)
@@ -162,7 +166,8 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
       <Link
         key={d.id}
         href={`/tasks/${d.id}`}
-        className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${overdue ? '!border-rose-500/30' : ''}`}
+        {...(interactive ? { 'data-demand-row': '' } : {})}
+        className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${interactive ? 'demand-row' : ''} ${overdue ? '!border-rose-500/30' : ''}`}
       >
         <Avatar name={d.responsible?.full_name ?? '?'} src={d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) : null} />
         <div className="min-w-0 flex-1">
@@ -174,7 +179,11 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
                 {d.event && <span> · {d.event.name}</span>}
               </p>
             </div>
-            <Badge variant={STATUS_VARIANT[d.status]} className="shrink-0">{t(`status.${d.status}`)}</Badge>
+            {interactive ? (
+              <DemandStatusToggle demandId={d.id} initial={d.status} labels={statusLabels} />
+            ) : (
+              <Badge variant={STATUS_VARIANT[d.status]} className="shrink-0">{t(`status.${d.status}`)}</Badge>
+            )}
           </div>
           {d.description && <p className="mt-2 line-clamp-2 text-sm text-slate-400">{d.description}</p>}
           {(tags.length > 0 || overdue) && (
@@ -256,7 +265,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
               <EmptyState>{t('empty')}</EmptyState>
             </div>
           )}
-          {demands.map(cardOf)}
+          {demands.map((d) => cardOf(d, true))}
         </div>
       ) : (
         <div className="mt-4 space-y-3">
@@ -271,7 +280,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
                 <span>{g.label}</span>
                 <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-300">{g.items.length}</span>
               </summary>
-              <div className="space-y-3 p-3 pt-0">{g.items.map(cardOf)}</div>
+              <div className="space-y-3 p-3 pt-0">{g.items.map((d) => cardOf(d))}</div>
             </details>
           ))}
         </div>
