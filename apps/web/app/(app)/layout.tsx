@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Aurora } from '@/components/ui'
 import { SubmitButton } from '@/components/pending'
 import { NavLinks } from './_nav'
@@ -94,6 +95,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 </SubmitButton>
               </form>
             )}
+            <ThemeToggle />
             <LanguageSwitcher current={locale} />
             <span className="hidden text-sm text-slate-400 md:inline">{user.email}</span>
             <Link href="/profile" title={t('nav.profile')} className="shrink-0">
