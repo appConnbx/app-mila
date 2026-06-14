@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 140" width="470" height="140">
+  <defs>
+    <mask id="kp">
+      <rect x="10" y="10" width="120" height="120" rx="28" fill="#fff"/>
+      <text x="70" y="112" font-family="Arial, 'Segoe UI', sans-serif" font-size="96" font-weight="900" fill="#000" text-anchor="middle">M</text>
+    </mask>
+  </defs>
+  <rect x="10" y="10" width="120" height="120" rx="28" fill="#0F172A" mask="url(#kp)"/>
+  <text x="158" y="98" font-family="Arial, 'Segoe UI', sans-serif" font-size="74" font-weight="800" letter-spacing="2" fill="#0F172A">MILA</text>
+</svg>
