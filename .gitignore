@@ -33,3 +33,6 @@ Thumbs.db
 
 # Config local do Claude (específica da máquina)
 .claude/settings.local.json
+
+# Material de marketing/afiliados (PDFs, logos, VSLs) — assets de negócio, não código
+marketing/

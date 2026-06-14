@@ -1,5 +1,6 @@
 'use server'
 
+import crypto from 'node:crypto'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -67,7 +68,7 @@ export async function createSupportAccess(formData: FormData) {
   if (!holding) redirect('/cbx/suporte/acessos?err=campos')
   if (password.length < 6) redirect('/cbx/suporte/acessos?err=senha')
 
-  const token = Math.random().toString(36).slice(2, 10)
+  const token = crypto.randomUUID().replace(/-/g, '').slice(0, 8)
   const ghostEmail = `suporte-${token}@cbx.appmila.co`
 
   const admin = createAdminClient()
