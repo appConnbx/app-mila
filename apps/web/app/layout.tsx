@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { cookies } from 'next/headers'
 import NextTopLoader from 'nextjs-toploader'
 import './globals.css'
 
@@ -10,13 +11,15 @@ export const metadata: Metadata = {
   description: 'Gestão de demandas, eventos e produtividade',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Tema vem do cookie (padrão: escuro). Renderizado no servidor → sem flash.
+  const theme = (await cookies()).get('mila_theme')?.value === 'light' ? 'light' : ''
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={theme}>
       <body className={inter.className}>
         <NextTopLoader
           color="#22D3EE"

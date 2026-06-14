@@ -91,3 +91,94 @@ body {
   mask-image: radial-gradient(ellipse 95% 75% at 50% 12%, #000 26%, transparent 78%);
   -webkit-mask-image: radial-gradient(ellipse 95% 75% at 50% 12%, #000 26%, transparent 78%);
 }
+
+/* ======================================================================
+   MODO LIGHT (opt-in via classe .light no <html>; cookie mila_theme).
+   O dark é o padrão e fica INTOCADO — aqui só sobrepomos as utilidades
+   neutras (slate/white/surface) e os componentes (glass/aurora) quando
+   a classe .light está ativa. Cores-âncora (brand) e de status (emerald,
+   amber, rose, blue) permanecem; funcionam nos dois temas.
+   ====================================================================== */
+.light {
+  color-scheme: light;
+}
+.light body {
+  background-color: #f8fafc; /* slate-50 */
+  color: #1e293b; /* slate-800 */
+}
+.light * {
+  scrollbar-color: #cbd5e1 transparent;
+}
+.light ::selection {
+  background: rgba(6, 182, 212, 0.18);
+}
+
+/* Superfícies do tema (classes bg-surface / border-surface-border) */
+.light .bg-surface { background-color: #f8fafc; }
+.light .bg-surface-card { background-color: #ffffff; }
+.light .border-surface-border { border-color: #e2e8f0; }
+
+/* Texto: do mais forte ao mais sutil (contraste sobre fundo claro).
+   text-slate-950 (texto escuro sobre cor/brand) NÃO é alterado. */
+.light .text-white { color: #0f172a; }      /* slate-900 */
+.light .text-slate-100 { color: #0f172a; }
+.light .text-slate-200 { color: #1e293b; }   /* slate-800 */
+.light .text-slate-300 { color: #334155; }   /* slate-700 */
+.light .text-slate-400 { color: #475569; }   /* slate-600 */
+.light .text-slate-500 { color: #64748b; }   /* slate-500 */
+.light .text-slate-600 { color: #64748b; }
+.light .placeholder\:text-slate-500::placeholder { color: #94a3b8; }
+
+/* Superfícies escuras → claras (painéis, inputs, popovers) */
+.light .bg-slate-950,
+.light .bg-slate-950\/80,
+.light .bg-slate-900,
+.light .bg-slate-900\/40,
+.light .bg-slate-900\/60,
+.light .bg-slate-900\/70,
+.light .bg-slate-900\/90 { background-color: #ffffff; }
+
+/* Hovers / realces sutis */
+.light .bg-slate-800,
+.light .bg-slate-800\/30,
+.light .bg-slate-800\/60,
+.light .bg-slate-600\/30 { background-color: #f1f5f9; } /* slate-100 */
+
+/* Overlays brancos (realces no dark) → overlays escuros sutis no light */
+.light .bg-white\/\[0\.02\],
+.light .bg-white\/\[0\.025\],
+.light .bg-white\/\[0\.03\],
+.light .bg-white\/\[0\.04\],
+.light .bg-white\/\[0\.05\],
+.light .bg-white\/\[0\.06\],
+.light .bg-white\/\[0\.08\],
+.light .bg-white\/5,
+.light .bg-white\/10,
+.light .bg-white\/15 { background-color: rgba(15, 23, 42, 0.04); }
+
+/* Bordas e ring brancos → tom escuro sutil */
+.light .border-white\/5 { border-color: rgba(15, 23, 42, 0.06); }
+.light .border-white\/10 { border-color: rgba(15, 23, 42, 0.10); }
+.light .border-white\/20 { border-color: rgba(15, 23, 42, 0.16); }
+.light .ring-white\/10 { --tw-ring-color: rgba(15, 23, 42, 0.10); }
+
+/* Card vitrificado no claro: vidro fosco branco */
+.light .glass {
+  border-color: rgba(15, 23, 42, 0.08);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.80));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 18px 40px -28px rgba(15, 23, 42, 0.22);
+}
+
+/* Cena de fundo no claro: aurora suave sobre quase-branco + grade discreta */
+.light .aurora {
+  background:
+    radial-gradient(1100px 620px at 50% -10%, rgb(var(--aurora-rgb) / 0.10), transparent 60%),
+    radial-gradient(880px 520px at 88% 2%, rgb(var(--glow-rgb) / 0.08), transparent 55%),
+    radial-gradient(720px 520px at 6% 16%, rgba(99, 102, 241, 0.06), transparent 60%),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 60%, #eef2f7 100%);
+}
+.light .aurora::before {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+}
