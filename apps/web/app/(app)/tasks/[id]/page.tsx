@@ -90,10 +90,10 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
     return v
   }
 
-  const Row = ({ label, value }: { label: string; value: string }) => (
-    <div className="flex justify-between gap-3">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="text-right text-slate-200">{value}</dd>
+  const PropCard = ({ label, value }: { label: string; value: string }) => (
+    <div className="rounded-xl border border-surface-border bg-slate-900/40 px-4 py-3">
+      <dt className="text-xs text-slate-500">{label}</dt>
+      <dd className="mt-1 truncate text-sm font-medium text-slate-100" title={value}>{value}</dd>
     </div>
   )
 
@@ -138,25 +138,24 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
           ))}
         </div>
 
-        <div className="mt-5 grid gap-5 border-t border-surface-border pt-5 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <h2 className="text-sm font-medium text-slate-400">{t('description')}</h2>
-            <p className="mt-2 whitespace-pre-wrap text-sm text-slate-200">{d.description || t('noDescription')}</p>
-          </div>
-          <div>
-            <h2 className="text-sm font-medium text-slate-400">{t('properties')}</h2>
-            <dl className="mt-2 space-y-1.5 text-sm">
-              <Row label={t('fResponsible')} value={d.responsible?.full_name ?? '—'} />
-              <Row label={t('fPriority')} value={td(`priority.${d.priority}`)} />
-              <Row label={t('fDue')} value={fmtDate(d.due_date, locale, tz)} />
-              <Row label={t('fVisibility')} value={visLabel} />
-              <div className="mt-2 space-y-1.5 border-t border-surface-border pt-2 text-xs text-slate-500">
-                <Row label={t('origin')} value={d.origin?.full_name ?? '—'} />
-                <Row label={t('event')} value={d.event?.name ?? '—'} />
-                <Row label={t('created')} value={fmtDateTime(d.created_at, locale, tz)} />
-              </div>
-            </dl>
-          </div>
+        {/* Propriedades em cards — harmônico e usando a largura toda */}
+        <h2 className="mt-5 border-t border-surface-border pt-5 text-sm font-medium text-slate-400">{t('properties')}</h2>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <PropCard label={t('fResponsible')} value={d.responsible?.full_name ?? '—'} />
+          <PropCard label={t('fPriority')} value={td(`priority.${d.priority}`)} />
+          <PropCard label={t('fDue')} value={fmtDate(d.due_date, locale, tz)} />
+          <PropCard label={t('fVisibility')} value={visLabel} />
+        </div>
+        {/* Metadados secundários, discretos em linha */}
+        <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-500">
+          <div className="flex gap-1.5"><dt>{t('origin')}:</dt><dd className="text-slate-400">{d.origin?.full_name ?? '—'}</dd></div>
+          <div className="flex gap-1.5"><dt>{t('event')}:</dt><dd className="text-slate-400">{d.event?.name ?? '—'}</dd></div>
+          <div className="flex gap-1.5"><dt>{t('created')}:</dt><dd className="text-slate-400">{fmtDateTime(d.created_at, locale, tz)}</dd></div>
+        </dl>
+        {/* Descrição em largura total — sem buraco quando vazia/curta */}
+        <div className="mt-5 border-t border-surface-border pt-5">
+          <h2 className="text-sm font-medium text-slate-400">{t('description')}</h2>
+          <p className="mt-2 whitespace-pre-wrap text-sm text-slate-200">{d.description || t('noDescription')}</p>
         </div>
       </section>
 
