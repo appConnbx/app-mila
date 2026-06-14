@@ -15,6 +15,8 @@ const PUBLIC_PREFIXES = [
   '/subscribe', '/api/stripe/checkout', '/api/stripe/webhook',
   // Páginas de vendas para anúncios (públicas, por idioma/segmento).
   '/br-business', '/br-personal', '/en-business', '/en-personal', '/es-business', '/es-personal',
+  // Landing institucional com idioma fixo por URL (anúncios EN/ES).
+  '/en', '/es',
 ]
 
 /** Renova a sessão e protege rotas (redireciona para /login se não autenticado). */
