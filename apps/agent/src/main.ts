@@ -368,17 +368,39 @@ btnLogout.addEventListener('click', async () => {
 })
 
 // ---------------- Transcrição (compartilhada) ----------------
-async function transcribeBlob(blob: Blob): Promise<string> {
+// Token válido: o agente fica sempre aberto e o access_token expira (~1h). Se já
+// expirou (ou expira em <60s), força refresh — senão o /api/agent/transcribe
+// responde 401 e a gravação "não dá certo".
+async function validToken(): Promise<string | null> {
   const { data } = await supabase.auth.getSession()
-  const token = data.session?.access_token
+  let session = data.session
+  const expSoon = session?.expires_at ? session.expires_at * 1000 < Date.now() + 60_000 : !session
+  if (expSoon) {
+    const r = await supabase.auth.refreshSession()
+    session = r.data.session ?? session
+  }
+  return session?.access_token ?? null
+}
+
+async function transcribeBlob(blob: Blob): Promise<string> {
+  let token = await validToken()
   if (!token) throw new Error('sem-sessao')
-  const fd = new FormData()
-  fd.append('file', blob, 'audio.webm')
-  const res = await fetch(`${APP_BASE_URL}/api/agent/transcribe`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: fd,
-  })
+  const post = (tk: string) => {
+    const fd = new FormData()
+    fd.append('file', blob, 'audio.webm')
+    return fetch(`${APP_BASE_URL}/api/agent/transcribe`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${tk}` },
+      body: fd,
+    })
+  }
+  let res = await post(token)
+  if (res.status === 401) {
+    // Token expirado entre o getSession e o envio: refresh e tenta 1x.
+    const r = await supabase.auth.refreshSession()
+    token = r.data.session?.access_token ?? ''
+    if (token) res = await post(token)
+  }
   if (res.status === 503) throw new Error('nao-configurada')
   if (!res.ok) throw new Error(String(res.status))
   const out = (await res.json()) as { text?: string }
