@@ -1,34 +1,12 @@
 import type { SalesPlan } from './SalesPage'
+import { PLANS, CORP_PLANS, FAM_PLANS, hotmartBrUrl } from '@/lib/plans'
 
-/* Fonte única de preços + checkout das páginas de vendas.
-   BR  = produto Brasil (P106262837P), anual cobrado em 12x (corp) / total anual (família).
-   INTL = produto International (Y106267582L), assinatura mensal em US$.
-   off= BR = ofertas ANUAIS/12x (recriadas em jun/2026). As antigas mensais ficaram só para assinantes. */
-const urlBR = (off: string) => `https://pay.hotmart.com/P106262837P?off=${off}`
+/* Páginas de vendas: derivam de lib/plans.ts (fonte única de label/preço/oferta).
+   BR  = Hotmart anual (corp 12x; família anual ou 12x).
+   INTL = assinatura mensal US$ via gate /subscribe (valida e-mail) antes do Stripe. */
 
-const BR_CORP = [
-  { name: 'Starter', off: 'wyitwc3d', parcela: '297', total: '3.564' },
-  { name: 'Growth', off: '2kxlbff2', parcela: '497', total: '5.964' },
-  { name: 'Scale', off: 'abpzxjap', parcela: '697', total: '8.364' },
-  { name: 'Enterprise', off: 'yl7fpa6u', parcela: '1.117', total: '13.404' },
-]
-const INTL_CORP = [
-  { name: 'Starter', plan: 'starter', usd: '87' },
-  { name: 'Growth', plan: 'growth', usd: '167' },
-  { name: 'Scale', plan: 'scale', usd: '337' },
-  { name: 'Enterprise', plan: 'enterprise', usd: '667' },
-]
-const BR_FAM = [
-  { name: 'Family', off: 'i67ovflk', annual: '97', parcela: '8,08' },
-  { name: 'Family Plus', off: 'tfkn6adh', annual: '127', parcela: '10,58' },
-]
-const INTL_FAM = [
-  { name: 'Family', plan: 'family', usd: '13' },
-  { name: 'Family Plus', plan: 'family_plus', usd: '17' },
-]
-
-// Assinatura internacional: passa pelo gate /subscribe (valida e-mail) antes do Stripe.
-// O idioma é derivado da página de origem (next).
+// Assinatura internacional: passa pelo gate /subscribe (valida e-mail) antes do
+// Stripe. O idioma é derivado da página de origem (next).
 const stripeHref = (plan: string, next: string) => {
   const lang = next.startsWith('/en') ? 'en' : next.startsWith('/es') ? 'es' : 'pt-BR'
   return `/subscribe?plan=${plan}&next=${encodeURIComponent(next)}&lang=${lang}`
@@ -41,55 +19,67 @@ type CorpLabels = { users: string[]; cta: string; popular: string; unit?: string
 type FamLabels = { users: string[]; cta: string; popular: string; unit?: string; next?: string }
 
 export function corpPlansBR(l: CorpLabels): SalesPlan[] {
-  return BR_CORP.map((p, i) => ({
-    name: p.name,
-    users: l.users[i],
-    priceMain: `R$${p.parcela}`,
-    priceUnit: '',
-    priceSub: `12x · ou R$${p.total} à vista (plano anual)`,
-    href: urlBR(p.off),
-    cta: l.cta,
-    featured: i === CORP_FEATURED,
-    popular: l.popular,
-  }))
+  return CORP_PLANS.map((slug, i) => {
+    const p = PLANS[slug]
+    return {
+      name: p.label,
+      users: l.users[i],
+      priceMain: `R$${p.br!.parcela}`,
+      priceUnit: '',
+      priceSub: `12x · ou R$${p.br!.total} à vista (plano anual)`,
+      href: hotmartBrUrl(p.br!.off),
+      cta: l.cta,
+      featured: i === CORP_FEATURED,
+      popular: l.popular,
+    }
+  })
 }
 
 export function corpPlansINTL(l: CorpLabels): SalesPlan[] {
-  return INTL_CORP.map((p, i) => ({
-    name: p.name,
-    users: l.users[i],
-    priceMain: `US$${p.usd}`,
-    priceUnit: l.unit ?? '/month',
-    href: stripeHref(p.plan, l.next ?? '/'),
-    cta: l.cta,
-    featured: i === CORP_FEATURED,
-    popular: l.popular,
-  }))
+  return CORP_PLANS.map((slug, i) => {
+    const p = PLANS[slug]
+    return {
+      name: p.label,
+      users: l.users[i],
+      priceMain: `US$${p.usd}`,
+      priceUnit: l.unit ?? '/month',
+      href: stripeHref(slug, l.next ?? '/'),
+      cta: l.cta,
+      featured: i === CORP_FEATURED,
+      popular: l.popular,
+    }
+  })
 }
 
 export function famPlansBR(l: FamLabels): SalesPlan[] {
-  return BR_FAM.map((p, i) => ({
-    name: p.name,
-    users: l.users[i],
-    priceMain: `R$${p.annual}`,
-    priceUnit: '/ano',
-    priceSub: `ou 12x de R$${p.parcela}`,
-    href: urlBR(p.off),
-    cta: l.cta,
-    featured: i === FAM_FEATURED,
-    popular: l.popular,
-  }))
+  return FAM_PLANS.map((slug, i) => {
+    const p = PLANS[slug]
+    return {
+      name: p.label,
+      users: l.users[i],
+      priceMain: `R$${p.br!.annual}`,
+      priceUnit: '/ano',
+      priceSub: `ou 12x de R$${p.br!.parcela}`,
+      href: hotmartBrUrl(p.br!.off),
+      cta: l.cta,
+      featured: i === FAM_FEATURED,
+      popular: l.popular,
+    }
+  })
 }
 
 export function famPlansINTL(l: FamLabels): SalesPlan[] {
-  return INTL_FAM.map((p, i) => ({
-    name: p.name,
-    users: l.users[i],
-    priceMain: `US$${p.usd}`,
-    priceUnit: l.unit ?? '/month',
-    href: stripeHref(p.plan, l.next ?? '/'),
-    cta: l.cta,
-    featured: i === FAM_FEATURED,
-    popular: l.popular,
-  }))
+  return FAM_PLANS.map((slug, i) => {
+    const p = PLANS[slug]
+    return {
+      name: p.label,
+      users: l.users[i],
+      priceMain: `US$${p.usd}`,
+      priceUnit: l.unit ?? '/month',
+      href: stripeHref(slug, l.next ?? '/'),
+      cta: l.cta,
+      featured: i === FAM_FEATURED,
+      popular: l.popular,
+    }
+  })
 }

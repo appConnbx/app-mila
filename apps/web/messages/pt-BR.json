@@ -523,6 +523,7 @@
     "errEmailExiste": "Já existe uma conta com este e-mail. Faça login.",
     "errDocExiste": "Já existe uma conta gratuita com este documento.",
     "errGenerico": "Não foi possível concluir o cadastro. Tente novamente.",
+    "errMuitas": "Muitas tentativas. Aguarde alguns minutos e tente novamente.",
     "goLogin": "Ir para o login"
   },
   "landing": {

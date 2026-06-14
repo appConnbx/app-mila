@@ -523,6 +523,7 @@
     "errEmailExiste": "Ya existe una cuenta con este correo. Inicia sesión.",
     "errDocExiste": "Ya existe una cuenta gratuita con este documento.",
     "errGenerico": "No se pudo completar el registro. Inténtalo de nuevo.",
+    "errMuitas": "Demasiados intentos. Espera unos minutos e inténtalo de nuevo.",
     "goLogin": "Ir al inicio de sesión"
   },
   "landing": {

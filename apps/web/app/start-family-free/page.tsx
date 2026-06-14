@@ -17,6 +17,7 @@ const DICT_KEYS = [
 const ERR: Record<string, string> = {
   campos: 'errCampos', senha: 'errSenha', confirm: 'errConfirm', cpf: 'errCpf',
   email_existe: 'errEmailExiste', doc_existe: 'errDocExiste', generico: 'errGenerico',
+  muitas: 'errMuitas',
 }
 
 export default async function StartFamilyFreePage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {

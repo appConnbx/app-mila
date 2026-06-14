@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { rateLimit } from '@/lib/rate-limit'
 
 // Transcrição PÚBLICA para o demo interativo da landing/LPs (sem login).
 // Guardas contra custo/abuso: cap de tamanho (~10s de áudio) e rate-limit
@@ -7,27 +8,13 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const MAX_BYTES = 1_500_000 // ~1,5MB — 10s de webm/opus fica bem abaixo disso
-const WINDOW_MS = 60_000
-const MAX_PER_WINDOW = 8 // por IP, por minuto (deter abuso; demo são poucos toques)
-
-// Best-effort (reinicia em cold start / é por instância). Não é fronteira de
-// segurança — só um amortecedor barato somado ao cap de tamanho.
-const hits = new Map<string, number[]>()
-function rateLimited(ip: string): boolean {
-  const now = Date.now()
-  const arr = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS)
-  arr.push(now)
-  hits.set(ip, arr)
-  if (hits.size > 5000) hits.clear() // teto de memória
-  return arr.length > MAX_PER_WINDOW
-}
 
 export async function POST(request: NextRequest) {
   const apiKey = process.env.STT_API_KEY
   if (!apiKey) return NextResponse.json({ error: 'transcrição não configurada' }, { status: 503 })
 
   const ip = (request.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || request.headers.get('x-real-ip') || 'anon'
-  if (rateLimited(ip)) return NextResponse.json({ error: 'muitas tentativas' }, { status: 429 })
+  if (rateLimit(`demo-transcribe:${ip}`, { windowMs: 60_000, max: 8 })) return NextResponse.json({ error: 'muitas tentativas' }, { status: 429 })
 
   const form = await request.formData().catch(() => null)
   const file = form?.get('file')
