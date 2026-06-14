@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { enterInstance } from './actions'
@@ -40,6 +41,11 @@ export default async function DashboardPage() {
   const sb = supabase as unknown as {
     rpc: (name: string) => Promise<{ data: unknown; error: { message: string } | null }>
   }
+
+  // Onboarding de 1º acesso ANTES do dashboard/instâncias (admin de holding nova).
+  const { data: onb } = await sb.rpc('my_onboarding')
+  if (Array.isArray(onb) && onb.length > 0) redirect('/onboarding')
+
   const [ovRes, instRes] = await Promise.all([sb.rpc('my_overview'), sb.rpc('my_instances')])
   const overview = (ovRes.data ?? { counts: { pending: 0, working: 0, overdue: 0, done: 0 }, daily: [] }) as Overview
   const instances = (instRes.data ?? []) as Instance[]

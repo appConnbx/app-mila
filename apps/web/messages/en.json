@@ -758,6 +758,8 @@
   "onboarding": {
     "welcome": "Welcome to MILA, {name}!",
     "subtitle": "Let's get everything ready in a few steps.",
+    "instancesTitle": "What are instances",
+    "instancesDesc": "Your account (your login) can hold several instances: each company and also your family is an instance. You switch between them — and it's inside an instance that you create and delegate tasks. Everything stays linked to the same login.",
     "done": "Done",
     "now": "Now",
     "buyTitle": "Plan purchased",
@@ -770,7 +772,7 @@
     "configCorp": ["Holding details (company, timezone, language and logo)", "Organizations", "Areas", "Teams and people", "Create the first task"],
     "configFamily": ["Family details (name, timezone and language)", "Members: spouse, children and parents", "Household staff: housekeeper, cook, cleaner, gardener, driver...", "Create the first task"],
     "manualCta": "Download the setup manual",
-    "goConfig": "Go to setup",
+    "goConfig": "Enter and set up",
     "finish": "Finish and go to the app",
     "skip": "Skip for now"
   },

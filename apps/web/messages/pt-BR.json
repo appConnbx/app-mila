@@ -758,6 +758,8 @@
   "onboarding": {
     "welcome": "Bem-vindo ao MILA, {name}!",
     "subtitle": "Vamos deixar tudo pronto em poucos passos.",
+    "instancesTitle": "O que são instâncias",
+    "instancesDesc": "Sua conta (seu login) pode reunir várias instâncias: cada empresa e também a sua família é uma instância. Você alterna entre elas — e é dentro de uma instância que você cria e delega as demandas. Tudo fica vinculado ao mesmo acesso.",
     "done": "Concluído",
     "now": "Agora",
     "buyTitle": "Plano contratado",
@@ -770,7 +772,7 @@
     "configCorp": ["Dados da holding (empresa, fuso, idioma e logo)", "Organizações", "Áreas", "Equipes e pessoas", "Crie a primeira demanda"],
     "configFamily": ["Dados da família (nome, fuso e idioma)", "Membros: cônjuge, filhos e pais", "Equipe da casa: governanta, cozinheiro(a), faxineiro(a), jardineiro(a), motorista...", "Crie a primeira demanda"],
     "manualCta": "Baixar manual de configuração",
-    "goConfig": "Ir para a configuração",
+    "goConfig": "Entrar e configurar",
     "finish": "Concluir e ir para o app",
     "skip": "Pular por agora"
   },
