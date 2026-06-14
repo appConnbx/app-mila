@@ -9,7 +9,7 @@ export const metadata = { title: 'Onboarding · MILA' }
 
 type Pending = { holding_id: string; name: string; kind: 'corporate' | 'family' }
 
-function StepDot({ state }: { state: 'done' | 'current' }) {
+function StepDot({ state }: { state: 'done' | 'current' | 'pending' }) {
   if (state === 'done') {
     return (
       <span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/40">
@@ -19,9 +19,17 @@ function StepDot({ state }: { state: 'done' | 'current' }) {
       </span>
     )
   }
+  if (state === 'current') {
+    return (
+      <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/20 ring-1 ring-brand/50">
+        <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-brand" />
+      </span>
+    )
+  }
+  // pendente — ainda não realizado (cinza)
   return (
-    <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/20 ring-1 ring-brand/50">
-      <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-brand" />
+    <span className="grid h-8 w-8 place-items-center rounded-full bg-white/5 ring-1 ring-white/10">
+      <span className="h-2 w-2 rounded-full bg-slate-600" />
     </span>
   )
 }
@@ -46,24 +54,10 @@ export default async function OnboardingPage() {
       <h1 className="mt-1 text-3xl font-bold tracking-tight text-white">{t('welcome', { name: pending.name })}</h1>
       <p className="mt-1 text-slate-400">{t('subtitle')}</p>
 
-      {/* O que são instâncias (conceito central da conta) */}
-      <div className="glass glow-top mt-6 p-5">
-        <div className="flex items-start gap-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand/15 text-brand">
-            <svg viewBox="0 0 20 20" width="18" height="18" fill="none" aria-hidden>
-              <path d="M3 6.5L10 3l7 3.5-7 3.5-7-3.5zM3 10l7 3.5L17 10M3 13.5L10 17l7-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-            </svg>
-          </span>
-          <div>
-            <h2 className="font-semibold text-white">{t('instancesTitle')}</h2>
-            <p className="mt-1 text-sm text-slate-300">{t('instancesDesc')}</p>
-          </div>
-        </div>
-      </div>
-
       <div className="relative mt-8 space-y-6 pl-2">
         <span className="absolute left-[1.05rem] top-2 bottom-2 w-px bg-white/10" aria-hidden />
 
+        {/* 1) Compra — concluído */}
         <div className="relative flex gap-4">
           <StepDot state="done" />
           <div className="flex-1">
@@ -75,6 +69,7 @@ export default async function OnboardingPage() {
           </div>
         </div>
 
+        {/* 2) Primeiro acesso — concluído */}
         <div className="relative flex gap-4">
           <StepDot state="done" />
           <div className="flex-1">
@@ -86,12 +81,27 @@ export default async function OnboardingPage() {
           </div>
         </div>
 
+        {/* 3) Entender a estrutura (instâncias) — atual */}
         <div className="relative flex gap-4">
           <StepDot state="current" />
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <h2 className="font-semibold text-white">{t('configTitle')}</h2>
+              <h2 className="font-semibold text-white">{t('instancesTitle')}</h2>
               <span className="rounded-full bg-brand/15 px-2 py-0.5 text-[11px] font-medium text-brand">{t('now')}</span>
+            </div>
+            <div className="glass mt-3 p-5">
+              <p className="text-sm text-slate-300">{t('instancesDesc')}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 4) Configuração — pendente (cinza) */}
+        <div className="relative flex gap-4">
+          <StepDot state="pending" />
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h2 className="font-semibold text-slate-300">{t('configTitle')}</h2>
+              <span className="rounded-full bg-white/5 px-2 py-0.5 text-[11px] font-medium text-slate-400">{t('pending')}</span>
             </div>
             <div className="glass mt-3 p-5">
               <p className="text-sm text-slate-300">{configHint}</p>

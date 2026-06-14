@@ -69,11 +69,12 @@ export default async function FichaClientePage({
 
   const supabase = await createClient()
   const sb = supabase as unknown as { rpc: (n: string, a?: Record<string, unknown>) => Promise<{ data: unknown }> }
-  const [detailRes, plansRes, typesRes, usersRes] = await Promise.all([
+  const [detailRes, plansRes, typesRes, usersRes, ticketsRes] = await Promise.all([
     sb.rpc('cbx_client_detail', { p_holding: holdingId }),
     sb.rpc('admin_list_plans'),
     sb.rpc('cbx_list_business_types', { p_all: false }),
     sb.rpc('cbx_holding_users', { p_holding: holdingId }),
+    sb.rpc('cbx_list_tickets', { p_status: null }),
   ])
   const d = detailRes.data as Detail | null
   if (!d?.ok || !d.holding) notFound()
@@ -87,6 +88,10 @@ export default async function FichaClientePage({
     streak: streakFromDates(u.active_days ?? []),
   }))
   const canManageUsers = hasPerm(me, 'SUPORTE') || hasPerm(me, 'COMERCIAL')
+  type Tk = { id: string; holding_id: string | null; title: string; type: string; status: string; created_at: string; resolved_at: string | null; comment_count: number }
+  const clientTickets = ((ticketsRes.data as Tk[] | null) ?? []).filter((tk) => tk.holding_id === holdingId)
+  const openTickets = clientTickets.filter((tk) => tk.status !== 'resolvido').length
+  const ticketTone = (s: string) => (s === 'resolvido' ? 'ok' : s === 'em_atendimento' ? 'warn' : 'err')
   const h = d.holding
   const lic = d.license
   const p = d.profile
@@ -209,6 +214,39 @@ export default async function FichaClientePage({
           ))}
           {d.notes.length === 0 && <li className="text-sm text-slate-500">Nenhuma anotação ainda.</li>}
         </ul>
+      </CbxCard>
+
+      {/* Chamados de suporte deste cliente */}
+      <CbxCard title={`Chamados de suporte (${openTickets} em aberto)`}>
+        {clientTickets.length === 0 ? (
+          <p className="text-sm text-slate-500">Este cliente ainda não abriu chamados.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-sm">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Assunto</th>
+                  <th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Tipo</th>
+                  <th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Status</th>
+                  <th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Aberto em</th>
+                </tr>
+              </thead>
+              <tbody>
+                {clientTickets.map((tk) => (
+                  <tr key={tk.id} className="border-b border-white/5 transition last:border-0 hover:bg-white/[0.03]">
+                    <td className="px-4 py-2">
+                      <Link href={`/cbx/suporte/${tk.id}`} className="font-medium text-slate-100 hover:text-amber-300">{tk.title}</Link>
+                      {Number(tk.comment_count) > 0 && <span className="ml-2 text-xs text-slate-500">💬 {tk.comment_count}</span>}
+                    </td>
+                    <td className="px-4 py-2"><Pill tone={tk.type === 'incidente' ? 'err' : 'info'}>{tk.type === 'incidente' ? 'Incidente' : 'Solicitação'}</Pill></td>
+                    <td className="px-4 py-2"><Pill tone={ticketTone(tk.status)}>{tk.status === 'resolvido' ? 'Resolvido' : tk.status === 'em_atendimento' ? 'Em atendimento' : 'Aberto'}</Pill></td>
+                    <td className="px-4 py-2 text-slate-400">{fmtDate(tk.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </CbxCard>
 
       {/* Usuários da instância (super admin) */}

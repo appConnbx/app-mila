@@ -32,8 +32,18 @@ export default async function EstruturaPage() {
     const users = usersData ?? []
     return (
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">{t('familyTitle')}</h1>
-        <p className="mt-1 text-sm text-slate-400">{t('familyDesc')}</p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-white">{t('familyTitle')}</h1>
+            <p className="mt-1 text-sm text-slate-400">{t('familyDesc')}</p>
+          </div>
+          <Link
+            href="/structure/holding"
+            className="rounded-lg border border-white/10 px-3.5 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10"
+          >
+            {t('holdingMgmt')}
+          </Link>
+        </div>
 
         <div className="mt-6">
           <UsersManager users={users} tz={tz} />
