@@ -25,6 +25,19 @@ export async function updateSession(request: NextRequest) {
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-pathname', request.nextUrl.pathname)
 
+  // Geo-redirect da raiz institucional: visitante FORA do Brasil cai em /en
+  // (inglês) para anúncios/SEO; BR e país desconhecido (ex.: dev local) seguem
+  // em pt-BR (/). Respeita escolha explícita de idioma (cookie mila_locale) e
+  // não toca em /en, /es, /br-* nem rotas internas. Header da Vercel.
+  if (request.nextUrl.pathname === '/' && !request.cookies.get('mila_locale')) {
+    const country = request.headers.get('x-vercel-ip-country')
+    if (country && country !== 'BR') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/en'
+      return NextResponse.redirect(url)
+    }
+  }
+
   let response = NextResponse.next({ request: { headers: requestHeaders } })
 
   const supabase = createServerClient<Database>(
