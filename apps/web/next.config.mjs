@@ -33,6 +33,24 @@ const nextConfig = {
       { source: '/eventos/:path*', destination: '/events/:path*', permanent: true },
     ]
   },
+  // Headers de segurança globais. Referrer-Policy strict-origin-when-cross-origin
+  // já evita vazar token_hash (em /auth/confirm) via Referer p/ terceiros (só a
+  // origem é enviada cross-site). CSP não incluída aqui de propósito: exige
+  // allowlist testada de Stripe/Supabase/Resend para não quebrar o checkout.
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ]
+  },
 }
 
 export default withNextIntl(nextConfig)

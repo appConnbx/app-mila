@@ -58,15 +58,15 @@ export default async function DemandDetailPage({ params }: { params: Promise<{ i
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  const [meRes, hRes] = await Promise.all([
+  const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
+  const [meRes, hRes, adminRes] = await Promise.all([
     supabase.from('people').select('id').eq('auth_user_id', user?.id ?? '').eq('holding_id', holdingId).limit(1),
     supabase.from('holdings').select('timezone').eq('id', holdingId).single(),
+    sb.rpc('is_holding_admin'),
   ])
   const me = (meRes.data as unknown as { id: string }[] | null)?.[0]?.id
   const tz = (hRes.data as unknown as { timezone: string | null } | null)?.timezone ?? 'America/Sao_Paulo'
-  const sb = supabase as unknown as { rpc: (name: string) => Promise<{ data: boolean | null }> }
-  const { data: adminFlag } = await sb.rpc('is_holding_admin')
-  const canDelete = d.origin_id === me || !!adminFlag
+  const canDelete = d.origin_id === me || !!adminRes.data
 
   const [peopleRes, obsRes, histRes] = await Promise.all([
     supabase.from('people').select('id, full_name').order('full_name'),

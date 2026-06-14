@@ -1,3 +1,4 @@
+import crypto from 'node:crypto'
 import { NextResponse, type NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { processHotmartEvent } from '@/lib/hotmart/webhook'
@@ -23,9 +24,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'payload inválido' }, { status: 400 })
   }
 
-  // Validação do hottok: header (2.0) ou campo no corpo (1.x).
-  const hottok = request.headers.get('x-hotmart-hottok') ?? payload?.hottok
-  if (hottok !== expected) {
+  // Validação do hottok: header (2.0) ou campo no corpo (1.x). Comparação em
+  // tempo constante (evita timing oracle sobre o segredo), como no Stripe.
+  const hottok = String(request.headers.get('x-hotmart-hottok') ?? payload?.hottok ?? '')
+  const a = Buffer.from(hottok)
+  const b = Buffer.from(expected)
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     return NextResponse.json({ error: 'hottok inválido' }, { status: 401 })
   }
 
