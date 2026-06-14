@@ -17,11 +17,13 @@ const config: Config = {
           600: '#0891B2',
           700: '#0E7490',
         },
-        // Superfícies do tema escuro
+        // Superfícies via CSS var (dark = valores atuais; light sobrescreve em
+        // globals.css). Var-backed para que TODAS as variantes (bg-surface/70,
+        // border-surface-border etc.) virem claro no tema light automaticamente.
         surface: {
-          DEFAULT: '#0B1120', // fundo do app
-          card: '#111A2E', // cards
-          border: '#1E293B', // bordas sutis
+          DEFAULT: 'rgb(var(--surface-rgb) / <alpha-value>)', // fundo do app
+          card: 'rgb(var(--surface-card-rgb) / <alpha-value>)', // cards
+          border: 'rgb(var(--surface-border-rgb) / <alpha-value>)', // bordas sutis
         },
       },
       boxShadow: {
