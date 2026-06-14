@@ -41,11 +41,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const profilePromise = supabase.from('profiles').select('avatar_url').eq('auth_user_id', user.id).maybeSingle()
 
   if (activeHolding) {
-    const [hRes, adminRes, mgrRes, accessRes] = await Promise.all([
+    const [hRes, adminRes, mgrRes, accessRes, memberRes] = await Promise.all([
       supabase.from('holdings').select('name, kind, legal_name, onboarding_done').eq('id', activeHolding).single(),
       sb.rpc('is_holding_admin'),
       sb.rpc('is_manager'), // dashboard gerencial: admin de qualquer nível
       isHome ? Promise.resolve({ data: true }) : sb.rpc('holding_has_active_access'),
+      sb.rpc('my_member_pending'),
     ])
     holding = hRes.data as unknown as Holding | null
     isHoldingAdmin = !!adminRes.data
@@ -54,7 +55,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     // Guard de assinatura ativa (rotas de instância).
     if (!isHome && !accessRes.data) redirect('/subscription')
 
-    // Onboarding guiado de 1º acesso (corp + família). Vale em qualquer rota,
+    // Onboarding guiado de 1º acesso do ADMIN (configuração). Em qualquer rota,
     // exceto a própria trilha, o manual (baixado de lá) e o billing.
     if (
       isHoldingAdmin && holding && !holding.onboarding_done &&
@@ -63,6 +64,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       !pathname.startsWith('/subscription')
     ) {
       redirect('/onboarding')
+    }
+
+    // Onboarding de uso do MEMBRO (não-admin) no 1º acesso à instância.
+    if (
+      !isHoldingAdmin && holding && memberRes.data &&
+      !pathname.startsWith('/welcome-member') &&
+      !pathname.startsWith('/manual') &&
+      !pathname.startsWith('/subscription')
+    ) {
+      redirect('/welcome-member')
     }
   }
 

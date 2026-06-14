@@ -23,6 +23,14 @@ const PUBLIC_PREFIXES = [
 
 /** Renova a sessão e protege rotas (redireciona para /login se não autenticado). */
 export async function updateSession(request: NextRequest) {
+  // Link curto de acesso (go.appmila.co): subdomínio compartilhável dentro das
+  // empresas/famílias. Redireciona para o app (raiz -> /login), preservando path.
+  const host = request.headers.get('host') ?? ''
+  if (host.startsWith('go.appmila')) {
+    const path = request.nextUrl.pathname === '/' ? '/login' : request.nextUrl.pathname
+    return NextResponse.redirect(`https://www.appmila.co${path}${request.nextUrl.search}`, 308)
+  }
+
   // Propaga o pathname para os Server Components (guard de assinatura no layout).
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-pathname', request.nextUrl.pathname)

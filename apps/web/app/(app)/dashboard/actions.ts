@@ -29,12 +29,15 @@ export async function enterInstance(formData: FormData) {
     },
   )
   const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: unknown }> }
-  const [{ data: access }, { data: onb }] = await Promise.all([
+  const [{ data: access }, { data: onb }, { data: isAdmin }, { data: memberPending }] = await Promise.all([
     sb.rpc('holding_has_active_access'),
     sb.rpc('my_onboarding'),
+    sb.rpc('is_holding_admin'),
+    sb.rpc('my_member_pending'),
   ])
-  if (Array.isArray(onb) && onb.length > 0) redirect('/onboarding')
+  if (Array.isArray(onb) && onb.length > 0) redirect('/onboarding') // admin: 1º acesso (configuração)
   if (!access) redirect('/subscription')
+  if (!isAdmin && memberPending) redirect('/welcome-member') // membro: 1º acesso (uso)
   redirect('/tasks')
 }
 
