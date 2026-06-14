@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit } from '@/lib/rate-limit'
 
 // Transcrição de áudio do agente desktop (criação de demanda por voz).
 // Auth: Bearer token do Supabase (o agente envia a sessão do usuário).
@@ -41,6 +42,10 @@ export async function POST(request: NextRequest) {
   const { data, error } = await admin.auth.getUser(token)
   if (error || !data.user) {
     return json({ error: 'não autenticado' }, 401)
+  }
+  // Rate-limit por usuário: a transcrição chama um provider pago (custo/abuso).
+  if (rateLimit(`agent-transcribe:${data.user.id}`, { windowMs: 60_000, max: 20 })) {
+    return json({ error: 'muitas tentativas' }, 429)
   }
 
   const form = await request.formData().catch(() => null)
