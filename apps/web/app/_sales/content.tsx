@@ -19,6 +19,7 @@ const hlOrange = (s: string) => <span className="text-orange-300">{s}</span>
 export const brEmpresa: SalesContent = {
   locale: 'pt-BR',
   accent: 'brand',
+  showFamilyBonus: true,
   badge: 'Para empresas e equipes',
   headline: <>Sua equipe {hlBrand('para de perder demanda')} no boca a boca</>,
   subtitle:
@@ -191,6 +192,7 @@ export const brPessoal: SalesContent = {
 export const enBusiness: SalesContent = {
   locale: 'en',
   accent: 'brand',
+  showFamilyBonus: true,
   badge: 'For companies and teams',
   headline: <>Stop letting your team {hlBrand('lose tasks')} in hallway conversations</>,
   subtitle:
@@ -365,6 +367,7 @@ export const enPersonal: SalesContent = {
 export const esBusiness: SalesContent = {
   locale: 'es',
   accent: 'brand',
+  showFamilyBonus: true,
   badge: 'Para empresas y equipos',
   headline: <>Que tu equipo {hlBrand('deje de perder tareas')} en conversaciones de pasillo</>,
   subtitle:

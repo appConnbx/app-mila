@@ -569,10 +569,15 @@ holdBtn.addEventListener('pointerdown', async (e) => {
       }
       micStatus(`${t('micRecording')} · ${secsLeft}s`, '')
     }, 1000)
-    // Barra de progresso de 10s (CSS transition linear).
+    // Barra de progresso de 10s (CSS transition linear). Reseta para 0% e, no
+    // próximo frame, liga .running E remove o width inline — senão o inline
+    // (0%) venceria a classe (.running = 100%) e a barra não animaria.
     micBarFill.classList.remove('running')
     micBarFill.style.width = '0%'
-    requestAnimationFrame(() => micBarFill.classList.add('running'))
+    requestAnimationFrame(() => {
+      micBarFill.classList.add('running')
+      micBarFill.style.width = ''
+    })
     holdTimer = window.setTimeout(() => void holdStop(), MIC_HOLD_MS)
   } catch {
     micStatus(t('micUnavailable'), 'err')

@@ -465,8 +465,8 @@
     "bizUpTo50": "Hasta 50 colaboradores",
     "bizUpTo200": "Hasta 200 colaboradores",
     "bizUnlimited": "Más de 200",
-    "bizPerkTitle": "Un beneficio para tu equipo",
-    "bizPerkDesc": "Cada colaborador recibe un Family Plus licenciado mientras la empresa mantenga su plan corporativo — para organizar también la vida en casa. Todos ganan.",
+    "bizPerkTitle": "Tu empresa, aliada en la vida del colaborador",
+    "bizPerkDesc": "Más que una herramienta de trabajo: cada colaborador recibe un Family Plus con licencia, sin costo extra, para organizar también la vida en casa. Un beneficio de endomarketing que retiene talento y posiciona a la empresa como aliada — mientras el plan corporativo esté activo.",
     "bizPerkCta": "Excelente, continuar",
     "famSizeTitle": "¿Cuántas personas lo usarán en casa?",
     "famJustMe": "Solo yo, por ahora",
@@ -710,5 +710,36 @@
     "ctaKnow": "Conocer MILA",
     "ctaApp": "Ir a la app",
     "construction": "Página en construcción · Vuelve pronto"
+  },
+  "voiceDemo": {
+    "badge": "PRUÉBALO",
+    "title": "Registra una tarea en segundos",
+    "subtitle": "Mantén el micrófono y habla (hasta 10s) — o escribe. Mira la tarea aparecer en la lista.",
+    "holdHint": "Mantén para grabar",
+    "recording": "Grabando",
+    "transcribing": "Transcribiendo…",
+    "formPlaceholder": "O escribe una tarea…",
+    "add": "Agregar",
+    "listTitle": "Tus tareas",
+    "empty": "Aún no hay tareas. Graba o escribe la primera.",
+    "statusNova": "Nueva",
+    "statusTrabalhando": "En curso",
+    "limit": "Máximo 5 en el ejemplo",
+    "samples": [
+      "Enviar la propuesta al cliente antes de las 17h",
+      "Agendar reunión de alineación con el equipo",
+      "Llevar el coche a revisión mañana",
+      "Revisar el contrato del proveedor",
+      "Confirmar asistencia al evento del viernes",
+      "Pedir presupuesto de material nuevo"
+    ]
+  },
+  "familyBonus": {
+    "kicker": "UN BENEFICIO PARA TU EQUIPO",
+    "title": "Tu empresa, aliada en la vida del colaborador",
+    "desc": "En el plan corporativo, cada colaborador recibe un MILA Family Plus con licencia — sin costo extra, mientras la empresa mantenga el plan. Lleva la misma practicidad del trabajo al hogar de tu equipo.",
+    "p1": "Endomarketing que retiene: un beneficio real que acompaña al colaborador fuera del horario.",
+    "p2": "Hogar organizado, mente tranquila — un colaborador más presente y productivo.",
+    "p3": "Ya incluido: el bono es parte del plan de la empresa, sin mensualidad adicional."
   }
 }

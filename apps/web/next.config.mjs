@@ -34,10 +34,29 @@ const nextConfig = {
     ]
   },
   // Headers de segurança globais. Referrer-Policy strict-origin-when-cross-origin
-  // já evita vazar token_hash (em /auth/confirm) via Referer p/ terceiros (só a
-  // origem é enviada cross-site). CSP não incluída aqui de propósito: exige
-  // allowlist testada de Stripe/Supabase/Resend para não quebrar o checkout.
+  // já evita vazar token_hash (em /auth/confirm) via Referer p/ terceiros.
   async headers() {
+    // CSP em modo REPORT-ONLY: não bloqueia nada (só reporta violações no
+    // console), para validar a allowlist com Stripe/Supabase/Hotmart sem risco
+    // de quebrar o checkout. Depois de observar 0 violações reais em produção,
+    // basta trocar a chave para 'Content-Security-Policy' (enforce).
+    const csp = [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "frame-ancestors 'none'",
+      "object-src 'none'",
+      // Next.js injeta scripts inline de hidratação; libs podem usar eval.
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline'",
+      'img-src \'self\' data: blob: https:',
+      "font-src 'self' data:",
+      // Supabase (REST/Realtime/Storage), Stripe e Resend.
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://api.resend.com",
+      // Stripe.js (se carregado) e frames de pagamento.
+      'frame-src https://js.stripe.com https://*.stripe.com https://hooks.stripe.com',
+      // Checkout externo (Hotmart/Stripe) é navegação por link, não form-post.
+      "form-action 'self'",
+    ].join('; ')
     return [
       {
         source: '/:path*',
@@ -47,6 +66,7 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'Content-Security-Policy-Report-Only', value: csp },
         ],
       },
     ]
