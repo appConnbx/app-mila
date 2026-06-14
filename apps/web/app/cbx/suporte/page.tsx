@@ -14,6 +14,7 @@ type Ticket = {
   status: 'aberto' | 'em_atendimento' | 'resolvido'
   assignee_name: string | null
   created_at: string
+  resolved_at: string | null
   comment_count: number
 }
 type ClientOpt = { holding_id: string; name: string }
@@ -30,11 +31,12 @@ const STATUS_PILL: Record<Ticket['status'], { label: string; tone: 'err' | 'warn
   resolvido: { label: 'Resolvido', tone: 'ok' },
 }
 
-export default async function CbxSuportePage({ searchParams }: { searchParams: Promise<{ ok?: string; err?: string }> }) {
+export default async function CbxSuportePage({ searchParams }: { searchParams: Promise<{ ok?: string; err?: string; view?: string }> }) {
   const me = await cbxMe()
   if (!me.is_staff || !hasPerm(me, 'SUPORTE')) notFound()
-  const { ok, err } = await searchParams
+  const { ok, err, view } = await searchParams
   const flash = FLASH[ok ?? err ?? ''] ?? {}
+  const tab: 'abertos' | 'concluidos' = view === 'concluidos' ? 'concluidos' : 'abertos'
 
   const supabase = await createClient()
   const sb = supabase as unknown as { rpc: (n: string, a?: Record<string, unknown>) => Promise<{ data: unknown }> }
@@ -48,17 +50,69 @@ export default async function CbxSuportePage({ searchParams }: { searchParams: P
   const staff = (staffRes.data as StaffOpt[] | null) ?? []
 
   const open = tickets.filter((t) => t.status !== 'resolvido')
+  const resolved = tickets.filter((t) => t.status === 'resolvido')
+
+  // Concluídos agrupados: pasta CLIENTE → subpasta ANO/MÊS (estilo demandas concluídas).
+  const clientMap = new Map<string, Map<string, { label: string; sort: number; items: Ticket[] }>>()
+  for (const t of resolved) {
+    const dt = new Date(t.resolved_at ?? t.created_at)
+    const y = dt.getFullYear()
+    const m = dt.getMonth()
+    const mk = `${y}-${String(m).padStart(2, '0')}`
+    if (!clientMap.has(t.client_name)) clientMap.set(t.client_name, new Map())
+    const months = clientMap.get(t.client_name)!
+    if (!months.has(mk)) {
+      const monthName = dt.toLocaleDateString('pt-BR', { month: 'long' })
+      months.set(mk, { label: `${y} · ${monthName.charAt(0).toUpperCase()}${monthName.slice(1)}`, sort: y * 100 + m, items: [] })
+    }
+    months.get(mk)!.items.push(t)
+  }
+  const clientGroups = Array.from(clientMap.entries())
+    .map(([client, months]) => ({
+      client,
+      count: Array.from(months.values()).reduce((a, g) => a + g.items.length, 0),
+      months: Array.from(months.values()).sort((a, b) => b.sort - a.sort),
+    }))
+    .sort((a, b) => a.client.localeCompare(b.client))
+
+  const ticketRow = (t: Ticket) => {
+    const st = STATUS_PILL[t.status]
+    return (
+      <tr key={t.id} className="border-b border-white/5 transition last:border-0 hover:bg-white/[0.03]">
+        <td className={tdCbx}>
+          <Link href={`/cbx/suporte/${t.id}`} className="font-semibold text-slate-100 hover:text-amber-300">{t.title}</Link>
+          {Number(t.comment_count) > 0 && <span className="ml-2 text-xs text-slate-500">💬 {t.comment_count}</span>}
+        </td>
+        <td className={`${tdCbx} text-slate-300`}>{t.client_name}</td>
+        <td className={tdCbx}>
+          <Pill tone={t.type === 'incidente' ? 'err' : 'info'}>{t.type === 'incidente' ? 'Incidente' : 'Solicitação'}</Pill>
+        </td>
+        <td className={`${tdCbx} text-slate-300`}>{t.assignee_name ?? '—'}</td>
+        <td className={tdCbx}><Pill tone={st.tone}>{st.label}</Pill></td>
+        <td className={`${tdCbx} text-slate-400`}>{fmtDate(tab === 'concluidos' ? (t.resolved_at ?? t.created_at) : t.created_at)}</td>
+      </tr>
+    )
+  }
+
+  const headRow = (
+    <tr className="border-b border-white/10">
+      <th className={thCbx}>Ticket</th>
+      <th className={thCbx}>Cliente</th>
+      <th className={thCbx}>Tipo</th>
+      <th className={thCbx}>Responsável</th>
+      <th className={thCbx}>Status</th>
+      <th className={thCbx}>{tab === 'concluidos' ? 'Resolvido em' : 'Aberto em'}</th>
+    </tr>
+  )
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white">Suporte</h1>
-          <p className="mt-1 text-sm text-slate-400">{open.length} ticket(s) em aberto.</p>
+          <p className="mt-1 text-sm text-slate-400">{open.length} ticket(s) em aberto · {resolved.length} concluído(s).</p>
         </div>
-        <Link href="/cbx/suporte/acessos" className={btnGhostCbx}>
-          Acessos temporários →
-        </Link>
+        <Link href="/cbx/suporte/acessos" className={btnGhostCbx}>Acessos temporários →</Link>
       </div>
 
       <CbxFlash {...flash} />
@@ -70,9 +124,7 @@ export default async function CbxSuportePage({ searchParams }: { searchParams: P
             <label className={labelCbx}>Cliente</label>
             <select name="holding_id" required defaultValue="" className={`mt-1 ${inputCbx}`}>
               <option value="" disabled>Escolha o cliente</option>
-              {clients.map((c) => (
-                <option key={c.holding_id} value={c.holding_id}>{c.name}</option>
-              ))}
+              {clients.map((c) => (<option key={c.holding_id} value={c.holding_id}>{c.name}</option>))}
             </select>
           </div>
           <div>
@@ -94,9 +146,7 @@ export default async function CbxSuportePage({ searchParams }: { searchParams: P
             <label className={labelCbx}>Responsável</label>
             <select name="assignee" defaultValue="" className={`mt-1 ${inputCbx}`}>
               <option value="">— sem responsável —</option>
-              {staff.map((s) => (
-                <option key={s.id} value={s.id}>{s.full_name}</option>
-              ))}
+              {staff.map((s) => (<option key={s.id} value={s.id}>{s.full_name}</option>))}
             </select>
           </div>
           <div className="flex items-end">
@@ -105,56 +155,61 @@ export default async function CbxSuportePage({ searchParams }: { searchParams: P
         </form>
       </CbxCard>
 
-      {/* Lista */}
-      <CbxCard title="Tickets">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-sm">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className={thCbx}>Ticket</th>
-                <th className={thCbx}>Cliente</th>
-                <th className={thCbx}>Tipo</th>
-                <th className={thCbx}>Responsável</th>
-                <th className={thCbx}>Status</th>
-                <th className={thCbx}>Aberto em</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tickets.map((t) => {
-                const st = STATUS_PILL[t.status]
-                return (
-                  <tr key={t.id} className="border-b border-white/5 transition last:border-0 hover:bg-white/[0.03]">
-                    <td className={tdCbx}>
-                      <Link href={`/cbx/suporte/${t.id}`} className="font-semibold text-slate-100 hover:text-amber-300">
-                        {t.title}
-                      </Link>
-                      {Number(t.comment_count) > 0 && (
-                        <span className="ml-2 text-xs text-slate-500">💬 {t.comment_count}</span>
-                      )}
-                    </td>
-                    <td className={`${tdCbx} text-slate-300`}>{t.client_name}</td>
-                    <td className={tdCbx}>
-                      <Pill tone={t.type === 'incidente' ? 'err' : 'info'}>
-                        {t.type === 'incidente' ? 'Incidente' : 'Solicitação'}
-                      </Pill>
-                    </td>
-                    <td className={`${tdCbx} text-slate-300`}>{t.assignee_name ?? '—'}</td>
-                    <td className={tdCbx}><Pill tone={st.tone}>{st.label}</Pill></td>
-                    <td className={`${tdCbx} text-slate-400`}>{fmtDate(t.created_at)}</td>
-                  </tr>
-                )
-              })}
-              {tickets.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-500">
-                    Nenhum ticket ainda.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      {/* Abas Abertos / Concluídos */}
+      <div className="inline-flex rounded-lg border border-white/10 bg-white/[0.03] p-1">
+        <Link href="/cbx/suporte" className={`rounded-md px-3 py-1 text-sm transition ${tab === 'abertos' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>
+          Abertos ({open.length})
+        </Link>
+        <Link href="/cbx/suporte?view=concluidos" className={`rounded-md px-3 py-1 text-sm transition ${tab === 'concluidos' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>
+          Concluídos ({resolved.length})
+        </Link>
+      </div>
+
+      {tab === 'abertos' ? (
+        <CbxCard title="Tickets em aberto">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[760px] text-sm">
+              <thead>{headRow}</thead>
+              <tbody>
+                {open.map(ticketRow)}
+                {open.length === 0 && (
+                  <tr><td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-500">Nenhum ticket em aberto.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CbxCard>
+      ) : (
+        <div className="space-y-3">
+          {clientGroups.length === 0 && (
+            <CbxCard><p className="py-6 text-center text-sm text-slate-500">Nenhum ticket concluído ainda.</p></CbxCard>
+          )}
+          {clientGroups.map((cg, i) => (
+            <details key={cg.client} open={i === 0} className="rounded-xl border border-white/10 bg-white/[0.02]">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/[0.03]">
+                <span>📁 {cg.client}</span>
+                <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-300">{cg.count}</span>
+              </summary>
+              <div className="space-y-2 px-3 pb-3">
+                {cg.months.map((mg) => (
+                  <details key={mg.label} className="rounded-lg border border-white/5 bg-white/[0.02]">
+                    <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-2 text-sm text-slate-300 transition hover:bg-white/[0.03]">
+                      <span>🗂️ {mg.label}</span>
+                      <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-400">{mg.items.length}</span>
+                    </summary>
+                    <div className="overflow-x-auto px-2 pb-2">
+                      <table className="w-full min-w-[700px] text-sm">
+                        <thead>{headRow}</thead>
+                        <tbody>{mg.items.map(ticketRow)}</tbody>
+                      </table>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </details>
+          ))}
         </div>
-      </CbxCard>
+      )}
     </div>
   )
 }
