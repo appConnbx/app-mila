@@ -103,10 +103,19 @@ Deno.serve(async (req) => {
   // Link para o nosso /auth/confirm (verifyOtp) → depois cai em /create-password.
   const link = `${BASE}/auth/confirm?token_hash=${encodeURIComponent(token_hash)}&type=${encodeURIComponent(email_action_type)}&next=${encodeURIComponent(next)}&lang=${lang}`
 
+  const c = COPY[lang][kind]
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: FROM, to: [email], subject: COPY[lang][kind].subject, html: renderHtml(lang, kind, link) }),
+    body: JSON.stringify({
+      from: FROM,
+      to: [email],
+      reply_to: 'help@appmila.co',
+      subject: c.subject,
+      html: renderHtml(lang, kind, link),
+      // Versão texto (melhora entregabilidade e acessibilidade).
+      text: `${c.body}\n\n${c.cta}: ${link}\n\n${FOOTER[lang]}`,
+    }),
   })
 
   if (!res.ok) {
