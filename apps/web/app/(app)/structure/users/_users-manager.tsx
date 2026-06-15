@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useDialog } from '@/components/use-dialog'
 import { useTranslations, useLocale } from 'next-intl'
 import { Avatar, Badge, Button, fieldClasses, labelClasses } from '@/components/ui'
 import { ConfirmButton } from '@/components/confirm-button'
@@ -50,12 +51,8 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
 
   const fmt = (iso: string | null) => fmtDateTime(iso, locale, tz)
 
-  // Esc fecha o drawer de edição (acessibilidade).
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpenId(null) }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  // Acessibilidade do drawer: foco-trap + Esc + restaura o foco ao gatilho.
+  const drawerRef = useDialog<HTMLDivElement>(!!openId, () => setOpenId(null))
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase()
@@ -232,12 +229,12 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
       {open && (
         <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpenId(null)} />
-          <div className="glass glow-top relative h-full w-full max-w-md overflow-y-auto p-6 sm:rounded-l-2xl">
+          <div ref={drawerRef} tabIndex={-1} aria-labelledby="user-drawer-title" className="glass glow-top relative h-full w-full max-w-md overflow-y-auto p-6 outline-none sm:rounded-l-2xl">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <Avatar name={open.full_name} src={open.avatar_url} />
                 <div>
-                  <h3 className="text-lg font-semibold text-white">{t('editUser')}</h3>
+                  <h3 id="user-drawer-title" className="text-lg font-semibold text-white">{t('editUser')}</h3>
                   <p className="text-xs text-slate-500">{open.email ?? '—'}</p>
                 </div>
               </div>
