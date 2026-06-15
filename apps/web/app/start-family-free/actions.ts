@@ -45,7 +45,7 @@ export async function signupFamilyFree(formData: FormData) {
   const documentRaw = String(formData.get('document') ?? '').trim()
 
   if (!name || !email || !documentRaw) redirect(`${BASE}?err=campos`)
-  if (password.length < 6) redirect(`${BASE}?err=senha`)
+  if (password.length < 8) redirect(`${BASE}?err=senha`)
   if (password !== confirm) redirect(`${BASE}?err=confirm`)
   if (country === 'Brasil' && !isValidCPF(documentRaw)) redirect(`${BASE}?err=cpf`)
 

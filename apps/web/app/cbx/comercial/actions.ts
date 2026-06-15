@@ -130,6 +130,7 @@ export async function createClientAccount(formData: FormData) {
   const sbAdmin = admin as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: string | null }> }
   const { data: existing } = await sbAdmin.rpc('auth_user_id_by_email', { p_email: adminEmail })
   let uid = existing ?? null
+  const createdNew = !existing
   if (!uid) {
     // Conta nova: convite por e-mail (Supabase envia o link de definir senha).
     const { data: invited } = await admin.auth.admin.inviteUserByEmail(adminEmail, {
@@ -149,7 +150,12 @@ export async function createClientAccount(formData: FormData) {
     p_auth_user_id: uid,
     p_seats: seats,
   })
-  if (!data?.ok) redirect(`/cbx/comercial/novo?err=${data?.reason ?? 'erro'}`)
+  if (!data?.ok) {
+    // Rollback: se criamos a conta auth agora e o provisionamento falhou, apaga
+    // o usuário órfão (não remove conta pré-existente reaproveitada).
+    if (createdNew && uid) await admin.auth.admin.deleteUser(uid).catch(() => undefined)
+    redirect(`/cbx/comercial/novo?err=${data?.reason ?? 'erro'}`)
+  }
   revalidatePath('/cbx/comercial')
   redirect(`/cbx/comercial/${data.holding_id}?ok=criado`)
 }

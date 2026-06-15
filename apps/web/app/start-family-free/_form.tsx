@@ -39,13 +39,13 @@ export function SignupForm({ dict }: { dict: Dict }) {
       <div>
         <label className={label}>{dict.password}</label>
         <div className="mt-1">
-          <PasswordInput name="password" required minLength={6} value={pw} onChange={setPw} className={field} placeholder={dict.passwordPh} />
+          <PasswordInput name="password" required minLength={8} value={pw} onChange={setPw} className={field} placeholder={dict.passwordPh} />
         </div>
       </div>
       <div>
         <label className={label}>{dict.confirm}</label>
         <div className="mt-1">
-          <PasswordInput name="confirm" required minLength={6} value={confirm} onChange={setConfirm} className={field} placeholder={dict.confirmPh} />
+          <PasswordInput name="confirm" required minLength={8} value={confirm} onChange={setConfirm} className={field} placeholder={dict.confirmPh} />
         </div>
         {mismatch && <p className="mt-1 text-xs text-rose-400">{dict.mismatch}</p>}
       </div>
