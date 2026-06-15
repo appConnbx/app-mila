@@ -619,11 +619,13 @@ export default async function LandingPage() {
 
       {/* ---------------- INDIQUE E GANHE ---------------- */}
       <section id="afiliados" className="mx-auto max-w-6xl px-4 py-16">
-        <div className="glass glow-top relative overflow-hidden p-8 sm:p-12">
-          <div className="pointer-events-none absolute -left-10 -top-10 h-48 w-48 rounded-full bg-brand/10 blur-3xl" />
+        <div className="glass glow-top relative overflow-hidden border border-amber-400/20 p-8 sm:p-12">
+          <div className="pointer-events-none absolute -left-10 -top-10 h-48 w-48 rounded-full bg-amber-400/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-10 -right-10 h-48 w-48 rounded-full bg-brand/10 blur-3xl" />
           <div className="relative grid items-center gap-6 lg:grid-cols-[1.4fr,1fr]">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-slate-300">
+              <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
                 {t('affiliates.badge')}
               </span>
               <h2 className="mt-4 text-3xl font-bold text-white">{t('affiliates.title')}</h2>
@@ -632,11 +634,11 @@ export default async function LandingPage() {
             <div className="lg:justify-self-end">
               <Link
                 href="/affiliates"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3.5 text-sm font-bold text-slate-950 transition hover:bg-amber-300"
               >
                 {t('affiliates.cta')} <Arrow className="h-4 w-4" />
               </Link>
-              <p className="mt-2 text-center text-xs text-slate-500 lg:text-right">{t('affiliates.soon')}</p>
+              <p className="mt-2 text-center text-xs font-semibold text-amber-300/90 lg:text-right">{t('affiliates.soon')}</p>
             </div>
           </div>
         </div>

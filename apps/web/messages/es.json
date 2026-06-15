@@ -718,11 +718,11 @@
       "refundNote": "Garantía de 7 días — reembolso total si no encaja."
     },
     "affiliates": {
-      "badge": "Programa de Afiliados",
-      "title": "Recomienda MILA y gana",
-      "desc": "¿Conoces empresas y familias que siempre pierden tareas? Recomienda MILA y recibe una recompensa por cada nueva suscripción activada por tu recomendación.",
-      "cta": "Quiero recomendar",
-      "soon": "Programa muy pronto"
+      "badge": "Programa de Afiliados · Mes de lanzamiento",
+      "title": "Recomienda MILA y crea ingresos recurrentes",
+      "desc": "Conviértete en afiliado: gana en cada venta e ingresos recurrentes en dólares. Simula tus ganancias y asegura 50% de comisión en todas las ventas de junio.",
+      "cta": "Quiero ser afiliado",
+      "soon": "50% de comisión · solo en junio"
     },
     "finalCta": {
       "title": "La próxima tarea, no la olvidas.",
