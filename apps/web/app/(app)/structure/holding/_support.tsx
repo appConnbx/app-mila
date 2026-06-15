@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { useEffect, useMemo, useState, useTransition } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { Badge, Button } from '@/components/ui'
@@ -66,6 +66,17 @@ export function ClientSupport({
     setThread(null)
     startLoad(async () => { setThread(await clientTicketThread(id)) })
   }
+
+  // Esc fecha o modal/drawer aberto (acessibilidade).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setModal(false)
+      setOpenId((cur) => { if (cur) setThread(null); return null })
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   const openCount = tickets.filter((tk) => tk.status !== 'resolvido').length
   const closedCount = tickets.length - openCount
@@ -151,12 +162,12 @@ export function ClientSupport({
             </div>
             <form action={openSupportTicket} className="mt-4 space-y-3">
               <div>
-                <label className="block text-sm font-medium text-slate-300">{t('supportSubject')}</label>
-                <input name="title" required maxLength={120} placeholder={t('supportSubjectPh')} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500 focus:border-brand/60" />
+                <label htmlFor="sup-title" className="block text-sm font-medium text-slate-300">{t('supportSubject')}</label>
+                <input id="sup-title" name="title" required maxLength={120} placeholder={t('supportSubjectPh')} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500 focus:border-brand/60" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300">{t('supportMessage')}</label>
-                <textarea name="description" rows={4} placeholder={t('supportMessagePh')} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500 focus:border-brand/60" />
+                <label htmlFor="sup-desc" className="block text-sm font-medium text-slate-300">{t('supportMessage')}</label>
+                <textarea id="sup-desc" name="description" rows={4} placeholder={t('supportMessagePh')} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500 focus:border-brand/60" />
               </div>
               <div className="flex justify-end gap-2">
                 <SubmitButton btnVariant="primary">{t('supportSend')}</SubmitButton>

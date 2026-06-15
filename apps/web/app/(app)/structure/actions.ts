@@ -71,9 +71,10 @@ export async function updateHolding(formData: FormData) {
       ? String(formData.get('language'))
       : 'pt-BR',
   }
-  if (!patch.name) return
+  if (!patch.name) redirect('/structure/holding?tab=config&cfg=erro')
   await supabase.from('holdings').update(patch as never).eq('id', holdingId)
   revalidate()
+  redirect('/structure/holding?tab=config&cfg=ok')
 }
 
 // ---------------------------------------------------------------- Organização
@@ -357,7 +358,7 @@ export async function adminSetPassword(formData: FormData) {
   const personId = String(formData.get('person_id') ?? '')
   const password = String(formData.get('password') ?? '')
   if (!personId) return
-  if (password.length < 4) redirect('/structure/users?err=pwshort')
+  if (password.length < 8) redirect('/structure/users?err=pwshort')
 
   const admin = createAdminClient()
   const { data: person } = await admin.from('people').select('id, holding_id, email, auth_user_id').eq('id', personId).single()
