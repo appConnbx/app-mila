@@ -105,8 +105,9 @@ export default async function SubscribePage({
               <input type="hidden" name="lang" value={lang ?? locale} />
               <input type="hidden" name="next" value={nx} />
               <div>
-                <label className="mb-1 block text-sm text-slate-300">{t('subEmailLabel')}</label>
+                <label htmlFor="sub-email" className="mb-1 block text-sm text-slate-300">{t('subEmailLabel')}</label>
                 <input
+                  id="sub-email"
                   type="email"
                   name="email"
                   required
