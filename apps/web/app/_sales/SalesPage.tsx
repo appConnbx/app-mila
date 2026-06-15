@@ -144,9 +144,6 @@ export async function SalesPage({ c }: { c: SalesContent }) {
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">M</span>
             <span className="text-lg font-bold tracking-tight text-white">MILA</span>
           </Link>
-          <a href="#planos" className={`rounded-lg ${a.bg} px-4 py-2 text-sm font-semibold text-slate-950 transition ${a.bgHover}`}>
-            {c.ctaPrimary}
-          </a>
         </nav>
       </header>
 
@@ -164,12 +161,7 @@ export async function SalesPage({ c }: { c: SalesContent }) {
             {c.headline}
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-400">{c.subtitle}</p>
-          <div className="mt-8 flex justify-center">
-            <a href="#planos" className={`inline-flex items-center gap-2 rounded-xl ${a.bg} px-7 py-3.5 text-sm font-semibold text-slate-950 transition ${a.bgHover}`}>
-              {c.ctaPrimary} <Arrow className="h-4 w-4" />
-            </a>
-          </div>
-          <p className="mt-3 text-xs text-slate-500">{c.trustline}</p>
+          <p className="mt-6 text-xs text-slate-500">{c.trustline}</p>
           <ul className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-300">
             {c.heroBullets.map((b) => (
               <li key={b} className="inline-flex items-center gap-1.5">

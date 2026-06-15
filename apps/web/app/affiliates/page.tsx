@@ -150,9 +150,6 @@ export default function AffiliatesPage() {
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">M</span>
             <span className="text-lg font-bold tracking-tight text-white">MILA</span>
           </Link>
-          <a href="#afiliar" className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-            Quero ser afiliado
-          </a>
         </nav>
       </header>
 
@@ -177,14 +174,6 @@ export default function AffiliatesPage() {
             <strong className="text-white"> sócio</strong> do negócio — e <strong className="text-white">renda recorrente em dólar</strong> no
             internacional. Comissão de 25%, e 50% em todas as vendas de junho.
           </p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <a href="#simulador" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-7 py-3.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-              Simular meus ganhos
-            </a>
-            <a href="#afiliar" className="inline-flex items-center justify-center rounded-xl border border-white/10 px-7 py-3.5 text-sm font-semibold text-slate-200 transition hover:bg-white/5">
-              Afiliar-se na Hotmart
-            </a>
-          </div>
           <ul className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-300">
             <li className="inline-flex items-center gap-1.5"><span className="text-brand">✓</span> Sócio em cada venda (Brasil)</li>
             <li className="inline-flex items-center gap-1.5"><span className="text-brand">✓</span> Recorrência em dólar (internacional)</li>
