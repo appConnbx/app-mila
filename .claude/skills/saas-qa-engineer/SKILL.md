@@ -50,3 +50,16 @@ Severidade: Alta (perda de dado/acesso/dinheiro, bloqueio) · Média (fluxo degr
 - "Faturado estimado" contando cancelados; total mistura BRL/USD.
 - Reload por `setTimeout` fixo após ação (corrida).
 - Senha mínima divergente entre fluxos (4 vs 6 vs 8).
+
+## Correções de referência (rev. 2)
+Vários itens do catálogo já têm fix-padrão aplicado no AppMila — verifique se o projeto auditado fez o mesmo:
+- Last-write-wins → **optimistic lock** (`.eq('status', from)`).
+- Sessão ausente na criação de senha → detectar e mostrar "link expirado".
+- Preço duplicado → derivar de uma **fonte única**.
+- Webhook status desconhecido → **conservador** (suspended).
+- Conta órfã no provisionamento → **rollback** do auth user.
+- "Faturado estimado" → só contar assinatura **ativa**; rótulo "estim.".
+- Fuso nos agrupamentos por mês → usar o fuso da **instância**.
+- Senha mínima → **≥8 em todos** os fluxos.
+
+Para UX/usabilidade/acessibilidade aprofundadas, use a skill **saas-ux-engineer** (feedback, estados, a11y, tema light, i18n, padrões de componente).

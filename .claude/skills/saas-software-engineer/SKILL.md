@@ -48,3 +48,14 @@ Construir rápido = reusar padrões comprovados e fatiar vertical por fluxo. Mat
 
 ## Fluxo de trabalho
 Branch → build (`pnpm --filter web build`, valida tsc + i18n) → PR → merge. Migrations: aplicar no banco E versionar o `.sql` no repo. Sempre backfill ao adicionar flags. Agente Tauri: build/assinatura/publish por CI (tag `agent-v*`); local exige VC++ Build Tools.
+
+## Aprendizados aplicados (rev. 2)
+- **Concorrência (optimistic lock):** ação que avança estado deve gravar só se o estado atual ainda for o que o usuário viu — `update({status:to}).eq('id',id).eq('status',from)`. Sem isso, cliques concorrentes reabrem/sobrescrevem (last-write-wins) em objetos multi-usuário.
+- **Autoria confiável:** não infira origem por nome/heurística (ex.: autor != 'Cliente'). Use coluna explícita (`author_kind 'support'|'client'`). Heurística de nome quebrou a thread de tickets.
+- **Grant lockdown (defesa em profundidade):** `CREATE OR REPLACE FUNCTION` re-concede a PUBLIC silenciosamente. Ao fim das migrations: `grant ... to authenticated, service_role; revoke ... from anon, public; alter default privileges in schema public revoke execute on functions from public;` e re-revogue as server-only de `authenticated`. Verifique `has_function_privilege('anon', oid, 'EXECUTE')` = 0.
+- **Webhook conservador:** status desconhecido do provider → estado SEM acesso (`suspended`), nunca `active` por default.
+- **Rollback de provisionamento:** se criou a conta auth (convite) e a RPC de provisionamento falhou, apague o usuário órfão (só se foi criado agora, não reaproveitado).
+- **Cap de input server-side:** `left(btrim(x), N)` em texto livre que vai ao banco (título/corpo) — o `maxLength` do client não é confiável.
+- **Fuso nos agrupamentos:** extraia ano/mês no fuso da instância (`Intl.DateTimeFormat({timeZone})`), não no horário do servidor.
+- **Senha mínima consistente** (≥8) em todos os fluxos de criação; alinhe self-service e admin-set.
+- Veja também a skill **saas-ux-engineer** (feedback, estados, a11y, tema light).

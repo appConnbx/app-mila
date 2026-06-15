@@ -56,3 +56,11 @@ update storage.buckets set file_size_limit = 2*1024*1024,
 
 ## Roteiro de auditoria (ordem)
 1. IDOR entre tenants (forjar header). 2. RPCs sem gate. 3. Grants anon/PUBLIC. 4. Webhooks (assinatura/idempotência/status). 5. Endpoints públicos/pagos (rate-limit/validação). 6. Storage. 7. Headers/CSP. 8. Segredos. 9. Config do provedor. Entregue tabela risco×esforço e um TL;DR de 5 linhas; preserve explicitamente os pontos fortes para não regredir.
+
+## Aprendizados aplicados (rev. 2)
+- **Lockdown de EXECUTE feito e verificado:** após `grant authenticated/service_role` + `revoke anon/public` + travar default, confirmar `select count(*) ... where has_function_privilege('anon', oid, 'EXECUTE')` = 0. Re-revogar server-only (provision_*, enumeração por e-mail) de `authenticated`.
+- **Endpoint pago autenticado** (transcrição do agente) também precisa rate-limit por `user.id`, não só os públicos.
+- **Webhook:** status desconhecido → `suspended` (sem acesso). Conta órfã: rollback do auth user se o provisionamento falhar.
+- **Storage:** impor `file_size_limit` + `allowed_mime_types` no bucket público (feito no `avatars`). Listagem aberta continua sendo risco de enumeração — avaliar signed URL/privado se o conteúdo for sensível.
+- **Senha:** mínimo ≥8 em todos os fluxos + ligar leaked-password no painel (pendência de config, não-código).
+- **Sessão de app sempre-aberto** (agente): renovar token antes de usar + retry no 401 — token expirado vira 401 silencioso.
