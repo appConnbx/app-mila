@@ -7,16 +7,19 @@ import { useMemo, useState, type ReactNode } from 'react'
 
    Dois motores de ganho (modelo real):
    - BRASIL = VENDA ÚNICA. O cliente parcela em 12x, mas para o afiliado é uma
-     venda só: comissão sobre o VALOR TOTAL do plano, paga de uma vez →
-     "faturamento direto" (R$). kind: 'oneTime'.
+     venda só: comissão (em R$) paga de uma vez → "faturamento direto".
+     kind: 'oneTime'.
    - INTERNACIONAL = ASSINATURA mensal em US$: comissão recorrente todo mês →
-     "recorrente internacional". Convertida para R$ pela cotação (prop fx).
-     kind: 'recurring'.
+     "recorrente internacional". kind: 'recurring'.
 
-   Uma única ilha de cliente, com QUANTIDADE compartilhada entre as duas
-   tabelas (25% padrão e 50% de lançamento) — você monta o cenário uma vez e
-   compara as duas comissões. Ambas as tabelas são editáveis. O bloco de
-   lançamento entra entre elas (prop `middle`).
+   IMPORTANTE: os valores de comissão (comm25/comm50) são os PRATICADOS PELA
+   HOTMART (já refletem as taxas da plataforma), não um cálculo de rate × preço.
+   Podem variar conforme a modalidade de parcelamento escolhida pelo comprador.
+
+   Quantidade COMPARTILHADA entre as duas tabelas (tier 25 e 50) — monta-se o
+   cenário uma vez e compara-se as comissões. Ambas editáveis. O bloco de
+   lançamento entra entre elas (prop `middle`). `fx` converte o recorrente em
+   US$ para uma referência aproximada em R$.
    ========================================================================= */
 
 export type SimPlan = {
@@ -25,8 +28,9 @@ export type SimPlan = {
   name: string
   currency: 'BRL' | 'USD'
   kind: 'oneTime' | 'recurring'
-  base: number // BR: valor TOTAL do plano; INTL: mensalidade em US$
-  price: string
+  price: string // rótulo do valor do plano
+  comm25: number // comissão por venda (BR, R$) ou mensal (INTL, US$) no tier 25%
+  comm50: number // idem no tier 50%
 }
 
 type Labels = {
@@ -41,6 +45,7 @@ type Labels = {
   directHint: string
   recurringLabel: string
   recurringHint: string
+  approx: string
   perYear: string
   groupBrCorp: string
   groupBrFam: string
@@ -55,8 +60,8 @@ const GROUP_ORDER: SimPlan['group'][] = ['br-corp', 'br-fam', 'intl-corp', 'intl
 const brl = (n: number) =>
   n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const brl0 = (n: number) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
-const usd = (n: number) =>
-  'US$' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const usd = (n: number) => 'US$' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const usd0 = (n: number) => 'US$' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 })
 
 export function AffiliateSimulator({
   plans,
@@ -78,20 +83,19 @@ export function AffiliateSimulator({
   })
   const setOne = (id: string, n: number) => setQty((q) => ({ ...q, [id]: Math.max(0, Math.min(999, Math.floor(n || 0))) }))
 
-  // Extrato em R$ de UMA unidade, à taxa dada (BR = total; INTL = mensal × fx).
-  const unitExtractBRL = (p: SimPlan, rate: number) => (p.currency === 'USD' ? p.base * rate * fx : p.base * rate)
-  // Comissão de UMA unidade na moeda do plano (para a coluna "Sua comissão").
-  const unitCommission = (p: SimPlan, rate: number) => p.base * rate
+  const unitCommission = (p: SimPlan, tier: 25 | 50) => (tier === 50 ? p.comm50 : p.comm25)
 
-  const directTotal = (rate: number) =>
-    plans.filter((p) => p.kind === 'oneTime').reduce((s, p) => s + unitExtractBRL(p, rate) * (qty[p.id] ?? 0), 0)
-  const recurringTotal = (rate: number) =>
-    plans.filter((p) => p.kind === 'recurring').reduce((s, p) => s + unitExtractBRL(p, rate) * (qty[p.id] ?? 0), 0)
+  // Faturamento direto (R$): soma das vendas BR (one-time).
+  const directTotal = (tier: 25 | 50) =>
+    plans.filter((p) => p.kind === 'oneTime').reduce((s, p) => s + unitCommission(p, tier) * (qty[p.id] ?? 0), 0)
+  // Recorrente internacional (US$/mês): soma das assinaturas INTL.
+  const recurringTotalUSD = (tier: 25 | 50) =>
+    plans.filter((p) => p.kind === 'recurring').reduce((s, p) => s + unitCommission(p, tier) * (qty[p.id] ?? 0), 0)
 
-  const direct25 = useMemo(() => directTotal(0.25), [qty, plans, fx]) // eslint-disable-line react-hooks/exhaustive-deps
-  const rec25 = useMemo(() => recurringTotal(0.25), [qty, plans, fx]) // eslint-disable-line react-hooks/exhaustive-deps
-  const direct50 = useMemo(() => directTotal(0.5), [qty, plans, fx]) // eslint-disable-line react-hooks/exhaustive-deps
-  const rec50 = useMemo(() => recurringTotal(0.5), [qty, plans, fx]) // eslint-disable-line react-hooks/exhaustive-deps
+  const direct25 = useMemo(() => directTotal(25), [qty, plans]) // eslint-disable-line react-hooks/exhaustive-deps
+  const rec25 = useMemo(() => recurringTotalUSD(25), [qty, plans]) // eslint-disable-line react-hooks/exhaustive-deps
+  const direct50 = useMemo(() => directTotal(50), [qty, plans]) // eslint-disable-line react-hooks/exhaustive-deps
+  const rec50 = useMemo(() => recurringTotalUSD(50), [qty, plans]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const grouped = GROUP_ORDER.map((g) => ({ g, items: plans.filter((p) => p.group === g) })).filter((x) => x.items.length)
   const groupLabel: Record<SimPlan['group'], string> = {
@@ -132,7 +136,7 @@ export function AffiliateSimulator({
     )
   }
 
-  function Table({ rate, accent }: { rate: number; accent: 'brand' | 'gold' }) {
+  function Table({ tier, accent }: { tier: 25 | 50; accent: 'brand' | 'gold' }) {
     const headCol = accent === 'gold' ? 'text-amber-300' : 'text-brand'
     const unitCol = accent === 'gold' ? 'text-amber-200' : 'text-brand'
     return (
@@ -148,31 +152,35 @@ export function AffiliateSimulator({
             </tr>
           </thead>
           <tbody>
-            {grouped.map(({ g, items }) => (
-              <FragmentGroup key={g} label={groupLabel[g]}>
-                {items.map((p) => {
-                  const q = qty[p.id] ?? 0
-                  const unit = unitCommission(p, rate)
-                  const extract = unitExtractBRL(p, rate) * q
-                  const isRec = p.kind === 'recurring'
-                  return (
-                    <tr key={p.id} className={`border-b border-white/5 ${q > 0 ? (accent === 'gold' ? 'bg-amber-500/[0.05]' : 'bg-brand/[0.04]') : ''}`}>
-                      <td className="px-4 py-3 font-semibold text-white">{p.name}</td>
-                      <td className="px-4 py-3 text-slate-400">{p.price}</td>
-                      <td className={`px-4 py-3 font-medium ${unitCol}`}>
-                        {isRec ? `${usd(unit)}/mês` : `${brl(unit)} por venda`}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <Stepper id={p.id} accent={accent} />
-                      </td>
-                      <td className="px-4 py-3 text-right font-bold tabular-nums text-white">
-                        {extract > 0 ? `${brl(extract)}${isRec ? '/mês' : ''}` : '—'}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </FragmentGroup>
-            ))}
+            {grouped.flatMap(({ g, items }) => {
+              const rows = [
+                <tr key={`h-${g}`}>
+                  <td colSpan={5} className="bg-white/[0.02] px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    {groupLabel[g]}
+                  </td>
+                </tr>,
+              ]
+              for (const p of items) {
+                const q = qty[p.id] ?? 0
+                const unit = unitCommission(p, tier)
+                const isRec = p.kind === 'recurring'
+                const extract = unit * q
+                rows.push(
+                  <tr key={p.id} className={`border-b border-white/5 ${q > 0 ? (accent === 'gold' ? 'bg-amber-500/[0.05]' : 'bg-brand/[0.04]') : ''}`}>
+                    <td className="px-4 py-3 font-semibold text-white">{p.name}</td>
+                    <td className="px-4 py-3 text-slate-400">{p.price}</td>
+                    <td className={`px-4 py-3 font-medium ${unitCol}`}>{isRec ? `${usd(unit)}/mês` : `${brl(unit)} por venda`}</td>
+                    <td className="px-4 py-3 text-center">
+                      <Stepper id={p.id} accent={accent} />
+                    </td>
+                    <td className="px-4 py-3 text-right font-bold tabular-nums text-white">
+                      {extract > 0 ? `${isRec ? usd(extract) + '/mês' : brl(extract)}` : '—'}
+                    </td>
+                  </tr>,
+                )
+              }
+              return rows
+            })}
           </tbody>
         </table>
       </div>
@@ -187,8 +195,8 @@ export function AffiliateSimulator({
           <h3 className="text-lg font-bold text-white">{l.table25Title}</h3>
           <p className="text-xs text-slate-500">{l.hint}</p>
         </div>
-        <Table rate={0.25} accent="brand" />
-        <Totals direct={direct25} recurring={rec25} l={l} accent="brand" />
+        <Table tier={25} accent="brand" />
+        <Totals direct={direct25} recUSD={rec25} fx={fx} l={l} accent="brand" />
       </div>
 
       {/* BLOCO DE LANÇAMENTO (entre as tabelas) */}
@@ -200,8 +208,8 @@ export function AffiliateSimulator({
           <h3 className="text-lg font-bold text-amber-200">{l.table50Title}</h3>
           <p className="text-xs text-amber-300/80">{l.hint}</p>
         </div>
-        <Table rate={0.5} accent="gold" />
-        <Totals direct={direct50} recurring={rec50} l={l} accent="gold" />
+        <Table tier={50} accent="gold" />
+        <Totals direct={direct50} recUSD={rec50} fx={fx} l={l} accent="gold" />
       </div>
 
       <p className="text-center text-[11px] leading-relaxed text-slate-500">{l.fxNote}</p>
@@ -209,27 +217,16 @@ export function AffiliateSimulator({
   )
 }
 
-function FragmentGroup({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <>
-      <tr>
-        <td colSpan={5} className="bg-white/[0.02] px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-          {label}
-        </td>
-      </tr>
-      {children}
-    </>
-  )
-}
-
 function Totals({
   direct,
-  recurring,
+  recUSD,
+  fx,
   l,
   accent,
 }: {
   direct: number
-  recurring: number
+  recUSD: number
+  fx: number
   l: Labels
   accent: 'brand' | 'gold'
 }) {
@@ -248,11 +245,12 @@ function Totals({
         <p className={`text-xs font-semibold uppercase tracking-wider ${lab}`}>{l.recurringLabel}</p>
         <p className="mt-0.5 text-[11px] text-slate-400">{l.recurringHint}</p>
         <p className={`mt-1 text-3xl font-extrabold tabular-nums sm:text-4xl ${val}`}>
-          {brl(recurring)}
+          {usd(recUSD)}
           <span className="ml-1 text-base font-medium text-slate-400">/mês</span>
         </p>
         <p className="mt-1 text-[11px] text-slate-400">
-          {l.perYear} <span className="font-semibold text-slate-300">{brl0(recurring * 12)}</span>
+          {l.approx} <span className="font-semibold text-slate-300">{brl0(recUSD * fx)}/mês</span> · {l.perYear}{' '}
+          <span className="font-semibold text-slate-300">{usd0(recUSD * 12)}</span>
         </p>
       </div>
     </div>
