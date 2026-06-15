@@ -41,12 +41,34 @@ const nextConfig = {
     // 'unsafe-inline'/'unsafe-eval' (exigidos pela hidratação do Next sem nonce;
     // endurecer com nonce é um follow-up).
     const dev = process.env.NODE_ENV !== 'production'
+    // Domínios de analytics (GA4/Google Ads, Meta Pixel, TikTok). Permitir os
+    // hosts não carrega nada sozinho — os pixels só sobem com ID + consentimento.
+    const analyticsScript = [
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'https://connect.facebook.net',
+      'https://analytics.tiktok.com',
+      'https://*.tiktok.com',
+    ]
+    const analyticsConnect = [
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'https://*.google-analytics.com',
+      'https://*.analytics.google.com',
+      'https://connect.facebook.net',
+      'https://*.facebook.com',
+      'https://analytics.tiktok.com',
+      'https://*.tiktok.com',
+      'https://www.google.com',
+      'https://googleads.g.doubleclick.net',
+    ]
     const connectSrc = [
       "'self'",
       'https://*.supabase.co',
       'wss://*.supabase.co',
       'https://api.stripe.com',
       'https://api.resend.com',
+      ...analyticsConnect,
       ...(dev ? ['ws://localhost:*', 'http://localhost:*'] : []),
     ].join(' ')
     const csp = [
@@ -55,14 +77,14 @@ const nextConfig = {
       "frame-ancestors 'none'",
       "object-src 'none'",
       // Next.js injeta scripts inline de hidratação; libs podem usar eval.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${analyticsScript.join(' ')}`,
       "style-src 'self' 'unsafe-inline'",
       'img-src \'self\' data: blob: https:',
       "font-src 'self' data:",
-      // Supabase (REST/Realtime/Storage), Stripe e Resend (+ HMR no dev).
+      // Supabase (REST/Realtime/Storage), Stripe e Resend + analytics (+ HMR no dev).
       `connect-src ${connectSrc}`,
-      // Stripe.js (se carregado) e frames de pagamento.
-      'frame-src https://js.stripe.com https://*.stripe.com https://hooks.stripe.com',
+      // Stripe.js (se carregado), frames de pagamento e conversão do Google Ads.
+      'frame-src https://js.stripe.com https://*.stripe.com https://hooks.stripe.com https://td.doubleclick.net',
       // Checkout externo (Hotmart/Stripe) é navegação por link, não form-post.
       "form-action 'self'",
     ].join('; ')
