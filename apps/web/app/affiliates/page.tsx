@@ -172,7 +172,7 @@ export default function AffiliatesPage() {
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-400">
             Você fatura de <strong className="text-white">duas formas</strong>: comissão cheia em cada venda no Brasil — como um
             <strong className="text-white"> sócio</strong> do negócio — e <strong className="text-white">renda recorrente em dólar</strong> no
-            internacional. Comissão de 25%, e 50% em todas as vendas de junho.
+            internacional.
           </p>
           <ul className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-300">
             <li className="inline-flex items-center gap-1.5"><span className="text-brand">✓</span> Sócio em cada venda (Brasil)</li>
