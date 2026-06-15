@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     return json({ error: 'não autenticado' }, 401)
   }
   // Rate-limit por usuário: a transcrição chama um provider pago (custo/abuso).
-  if (rateLimit(`agent-transcribe:${data.user.id}`, { windowMs: 60_000, max: 20 })) {
+  if (await rateLimit(`agent-transcribe:${data.user.id}`, { windowMs: 60_000, max: 20 })) {
     return json({ error: 'muitas tentativas' }, 429)
   }
 
