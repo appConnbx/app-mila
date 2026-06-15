@@ -40,9 +40,9 @@ const LANGUAGES = [
 
 const labelCls = 'block text-sm font-medium text-slate-300'
 
-export default async function HoldingPage({ searchParams }: { searchParams: Promise<{ tab?: string; support?: string }> }) {
+export default async function HoldingPage({ searchParams }: { searchParams: Promise<{ tab?: string; support?: string; cfg?: string }> }) {
   const t = await getTranslations('structure')
-  const { tab, support } = await searchParams
+  const { tab, support, cfg } = await searchParams
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
   if (!holdingId) redirect('/dashboard')
@@ -68,6 +68,12 @@ export default async function HoldingPage({ searchParams }: { searchParams: Prom
 
   const config = (
     <div className="space-y-6">
+      {cfg === 'ok' && (
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">{t('saved')}</div>
+      )}
+      {cfg === 'erro' && (
+        <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{t('saveError')}</div>
+      )}
       {/* Licenciamento */}
       <Card title={t('licenseTitle')}>
         {lic && lic.plan_name ? (

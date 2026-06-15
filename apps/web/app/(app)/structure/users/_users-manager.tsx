@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Avatar, Badge, Button, fieldClasses, labelClasses } from '@/components/ui'
 import { ConfirmButton } from '@/components/confirm-button'
@@ -49,6 +49,13 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
   const PAGE_SIZE = 10
 
   const fmt = (iso: string | null) => fmtDateTime(iso, locale, tz)
+
+  // Esc fecha o drawer de edição (acessibilidade).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpenId(null) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase()
@@ -295,7 +302,7 @@ export function UsersManager({ users, flash, tz }: { users: HoldingUser[]; flash
                       {t('generate')}
                     </button>
                   </div>
-                  <SubmitButton btnVariant="ghost" btnSize="sm" className="w-full justify-start" disabled={pw.length < 4}>
+                  <SubmitButton btnVariant="ghost" btnSize="sm" className="w-full justify-start" disabled={pw.length < 8}>
                     🔑 {t('setPasswordBtn')}
                   </SubmitButton>
                   <p className="text-xs text-slate-500">{t('setPasswordHint')}</p>

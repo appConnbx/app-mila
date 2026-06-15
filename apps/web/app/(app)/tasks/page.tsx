@@ -140,13 +140,19 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   // Concluídas agrupadas por mês (mais recente primeiro)
   const completedItems = base.filter((d) => d.status === 'finalizada')
   const groupMap = new Map<string, { key: string; label: string; sort: number; items: Demand[] }>()
+  // Ano/mês no FUSO da instância (não do servidor), senão demandas concluídas
+  // à noite podem cair no mês seguinte.
+  const ymInTz = (iso: string) => {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit' }).formatToParts(new Date(iso))
+    const y = Number(parts.find((p) => p.type === 'year')!.value)
+    const m = Number(parts.find((p) => p.type === 'month')!.value) - 1
+    return { y, m }
+  }
   for (const d of completedItems) {
-    const dt = new Date(d.completed_at ?? d.created_at)
-    const y = dt.getFullYear()
-    const m = dt.getMonth()
+    const { y, m } = ymInTz(d.completed_at ?? d.created_at)
     const key = `${y}-${String(m).padStart(2, '0')}`
     if (!groupMap.has(key)) {
-      const monthName = dt.toLocaleDateString(locale, { month: 'long' })
+      const monthName = new Date(Date.UTC(y, m, 1)).toLocaleDateString(locale, { month: 'long', timeZone: 'UTC' })
       groupMap.set(key, { key, label: `${y} - ${monthName.charAt(0).toUpperCase()}${monthName.slice(1)}`, sort: y * 100 + m, items: [] })
     }
     groupMap.get(key)!.items.push(d)
