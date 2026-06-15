@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { inputCbx, labelCbx, btnCbx } from '../_ui'
+import { SubmitButton } from '@/components/pending'
 import { COUNTRIES, BR_STATES } from '../_regions'
 
 type Initial = {
@@ -100,7 +101,7 @@ export function ClientProfileForm({
         </div>
       </div>
 
-      <button className={btnCbx}>Salvar cadastro</button>
+      <SubmitButton className={btnCbx}>Salvar cadastro</SubmitButton>
     </form>
   )
 }

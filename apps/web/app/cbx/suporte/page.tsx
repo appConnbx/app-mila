@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../_lib'
 import { CbxCard, CbxFlash, Pill, btnCbx, btnGhostCbx, inputCbx, labelCbx, thCbx, tdCbx, fmtDate } from '../_ui'
+import { SubmitButton } from '@/components/pending'
 import { createTicket } from './actions'
 
 type Ticket = {
@@ -150,7 +151,7 @@ export default async function CbxSuportePage({ searchParams }: { searchParams: P
             </select>
           </div>
           <div className="flex items-end">
-            <button className={btnCbx}>Abrir ticket</button>
+            <SubmitButton className={btnCbx}>Abrir ticket</SubmitButton>
           </div>
         </form>
       </CbxCard>

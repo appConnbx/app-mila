@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { Aurora } from '@/components/ui'
+import { SubmitButton } from '@/components/pending'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { stripeApi } from '@/lib/stripe/client'
 import { priceId, STRIPE_PRICES_TEST, type MilaPlan } from '@/lib/stripe/catalog'
@@ -116,9 +117,9 @@ export default async function SubscribePage({
                 />
                 <p className="mt-1 text-xs text-slate-500">{t('subEmailHint')}</p>
               </div>
-              <button type="submit" className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
+              <SubmitButton className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
                 {t('subSubmit')}
-              </button>
+              </SubmitButton>
             </form>
           </>
         )}

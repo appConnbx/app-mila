@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../_lib'
 import { CbxCard, CbxFlash, Pill, btnCbx, inputCbx, labelCbx, thCbx, tdCbx, fmtDate } from '../_ui'
+import { SubmitButton } from '@/components/pending'
 import { PasswordField } from '../_password-field'
 import { createStaff, setStaff } from './actions'
 
@@ -161,7 +162,7 @@ export default async function CbxAdminPage({ searchParams }: { searchParams: Pro
             </div>
           </div>
           <div className="sm:col-span-2">
-            <button className={btnCbx}>Criar operador</button>
+            <SubmitButton className={btnCbx}>Criar operador</SubmitButton>
           </div>
         </form>
       </CbxCard>

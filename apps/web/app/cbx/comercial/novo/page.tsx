@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, btnCbx, inputCbx, labelCbx } from '../../_ui'
+import { SubmitButton } from '@/components/pending'
 import { createClientAccount } from '../actions'
 
 type Plan = {
@@ -101,7 +102,7 @@ export default async function NovoClientePage({ searchParams }: { searchParams: 
             </div>
           </div>
 
-          <button className={btnCbx}>Criar cliente</button>
+          <SubmitButton className={btnCbx}>Criar cliente</SubmitButton>
         </form>
       </CbxCard>
     </div>
