@@ -7,10 +7,13 @@ import { PLANS, CORP_PLANS, FAM_PLANS } from '@/lib/plans'
 
 /* =========================================================================
    Programa de Afiliados MILA — página de recrutamento (pt-BR, mercado BR).
-   Objetivo: converter o afiliado a QUERER vender o MILA. Narrativa:
-   produto poderoso e em evolução → oportunidade de renda recorrente →
-   simulador 35% → grande triunfo (50% vitalício de junho) → simulador 50%
-   → arsenal de apoio → afiliação na Hotmart.
+   Modelo de ganho:
+   - BRASIL = VENDA ÚNICA (cliente parcela em 12x; afiliado recebe comissão
+     sobre o valor TOTAL, de uma vez) → "faturamento direto". Posicionamento
+     de sócio em cada venda.
+   - INTERNACIONAL = ASSINATURA mensal em US$ → "recorrente internacional".
+   Comissão padrão 25%; lançamento de junho/2026 = 50%.
+   Há HIGH TICKET (Empresas) e LOW TICKET (Pessoal/Família) no mesmo produto.
    ========================================================================= */
 
 // ⚙️ AJUSTE AQUI (placeholders marcados):
@@ -21,9 +24,9 @@ const HOTMART_AFFILIATE_URL = 'https://hotmart.com/pt-br/marketplace/produtos/mi
 const USD_BRL = 5.4
 
 export const metadata: Metadata = {
-  title: 'Seja Afiliado MILA — 35% recorrente (50% vitalício em junho)',
+  title: 'Seja Afiliado MILA — 25% de comissão (50% no lançamento de junho/2026)',
   description:
-    'Mais que um produto para afiliar: uma renda recorrente que cresce com você. 35% de comissão sobre toda a recorrência — e 50% vitalício em todas as vendas de junho. Simule seus ganhos.',
+    'Fature de duas formas: comissão cheia em cada venda no Brasil (como um sócio) e renda recorrente em dólar no internacional. Comissão de 25% — e 50% em todas as vendas de junho/2026. Simule seus ganhos.',
   robots: { index: true, follow: true },
 }
 
@@ -31,52 +34,90 @@ export const metadata: Metadata = {
 const brNum = (s: string) => Number(s.replace(/\./g, '').replace(',', '.'))
 
 // Dados do simulador derivados da fonte única (lib/plans.ts).
+// BR usa o VALOR TOTAL do plano (venda única); INTL usa a mensalidade US$.
 const simPlans: SimPlan[] = [
   ...CORP_PLANS.map((slug): SimPlan => {
     const p = PLANS[slug]
-    return { id: `br-${slug}`, group: 'br-corp', name: p.label, currency: 'BRL', base: brNum(p.br!.parcela!), price: `R$${p.br!.parcela}/mês · anual (12x)` }
+    return { id: `br-${slug}`, group: 'br-corp', name: p.label, currency: 'BRL', kind: 'oneTime', base: brNum(p.br!.total!), price: `R$${p.br!.total} · cliente paga em 12x de R$${p.br!.parcela}` }
   }),
   ...FAM_PLANS.map((slug): SimPlan => {
     const p = PLANS[slug]
-    return { id: `br-${slug}`, group: 'br-fam', name: p.label, currency: 'BRL', base: brNum(p.br!.parcela!), price: `R$${p.br!.annual}/ano · 12x de R$${p.br!.parcela}` }
+    return { id: `br-${slug}`, group: 'br-fam', name: p.label, currency: 'BRL', kind: 'oneTime', base: brNum(p.br!.annual!), price: `R$${p.br!.annual} · cliente paga em 12x de R$${p.br!.parcela}` }
   }),
   ...CORP_PLANS.map((slug): SimPlan => {
     const p = PLANS[slug]
-    return { id: `intl-${slug}`, group: 'intl-corp', name: p.label, currency: 'USD', base: Number(p.usd), price: `US$${p.usd}/mês` }
+    return { id: `intl-${slug}`, group: 'intl-corp', name: p.label, currency: 'USD', kind: 'recurring', base: Number(p.usd), price: `US$${p.usd}/mês` }
   }),
   ...FAM_PLANS.map((slug): SimPlan => {
     const p = PLANS[slug]
-    return { id: `intl-${slug}`, group: 'intl-fam', name: p.label, currency: 'USD', base: Number(p.usd), price: `US$${p.usd}/mês` }
+    return { id: `intl-${slug}`, group: 'intl-fam', name: p.label, currency: 'USD', kind: 'recurring', base: Number(p.usd), price: `US$${p.usd}/mês` }
   }),
 ]
 
-// Pré-preenchimento que já mostra um número atraente e ensina a usar.
-const simDefaults: Record<string, number> = { 'br-growth': 2, 'br-scale': 1, 'intl-starter': 1 }
+// Pré-preenchimento que já mostra números atraentes e ensina a usar.
+const simDefaults: Record<string, number> = { 'br-growth': 1, 'br-scale': 1, 'intl-starter': 2 }
 
 const simLabels = {
-  table35Title: 'Comissão padrão — 35% recorrente',
-  table50Title: '🔥 Lançamento de junho — 50% VITALÍCIO (mesmas quantidades)',
+  table25Title: 'Comissão padrão — 25%',
+  table50Title: '🔥 Lançamento de junho — 50% (mesmas quantidades)',
   colPlan: 'Plano',
   colPrice: 'Preço do plano',
-  colCommission: 'Sua comissão (unidade)',
+  colCommission: 'Sua comissão',
   colQty: 'Qtd. de vendas',
   colExtract: 'Extrato (R$)',
-  totalLabel: 'Sua renda recorrente mensal',
-  perYear: 'Equivale a',
-  groupBrCorp: 'Brasil · Empresas (Hotmart, anual 12x)',
-  groupBrFam: 'Brasil · Pessoal / Família (Hotmart, anual)',
-  groupIntlCorp: 'Internacional · Empresas (assinatura mensal em US$)',
-  groupIntlFam: 'Internacional · Pessoal / Família (mensal em US$)',
-  deltaLabel: 'Você ganha a mais:',
-  fxNote: `Simulação ilustrativa. Planos internacionais convertidos a uma cotação de referência de US$1 = R$${USD_BRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}. Comissões dependem de vendas efetivas, aprovação e regras da Hotmart, reembolsos e renovações — não constituem garantia de ganho.`,
-  hint: 'Mexa nas quantidades ↑↓ e veja sua renda subir',
+  directLabel: 'Seu faturamento direto',
+  directHint: 'Vendas no Brasil — comissão cheia, recebida de uma vez',
+  recurringLabel: 'Seu recorrente internacional',
+  recurringHint: 'Assinaturas em dólar — entra todo mês, enquanto o cliente usar',
+  perYear: 'Em 12 meses:',
+  groupBrCorp: 'Brasil · Empresas — venda única · HIGH TICKET',
+  groupBrFam: 'Brasil · Pessoal / Família — venda única · LOW TICKET',
+  groupIntlCorp: 'Internacional · Empresas — assinatura US$/mês · HIGH TICKET',
+  groupIntlFam: 'Internacional · Pessoal / Família — assinatura US$/mês · LOW TICKET',
+  hint: 'Mexa nas quantidades ↑↓ e veja seus ganhos',
+  fxNote: `Simulação ilustrativa. No Brasil a venda é única (o cliente parcela em até 12x; a comissão incide sobre o valor total). Planos internacionais são assinatura, convertidos a uma cotação de referência de US$1 = R$${USD_BRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}. Comissões dependem de vendas efetivas, aprovação e regras da Hotmart, reembolsos e renovações — não constituem garantia de ganho.`,
 }
+
+// Bloco de lançamento — entra entre a tabela de 25% e a de 50% no simulador.
+const launchBlock: ReactNode = (
+  <div className="relative overflow-hidden rounded-3xl border border-amber-400/40 bg-gradient-to-br from-amber-500/15 via-amber-500/[0.06] to-transparent p-8 text-center sm:p-12">
+    <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-300">
+      Somente em junho/2026
+    </span>
+    <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-extrabold text-white sm:text-4xl">
+      Sua comissão sobe para <span className="text-amber-300">50%</span>.
+    </h2>
+    <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-200">
+      No mês de lançamento, <strong className="text-amber-200">toda venda fechada em junho/2026 rende 50% de comissão</strong>.
+      No Brasil, é o dobro do faturamento direto em cada venda. No internacional, esses 50% valem
+      <strong className="text-amber-200"> para sempre</strong> — em cada renovação, pela vida inteira do cliente.
+    </p>
+    <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-400">
+      Depois de junho, a comissão volta aos 25%. As assinaturas internacionais que você fechar agora continuam pagando 50%.
+      Essa janela não volta. Veja abaixo o mesmo cenário com 50%.
+    </p>
+  </div>
+)
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
       <h3 className="text-base font-semibold text-white">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-slate-400">{children}</p>
+    </div>
+  )
+}
+
+function ProductCard({ tier, market, desc, price, unit }: { tier: 'HIGH TICKET' | 'LOW TICKET'; market: string; desc: string; price: string; unit: string }) {
+  const high = tier === 'HIGH TICKET'
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-semibold uppercase tracking-wider text-brand">{market}</p>
+        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${high ? 'bg-amber-500/15 text-amber-300' : 'bg-brand/15 text-brand'}`}>{tier}</span>
+      </div>
+      <p className="mt-2 text-sm text-slate-400">{desc}</p>
+      <p className="mt-3 text-2xl font-extrabold text-white">{price}<span className="text-sm font-medium text-slate-400">{unit}</span></p>
     </div>
   )
 }
@@ -107,18 +148,18 @@ export default function AffiliatesPage() {
         <div className="mx-auto max-w-3xl px-4 pb-12 pt-16 text-center lg:pt-24">
           <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-300">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-            Lançamento de junho · 50% de comissão vitalícia
+            Mês de lançamento · Oportunidade exclusiva · Junho/2026
           </span>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-[1.07] tracking-tight text-white sm:text-5xl">
             Não é mais um produto para afiliar.
             <span className="mt-2 block bg-gradient-to-r from-brand to-amber-400 bg-clip-text text-transparent">
-              É uma renda recorrente que cresce com você.
+              É uma fonte de renda que cresce com você.
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-400">
-            O MILA transforma voz em demanda organizada para empresas e famílias — no Brasil e no mundo. Você ganha
-            <strong className="text-white"> 35% de comissão sobre toda a recorrência</strong>, mês após mês. Indique uma vez,
-            receba enquanto o cliente usar.
+            Você fatura de <strong className="text-white">duas formas</strong>: comissão cheia em cada venda no Brasil — como um
+            <strong className="text-white"> sócio</strong> do negócio — e <strong className="text-white">renda recorrente em dólar</strong> no
+            internacional. Comissão de 25%, e 50% em todas as vendas de junho.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <a href="#simulador" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-7 py-3.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
@@ -129,63 +170,71 @@ export default function AffiliatesPage() {
             </a>
           </div>
           <ul className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-300">
-            <li className="inline-flex items-center gap-1.5"><span className="text-brand">✓</span> Recorrência previsível</li>
-            <li className="inline-flex items-center gap-1.5"><span className="text-brand">✓</span> Ganhe também em dólar</li>
+            <li className="inline-flex items-center gap-1.5"><span className="text-brand">✓</span> Sócio em cada venda (Brasil)</li>
+            <li className="inline-flex items-center gap-1.5"><span className="text-brand">✓</span> Recorrência em dólar (internacional)</li>
             <li className="inline-flex items-center gap-1.5"><span className="text-brand">✓</span> Arsenal de apoio pronto</li>
           </ul>
         </div>
       </section>
 
-      {/* POR QUE MILA — o que importa para o afiliado (base da pesquisa) */}
+      {/* POR QUE MILA — dois motores de ganho */}
       <section className="mx-auto max-w-5xl px-4 py-14">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-wider text-brand">Por que vender MILA</p>
-          <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">O afiliado inteligente escolhe recorrência — e produto que evolui</h2>
+          <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">Você não ganha de um jeito só. Ganha de dois.</h2>
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">
-            Comissão única acaba no dia seguinte. Recorrência se acumula. E recorrência sobre um produto que melhora toda semana
-            vira uma carteira que trabalha por você.
+            No Brasil, você entra como sócio de cada venda. No mundo, constrói uma renda recorrente em dólar. E faz isso com
+            high ticket e low ticket dentro do mesmo produto.
           </p>
         </div>
         <div className="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          <Card title="Renda recorrente, não venda avulsa">
-            35% sobre cada cobrança, enquanto o cliente permanecer. Uma única indicação paga você por meses — e anos.
+          <Card title="Sócio em cada venda (Brasil)">
+            No Brasil a venda é única: o cliente parcela em até 12x, mas a sua comissão incide sobre o valor total do plano e cai
+            de uma vez. Quanto maior o plano, maior o seu corte. Você não é só divulgador — é parte do negócio.
+          </Card>
+          <Card title="Recorrência em dólar (internacional)">
+            Lá fora o MILA é assinatura mensal. Cada cliente que você indica paga você todo mês, em dólar, enquanto usar. Indique
+            uma vez, receba muitas. É a renda que se acumula.
+          </Card>
+          <Card title="High ticket e low ticket, no mesmo produto">
+            Empresas são high ticket (tickets de milhares de reais); pessoal/família é low ticket (entrada baixa, volume alto).
+            Você escolhe onde atacar — ou faz os dois e equilibra sua carteira.
+          </Card>
+          <Card title="Sistema multilíngue: pt / en / es">
+            Todo o MILA funciona em português, inglês e espanhol. Você vende no Brasil e no mundo com o mesmo produto, sem
+            barreira de idioma — e abre a porta do faturamento em dólar.
           </Card>
           <Card title="Produto que as pessoas usam todo dia">
-            Capturar tarefa por voz resolve uma dor real de empresas e famílias. Uso diário = baixa evasão = sua comissão dura mais.
+            Capturar tarefa por voz resolve uma dor real de empresas e famílias. Uso diário significa cliente satisfeito — e, no
+            internacional, assinatura que renova e te paga por mais tempo.
           </Card>
-          <Card title="Time dedicado de produto">
-            Uma equipe de engenharia evolui o MILA continuamente: web, desktop e o app oficial Android. Você vende algo que só melhora.
-          </Card>
-          <Card title="Suporte de verdade por trás">
-            Equipe de suporte e onboarding cuidam do cliente que você trouxe. Cliente bem atendido renova — e renovação é o seu salário.
-          </Card>
-          <Card title="Estratégia internacional (ganhe em US$)">
-            Planos no Brasil (R$) e no mundo (US$). Indicou um cliente lá fora? Sua comissão entra em dólar. Poucos programas BR oferecem isso.
-          </Card>
-          <Card title="Arsenal de apoio pronto">
-            Manual da marca, tom de voz, logos, páginas de vendas por produto e prompts de IA para você criar campanha em minutos.
+          <Card title="Time, suporte e arsenal por trás">
+            Uma equipe evolui o produto (web, desktop e o app Android) e atende quem você trouxe. Você recebe manual da marca, tom
+            de voz, logos, LPs por produto e prompts de IA para vender mais e melhor.
           </Card>
         </div>
       </section>
 
-      {/* A OPORTUNIDADE / NARRATIVA DE CONSULTOR */}
+      {/* A OPORTUNIDADE / SÓCIO E CONSULTOR */}
       <section className="mx-auto max-w-3xl px-4 py-14">
         <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8 sm:p-10">
           <p className="text-sm font-semibold uppercase tracking-wider text-brand">A oportunidade</p>
-          <h2 className="mt-2 text-3xl font-bold text-white">Trabalhe como já trabalha. Ou mude de patamar.</h2>
+          <h2 className="mt-2 text-3xl font-bold text-white">Entre como sócio. Cresça como consultor.</h2>
           <div className="mt-4 space-y-3 leading-relaxed text-slate-300">
             <p>
-              Você pode divulgar o MILA como faz com qualquer produto: seu link, suas redes, sua audiência. Funciona — e já paga
-              recorrente.
+              Você pode divulgar o MILA como faz com qualquer produto: seu link, suas redes, sua audiência. No Brasil, cada venda
+              já te coloca como <strong className="text-white">sócio do resultado</strong> — comissão cheia sobre o valor total,
+              recebida de uma vez.
             </p>
             <p>
-              Mas existe um caminho diferente. Quem trata o MILA como <strong className="text-white">consultor de produtividade</strong> —
-              que entende a dor da empresa, mostra o ganho de organização, acompanha a implantação — não vende uma assinatura.
-              Constrói uma <strong className="text-white">carteira de clientes recorrentes</strong>. E carteira, no fim, é patrimônio.
+              Quem vai além e atua como <strong className="text-white">consultor de produtividade</strong> — entende a dor da
+              empresa, mostra o ganho de organização, acompanha a implantação — fecha tickets maiores e, no internacional,
+              constrói uma <strong className="text-white">carteira de assinaturas recorrentes em dólar</strong>. Aí o jogo muda de
+              patamar.
             </p>
             <p>
-              É a diferença entre ganhar uma comissão e construir uma renda que paga todo mês, cresce a cada novo cliente e ainda
-              rende em dólar quando você atravessa a fronteira.
+              É a diferença entre tirar uma comissão e montar uma operação: faturamento direto que entra a cada venda no Brasil,
+              somado a uma renda mensal em dólar que se acumula lá fora.
             </p>
           </div>
           <p className="mt-5 text-sm font-semibold text-brand">Você escolhe o tamanho da operação. Nós damos o produto, o material e o suporte.</p>
@@ -198,77 +247,39 @@ export default function AffiliatesPage() {
           <p className="text-sm font-semibold uppercase tracking-wider text-brand">O que você vende</p>
           <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">Quatro frentes de venda, um só link de afiliado</h2>
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">
-            Empresas e pessoas, no Brasil e no exterior. Quanto mais frentes você dominar, maior a sua carteira.
+            No Brasil, venda única (valor total do plano; o cliente é quem parcela). No internacional, assinatura mensal em dólar.
+            Em cada mercado há high ticket (empresas) e low ticket (pessoal/família).
           </p>
         </div>
         <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand">Brasil · Empresas</p>
-            <p className="mt-2 text-sm text-slate-400">Planos anuais (12x) do Starter ao Enterprise.</p>
-            <p className="mt-3 text-2xl font-extrabold text-white">R${PLANS.starter.br!.parcela}–{PLANS.enterprise.br!.parcela}<span className="text-sm font-medium text-slate-400">/mês</span></p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand">Brasil · Família</p>
-            <p className="mt-2 text-sm text-slate-400">Uso pessoal/familiar, plano anual acessível.</p>
-            <p className="mt-3 text-2xl font-extrabold text-white">R${PLANS.family.br!.annual}–{PLANS.family_plus.br!.annual}<span className="text-sm font-medium text-slate-400">/ano</span></p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand">Internacional · Empresas</p>
-            <p className="mt-2 text-sm text-slate-400">Assinatura mensal em dólar.</p>
-            <p className="mt-3 text-2xl font-extrabold text-white">US${PLANS.starter.usd}–{PLANS.enterprise.usd}<span className="text-sm font-medium text-slate-400">/mês</span></p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand">Internacional · Família</p>
-            <p className="mt-2 text-sm text-slate-400">Uso pessoal, mensal em dólar.</p>
-            <p className="mt-3 text-2xl font-extrabold text-white">US${PLANS.family.usd}–{PLANS.family_plus.usd}<span className="text-sm font-medium text-slate-400">/mês</span></p>
-          </div>
+          <ProductCard tier="HIGH TICKET" market="Brasil · Empresas" desc="Venda única. Planos do Starter ao Enterprise." price={`R$${PLANS.starter.br!.total}–${PLANS.enterprise.br!.total}`} unit=" / total" />
+          <ProductCard tier="LOW TICKET" market="Brasil · Família" desc="Venda única. Uso pessoal/familiar." price={`R$${PLANS.family.br!.annual}–${PLANS.family_plus.br!.annual}`} unit=" / total" />
+          <ProductCard tier="HIGH TICKET" market="Internacional · Empresas" desc="Assinatura mensal em dólar." price={`US$${PLANS.starter.usd}–${PLANS.enterprise.usd}`} unit=" /mês" />
+          <ProductCard tier="LOW TICKET" market="Internacional · Família" desc="Assinatura mensal em dólar." price={`US$${PLANS.family.usd}–${PLANS.family_plus.usd}`} unit=" /mês" />
         </div>
       </section>
 
-      {/* SIMULADOR */}
+      {/* SIMULADOR (25% → bloco de lançamento → 50%) */}
       <section id="simulador" className="mx-auto max-w-5xl scroll-mt-20 px-4 py-14">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-wider text-brand">Simule agora</p>
-          <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">Quanto a sua carteira paga todo mês?</h2>
+          <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">Quanto você fatura — direto e recorrente?</h2>
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">
-            Comece pelos planos do Brasil, some os internacionais em dólar e veja sua <strong className="text-white">renda recorrente
-            mensal</strong> crescer. Brinque com as quantidades — é assim que sua operação se parece.
+            Monte seu cenário: vendas no Brasil viram <strong className="text-white">faturamento direto</strong>; assinaturas
+            internacionais viram <strong className="text-white">recorrente em dólar</strong>. Brinque com as quantidades — é assim
+            que sua operação se parece.
           </p>
         </div>
         <div className="mt-9">
-          <AffiliateSimulator plans={simPlans} fx={USD_BRL} defaults={simDefaults} labels={simLabels} />
+          <AffiliateSimulator plans={simPlans} fx={USD_BRL} defaults={simDefaults} labels={simLabels} middle={launchBlock} />
         </div>
       </section>
 
-      {/* GRANDE TRIUNFO — 50% vitalício de junho */}
-      <section className="mx-auto max-w-4xl px-4 py-10">
-        <div className="relative overflow-hidden rounded-3xl border border-amber-400/40 bg-gradient-to-br from-amber-500/15 via-amber-500/[0.06] to-transparent p-8 text-center sm:p-12">
-          <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-300">
-            Somente em junho
-          </span>
-          <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-extrabold text-white sm:text-4xl">
-            50% de comissão. <span className="text-amber-300">Vitalícia.</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-200">
-            No mês de lançamento, <strong className="text-amber-200">toda venda fechada em junho rende 50% de comissão para sempre</strong>
-            — pela vida inteira daquele cliente. Não é 50% no primeiro mês. É 50% em cada renovação, enquanto ele for cliente.
-          </p>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-400">
-            Cada cliente que você fechar agora vale quase o dobro — para sempre. Depois de junho, a comissão volta aos 35%. Os
-            clientes de junho continuam pagando 50%. Essa janela não volta.
-          </p>
-          <a href="#afiliar" className="mt-7 inline-flex items-center justify-center rounded-xl bg-amber-400 px-8 py-3.5 text-sm font-bold text-slate-950 transition hover:bg-amber-300">
-            Garantir meus 50% vitalícios
-          </a>
-        </div>
-      </section>
-
-      {/* O simulador 50% já está renderizado dentro do componente acima, espelhando as quantidades. */}
-      <section className="mx-auto max-w-4xl px-4 pb-4 text-center">
-        <p className="text-sm text-slate-400">
-          ☝️ Role de volta ao simulador: a tabela dourada <strong className="text-amber-200">já mostra os seus números com 50%</strong>,
-          usando exatamente as quantidades que você escolheu.
-        </p>
+      {/* CTA pós-simulador */}
+      <section className="mx-auto max-w-4xl px-4 pb-2 text-center">
+        <a href="#afiliar" className="inline-flex items-center justify-center rounded-xl bg-amber-400 px-8 py-3.5 text-sm font-bold text-slate-950 transition hover:bg-amber-300">
+          Garantir meus 50% de junho
+        </a>
       </section>
 
       {/* ARSENAL DE APOIO */}
@@ -281,7 +292,7 @@ export default function AffiliatesPage() {
           <Card title="Manual da marca + logos">Identidade visual, cores e versões do logo para você criar material com a cara do MILA.</Card>
           <Card title="Tom de voz">Como o MILA fala. Você comunica com consistência e profissionalismo desde o primeiro post.</Card>
           <Card title="Prompts de IA">Prompts prontos para gerar copy, anúncios, roteiros e estratégia de campanha em minutos.</Card>
-          <Card title="Páginas de vendas por produto">LPs prontas para empresa e pessoal, Brasil e exterior — é só usar o seu link.</Card>
+          <Card title="Páginas de vendas por produto">LPs prontas para empresa e pessoal, Brasil e exterior, em pt/en/es — é só usar o seu link.</Card>
           <Card title="Demonstração interativa">O cliente testa a captura por voz na hora, direto na página. Sua conversão agradece.</Card>
           <Card title="Atualizações constantes">Produto e materiais evoluem. Você sempre tem novidade para reaquecer a audiência.</Card>
         </div>
@@ -292,11 +303,12 @@ export default function AffiliatesPage() {
         <h2 className="text-center text-3xl font-bold text-white">Perguntas frequentes</h2>
         <div className="mt-8 space-y-3">
           {[
-            { q: 'Como funciona a comissão recorrente?', a: 'Você recebe 35% sobre cada cobrança do cliente que indicou, enquanto a assinatura estiver ativa. Planos BR são anuais (a comissão acompanha as parcelas e renova a cada ano); planos internacionais são mensais em dólar.' },
-            { q: 'O que é a comissão de 50% vitalícia de junho?', a: 'Toda venda fechada durante o mês de junho rende 50% de comissão pela vida inteira daquele cliente — em cada renovação. Após junho, novas vendas voltam a 35%, mas os clientes que você fechou em junho continuam pagando 50% para você.' },
-            { q: 'Preciso ser especialista para vender?', a: 'Não. Você pode divulgar como já faz com qualquer produto. Quem quiser ir além, atuando como consultor, tende a construir uma carteira recorrente maior — e damos o material para isso.' },
+            { q: 'Como funciona a comissão?', a: 'No Brasil a venda é única: você recebe 25% sobre o valor total do plano, de uma vez (o cliente é quem parcela em até 12x). No internacional o MILA é assinatura mensal em dólar: você recebe 25% recorrente todo mês, enquanto o cliente mantiver a assinatura.' },
+            { q: 'O que muda no lançamento de junho/2026?', a: 'Em junho a comissão sobe para 50% em todas as vendas. No Brasil, é o dobro do faturamento direto por venda. No internacional, esses 50% valem para sempre — em cada renovação da assinatura que você fechar em junho. Depois do mês, novas vendas voltam a 25%.' },
+            { q: 'O que é high ticket e low ticket?', a: 'O mesmo produto tem planos de empresa (high ticket, valores maiores) e de uso pessoal/família (low ticket, entrada baixa e volume). Você pode focar em um, ou trabalhar os dois para equilibrar valor por venda e volume.' },
+            { q: 'Preciso ser especialista para vender?', a: 'Não. Você pode divulgar como já faz com qualquer produto. Quem quiser ir além, atuando como consultor, tende a fechar tickets maiores e construir carteira recorrente — e damos o material para isso.' },
+            { q: 'Posso vender para fora do Brasil?', a: 'Sim. Todo o sistema é multilíngue (português, inglês e espanhol) e há planos internacionais em dólar, para empresas e uso pessoal. Sua comissão sobre essas vendas entra em US$ e é recorrente.' },
             { q: 'Como recebo?', a: 'O pagamento e o rastreio das vendas são feitos pela Hotmart, segundo as regras e prazos da plataforma. É só se afiliar com o seu link.' },
-            { q: 'Posso vender para fora do Brasil?', a: 'Sim. Há planos internacionais em dólar, para empresas e uso pessoal. Sua comissão sobre essas vendas entra em US$.' },
           ].map((f) => (
             <details key={f.q} className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5 [&_summary::-webkit-details-marker]:hidden">
               <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm font-semibold text-white">
@@ -312,9 +324,9 @@ export default function AffiliatesPage() {
       {/* CTA FINAL — AFILIAÇÃO HOTMART */}
       <section id="afiliar" className="mx-auto max-w-5xl scroll-mt-20 px-4 py-14">
         <div className="rounded-3xl border border-amber-400/30 bg-gradient-to-b from-amber-500/[0.08] to-white/[0.03] p-10 text-center sm:p-14">
-          <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">Pronto para começar sua carteira recorrente?</h2>
+          <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">Pronto para faturar direto e recorrente?</h2>
           <p className="mx-auto mt-3 max-w-xl text-slate-300">
-            Afilie-se agora na Hotmart e garanta os <strong className="text-amber-200">50% vitalícios</strong> em todas as vendas de junho.
+            Afilie-se agora na Hotmart e garanta os <strong className="text-amber-200">50% em todas as vendas de junho/2026</strong>.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
@@ -337,8 +349,9 @@ export default function AffiliatesPage() {
       <footer className="border-t border-white/5">
         <div className="mx-auto max-w-5xl space-y-3 px-4 py-10 text-xs text-slate-500">
           <p className="text-slate-400">
-            Simulações e valores são ilustrativos e não constituem garantia de ganho. Resultados dependem do seu esforço de
-            divulgação, das vendas efetivas, de aprovações, reembolsos e renovações, e das regras da Hotmart.
+            Simulações e valores são ilustrativos e não constituem garantia de ganho. No Brasil a venda é única (o cliente parcela
+            em até 12x); no internacional é assinatura recorrente em dólar. Resultados dependem do seu esforço de divulgação, das
+            vendas efetivas, de aprovações, reembolsos e renovações, e das regras da Hotmart.
           </p>
           <p>MILA · Programa de Afiliados</p>
           <p className="flex flex-wrap gap-x-5 gap-y-1">
