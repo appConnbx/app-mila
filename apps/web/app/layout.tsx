@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { cookies } from 'next/headers'
 import NextTopLoader from 'nextjs-toploader'
+import { Analytics } from '@/components/analytics'
+import { ConsentBanner } from '@/components/consent-banner'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -33,6 +35,8 @@ export default async function RootLayout({
           speed={250}
         />
         {children}
+        <ConsentBanner />
+        <Analytics />
       </body>
     </html>
   )
