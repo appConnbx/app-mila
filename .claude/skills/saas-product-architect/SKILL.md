@@ -38,3 +38,6 @@ Pense no produto ANTES da tela. Comece pela conclusão: que negócio é, quem s�
 - Backfill ao adicionar flags (`onboarding_done`, etc.): marque registros existentes para não disromper clientes atuais.
 - Excluir dados de teste: confirme escopo, use cascade do FK, proteja contas compartilhadas/staff.
 - "Família Olivaldo" problem: distinga dados de teste dos reais antes de apagar.
+
+## Time de skills (use em conjunto)
+Este arquiteto define O QUÊ e a estrutura. Para executar: **saas-software-engineer** (como construir), **saas-ux-engineer** (usabilidade/a11y/tema/i18n), **saas-qa-engineer** (bateria de testes e pontuação), **saas-security-engineer** (blindagem). Mantenha as cinco evoluindo: a cada aprendizado novo do projeto, atualize a skill correspondente (seção "Aprendizados aplicados").
