@@ -6,6 +6,8 @@ import { CbxCard, Kpi, fmtMoney } from '../_ui'
 type Finance = {
   ok: boolean
   monthly_revenue: { month: string; currency: string; total: number }[]
+  net_revenue: { month: string; currency: string; total: number }[]
+  affiliate_paid: { currency: string; total: number }[]
   affiliate_split: { afiliado: number; direta: number }
   active_by_plan: { plan: string; kind: string; count: number; price_cents: number | null; currency: string | null }[]
   mrr_cents: { currency: string; total_cents: number }[]
@@ -38,7 +40,9 @@ export default async function CbxFinanceiroPage() {
   if (!f?.ok) notFound()
 
   const maxRevenue = Math.max(...f.monthly_revenue.map((m) => m.total), 0)
+  const maxNet = Math.max(...(f.net_revenue ?? []).map((m) => m.total), 0)
   const maxPlan = Math.max(...f.active_by_plan.map((p) => p.count), 0)
+  const fmt = (v: number, cur: string) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: cur }).format(v)
   const totalSplit = f.affiliate_split.afiliado + f.affiliate_split.direta
 
   return (
@@ -74,7 +78,7 @@ export default async function CbxFinanceiroPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Receita mensal */}
-        <CbxCard title="Receita mensal (12 meses)">
+        <CbxCard title="Receita bruta (12 meses)">
           {f.monthly_revenue.length === 0 ? (
             <p className="text-sm text-slate-500">Nenhuma venda registrada via Hotmart ainda.</p>
           ) : (
@@ -87,6 +91,32 @@ export default async function CbxFinanceiroPage() {
                   label={m.month}
                   sub={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: m.currency }).format(m.total)}
                 />
+              ))}
+            </div>
+          )}
+        </CbxCard>
+
+        {/* Receita líquida do produtor (a partir de data.commissions) */}
+        <CbxCard title="Receita líquida — produtor (12 meses)">
+          {(f.net_revenue ?? []).length === 0 ? (
+            <p className="text-sm text-slate-500">Sem dados de comissão ainda (vem do array <code>commissions</code> do payload Hotmart; aparece após a 1ª venda).</p>
+          ) : (
+            <div className="space-y-3">
+              {f.net_revenue.map((m) => (
+                <Bar key={`net-${m.month}-${m.currency}`} value={m.total} max={maxNet} label={m.month} sub={fmt(m.total, m.currency)} />
+              ))}
+            </div>
+          )}
+        </CbxCard>
+
+        {/* Comissões pagas a afiliados */}
+        <CbxCard title="Comissões de afiliados pagas">
+          {(f.affiliate_paid ?? []).length === 0 ? (
+            <p className="text-sm text-slate-500">Nenhuma comissão de afiliado registrada ainda.</p>
+          ) : (
+            <div className="flex flex-wrap gap-6">
+              {f.affiliate_paid.map((a) => (
+                <p key={a.currency} className="text-3xl font-bold text-amber-300">{fmt(a.total, a.currency)}</p>
               ))}
             </div>
           )}
