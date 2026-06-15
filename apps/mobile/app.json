@@ -2,23 +2,36 @@
   "expo": {
     "name": "MILA",
     "slug": "mila-mobile",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "mila",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#0F172A",
+    "primaryColor": "#22D3EE",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "co.appmila.mobile"
+      "bundleIdentifier": "co.appmila.mobile",
+      "buildNumber": "1"
     },
     "android": {
       "package": "co.appmila.mobile",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#0F172A",
         "foregroundImage": "./assets/icon.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["RECORD_AUDIO", "INTERNET"],
+      "blockedPermissions": ["android.permission.SYSTEM_ALERT_WINDOW"],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [{ "scheme": "https", "host": "go.appmila.co" }],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
