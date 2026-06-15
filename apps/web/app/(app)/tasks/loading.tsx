@@ -1,5 +1,4 @@
-import { Spinner } from '@/components/spinner'
-
+import { PageSkeleton } from '@/components/page-skeleton'
 export default function Loading() {
-  return <Spinner />
+  return <PageSkeleton rows={5} />
 }

@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useDialog } from '@/components/use-dialog'
 import { useTranslations } from 'next-intl'
 import { Avatar } from '@/components/ui'
 
@@ -34,12 +35,9 @@ export function OrgChart({ data }: { data: ChartData }) {
   const [sel, setSel] = useState<Selected>(null)
   const [person, setPerson] = useState<Person | null>(null)
 
-  // Esc fecha os modais (acessibilidade).
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setPerson(null); setSel(null) } }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  // Acessibilidade dos modais: foco-trap + Esc + restaura o foco.
+  const selRef = useDialog<HTMLDivElement>(!!sel, () => setSel(null))
+  const personRef = useDialog<HTMLDivElement>(!!person, () => setPerson(null))
 
   // Lista de pessoas clicáveis (abre o popup de perfil)
   const peopleList = (people: Person[], bullet: string, empty: string) =>
@@ -136,11 +134,11 @@ export function OrgChart({ data }: { data: ChartData }) {
       {sel && (
         <div className="fixed inset-0 z-40 flex items-center justify-center p-4" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSel(null)} />
-          <div className="glass glow-top relative w-full max-w-md p-6">
+          <div ref={selRef} tabIndex={-1} aria-labelledby="oc-sel-title" className="glass glow-top relative w-full max-w-md p-6 outline-none">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-brand">{sel.type}</p>
-                <h3 className="text-lg font-bold text-white">{sel.name}</h3>
+                <h3 id="oc-sel-title" className="text-lg font-bold text-white">{sel.name}</h3>
               </div>
               <button onClick={() => setSel(null)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white" aria-label={t('close')}>✕</button>
             </div>
@@ -164,11 +162,11 @@ export function OrgChart({ data }: { data: ChartData }) {
       {person && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setPerson(null)} />
-          <div className="glass glow-top relative w-full max-w-sm p-6">
+          <div ref={personRef} tabIndex={-1} aria-labelledby="oc-person-title" className="glass glow-top relative w-full max-w-sm p-6 outline-none">
             <button onClick={() => setPerson(null)} className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white" aria-label={t('close')}>✕</button>
             <div className="flex flex-col items-center text-center">
               <Avatar name={person.name} src={person.avatar_url} size="lg" />
-              <h3 className="mt-3 text-lg font-bold text-white">{person.name}</h3>
+              <h3 id="oc-person-title" className="mt-3 text-lg font-bold text-white">{person.name}</h3>
               {person.headline && <p className="mt-0.5 text-sm text-slate-400">{person.headline}</p>}
             </div>
             <div className="mt-4 space-y-3 text-sm">

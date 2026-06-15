@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useMemo, useState, useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { Badge, Button } from '@/components/ui'
 import { SubmitButton } from '@/components/pending'
+import { useDialog } from '@/components/use-dialog'
 import { fmtDateTime } from '@/lib/datetime'
 import { openSupportTicket, clientReplyTicket, clientCloseTicket, clientTicketThread } from '../actions'
 
@@ -67,16 +68,9 @@ export function ClientSupport({
     startLoad(async () => { setThread(await clientTicketThread(id)) })
   }
 
-  // Esc fecha o modal/drawer aberto (acessibilidade).
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
-      setModal(false)
-      setOpenId((cur) => { if (cur) setThread(null); return null })
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  // Acessibilidade de modal/drawer: foco-trap + Esc + restaura o foco.
+  const modalRef = useDialog<HTMLDivElement>(modal, () => setModal(false))
+  const drawerRef = useDialog<HTMLDivElement>(!!openId, () => { setOpenId(null); setThread(null) })
 
   const openCount = tickets.filter((tk) => tk.status !== 'resolvido').length
   const closedCount = tickets.length - openCount
@@ -155,9 +149,9 @@ export function ClientSupport({
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setModal(false)} />
-          <div className="glass glow-top relative w-full max-w-md p-6">
+          <div ref={modalRef} tabIndex={-1} aria-labelledby="sup-modal-title" className="glass glow-top relative w-full max-w-md p-6 outline-none">
             <div className="flex items-start justify-between">
-              <h3 className="text-lg font-bold text-white">{t('supportNewTitle')}</h3>
+              <h3 id="sup-modal-title" className="text-lg font-bold text-white">{t('supportNewTitle')}</h3>
               <button onClick={() => setModal(false)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white" aria-label={t('close')}>✕</button>
             </div>
             <form action={openSupportTicket} className="mt-4 space-y-3">
@@ -181,9 +175,9 @@ export function ClientSupport({
       {openId && (
         <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => { setOpenId(null); setThread(null) }} />
-          <div className="glass glow-top relative h-full w-full max-w-md overflow-y-auto p-6 sm:rounded-l-2xl">
+          <div ref={drawerRef} tabIndex={-1} aria-labelledby="sup-drawer-title" className="glass glow-top relative h-full w-full max-w-md overflow-y-auto p-6 outline-none sm:rounded-l-2xl">
             <div className="flex items-start justify-between">
-              <h3 className="text-lg font-semibold text-white">{thread?.ticket?.title ?? '…'}</h3>
+              <h3 id="sup-drawer-title" className="text-lg font-semibold text-white">{thread?.ticket?.title ?? '…'}</h3>
               <button onClick={() => { setOpenId(null); setThread(null) }} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white" aria-label={t('close')}>✕</button>
             </div>
 
