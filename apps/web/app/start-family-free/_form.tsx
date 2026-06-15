@@ -29,12 +29,12 @@ export function SignupForm({ dict }: { dict: Dict }) {
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
 
       <div>
-        <label className={label}>{dict.name}</label>
-        <input name="name" required autoComplete="off" className={`mt-1 ${field}`} placeholder={dict.namePh} />
+        <label htmlFor="sf-name" className={label}>{dict.name}</label>
+        <input id="sf-name" name="name" required autoComplete="off" className={`mt-1 ${field}`} placeholder={dict.namePh} />
       </div>
       <div>
-        <label className={label}>{dict.email}</label>
-        <input name="email" type="email" required autoComplete="off" className={`mt-1 ${field}`} placeholder="voce@email.com" />
+        <label htmlFor="sf-email" className={label}>{dict.email}</label>
+        <input id="sf-email" name="email" type="email" required autoComplete="off" className={`mt-1 ${field}`} placeholder="voce@email.com" />
       </div>
       <div>
         <label className={label}>{dict.password}</label>
@@ -52,14 +52,15 @@ export function SignupForm({ dict }: { dict: Dict }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className={label}>{dict.country}</label>
-          <select name="country" value={country} onChange={(e) => setCountry(e.target.value)} className={`mt-1 ${field}`}>
+          <label htmlFor="sf-country" className={label}>{dict.country}</label>
+          <select id="sf-country" name="country" value={country} onChange={(e) => setCountry(e.target.value)} className={`mt-1 ${field}`}>
             {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
         <div>
-          <label className={label}>{isBR ? dict.doc : dict.docOther}</label>
+          <label htmlFor="sf-doc" className={label}>{isBR ? dict.doc : dict.docOther}</label>
           <input
+            id="sf-doc"
             name="document"
             required
             autoComplete="off"

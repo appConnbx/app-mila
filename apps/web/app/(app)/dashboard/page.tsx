@@ -105,7 +105,11 @@ export default async function DashboardPage() {
           {/* Gráfico de conclusões por dia (14 dias) */}
           <div className="glass p-5">
             <p className="text-sm font-medium text-slate-300">{t('completionsTitle')}</p>
-            <div className="mt-4 flex h-32 items-end gap-1.5">
+            <div
+              className="mt-4 flex h-32 items-end gap-1.5"
+              role="img"
+              aria-label={`${t('completionsTitle')}: ${last14.reduce((a, d) => a + d.completed, 0)}`}
+            >
               {last14.map((d) => (
                 <div key={d.day} className="flex h-full flex-1 flex-col justify-end gap-1" title={`${d.completed}`}>
                   {d.completed > 0 && (

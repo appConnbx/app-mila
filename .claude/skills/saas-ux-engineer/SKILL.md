@@ -48,5 +48,16 @@ loading · vazio (diferencie "sem dados" de "filtro zerou") · erro · sucesso �
 ## 8. Métricas e números honestos
 - Rótulo "estimado" quando for estimativa; não some moedas diferentes num total; não conte cancelados como receita. Número que parece exato precisa SER exato.
 
+## Referências de mercado (baseline 2026)
+- **WCAG 2.2 AA é o novo baseline** (pub. out/2023; +9 critérios p/ deficiência cognitiva, baixa visão e mobile). É requisito de compra em governo/enterprise. Metas concretas: alvos de toque ≥24px (2.5.8), foco visível e não-obscurecido (2.4.11/2.4.13), autenticação sem teste cognitivo (3.3.8), ajuda consistente (3.2.6), entrada redundante evitada (3.3.7). Semântica + teclado + leitor de tela **desde a v1**, não retrofit.
+- **Feedback/estados:** skeleton screens no carregamento (não só spinner), **toasts** para confirmações não-intrusivas, empty states distinguindo "sem dados" de "filtro vazio". Nunca deixar a tela parecer "quebrada/parada".
+- **Formulários:** **coluna única** (menor carga cognitiva, maior conclusão); validação **inline** ao sair do campo; obrigatórios com `*` e opcionais rotulados como "opcional"; mensagens de erro próximas ao campo.
+- **Dashboards:** leitura em **F-pattern** → KPIs primários no topo-esquerda; **5–9 widgets** por visão; divulgação progressiva (esconder o avançado até ser preciso); visões por papel.
+- **`prefers-reduced-motion`:** respeitar — desligar animações/transições para quem pede menos movimento.
+- **Onboarding adaptativo:** iniciante recebe trilha guiada; avançado vai direto (já fazemos admin × membro — evoluir para detectar competência).
+- **Performance é UX:** TTFB/INP baixos; otimista + reconciliação; evitar layout shift.
+
+Fontes: [SaaS UX 2026](https://www.drcsystems.com/blogs/ux-design-for-saas-platforms-best-practices-to-follow/) · [WCAG p/ SaaS 2026](https://medium.com/@mhdrahman/wcag-for-saas-owners-the-complete-guide-to-web-accessibility-compliance-in-2026-8eb794a9bcfa) · [Form UX 2026](https://www.designstudiouiux.com/blog/form-ux-design-best-practices/) · [Padrões web 2025/26](https://cygnis.co/blog/web-app-ui-ux-best-practices-2025/)
+
 ## 9. Como revisar (processo)
 1. Liste os fluxos. 2. Em cada um, rode o checklist de estados + feedback + a11y + i18n + tema light + mobile. 3. Anote `arquivo:linha`, severidade e a correção. 4. Priorize feedback ausente e tema light (maior alcance). 5. Corrija os baratos na hora; agende focus-trap/CSP-nonce/refactors. 6. Reteste com teclado e no viewport mobile.
