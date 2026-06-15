@@ -16,12 +16,30 @@ import { PLANS, CORP_PLANS, FAM_PLANS } from '@/lib/plans'
    Há HIGH TICKET (Empresas) e LOW TICKET (Pessoal/Família) no mesmo produto.
    ========================================================================= */
 
-// ⚙️ AJUSTE AQUI (placeholders marcados):
-// 1) Link de afiliação do programa Hotmart. Hoje aponta para a página do produto
-//    (P106262837P). Troque pelo link de "Quero divulgar / Afiliar-se" real.
-const HOTMART_AFFILIATE_URL = 'https://hotmart.com/pt-br/marketplace/produtos/mila/P106262837P'
-// 2) Cotação de referência US$ → R$ usada na coluna "Extrato (R$)" do simulador.
+// Links de afiliação (recrutamento Hotmart) — um por produto.
+const HOTMART_AFFILIATE_BR = 'https://affiliate.hotmart.com/affiliate-recruiting/view/4255A106262858/'
+const HOTMART_AFFILIATE_INTL = 'https://affiliate.hotmart.com/affiliate-recruiting/view/6593A106267603'
+// Cotação de referência US$ → R$ (apenas para a estimativa em R$ do recorrente internacional).
 const USD_BRL = 5.4
+
+// Comissões REAIS praticadas pela Hotmart (já refletem as taxas da plataforma;
+// não são rate × preço). Fonte: páginas de recrutamento de afiliado (jun/2026).
+// BR = R$ por venda (one-time). INTL = US$/mês (recorrente). Podem variar
+// conforme a modalidade de parcelamento escolhida pelo comprador.
+const COMM: Record<string, { c25: number; c50: number }> = {
+  'br-starter': { c25: 802.54, c50: 1605.08 },
+  'br-growth': { c25: 1343.14, c50: 2686.28 },
+  'br-scale': { c25: 1883.74, c50: 3767.48 },
+  'br-enterprise': { c25: 3019.0, c50: 6038.0 },
+  'br-family': { c25: 21.6, c50: 43.2 },
+  'br-family_plus': { c25: 28.36, c50: 56.72 },
+  'intl-starter': { c25: 19.47, c50: 38.95 },
+  'intl-growth': { c25: 37.49, c50: 74.99 },
+  'intl-scale': { c25: 75.79, c50: 151.57 },
+  'intl-enterprise': { c25: 150.12, c50: 300.24 },
+  'intl-family': { c25: 2.8, c50: 5.61 },
+  'intl-family_plus': { c25: 3.71, c50: 7.41 },
+}
 
 export const metadata: Metadata = {
   title: 'Seja Afiliado MILA — 25% de comissão (50% no lançamento de junho/2026)',
@@ -30,27 +48,24 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-// Converte "1.117" → 1117 e "8,08" → 8.08 (formato BR).
-const brNum = (s: string) => Number(s.replace(/\./g, '').replace(',', '.'))
-
-// Dados do simulador derivados da fonte única (lib/plans.ts).
-// BR usa o VALOR TOTAL do plano (venda única); INTL usa a mensalidade US$.
+// Dados do simulador: preço do plano de lib/plans.ts (fonte única); comissão de
+// COMM (valores reais Hotmart). BR = venda única (R$); INTL = assinatura (US$).
 const simPlans: SimPlan[] = [
   ...CORP_PLANS.map((slug): SimPlan => {
     const p = PLANS[slug]
-    return { id: `br-${slug}`, group: 'br-corp', name: p.label, currency: 'BRL', kind: 'oneTime', base: brNum(p.br!.total!), price: `R$${p.br!.total} · cliente paga em 12x de R$${p.br!.parcela}` }
+    return { id: `br-${slug}`, group: 'br-corp', name: p.label, currency: 'BRL', kind: 'oneTime', price: `R$${p.br!.total} · cliente paga em 12x de R$${p.br!.parcela}`, comm25: COMM[`br-${slug}`].c25, comm50: COMM[`br-${slug}`].c50 }
   }),
   ...FAM_PLANS.map((slug): SimPlan => {
     const p = PLANS[slug]
-    return { id: `br-${slug}`, group: 'br-fam', name: p.label, currency: 'BRL', kind: 'oneTime', base: brNum(p.br!.annual!), price: `R$${p.br!.annual} · cliente paga em 12x de R$${p.br!.parcela}` }
+    return { id: `br-${slug}`, group: 'br-fam', name: p.label, currency: 'BRL', kind: 'oneTime', price: `R$${p.br!.annual} · cliente paga em 12x de R$${p.br!.parcela}`, comm25: COMM[`br-${slug}`].c25, comm50: COMM[`br-${slug}`].c50 }
   }),
   ...CORP_PLANS.map((slug): SimPlan => {
     const p = PLANS[slug]
-    return { id: `intl-${slug}`, group: 'intl-corp', name: p.label, currency: 'USD', kind: 'recurring', base: Number(p.usd), price: `US$${p.usd}/mês` }
+    return { id: `intl-${slug}`, group: 'intl-corp', name: p.label, currency: 'USD', kind: 'recurring', price: `US$${p.usd}/mês`, comm25: COMM[`intl-${slug}`].c25, comm50: COMM[`intl-${slug}`].c50 }
   }),
   ...FAM_PLANS.map((slug): SimPlan => {
     const p = PLANS[slug]
-    return { id: `intl-${slug}`, group: 'intl-fam', name: p.label, currency: 'USD', kind: 'recurring', base: Number(p.usd), price: `US$${p.usd}/mês` }
+    return { id: `intl-${slug}`, group: 'intl-fam', name: p.label, currency: 'USD', kind: 'recurring', price: `US$${p.usd}/mês`, comm25: COMM[`intl-${slug}`].c25, comm50: COMM[`intl-${slug}`].c50 }
   }),
 ]
 
@@ -64,18 +79,19 @@ const simLabels = {
   colPrice: 'Preço do plano',
   colCommission: 'Sua comissão',
   colQty: 'Qtd. de vendas',
-  colExtract: 'Extrato (R$)',
+  colExtract: 'Extrato',
   directLabel: 'Seu faturamento direto',
-  directHint: 'Vendas no Brasil — comissão cheia, recebida de uma vez',
+  directHint: 'Vendas no Brasil (R$) — comissão recebida de uma vez',
   recurringLabel: 'Seu recorrente internacional',
   recurringHint: 'Assinaturas em dólar — entra todo mês, enquanto o cliente usar',
-  perYear: 'Em 12 meses:',
+  approx: '≈',
+  perYear: 'em 12 meses:',
   groupBrCorp: 'Brasil · Empresas — venda única · HIGH TICKET',
   groupBrFam: 'Brasil · Pessoal / Família — venda única · LOW TICKET',
   groupIntlCorp: 'Internacional · Empresas — assinatura US$/mês · HIGH TICKET',
   groupIntlFam: 'Internacional · Pessoal / Família — assinatura US$/mês · LOW TICKET',
   hint: 'Mexa nas quantidades ↑↓ e veja seus ganhos',
-  fxNote: `Simulação ilustrativa. No Brasil a venda é única (o cliente parcela em até 12x; a comissão incide sobre o valor total). Planos internacionais são assinatura, convertidos a uma cotação de referência de US$1 = R$${USD_BRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}. Comissões dependem de vendas efetivas, aprovação e regras da Hotmart, reembolsos e renovações — não constituem garantia de ganho.`,
+  fxNote: `Os valores de comissão são os praticados pela Hotmart e já refletem as taxas da plataforma — podem variar conforme a modalidade de parcelamento escolhida pelo comprador. No Brasil a venda é única (em R$); o internacional é assinatura mensal (em US$), com estimativa em R$ a uma cotação de referência de US$1 = R$${USD_BRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}. Simulação ilustrativa — não constitui garantia de ganho.`,
 }
 
 // Bloco de lançamento — entra entre a tabela de 25% e a de 50% no simulador.
@@ -269,6 +285,10 @@ export default function AffiliatesPage() {
             internacionais viram <strong className="text-white">recorrente em dólar</strong>. Brinque com as quantidades — é assim
             que sua operação se parece.
           </p>
+          <p className="mx-auto mt-3 max-w-2xl text-xs text-slate-500">
+            Os valores são as comissões reais da Hotmart (já com as taxas da plataforma) e podem variar conforme a modalidade de
+            parcelamento escolhida pelo comprador.
+          </p>
         </div>
         <div className="mt-9">
           <AffiliateSimulator plans={simPlans} fx={USD_BRL} defaults={simDefaults} labels={simLabels} middle={launchBlock} />
@@ -303,7 +323,7 @@ export default function AffiliatesPage() {
         <h2 className="text-center text-3xl font-bold text-white">Perguntas frequentes</h2>
         <div className="mt-8 space-y-3">
           {[
-            { q: 'Como funciona a comissão?', a: 'No Brasil a venda é única: você recebe 25% sobre o valor total do plano, de uma vez (o cliente é quem parcela em até 12x). No internacional o MILA é assinatura mensal em dólar: você recebe 25% recorrente todo mês, enquanto o cliente mantiver a assinatura.' },
+            { q: 'Como funciona a comissão?', a: 'No Brasil a venda é única: você recebe a comissão sobre o plano de uma vez (o cliente é quem parcela em até 12x). No internacional o MILA é assinatura mensal em dólar: você recebe a comissão recorrente todo mês, enquanto o cliente mantiver a assinatura. Os valores exibidos no simulador são os praticados pela Hotmart (já com as taxas da plataforma) e podem variar conforme a modalidade de parcelamento escolhida pelo comprador.' },
             { q: 'O que muda no lançamento de junho/2026?', a: 'Em junho a comissão sobe para 50% em todas as vendas. No Brasil, é o dobro do faturamento direto por venda. No internacional, esses 50% valem para sempre — em cada renovação da assinatura que você fechar em junho. Depois do mês, novas vendas voltam a 25%.' },
             { q: 'O que é high ticket e low ticket?', a: 'O mesmo produto tem planos de empresa (high ticket, valores maiores) e de uso pessoal/família (low ticket, entrada baixa e volume). Você pode focar em um, ou trabalhar os dois para equilibrar valor por venda e volume.' },
             { q: 'Preciso ser especialista para vender?', a: 'Não. Você pode divulgar como já faz com qualquer produto. Quem quiser ir além, atuando como consultor, tende a fechar tickets maiores e construir carteira recorrente — e damos o material para isso.' },
@@ -327,17 +347,28 @@ export default function AffiliatesPage() {
           <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">Pronto para faturar direto e recorrente?</h2>
           <p className="mx-auto mt-3 max-w-xl text-slate-300">
             Afilie-se agora na Hotmart e garanta os <strong className="text-amber-200">50% em todas as vendas de junho/2026</strong>.
+            São <strong className="text-white">dois produtos</strong> — afilie-se aos dois para faturar no Brasil e no mundo.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
-              href={HOTMART_AFFILIATE_URL}
+              href={HOTMART_AFFILIATE_BR}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-8 py-4 text-base font-bold text-slate-950 transition hover:bg-amber-300"
             >
-              Quero me afiliar na Hotmart
+              Afiliar-se · Produto Brasil
             </a>
-            <a href="#simulador" className="inline-flex items-center justify-center rounded-xl border border-white/15 px-8 py-4 text-sm font-semibold text-slate-200 transition hover:bg-white/5">
+            <a
+              href={HOTMART_AFFILIATE_INTL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-400/50 px-8 py-4 text-base font-bold text-amber-200 transition hover:bg-amber-400/10"
+            >
+              Afiliar-se · Produto Internacional
+            </a>
+          </div>
+          <div className="mt-4">
+            <a href="#simulador" className="text-sm font-semibold text-slate-300 underline-offset-4 transition hover:text-white hover:underline">
               Simular meus ganhos de novo
             </a>
           </div>
