@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Avatar } from '@/components/ui'
 
@@ -33,6 +33,13 @@ export function OrgChart({ data }: { data: ChartData }) {
   const t = useTranslations('orgchart')
   const [sel, setSel] = useState<Selected>(null)
   const [person, setPerson] = useState<Person | null>(null)
+
+  // Esc fecha os modais (acessibilidade).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setPerson(null); setSel(null) } }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   // Lista de pessoas clicáveis (abre o popup de perfil)
   const peopleList = (people: Person[], bullet: string, empty: string) =>

@@ -27,6 +27,24 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Acessibilidade: foco visível por teclado (WCAG 2.2 — 2.4.11). Só aparece em
+   navegação por teclado (:focus-visible), não no clique de mouse. */
+:focus-visible {
+  outline: 2px solid rgb(var(--brand-rgb) / 0.9);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Respeita "reduzir movimento" do SO: praticamente zera animações/transições. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Impressão do manual: só a área do manual sai no PDF (sem header/nav do app). */
 @media print {
   body * { visibility: hidden !important; }
