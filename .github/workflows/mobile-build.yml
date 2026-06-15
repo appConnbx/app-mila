@@ -1,0 +1,64 @@
+# MILA Mobile (Android) — build e submissão via EAS (Expo Application Services).
+#
+# Modos:
+#  - Tag mobile-v* (ex.: mobile-v1.0.0): compila o AAB de produção na nuvem do EAS.
+#  - Run workflow (manual): escolhe o profile e se também envia ao Google Play.
+#
+# Pré-requisitos (uma vez):
+#  - Secret EXPO_TOKEN (Expo > Account > Access Tokens) em Settings > Secrets > Actions.
+#  - `eas init` rodado uma vez no apps/mobile (grava extra.eas.projectId no app.json).
+#  - Para submit: conta no Google Play Console + Service Account JSON (ver RELEASE-PLAN.md).
+name: MILA Mobile — Android (EAS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Perfil de build'
+        type: choice
+        options: [production, preview]
+        default: production
+      submit:
+        description: 'Enviar ao Google Play (internal) após o build?'
+        type: boolean
+        default: false
+  push:
+    tags:
+      - 'mobile-v*'
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+        working-directory: .
+
+      # Tag => produção. Manual => perfil escolhido.
+      - name: Definir perfil
+        id: cfg
+        run: echo "profile=${{ startsWith(github.ref, 'refs/tags/mobile-v') && 'production' || inputs.profile }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build (EAS, na nuvem)
+        run: eas build --platform android --profile ${{ steps.cfg.outputs.profile }} --non-interactive --wait
+
+      - name: Submeter ao Google Play (opcional)
+        if: ${{ inputs.submit == true }}
+        run: eas submit --platform android --profile production --latest --non-interactive
