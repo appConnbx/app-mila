@@ -46,7 +46,7 @@ export default async function SubscribePage({
     const back = (q: string) => `/subscribe?plan=${encodeURIComponent(p)}&lang=${encodeURIComponent(ln)}&next=${encodeURIComponent(nextPath)}&${q}`
     if (!VALID.has(p) || !email) redirect(back('erro=1'))
     // Rate-limit por IP: cada tentativa abre sessão de checkout no Stripe.
-    if (rateLimit(`subscribe:${await clientIp()}`, { windowMs: 600_000, max: 8 })) redirect(back('erro=1'))
+    if (await rateLimit(`subscribe:${await clientIp()}`, { windowMs: 600_000, max: 8 })) redirect(back('erro=1'))
 
     const admin = createAdminClient() as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: unknown }> }
     const { data: existingId } = await admin.rpc('auth_user_id_by_email', { p_email: email })

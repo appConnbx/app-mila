@@ -33,7 +33,7 @@ export async function signupFamilyFree(formData: FormData) {
   if (String(formData.get('website') ?? '') !== '') redirect(`${BASE}?err=generico`)
 
   // Rate-limit por IP: cadastro grátis cria conta + auto-login (caro/abusável).
-  if (rateLimit(`signup-family:${await clientIp()}`, { windowMs: 600_000, max: 5 })) {
+  if (await rateLimit(`signup-family:${await clientIp()}`, { windowMs: 600_000, max: 5 })) {
     redirect(`${BASE}?err=muitas`)
   }
 

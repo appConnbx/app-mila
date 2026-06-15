@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   if (!apiKey) return NextResponse.json({ error: 'transcrição não configurada' }, { status: 503 })
 
   const ip = (request.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || request.headers.get('x-real-ip') || 'anon'
-  if (rateLimit(`demo-transcribe:${ip}`, { windowMs: 60_000, max: 8 })) return NextResponse.json({ error: 'muitas tentativas' }, { status: 429 })
+  if (await rateLimit(`demo-transcribe:${ip}`, { windowMs: 60_000, max: 8 })) return NextResponse.json({ error: 'muitas tentativas' }, { status: 429 })
 
   const form = await request.formData().catch(() => null)
   const file = form?.get('file')
