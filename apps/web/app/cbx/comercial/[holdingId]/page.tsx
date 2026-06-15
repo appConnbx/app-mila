@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, Kpi, Pill, btnCbx, inputCbx, labelCbx, fmtDate } from '../../_ui'
+import { SubmitButton } from '@/components/pending'
 import { streakFromDates } from '@/lib/streak'
 import { ClientProfileForm } from '../_profile-form'
 import { InstanceUsers } from '../_instance-users'
@@ -179,7 +180,7 @@ export default async function FichaClientePage({
                   <input name="seats" type="number" min={1} placeholder="—" className={`mt-1 ${inputCbx}`} />
                   <p className="mt-1 text-xs text-slate-500">Em branco = limite do plano. VIP CONNBX = ilimitado e vitalício.</p>
                 </div>
-                <button className={btnCbx}>Aplicar licença</button>
+                <SubmitButton className={btnCbx}>Aplicar licença</SubmitButton>
               </form>
             </CbxCard>
           )}
@@ -203,7 +204,7 @@ export default async function FichaClientePage({
         <form action={addNote} className="mb-4 flex gap-2">
           <input type="hidden" name="holding_id" value={h.id} />
           <input name="body" required placeholder="Registrar conversa, combinado ou observação…" className={inputCbx} />
-          <button className={`${btnCbx} shrink-0`}>Registrar</button>
+          <SubmitButton className={`${btnCbx} shrink-0`}>Registrar</SubmitButton>
         </form>
         <ul className="space-y-2">
           {d.notes.map((n) => (

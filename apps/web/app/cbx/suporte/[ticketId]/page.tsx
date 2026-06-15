@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, Pill, btnCbx, inputCbx, labelCbx, fmtDate } from '../../_ui'
+import { SubmitButton } from '@/components/pending'
 import { updateTicket, addTicketComment } from '../actions'
 
 type Ticket = {
@@ -96,7 +97,7 @@ export default async function TicketPage({
             </select>
           </div>
           <div className="flex items-end">
-            <button className={btnCbx}>Salvar</button>
+            <SubmitButton className={btnCbx}>Salvar</SubmitButton>
           </div>
         </form>
       </CbxCard>
@@ -110,7 +111,7 @@ export default async function TicketPage({
             <option value="internal">Nota interna</option>
             <option value="client">Interação (cliente vê)</option>
           </select>
-          <button className={`${btnCbx} shrink-0`}>Enviar</button>
+          <SubmitButton className={`${btnCbx} shrink-0`}>Enviar</SubmitButton>
         </form>
         <ul className="space-y-2">
           {comments.map((c) => {

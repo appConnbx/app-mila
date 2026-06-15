@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, Pill, btnCbx, inputCbx, labelCbx, thCbx, tdCbx, fmtDate } from '../../_ui'
+import { SubmitButton } from '@/components/pending'
 import { PasswordField } from '../../_password-field'
 import { createSupportAccess, revokeSupportAccess } from '../actions'
 
@@ -78,7 +79,7 @@ export default async function AcessosPage({ searchParams }: { searchParams: Prom
             </div>
           </div>
           <div className="sm:col-span-3">
-            <button className={btnCbx}>Gerar acesso temporário</button>
+            <SubmitButton className={btnCbx}>Gerar acesso temporário</SubmitButton>
             <p className="mt-2 text-xs text-slate-500">
               O e-mail de login aparece na lista abaixo após gerar. Entre em www.appmila.co/login com ele + a senha.
               Ao sair (logout), o acesso é revogado na hora; para voltar, gere um novo.

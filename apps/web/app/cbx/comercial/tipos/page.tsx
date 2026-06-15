@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cbxMe, hasPerm } from '../../_lib'
 import { CbxCard, CbxFlash, btnCbx, inputCbx } from '../../_ui'
+import { SubmitButton } from '@/components/pending'
 import { addBusinessType, removeBusinessType } from './actions'
 
 type BizType = { id: string; name: string; is_active: boolean }
@@ -41,7 +42,7 @@ export default async function TiposNegocioPage({ searchParams }: { searchParams:
       <CbxCard title="Adicionar">
         <form action={addBusinessType} className="flex gap-2">
           <input name="name" required placeholder="Ex.: Franquias" className={inputCbx} />
-          <button className={`${btnCbx} shrink-0`}>Adicionar</button>
+          <SubmitButton className={`${btnCbx} shrink-0`}>Adicionar</SubmitButton>
         </form>
       </CbxCard>
 

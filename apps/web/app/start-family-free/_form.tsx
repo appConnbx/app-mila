@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { PasswordInput } from '@/components/password-input'
+import { SubmitButton } from '@/components/pending'
 import { signupFamilyFree } from './actions'
 
 const COUNTRIES = [
@@ -76,13 +77,12 @@ export function SignupForm({ dict }: { dict: Dict }) {
         <a href="/privacy" className="text-cyan-400 hover:underline">{dict.privacy}</a>.
       </p>
 
-      <button
-        type="submit"
+      <SubmitButton
         disabled={mismatch}
         className="w-full rounded-lg bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {dict.submit}
-      </button>
+      </SubmitButton>
       <p className="text-center text-xs text-slate-500">{dict.note}</p>
 
       <p className="text-center text-sm text-slate-500">
