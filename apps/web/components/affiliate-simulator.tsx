@@ -61,7 +61,6 @@ const brl = (n: number) =>
   n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const brl0 = (n: number) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
 const usd = (n: number) => 'US$' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-const usd0 = (n: number) => 'US$' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 })
 
 export function AffiliateSimulator({
   plans,
@@ -164,7 +163,8 @@ export function AffiliateSimulator({
                 const q = qty[p.id] ?? 0
                 const unit = unitCommission(p, tier)
                 const isRec = p.kind === 'recurring'
-                const extract = unit * q
+                // Extrato sempre em R$ (INTL convertido da comissão em US$ pela cotação fx).
+                const extractBRL = (isRec ? unit * fx : unit) * q
                 rows.push(
                   <tr key={p.id} className={`border-b border-white/5 ${q > 0 ? (accent === 'gold' ? 'bg-amber-500/[0.05]' : 'bg-brand/[0.04]') : ''}`}>
                     <td className="px-4 py-3 font-semibold text-white">{p.name}</td>
@@ -174,7 +174,7 @@ export function AffiliateSimulator({
                       <Stepper id={p.id} accent={accent} />
                     </td>
                     <td className="px-4 py-3 text-right font-bold tabular-nums text-white">
-                      {extract > 0 ? `${isRec ? usd(extract) + '/mês' : brl(extract)}` : '—'}
+                      {extractBRL > 0 ? `${brl(extractBRL)}${isRec ? '/mês' : ''}` : '—'}
                     </td>
                   </tr>,
                 )
@@ -245,12 +245,12 @@ function Totals({
         <p className={`text-xs font-semibold uppercase tracking-wider ${lab}`}>{l.recurringLabel}</p>
         <p className="mt-0.5 text-[11px] text-slate-400">{l.recurringHint}</p>
         <p className={`mt-1 text-3xl font-extrabold tabular-nums sm:text-4xl ${val}`}>
-          {usd(recUSD)}
+          {brl(recUSD * fx)}
           <span className="ml-1 text-base font-medium text-slate-400">/mês</span>
         </p>
         <p className="mt-1 text-[11px] text-slate-400">
-          {l.approx} <span className="font-semibold text-slate-300">{brl0(recUSD * fx)}/mês</span> · {l.perYear}{' '}
-          <span className="font-semibold text-slate-300">{usd0(recUSD * 12)}</span>
+          {l.approx} <span className="font-semibold text-slate-300">{usd(recUSD)}/mês</span> · {l.perYear}{' '}
+          <span className="font-semibold text-slate-300">{brl0(recUSD * fx * 12)}</span>
         </p>
       </div>
     </div>
