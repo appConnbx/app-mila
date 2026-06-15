@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'MILA',
   description: 'Gestão de demandas, eventos e produtividade',
+  // Verificação de propriedade do site no Google Search Console (usada para a
+  // verificação da organização no Google Play Console).
+  verification: { google: '5hzlYqQLvDYvBj7Se3QXJy8jfjVFN6fVP2FGMI4eZIk' },
 }
 
 export default async function RootLayout({
