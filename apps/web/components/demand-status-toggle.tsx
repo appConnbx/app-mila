@@ -32,6 +32,7 @@ export function DemandStatusToggle({
     e.preventDefault() // não navega para o detalhe (o chip vive dentro do <Link>)
     e.stopPropagation()
     if (pending || leaving) return
+    const from = status // status que o usuário viu (trava otimista no servidor)
     const next = NEXT[status]
     setStatus(next)
 
@@ -44,13 +45,13 @@ export function DemandStatusToggle({
       }
       setLeaving(true)
       start(async () => {
-        await advanceDemandStatus(demandId, next)
+        await advanceDemandStatus(demandId, from, next)
         setTimeout(() => router.refresh(), 360)
       })
       return
     }
     start(async () => {
-      await advanceDemandStatus(demandId, next)
+      await advanceDemandStatus(demandId, from, next)
       router.refresh()
     })
   }

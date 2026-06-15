@@ -39,7 +39,9 @@ function mapStatus(s?: string): string {
     case 'incomplete':
     case 'incomplete_expired': return 'suspended'
     case 'canceled': return 'canceled'
-    default: return 'active'
+    // Status desconhecido NÃO concede acesso (conservador): evita liberar por
+    // um estado novo/imprevisto do Stripe.
+    default: return 'suspended'
   }
 }
 const toIso = (epochSecs?: number | null) => (epochSecs ? new Date(epochSecs * 1000).toISOString() : null)

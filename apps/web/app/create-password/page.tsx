@@ -46,6 +46,7 @@ export default async function DefinirSenhaPage({
               <p className="mt-1 text-sm text-slate-400">{t('setSubtitle')}</p>
             </div>
             <SetPasswordForm
+              forgotHref={`/forgot-password${langQs}`}
               dict={{
                 placeholder: t('setPlaceholder'),
                 confirmPlaceholder: t('setConfirmPlaceholder'),
@@ -53,6 +54,9 @@ export default async function DefinirSenhaPage({
                 short: t('setShort'),
                 submit: t('setSubmit'),
                 saving: t('setSaving'),
+                expiredTitle: t('setInvalidTitle'),
+                expiredBody: t('setInvalidBody'),
+                requestNew: t('setRequestNew'),
               }}
               langChoice={lang === 'en' || lang === 'es' ? { label: t('setLangLabel'), initial: lang } : undefined}
             />

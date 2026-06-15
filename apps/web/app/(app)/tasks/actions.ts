@@ -113,11 +113,19 @@ export async function setDemandStatus(formData: FormData) {
   revalidatePath(`/tasks/${id}`)
 }
 
-/** Avanço de status inline na lista (chip clicável). Recebe args (não FormData). */
-export async function advanceDemandStatus(id: string, status: 'nova' | 'trabalhando' | 'finalizada') {
-  if (!id || !['nova', 'trabalhando', 'finalizada'].includes(status)) return
+/** Avanço de status inline na lista (chip clicável). Recebe args (não FormData).
+ *  Trava otimista: só atualiza se o status no banco ainda for `from` (o que o
+ *  usuário viu) — evita que cliques concorrentes reabram/sobrescrevam a transição
+ *  de outra pessoa (em demandas delegadas/compartilhadas). */
+export async function advanceDemandStatus(
+  id: string,
+  from: 'nova' | 'trabalhando' | 'finalizada',
+  to: 'nova' | 'trabalhando' | 'finalizada',
+) {
+  const ok = (s: string) => ['nova', 'trabalhando', 'finalizada'].includes(s)
+  if (!id || !ok(from) || !ok(to)) return
   const supabase = await createClient()
-  await supabase.from('demands').update({ status } as never).eq('id', id)
+  await supabase.from('demands').update({ status: to } as never).eq('id', id).eq('status', from)
   revalidatePath('/tasks')
   revalidatePath(`/tasks/${id}`)
 }
