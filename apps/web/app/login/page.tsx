@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Field, fieldClasses, Aurora } from '@/components/ui'
 import { PasswordInput } from '@/components/password-input'
+import { SubmitButton } from '@/components/pending'
 import type { Locale } from '@/i18n/config'
 import { login } from './actions'
 
@@ -40,12 +41,9 @@ export default async function LoginPage({
           <Field label={t('password')} htmlFor="password">
             <PasswordInput id="password" name="password" required autoComplete="current-password" className={fieldClasses} />
           </Field>
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
-          >
+          <SubmitButton className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
             {t('submit')}
-          </button>
+          </SubmitButton>
         </form>
 
         <div className="mt-4 text-center">
