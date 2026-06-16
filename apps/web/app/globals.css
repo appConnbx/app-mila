@@ -52,33 +52,48 @@ html {
   .manual-print-area { position: absolute; left: 0; top: 0; width: 100%; }
 }
 
-/* Lista de demandas: ao finalizar pelo chip, a linha TREME e ESTOURA (rápido)
-   antes de migrar para "Concluídas". A altura é fixada via JS (maxHeight) e
-   colapsa junto, para os cards de baixo subirem. */
-.demand-row {
-  transition: max-height 0.34s ease, margin 0.34s ease, padding 0.34s ease;
-}
+/* Lista de demandas: ao finalizar, a demanda dá um "PUFF" — incha de leve e
+   some virando fumaça (nuvem de partículas que sobe e dissipa). Agradável e
+   claro; depois o router.refresh() remove o card e fecha o espaço. */
 .demand-row.demand-leaving {
-  max-height: 0 !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  overflow: hidden;
+  overflow: visible;
   pointer-events: none;
-  animation: demand-burst 0.4s ease-in forwards;
+  z-index: 1;
+  animation: demand-poof 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-@keyframes demand-burst {
-  0%   { transform: translateX(0) scale(1); opacity: 1; }
-  18%  { transform: translateX(-5px) scale(1.015); }
-  34%  { transform: translateX(5px) scale(1.015); }
-  50%  { transform: translateX(-4px) scale(1.03); }
-  66%  { transform: translateX(4px) scale(1.05); }
-  80%  { transform: translateX(0) scale(1.07); opacity: 1; }
-  100% { transform: scale(0.5); opacity: 0; }
+@keyframes demand-poof {
+  0%   { transform: scale(1); opacity: 1; filter: blur(0); }
+  22%  { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(0.82); opacity: 0; filter: blur(4px); }
+}
+/* Nuvem de fumaça sobreposta ao card durante o PUFF. */
+.demand-puff {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.demand-puff .puff-dot {
+  position: absolute;
+  width: var(--s, 26px);
+  height: var(--s, 26px);
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 50%, rgba(226, 232, 240, 0.95), rgba(148, 163, 184, 0.5) 55%, rgba(148, 163, 184, 0) 72%);
+  filter: blur(3px);
+  opacity: 0;
+  animation: puff-rise 0.7s ease-out forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes puff-rise {
+  0%   { transform: translate(0, 8px) scale(0.3); opacity: 0; }
+  25%  { opacity: 0.9; }
+  100% { transform: translate(var(--tx, 0), var(--ty, -30px)) scale(1.8); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .demand-row.demand-leaving { animation: none; opacity: 0; }
+  .demand-puff { display: none; }
 }
 
 body {
