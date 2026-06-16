@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Badge, EmptyState, Avatar, Tag } from '@/components/ui'
-import { DemandCard, type DemandCardLabels } from '@/components/demand-card'
+import { type DemandCardLabels } from '@/components/demand-card'
+import { DemandList, type DemandListItem, type ViewMode } from '@/components/demand-list'
 import { NewDemandModal } from '@/components/new-demand-modal'
 import { fmtDayMonth } from '@/lib/datetime'
 
@@ -49,6 +50,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
   if (!holdingId) redirect('/dashboard')
+  const viewMode: ViewMode = cookieStore.get('mila_demands_view')?.value === 'list' ? 'list' : 'card'
 
   const supabase = await createClient()
   const {
@@ -215,6 +217,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
     dueWord: t('dueWord'),
     autoTag: t('autoTag'),
     overdueTag: t('legendOverdue'),
+    priorityHigh: locale === 'en' ? 'High' : locale === 'es' ? 'Alta' : 'Alta',
     close: locale === 'en' ? 'Close' : locale === 'es' ? 'Cerrar' : 'Fechar',
     openFull: locale === 'en' ? 'Open full page' : 'Abrir página completa',
     start: locale === 'en' ? 'Start' : locale === 'es' ? 'Empezar' : 'Trabalhar',
@@ -229,38 +232,41 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
     loading: locale === 'en' ? 'Loading…' : locale === 'es' ? 'Cargando…' : 'Carregando…',
   }
 
-  // Card ativo = componente cliente (clique → modal de visualização; concluir →
-  // treme e estoura). Concluídas (arquivadas) = Link estático para o detalhe.
-  const cardOf = (d: Demand, interactive = false) => {
+  const toggleLabels = {
+    view: locale === 'en' ? 'View mode' : locale === 'es' ? 'Modo de vista' : 'Modo de visualização',
+    card: locale === 'en' ? 'Cards' : locale === 'es' ? 'Tarjetas' : 'Cards',
+    list: locale === 'en' ? 'List' : 'Lista',
+  }
+
+  // Item da lista ativa (dados serializáveis p/ o componente cliente DemandList,
+  // que escolhe card ou linha conforme o modo).
+  const itemOf = (d: Demand): DemandListItem => ({
+    demand: {
+      id: d.id,
+      title: d.title,
+      description: d.description,
+      status: d.status,
+      pinned: d.pinned,
+      tags: d.tags ?? [],
+      responsibleName: d.responsible?.full_name ?? '—',
+      eventName: d.event?.name ?? null,
+    },
+    photoUrl: d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) ?? null : null,
+    overdue: isOverdue(d),
+    createdFmt: fmtDate(d.created_at),
+    dueFmt: d.due_date ? fmtDate(d.due_date) : null,
+    dueLabel: deadlineLabel(d),
+    progress: deadlineProgress(d),
+  })
+
+  // Concluídas (arquivadas) = Link estático para o detalhe. A lista ATIVA usa o
+  // componente cliente DemandList (card/linha + modal + PUFF).
+  const cardOf = (d: Demand) => {
     const overdue = isOverdue(d)
     const dl = deadlineLabel(d)
     const prog = deadlineProgress(d)
     const tags = d.tags ?? []
     const photoUrl = d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) ?? null : null
-    if (interactive) {
-      return (
-        <DemandCard
-          key={d.id}
-          demand={{
-            id: d.id,
-            title: d.title,
-            description: d.description,
-            status: d.status,
-            pinned: d.pinned,
-            tags,
-            responsibleName: d.responsible?.full_name ?? '—',
-            eventName: d.event?.name ?? null,
-          }}
-          photoUrl={photoUrl}
-          overdue={overdue}
-          createdFmt={fmtDate(d.created_at)}
-          dueFmt={d.due_date ? fmtDate(d.due_date) : null}
-          dueLabel={dl}
-          progress={prog}
-          labels={cardLabels}
-        />
-      )
-    }
     return (
       <Link
         key={d.id}
@@ -353,14 +359,13 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
 
       {/* Lista ativa (flat) ou concluídas (agrupadas por mês) */}
       {!archived ? (
-        <div className="mt-4 space-y-3">
-          {demands.length === 0 && (
-            <div className="glass p-10 text-center">
-              <EmptyState>{t('empty')}</EmptyState>
-            </div>
-          )}
-          {demands.map((d) => cardOf(d, true))}
-        </div>
+        demands.length === 0 ? (
+          <div className="mt-4 glass p-10 text-center">
+            <EmptyState>{t('empty')}</EmptyState>
+          </div>
+        ) : (
+          <DemandList items={demands.map(itemOf)} labels={cardLabels} toggle={toggleLabels} defaultMode={viewMode} />
+        )
       ) : (
         <div className="mt-4 space-y-3">
           {monthGroups.length === 0 && (
