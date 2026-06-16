@@ -241,6 +241,11 @@ body.expanded #pill { display: none; }
   background: rgba(34, 211, 238, 0.07);
   box-shadow: 0 0 10px rgba(34, 211, 238, 0.18);
 }
+/* Pinada como prioritária: contorno alaranjado (vence o "não vista"). */
+.item.pinned {
+  border-color: rgba(249, 158, 11, 0.65);
+  box-shadow: 0 0 10px rgba(249, 158, 11, 0.22);
+}
 .chip.nova { background: var(--cyan); color: #0f172a; }
 .item-title { color: #fff; font-weight: 600; line-height: 1.3; word-break: break-word; }
 .item-desc {

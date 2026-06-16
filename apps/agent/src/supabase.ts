@@ -18,6 +18,7 @@ export type Demand = {
   priority: 'baixa' | 'media' | 'alta'
   due_date: string | null
   created_at: string
+  pinned: boolean
 }
 
 export type DemandStatus = 'nova' | 'trabalhando' | 'finalizada'

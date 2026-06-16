@@ -132,7 +132,7 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
   function renderItem({ item: d }: { item: Demand }) {
     const due = fmtDue(d.due_date)
     return (
-      <View style={s.card}>
+      <View style={[s.card, d.pinned && s.cardPinned]}>
         <Text style={s.cardTitle}>{d.title}</Text>
         {d.description ? (
           <Text style={s.cardDesc} numberOfLines={2}>
@@ -318,6 +318,7 @@ const s = StyleSheet.create({
     padding: 12,
     marginBottom: 8,
   },
+  cardPinned: { borderColor: C.orange, borderWidth: 1.5 },
   cardTitle: { color: C.white, fontWeight: '600', fontSize: 14.5, lineHeight: 20 },
   cardDesc: { color: C.muted, fontStyle: 'italic', fontSize: 12.5, marginTop: 3, lineHeight: 17 },
   metaRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginTop: 8 },
