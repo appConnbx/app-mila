@@ -37,7 +37,7 @@ export function DemandStatusToggle({
     setStatus(next)
 
     if (next === 'finalizada') {
-      // Efeito de "sumindo" antes de migrar para Concluídas.
+      // Efeito de "tremer e estourar" antes de migrar para Concluídas.
       const row = (e.currentTarget as HTMLElement).closest('[data-demand-row]') as HTMLElement | null
       if (row) {
         row.style.maxHeight = `${row.offsetHeight}px`
@@ -46,7 +46,8 @@ export function DemandStatusToggle({
       setLeaving(true)
       start(async () => {
         await advanceDemandStatus(demandId, from, next)
-        setTimeout(() => router.refresh(), 360)
+        // Espera o "estouro" (0.4s) terminar antes de recarregar a lista.
+        setTimeout(() => router.refresh(), 440)
       })
       return
     }

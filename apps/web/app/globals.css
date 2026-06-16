@@ -52,19 +52,33 @@ html {
   .manual-print-area { position: absolute; left: 0; top: 0; width: 100%; }
 }
 
-/* Lista de demandas: ao finalizar pelo chip, a linha some (fade + colapso) antes
-   de migrar para "Concluídas". A altura é fixada via JS (maxHeight) p/ animar. */
+/* Lista de demandas: ao finalizar pelo chip, a linha TREME e ESTOURA (rápido)
+   antes de migrar para "Concluídas". A altura é fixada via JS (maxHeight) e
+   colapsa junto, para os cards de baixo subirem. */
 .demand-row {
-  transition: max-height 0.34s ease, opacity 0.3s ease, transform 0.3s ease, margin 0.34s ease, padding 0.34s ease;
+  transition: max-height 0.34s ease, margin 0.34s ease, padding 0.34s ease;
 }
 .demand-row.demand-leaving {
   max-height: 0 !important;
-  opacity: 0;
-  transform: translateY(-6px);
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+  overflow: hidden;
+  pointer-events: none;
+  animation: demand-burst 0.4s ease-in forwards;
+}
+@keyframes demand-burst {
+  0%   { transform: translateX(0) scale(1); opacity: 1; }
+  18%  { transform: translateX(-5px) scale(1.015); }
+  34%  { transform: translateX(5px) scale(1.015); }
+  50%  { transform: translateX(-4px) scale(1.03); }
+  66%  { transform: translateX(4px) scale(1.05); }
+  80%  { transform: translateX(0) scale(1.07); opacity: 1; }
+  100% { transform: scale(0.5); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demand-row.demand-leaving { animation: none; opacity: 0; }
 }
 
 body {
