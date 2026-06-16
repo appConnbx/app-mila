@@ -5,6 +5,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Badge, EmptyState, Avatar, Tag } from '@/components/ui'
 import { DemandStatusToggle } from '@/components/demand-status-toggle'
+import { DemandPinToggle } from '@/components/demand-pin-toggle'
 import { NewDemandModal } from '@/components/new-demand-modal'
 import { fmtDayMonth } from '@/lib/datetime'
 
@@ -19,6 +20,7 @@ type Demand = {
   completed_at: string | null
   tags: string[] | null
   visibility: 'private' | 'public'
+  pinned: boolean
   responsible_id: string
   origin_id: string
   responsible: { full_name: string; auth_user_id: string | null } | null
@@ -68,12 +70,22 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
 
   // Dados + rótulos do modal de Nova Demanda (criação sem trocar de página).
   const isFamily = holding?.kind === 'family'
-  const [peopleRes, eventsRes] = await Promise.all([
+  const [peopleRes, eventsRes, myTeamsRes] = await Promise.all([
     supabase.from('people').select('id, full_name').eq('is_active', true).eq('holding_id', holdingId).order('full_name'),
     supabase.from('events').select('id, name').eq('status', 'aberto').order('opened_at', { ascending: false }),
+    supabase.from('team_members').select('team_id').eq('person_id', me),
   ])
-  const peopleList = (peopleRes.data ?? []) as unknown as { id: string; full_name: string }[]
+  const allActivePeople = (peopleRes.data ?? []) as unknown as { id: string; full_name: string }[]
   const eventsList = (eventsRes.data ?? []) as unknown as { id: string; name: string }[]
+  // Responsável: só quem está na MESMA equipe que eu. Sem equipe (ex.: família
+  // ou ainda não alocado) → mantém todos, para não esvaziar a lista.
+  const myTeamIds = ((myTeamsRes.data ?? []) as unknown as { team_id: string }[]).map((r) => r.team_id)
+  let peopleList = allActivePeople
+  if (myTeamIds.length) {
+    const { data: mates } = await supabase.from('team_members').select('person_id').in('team_id', myTeamIds)
+    const allowed = new Set<string>([me, ...((mates ?? []) as unknown as { person_id: string }[]).map((m) => m.person_id)])
+    peopleList = allActivePeople.filter((p) => allowed.has(p.id))
+  }
   const tn = await getTranslations('newDemand')
   const newDemandLabels = {
     triggerNew: t('new'),
@@ -102,7 +114,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
 
   const { data, error } = await supabase
     .from('demands')
-    .select('id, title, description, status, priority, due_date, created_at, completed_at, tags, visibility, responsible_id, origin_id, responsible:responsible_id(full_name, auth_user_id), event:event_id(name)')
+    .select('id, title, description, status, priority, due_date, created_at, completed_at, tags, visibility, pinned, responsible_id, origin_id, responsible:responsible_id(full_name, auth_user_id), event:event_id(name)')
     .order('created_at', { ascending: true })
 
   const all = (data ?? []) as unknown as Demand[]
@@ -138,7 +150,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   // cada grupo a ordem é a da query (created_at asc = mais antiga primeiro).
   const STATUS_RANK: Record<Demand['status'], number> = { trabalhando: 0, nova: 1, finalizada: 2 }
   const demands = (archived ? base.filter((d) => d.status === 'finalizada') : base.filter((d) => d.status !== 'finalizada')).sort(
-    (a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status],
+    (a, b) => Number(b.pinned) - Number(a.pinned) || STATUS_RANK[a.status] - STATUS_RANK[b.status],
   )
 
   const q = (params: { tab?: Tab; view?: string }) => {
@@ -195,6 +207,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   const monthGroups = Array.from(groupMap.values()).sort((a, b) => b.sort - a.sort)
 
   const statusLabels = { nova: t('status.nova'), trabalhando: t('status.trabalhando'), finalizada: t('status.finalizada') }
+  const pinLabel = locale === 'en' ? 'Pin as priority' : locale === 'es' ? 'Fijar como prioritaria' : 'Pinar como prioritária'
 
   // Card de uma demanda (reusado na lista ativa e nos grupos de concluídas).
   // interactive=true: chip de status clicável + colapso ao finalizar (lista ativa).
@@ -208,7 +221,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
         key={d.id}
         href={`/tasks/${d.id}`}
         {...(interactive ? { 'data-demand-row': '' } : {})}
-        className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${interactive ? 'demand-row' : ''} ${overdue ? '!border-rose-500/30' : ''}`}
+        className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${interactive ? 'demand-row' : ''} ${d.pinned ? '!border-orange-400/60 ring-1 ring-orange-400/40' : overdue ? '!border-rose-500/30' : ''}`}
       >
         <Avatar name={d.responsible?.full_name ?? '?'} src={d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) : null} />
         <div className="min-w-0 flex-1">
@@ -221,7 +234,10 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
               </p>
             </div>
             {interactive ? (
-              <DemandStatusToggle demandId={d.id} initial={d.status} labels={statusLabels} />
+              <div className="flex shrink-0 items-center gap-2.5">
+                <DemandPinToggle demandId={d.id} pinned={d.pinned} label={pinLabel} />
+                <DemandStatusToggle demandId={d.id} initial={d.status} labels={statusLabels} />
+              </div>
             ) : (
               <Badge variant={STATUS_VARIANT[d.status]} className="shrink-0">{t(`status.${d.status}`)}</Badge>
             )}

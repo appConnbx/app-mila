@@ -25,13 +25,33 @@ export default async function NovaDemandaPage({
   if (!holdingId) redirect('/dashboard')
 
   const supabase = await createClient()
-  const [peopleRes, eventsRes, holdingRes] = await Promise.all([
-    supabase.from('people').select('id, full_name').eq('is_active', true).order('full_name'),
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const { data: meRows } = await supabase
+    .from('people')
+    .select('id')
+    .eq('auth_user_id', user?.id ?? '')
+    .eq('holding_id', holdingId)
+    .limit(1)
+  const me = (meRows as unknown as { id: string }[] | null)?.[0]?.id ?? ''
+
+  const [peopleRes, eventsRes, holdingRes, myTeamsRes] = await Promise.all([
+    supabase.from('people').select('id, full_name').eq('is_active', true).eq('holding_id', holdingId).order('full_name'),
     supabase.from('events').select('id, name').eq('status', 'aberto').order('opened_at', { ascending: false }),
     supabase.from('holdings').select('kind').eq('id', holdingId).single(),
+    supabase.from('team_members').select('team_id').eq('person_id', me),
   ])
-  const people = (peopleRes.data ?? []) as unknown as Person[]
+  const allActive = (peopleRes.data ?? []) as unknown as Person[]
   const events = (eventsRes.data ?? []) as unknown as Event[]
+  // Responsável: só quem está na MESMA equipe que eu (fallback p/ todos sem equipe).
+  const myTeamIds = ((myTeamsRes.data ?? []) as unknown as { team_id: string }[]).map((r) => r.team_id)
+  let people = allActive
+  if (myTeamIds.length) {
+    const { data: mates } = await supabase.from('team_members').select('person_id').in('team_id', myTeamIds)
+    const allowed = new Set<string>([me, ...((mates ?? []) as unknown as { person_id: string }[]).map((m) => m.person_id)])
+    people = allActive.filter((p) => allowed.has(p.id))
+  }
   const isFamily = (holdingRes.data as unknown as { kind: string } | null)?.kind === 'family'
   const visPublicLabel = isFamily ? t('visPublicFamily') : t('visPublicCorp')
   const visHint = isFamily ? t('visHintFamily') : t('visHintCorp')

@@ -206,7 +206,7 @@ function renderList(items: Demand[]) {
   for (const d of items) {
     const isUnseen = !seen.has(d.id)
     const card = document.createElement('div')
-    card.className = 'item' + (isUnseen ? ' unseen' : '')
+    card.className = 'item' + (isUnseen ? ' unseen' : '') + (d.pinned ? ' pinned' : '')
 
     const title = document.createElement('div')
     title.className = 'item-title'

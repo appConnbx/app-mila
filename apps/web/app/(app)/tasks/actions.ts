@@ -183,6 +183,16 @@ export async function advanceDemandStatus(
   revalidatePath(`/tasks/${id}`)
 }
 
+/** Pina/despina uma demanda como prioritária (destaque alaranjado). O RLS de
+ *  update governa quem pode (responsável/criador/admin). */
+export async function toggleDemandPinned(id: string, pinned: boolean) {
+  if (!id) return
+  const supabase = await createClient()
+  await supabase.from('demands').update({ pinned } as never).eq('id', id)
+  revalidatePath('/tasks')
+  revalidatePath(`/tasks/${id}`)
+}
+
 /** Exclui uma demanda. O RLS (demands_delete) garante: criador ou admin da holding. */
 export async function deleteDemand(formData: FormData) {
   const supabase = await createClient()
