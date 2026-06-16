@@ -3,8 +3,10 @@
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { generateTags } from '@/lib/auto-tags'
+import { fmtDate, fmtDateTime } from '@/lib/datetime'
 
 export async function createDemand(formData: FormData) {
   const cookieStore = await cookies()
@@ -110,6 +112,69 @@ export async function createDemandInline(formData: FormData): Promise<CreateDema
   if (error) return { ok: false, error: 'forbidden' }
 
   revalidatePath('/tasks')
+  return { ok: true }
+}
+
+export type DemandThread = {
+  observations: { id: string; body: string; author: string; when: string }[]
+  history: { id: string; text: string; who: string; when: string }[]
+}
+
+/** Histórico + observações de uma demanda, já FORMATADOS (rótulos/datas/nomes),
+ *  para o modal de visualização renderizar sem lógica de i18n no cliente. */
+export async function getDemandThread(demandId: string): Promise<DemandThread> {
+  const cookieStore = await cookies()
+  const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
+  if (!demandId || !holdingId) return { observations: [], history: [] }
+  const supabase = await createClient()
+  const locale = await getLocale()
+  const td = await getTranslations('demands')
+  const tdet = await getTranslations('demandDetail')
+
+  const [obsRes, histRes, holdRes, peopleRes] = await Promise.all([
+    supabase.from('demand_observations').select('id, body, created_at, author:author_id(full_name)').eq('demand_id', demandId).order('created_at', { ascending: false }),
+    supabase.from('demand_history').select('id, field_changed, old_value, new_value, created_at, changed_by').eq('demand_id', demandId).order('created_at', { ascending: false }),
+    supabase.from('holdings').select('timezone').eq('id', holdingId).single(),
+    supabase.from('people').select('id, full_name').eq('holding_id', holdingId),
+  ])
+  const tz = (holdRes.data as unknown as { timezone: string | null } | null)?.timezone ?? 'America/Sao_Paulo'
+  const people = (peopleRes.data ?? []) as unknown as { id: string; full_name: string }[]
+  const nameOf = (pid: string | null) => (pid ? people.find((p) => p.id === pid)?.full_name ?? '—' : '—')
+  const fieldLabel = (f: string) =>
+    (({ status: tdet('fStatus'), responsible_id: tdet('fResponsible'), priority: tdet('fPriority'), due_date: tdet('fDue') }) as Record<string, string>)[f] ?? f
+  const renderVal = (f: string, v: string | null) => {
+    if (v === null || v === '') return '—'
+    if (f === 'status') return td(`status.${v}`)
+    if (f === 'priority') return td(`priority.${v}`)
+    if (f === 'responsible_id') return nameOf(v)
+    if (f === 'due_date') return fmtDate(v, locale, tz)
+    return v
+  }
+
+  const observations = ((obsRes.data ?? []) as unknown as { id: string; body: string; created_at: string; author: { full_name: string } | null }[]).map((o) => ({
+    id: o.id,
+    body: o.body,
+    author: o.author?.full_name ?? '—',
+    when: fmtDateTime(o.created_at, locale, tz),
+  }))
+  const history = ((histRes.data ?? []) as unknown as { id: string; field_changed: string; old_value: string | null; new_value: string | null; created_at: string; changed_by: string | null }[]).map((h) => ({
+    id: h.id,
+    text: `${fieldLabel(h.field_changed)}: ${renderVal(h.field_changed, h.old_value)} → ${renderVal(h.field_changed, h.new_value)}`,
+    who: nameOf(h.changed_by),
+    when: fmtDateTime(h.created_at, locale, tz),
+  }))
+  return { observations, history }
+}
+
+/** Adiciona observação (para o modal) e retorna ok; o cliente recarrega o thread. */
+export async function addObservationInline(demandId: string, body: string): Promise<{ ok: boolean }> {
+  const { supabase, holdingId, me } = await currentPersonId()
+  const text = body.trim()
+  if (!holdingId || !me || !demandId || !text) return { ok: false }
+  await supabase
+    .from('demand_observations')
+    .insert({ holding_id: holdingId, demand_id: demandId, author_id: me, body: text } as never)
+  revalidatePath(`/tasks/${demandId}`)
   return { ok: true }
 }
 
