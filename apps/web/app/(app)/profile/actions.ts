@@ -29,6 +29,26 @@ export async function updateProfile(formData: FormData) {
   revalidatePath('/dashboard')
 }
 
+export type PasswordResult = { ok: boolean; error?: 'short' | 'mismatch' | 'session' | 'fail' }
+
+/** Altera a senha do usuário logado (Supabase Auth). Mínimo de 8 caracteres. */
+export async function changePassword(formData: FormData): Promise<PasswordResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'session' }
+
+  const pw = String(formData.get('password') ?? '')
+  const confirm = String(formData.get('confirm') ?? '')
+  if (pw.length < 8) return { ok: false, error: 'short' }
+  if (pw !== confirm) return { ok: false, error: 'mismatch' }
+
+  const { error } = await supabase.auth.updateUser({ password: pw })
+  if (error) return { ok: false, error: 'fail' }
+  return { ok: true }
+}
+
 /**
  * Colaborador corporativo cria sua conta família (VIP CONNBX FAMILY) com um
  * e-mail pessoal. A licença fica atrelada a ele: se sair/for desativado da

@@ -11,6 +11,17 @@ type Status = 'nova' | 'trabalhando' | 'finalizada'
 const NEXT: Record<Status, Status> = { nova: 'trabalhando', trabalhando: 'finalizada', finalizada: 'nova' }
 const VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 
+// Partículas da "fumaça" do PUFF (deslocamento, tamanho e atraso de cada uma).
+const PUFF: { tx: string; ty: string; s: string; d: string }[] = [
+  { tx: '-34px', ty: '-24px', s: '26px', d: '0s' },
+  { tx: '32px', ty: '-28px', s: '30px', d: '.04s' },
+  { tx: '-10px', ty: '-38px', s: '32px', d: '.02s' },
+  { tx: '16px', ty: '-14px', s: '24px', d: '.06s' },
+  { tx: '-30px', ty: '8px', s: '22px', d: '.05s' },
+  { tx: '38px', ty: '6px', s: '24px', d: '.03s' },
+  { tx: '2px', ty: '-48px', s: '28px', d: '.08s' },
+]
+
 export type CardDemand = {
   id: string
   title: string
@@ -112,13 +123,11 @@ export function DemandCard({
   }
 
   function burstAndRefresh() {
-    const row = rootRef.current
-    if (row) {
-      row.style.maxHeight = `${row.offsetHeight}px`
-      requestAnimationFrame(() => row.classList.add('demand-leaving'))
-    }
     setLeaving(true)
-    setTimeout(() => router.refresh(), 460)
+    const row = rootRef.current
+    if (row) requestAnimationFrame(() => row.classList.add('demand-leaving'))
+    // Espera o PUFF (0,65s) dissipar antes de remover o card pela recarga.
+    setTimeout(() => router.refresh(), 760)
   }
 
   function advance(to: Status) {
@@ -223,6 +232,13 @@ export function DemandCard({
         <div className="absolute inset-x-0 bottom-0 h-1 bg-white/5">
           <div className={`h-full ${progress.color} transition-all`} style={{ width: `${progress.pct}%` }} />
         </div>
+        {leaving && (
+          <span className="demand-puff" aria-hidden="true">
+            {PUFF.map((p, i) => (
+              <span key={i} className="puff-dot" style={{ '--tx': p.tx, '--ty': p.ty, '--s': p.s, '--d': p.d } as React.CSSProperties} />
+            ))}
+          </span>
+        )}
       </div>
 
       {open && (

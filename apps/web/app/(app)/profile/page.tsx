@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { ProfileEditor } from './_editor'
 import { FamilyAccount } from './_family-account'
+import { ChangePassword } from './_change-password'
 
 export default async function PerfilPage({ searchParams }: { searchParams: Promise<{ famOk?: string; famErr?: string }> }) {
   const t = await getTranslations('profile')
@@ -34,6 +35,20 @@ export default async function PerfilPage({ searchParams }: { searchParams: Promi
   const { data: persData } = await supabase.from('people').select('full_name').eq('auth_user_id', user.id).limit(1)
   const name = (persData as unknown as { full_name: string }[] | null)?.[0]?.full_name ?? user.email?.split('@')[0] ?? 'Usuário'
 
+  const locale = await getLocale()
+  const en = locale === 'en'
+  const es = locale === 'es'
+  const cpLabels = {
+    title: en ? 'Change password' : es ? 'Cambiar contraseña' : 'Alterar senha',
+    newPw: en ? 'New password' : es ? 'Nueva contraseña' : 'Nova senha',
+    confirmPw: en ? 'Confirm new password' : es ? 'Confirmar nueva contraseña' : 'Confirmar nova senha',
+    submit: en ? 'Change password' : es ? 'Cambiar contraseña' : 'Alterar senha',
+    success: en ? 'Password changed successfully.' : es ? 'Contraseña cambiada con éxito.' : 'Senha alterada com sucesso.',
+    errShort: en ? 'Password must be at least 8 characters.' : es ? 'La contraseña debe tener al menos 8 caracteres.' : 'A senha precisa ter pelo menos 8 caracteres.',
+    errMismatch: en ? 'Passwords do not match.' : es ? 'Las contraseñas no coinciden.' : 'As senhas não coincidem.',
+    errFail: en ? 'Could not change the password.' : es ? 'No se pudo cambiar la contraseña.' : 'Não foi possível alterar a senha.',
+  }
+
   return (
     <div>
       <Link href="/dashboard" className="text-sm text-slate-400 transition hover:text-white">← {t('back')}</Link>
@@ -50,6 +65,9 @@ export default async function PerfilPage({ searchParams }: { searchParams: Promi
           }}
         />
       </div>
+
+      {/* Segurança: alterar senha */}
+      <ChangePassword labels={cpLabels} />
 
       {/* Conta família do colaborador (VIP CONNBX FAMILY) */}
       {famOk && (
