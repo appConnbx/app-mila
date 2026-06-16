@@ -179,7 +179,9 @@ export async function advanceDemandStatus(
   if (!id || !ok(from) || !ok(to)) return
   const supabase = await createClient()
   await supabase.from('demands').update({ status: to } as never).eq('id', id).eq('status', from)
-  revalidatePath('/tasks')
+  // NÃO revalida '/tasks' aqui: o auto-refresh do server action cortaria a
+  // animação de "estourar" no cliente. O componente chama router.refresh() no
+  // tempo certo (após a animação). Revalida só o detalhe.
   revalidatePath(`/tasks/${id}`)
 }
 

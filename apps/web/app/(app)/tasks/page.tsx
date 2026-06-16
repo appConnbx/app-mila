@@ -4,8 +4,7 @@ import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 import { Badge, EmptyState, Avatar, Tag } from '@/components/ui'
-import { DemandStatusToggle } from '@/components/demand-status-toggle'
-import { DemandPinToggle } from '@/components/demand-pin-toggle'
+import { DemandCard, type DemandCardLabels } from '@/components/demand-card'
 import { NewDemandModal } from '@/components/new-demand-modal'
 import { fmtDayMonth } from '@/lib/datetime'
 
@@ -209,21 +208,59 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
   const statusLabels = { nova: t('status.nova'), trabalhando: t('status.trabalhando'), finalizada: t('status.finalizada') }
   const pinLabel = locale === 'en' ? 'Pin as priority' : locale === 'es' ? 'Fijar como prioritaria' : 'Pinar como prioritária'
 
-  // Card de uma demanda (reusado na lista ativa e nos grupos de concluídas).
-  // interactive=true: chip de status clicável + colapso ao finalizar (lista ativa).
+  const cardLabels: DemandCardLabels = {
+    status: statusLabels,
+    pin: pinLabel,
+    createdWord: t('createdWord'),
+    dueWord: t('dueWord'),
+    autoTag: t('autoTag'),
+    overdueTag: t('legendOverdue'),
+    close: locale === 'en' ? 'Close' : locale === 'es' ? 'Cerrar' : 'Fechar',
+    openFull: locale === 'en' ? 'Open full page' : 'Abrir página completa',
+    start: locale === 'en' ? 'Start' : locale === 'es' ? 'Empezar' : 'Trabalhar',
+    reopen: locale === 'en' ? 'Reopen' : 'Reabrir',
+    finish: locale === 'en' ? 'Finish' : 'Concluir',
+  }
+
+  // Card ativo = componente cliente (clique → modal de visualização; concluir →
+  // treme e estoura). Concluídas (arquivadas) = Link estático para o detalhe.
   const cardOf = (d: Demand, interactive = false) => {
     const overdue = isOverdue(d)
     const dl = deadlineLabel(d)
     const prog = deadlineProgress(d)
     const tags = d.tags ?? []
+    const photoUrl = d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) ?? null : null
+    if (interactive) {
+      return (
+        <DemandCard
+          key={d.id}
+          demand={{
+            id: d.id,
+            title: d.title,
+            description: d.description,
+            status: d.status,
+            pinned: d.pinned,
+            tags,
+            responsibleName: d.responsible?.full_name ?? '—',
+            eventName: d.event?.name ?? null,
+          }}
+          photoUrl={photoUrl}
+          overdue={overdue}
+          createdFmt={fmtDate(d.created_at)}
+          dueFmt={d.due_date ? fmtDate(d.due_date) : null}
+          dueLabel={dl}
+          progress={prog}
+          labels={cardLabels}
+        />
+      )
+    }
     return (
       <Link
         key={d.id}
         href={`/tasks/${d.id}`}
-        {...(interactive ? { 'data-demand-row': '' } : {})}
-        className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${interactive ? 'demand-row' : ''} ${d.pinned ? '!border-orange-400/60 ring-1 ring-orange-400/40' : overdue ? '!border-rose-500/30' : ''}`}
+        className={`glass relative flex gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${d.pinned ? '!border-orange-400/60 ring-1 ring-orange-400/40' : overdue ? '!border-rose-500/30' : ''}`}
       >
-        <Avatar name={d.responsible?.full_name ?? '?'} src={d.responsible?.auth_user_id ? photoMap.get(d.responsible.auth_user_id) : null} />
+        <Avatar name={d.responsible?.full_name ?? '?'} src={photoUrl} />
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
@@ -233,14 +270,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
                 {d.event && <span> · {d.event.name}</span>}
               </p>
             </div>
-            {interactive ? (
-              <div className="flex shrink-0 items-center gap-2.5">
-                <DemandPinToggle demandId={d.id} pinned={d.pinned} label={pinLabel} />
-                <DemandStatusToggle demandId={d.id} initial={d.status} labels={statusLabels} />
-              </div>
-            ) : (
-              <Badge variant={STATUS_VARIANT[d.status]} className="shrink-0">{t(`status.${d.status}`)}</Badge>
-            )}
+            <Badge variant={STATUS_VARIANT[d.status]} className="shrink-0">{t(`status.${d.status}`)}</Badge>
           </div>
           {d.description && <p className="mt-2 line-clamp-2 text-sm text-slate-400">{d.description}</p>}
           {(tags.length > 0 || overdue) && (
