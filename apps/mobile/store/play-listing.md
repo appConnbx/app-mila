@@ -1,4 +1,4 @@
-# MILA — Listagem da Google Play Store
+# appMila — Listagem da Google Play Store
 
 Pacote: `co.appmila.mobile` · Versão 1.0.0 (versionCode 1) · Política de privacidade: https://www.appmila.co/privacy
 
@@ -6,21 +6,21 @@ Pacote: `co.appmila.mobile` · Versão 1.0.0 (versionCode 1) · Política de pri
 
 ## Ficha da loja (pt-BR)
 
-**Nome do app:** MILA
+**Nome do app:** appMila
 
 **Descrição curta** (máx. 80 caracteres):
 > Capture tarefas por voz e nunca mais perca uma demanda — trabalho e família.
 
 **Descrição completa** (máx. 4000 caracteres):
-> O MILA transforma o que é combinado em tarefas organizadas — com responsável, prazo e acompanhamento até concluir. Em vez de anotar (e esquecer), você captura em segundos, até por voz.
+> O appMila transforma o que é combinado em tarefas organizadas — com responsável, prazo e acompanhamento até concluir. Em vez de anotar (e esquecer), você captura em segundos, até por voz.
 >
-> • Capture por voz: segure, fale e o MILA registra a demanda para você.
+> • Capture por voz: segure, fale e o appMila registra a demanda para você.
 > • Trabalho e vida pessoal na mesma conta: organize a equipe da empresa e também a rotina da família.
 > • Acompanhe o andamento: o que está aberto, em andamento e concluído.
-> • Sincronizado: o MILA também tem sistema web e agente para computador.
+> • Sincronizado: o appMila também tem sistema web e agente para computador.
 > • Em português, inglês e espanhol.
 >
-> Pare de perder o que foi combinado na correria. Baixe o MILA e coloque cada demanda no lugar certo.
+> Pare de perder o que foi combinado na correria. Baixe o appMila e coloque cada demanda no lugar certo.
 
 **Categoria:** Produtividade
 **E-mail de contato:** (definir — ex.: suporte@appmila.co)

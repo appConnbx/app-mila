@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { Aurora } from '@/components/ui'
 import { RecoverForm } from './_form'
 
-export const metadata = { title: 'Recuperar acesso · MILA', robots: { index: false } }
+export const metadata = { title: 'Recuperar acesso · appMila', robots: { index: false } }
 
 function toLocale(lang?: string) {
   return lang === 'en' ? 'en' : lang === 'es' ? 'es' : lang === 'pt-BR' ? 'pt-BR' : null
@@ -24,7 +24,7 @@ export default async function RecuperarPage({
       <Aurora />
       <div className="glass glow-top w-full max-w-sm p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-white">MILA</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">appMila</h1>
           <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-brand" />
           <h2 className="mt-4 text-lg font-semibold text-white">{t('recoverTitle')}</h2>
           <p className="mt-1 text-sm text-slate-400">{t('recoverSubtitle')}</p>

@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "MILA",
+    "appName": "appMila",
     "search": "Buscar…",
     "signOut": "Sair",
     "add": "Add",
@@ -82,7 +82,7 @@
     "editProfile": "Editar perfil",
     "profileSubtitle": "Complete seu perfil: foto, celular e habilidades.",
     "profileNudge": "Seu perfil está incompleto — adicione foto, celular e habilidades.",
-    "agentTitle": "Agente MILA para Windows",
+    "agentTitle": "Agente appMila para Windows",
     "agentDesc": "Um gadget de fácil acesso na lateral da tela: suas demandas pendentes sempre à vista, criação rápida e alerta visual quando algo novo chega para você. Entre com a mesma conta.",
     "agentCta": "Baixar para Windows",
     "agentNote": "Em todos os planos · Windows 10/11 · atualiza sozinho"
@@ -181,7 +181,7 @@
     "welcomeHint": "Não chegou em alguns minutos? Você pode definir a senha pela opção \"Esqueci minha senha\" na tela de entrada.",
     "welcomeLoginCta": "Ir para a tela de entrada",
     "setTitle": "Crie sua senha",
-    "setSubtitle": "Defina uma senha para acessar a sua conta MILA.",
+    "setSubtitle": "Defina uma senha para acessar a sua conta appMila.",
     "setLangLabel": "Idioma da conta",
     "setPlaceholder": "Nova senha (mín. 6 caracteres)",
     "setConfirmPlaceholder": "Confirme a senha",
@@ -203,7 +203,7 @@
     "subEmailHint": "Será o login da sua conta. Use um e-mail que você acessa.",
     "subSubmit": "Continuar para o pagamento",
     "subSending": "Aguarde…",
-    "subExistsTitle": "Você já tem uma conta MILA",
+    "subExistsTitle": "Você já tem uma conta appMila",
     "subExistsBody": "Esse e-mail já tem acesso. Entre na sua conta para assinar ou gerenciar seu plano por lá.",
     "subLoginCta": "Entrar na minha conta",
     "subErr": "Algo deu errado. Tente novamente."
@@ -347,7 +347,7 @@
     "addAliasPlaceholder": "apelido",
     "holdingMgmt": "Gestão da Holding",
     "holdingMgmtDesc": "Dados cadastrais do grupo.",
-    "onboardingTitle": "Bem-vindo ao MILA! Vamos configurar sua empresa.",
+    "onboardingTitle": "Bem-vindo ao appMila! Vamos configurar sua empresa.",
     "onboardingDesc": "Preencha os dados da sua holding abaixo. Depois, em Administração, crie organizações, áreas e equipes e cadastre seus usuários (eles entram na holding e são atrelados às equipes).",
     "manualTitle": "Manual de configuração",
     "manualDesc": "Passo a passo para configurar a conta. Abra online ou baixe em PDF.",
@@ -484,16 +484,16 @@
     "switch": "Trocar de instância",
     "help": "Falar com o suporte",
     "renewTitle": "Sua licença expirou",
-    "renewDescCorp": "Para voltar a usar o MILA com a sua equipe, escolha um plano abaixo. Seus dados continuam guardados.",
-    "renewDescFamily": "Para voltar a usar o MILA, escolha um plano abaixo. Seus dados continuam guardados.",
+    "renewDescCorp": "Para voltar a usar o appMila com a sua equipe, escolha um plano abaixo. Seus dados continuam guardados.",
+    "renewDescFamily": "Para voltar a usar o appMila, escolha um plano abaixo. Seus dados continuam guardados.",
     "renewSponsored": "Sua conta família era um benefício vinculado à sua conta de trabalho, que não está mais ativa. Contrate um plano para continuar.",
     "renewFreeHint": "Prefere começar de graça?"
   },
   "start": {
-    "title": "Vamos encontrar o MILA ideal para você",
+    "title": "Vamos encontrar o appMila ideal para você",
     "subtitle": "São 3 perguntas rápidas — leva menos de 1 minuto.",
     "back": "Voltar",
-    "q1Title": "O MILA é para o seu trabalho ou para a sua vida pessoal?",
+    "q1Title": "O appMila é para o seu trabalho ou para a sua vida pessoal?",
     "q1Business": "Para a minha empresa",
     "q1BusinessSub": "Equipe, setores e gestão de demandas",
     "q1Personal": "Para mim e minha família",
@@ -516,7 +516,7 @@
     "reflectForget": "Esquecer combinados e compromissos",
     "reflectChase": "Ficar cobrando (e sendo cobrado)",
     "reflectScatter": "Coisas espalhadas em vários lugares",
-    "reflectAck": "É exatamente isso que o MILA resolve: tudo em um lugar só, com responsável e prazo. Você deixa de depender da memória.",
+    "reflectAck": "É exatamente isso que o appMila resolve: tudo em um lugar só, com responsável e prazo. Você deixa de depender da memória.",
     "continue": "Continuar",
     "doubtTitle": "Ainda em dúvida?",
     "doubtDesc": "Você tem 7 dias para testar. Se não fizer sentido, é só cancelar e receber o reembolso integral. O risco é zero.",
@@ -578,7 +578,7 @@
     "hero": {
       "badge": "Trabalho e vida pessoal, na mesma conta",
       "headline": "Nunca mais perca uma demanda <hl>por falta de anotação</hl>",
-      "subtitle": "O MILA transforma conversas, reuniões e decisões em execução organizada — no sistema web, no agente para computador e no app do celular. Capture em segundos, até por voz, delegue com responsável e prazo e acompanhe até concluir.",
+      "subtitle": "O appMila transforma conversas, reuniões e decisões em execução organizada — no sistema web, no agente para computador e no app do celular. Capture em segundos, até por voz, delegue com responsável e prazo e acompanhe até concluir.",
       "emailPlaceholder": "Seu melhor e-mail",
       "cta": "Começar agora",
       "finePrint": "Comece em minutos · Planos para empresas e famílias · Cancele quando quiser"
@@ -620,7 +620,7 @@
     "eco": {
       "kicker": "Praticidade",
       "title": "Capture a demanda em segundos, de onde você estiver",
-      "subtitle": "A vantagem do MILA é a praticidade: a ideia não espera você abrir um sistema. Web, computador e celular — sempre a um toque.",
+      "subtitle": "A vantagem do appMila é a praticidade: a ideia não espera você abrir um sistema. Web, computador e celular — sempre a um toque.",
       "bothNote": "Funciona igual para empresas (planos corporativos) e para uso pessoal (planos família).",
       "capWindows": "Gadget para Windows",
       "capMobile": "Aplicativo mobile",
@@ -693,7 +693,7 @@
     },
     "plans": {
       "kicker": "Planos",
-      "title": "Escolha como o MILA se aplica a você",
+      "title": "Escolha como o appMila se aplica a você",
       "subtitle": "Comece pelo que faz sentido hoje. Você pode ter um plano de empresa e um de família na mesma conta.",
       "perMonth": "/mês",
       "start": "Assinar",
@@ -719,25 +719,25 @@
     },
     "affiliates": {
       "badge": "Programa de Afiliados · Lançamento de junho",
-      "title": "Indique o MILA e construa uma renda recorrente",
+      "title": "Indique o appMila e construa uma renda recorrente",
       "desc": "Vire afiliado: comissão em cada venda no Brasil e renda recorrente em dólar no internacional. Simule seus ganhos.",
       "cta": "Quero ser afiliado",
       "soon": "Oportunidade de lançamento · junho/2026"
     },
     "finalCta": {
       "title": "A próxima demanda, você não esquece.",
-      "subtitle": "Coloque tudo no lugar — no trabalho e em casa. Comece a usar o MILA hoje.",
+      "subtitle": "Coloque tudo no lugar — no trabalho e em casa. Comece a usar o appMila hoje.",
       "cta": "Começar agora"
     },
     "footer": {
       "tagline": "Transforma demandas soltas, reuniões e decisões em execução organizada.",
-      "company": "APP MILA é um produto CONNBX — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brasil",
+      "company": "appMila é um produto CONNBX — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brasil",
       "support": "Suporte",
       "sales": "Comercial",
       "corporate": "Institucional",
       "privacy": "Política de Privacidade",
       "security": "Segurança",
-      "copyright": "© 2026 MILA. Todos os direitos reservados."
+      "copyright": "© 2026 appMila. Todos os direitos reservados."
     }
   },
   "affiliatesPage": {
@@ -745,8 +745,8 @@
     "badge": "Programa de Afiliados",
     "title": "Indique e Ganhe",
     "titleAccent": "está chegando",
-    "desc": "Estamos preparando um programa para recompensar quem indica o MILA para empresas e famílias. Em breve você vai poder gerar seu link, acompanhar suas indicações e receber por cada nova assinatura.",
-    "ctaKnow": "Conhecer o MILA",
+    "desc": "Estamos preparando um programa para recompensar quem indica o appMila para empresas e famílias. Em breve você vai poder gerar seu link, acompanhar suas indicações e receber por cada nova assinatura.",
+    "ctaKnow": "Conhecer o appMila",
     "ctaApp": "Acessar o app",
     "construction": "Página em construção · Volte em breve"
   },
@@ -777,7 +777,7 @@
     "micDenied": "Microfone não autorizado — mostrando um exemplo genérico."
   },
   "onboarding": {
-    "welcome": "Bem-vindo ao MILA, {name}!",
+    "welcome": "Bem-vindo ao appMila, {name}!",
     "subtitle": "Vamos deixar tudo pronto em poucos passos.",
     "instancesTitle": "O que são instâncias",
     "instancesDesc": "Sua conta (seu login) pode reunir várias instâncias: cada empresa e também a sua família é uma instância. Você alterna entre elas — e é dentro de uma instância que você cria e delega as demandas. Tudo fica vinculado ao mesmo acesso.",
@@ -787,7 +787,7 @@
     "freeTitle": "Você está no Family Free 🎉",
     "freeDesc": "Plano gratuito com até 15 demandas por dia. Cadastre sua família e comece a organizar — quando precisar de mais, é só fazer upgrade para o Family.",
     "buyTitle": "Plano contratado",
-    "buyDesc": "Sua assinatura está ativa. Obrigado por escolher o MILA.",
+    "buyDesc": "Sua assinatura está ativa. Obrigado por escolher o appMila.",
     "accessTitle": "Primeiro acesso",
     "accessDesc": "Sua conta foi criada e você já está no ambiente.",
     "configTitle": "Configuração inicial",
@@ -805,7 +805,7 @@
     "backToApp": "Voltar",
     "empresa": {
       "title": "Manual de configuração — Empresa",
-      "intro": "Guia rápido para configurar sua conta corporativa no MILA e começar a delegar demandas com clareza.",
+      "intro": "Guia rápido para configurar sua conta corporativa no appMila e começar a delegar demandas com clareza.",
       "sections": [
         { "h": "1. Dados da holding", "items": ["Acesse Estrutura → Gerenciar holding.", "Preencha razão social, CNPJ, e-mail, telefone, fuso horário e idioma.", "Envie o logo da empresa (aparece no organograma e relatórios)."] },
         { "h": "2. Organizações", "items": ["Em Estrutura, crie as organizações (empresas/unidades do grupo).", "Defina um ou mais administradores por organização."] },
@@ -817,7 +817,7 @@
     },
     "familia": {
       "title": "Manual de configuração — Família",
-      "intro": "Guia rápido para organizar as demandas da sua família e da equipe da casa no MILA.",
+      "intro": "Guia rápido para organizar as demandas da sua família e da equipe da casa no appMila.",
       "sections": [
         { "h": "1. Dados da família", "items": ["Acesse Estrutura → Gerenciar holding.", "Defina nome, fuso horário e idioma da conta."] },
         { "h": "2. Membros da família", "items": ["Cadastre cônjuge, filhos e pais.", "Informe o e-mail de quem terá acesso próprio ao app."] },
@@ -829,15 +829,15 @@
   },
   "memberOnboarding": {
     "welcome": "Bem-vindo, {name}!",
-    "subtitle": "Você faz parte de {instance} no MILA. Veja como aproveitar ao máximo.",
+    "subtitle": "Você faz parte de {instance} no appMila. Veja como aproveitar ao máximo.",
     "canTitle": "O que você pode fazer",
     "canCorp": ["Receber e acompanhar as demandas que te delegam", "Criar demandas por voz (segure o microfone) ou digitando", "Acompanhar prazos e mudar o status (Trabalhando / Finalizada)", "Ver o que é seu, o que foi delegado e o que é compartilhado"],
     "canFamily": ["Receber e acompanhar as tarefas da família", "Criar por voz (segure o microfone) ou digitando", "Acompanhar prazos e concluir com um toque", "Tudo no mesmo lugar para a família e a equipe da casa"],
     "appsTitle": "Instale os apps e ganhe produtividade",
-    "appsDesc": "Para a melhor experiência, use o MILA no celular e no computador.",
+    "appsDesc": "Para a melhor experiência, use o appMila no celular e no computador.",
     "mobileTitle": "No celular (Android/iOS)",
     "mobileDesc": "Registre demandas por voz de onde estiver e receba avisos.",
-    "mobileCta": "Abrir MILA",
+    "mobileCta": "Abrir appMila",
     "agentTitle": "Agente para Windows",
     "agentDesc": "Um toque na barra para falar e criar a demanda sem abrir o navegador.",
     "agentCta": "Baixar agente",
@@ -846,7 +846,7 @@
   "familyBonus": {
     "kicker": "BENEFÍCIO PARA O TIME",
     "title": "Sua empresa, parceira da vida do funcionário",
-    "desc": "No plano corporativo, cada colaborador ganha um MILA Family Plus licenciado — sem custo extra, enquanto a empresa mantém o plano. Leve a mesma praticidade do trabalho para a casa do seu time.",
+    "desc": "No plano corporativo, cada colaborador ganha um appMila Family Plus licenciado — sem custo extra, enquanto a empresa mantém o plano. Leve a mesma praticidade do trabalho para a casa do seu time.",
     "p1": "Endomarketing que retém: um benefício real que acompanha o colaborador fora do expediente.",
     "p2": "Casa organizada, mente tranquila — colaborador mais presente e produtivo.",
     "p3": "Já incluso: o bônus faz parte do plano da empresa, sem mensalidade adicional."

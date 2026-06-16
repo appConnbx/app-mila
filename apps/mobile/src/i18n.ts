@@ -9,7 +9,7 @@ export type Lang = 'pt-BR' | 'en' | 'es'
 const DICT = {
   'pt-BR': {
     appTagline: 'Suas demandas, sempre à vista.',
-    loginHint: 'Entre com a mesma conta do MILA web.',
+    loginHint: 'Entre com a mesma conta do appMila web.',
     email: 'E-mail',
     password: 'Senha',
     signIn: 'Entrar',
@@ -48,7 +48,7 @@ const DICT = {
   },
   en: {
     appTagline: 'Your tasks, always in sight.',
-    loginHint: 'Sign in with the same MILA web account.',
+    loginHint: 'Sign in with the same appMila web account.',
     email: 'Email',
     password: 'Password',
     signIn: 'Sign in',
@@ -87,7 +87,7 @@ const DICT = {
   },
   es: {
     appTagline: 'Tus tareas, siempre a la vista.',
-    loginHint: 'Entra con la misma cuenta de MILA web.',
+    loginHint: 'Entra con la misma cuenta de appMila web.',
     email: 'Correo',
     password: 'Contraseña',
     signIn: 'Entrar',

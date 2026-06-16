@@ -177,7 +177,7 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
           <View style={s.mark}>
             <Text style={s.markM}>M</Text>
           </View>
-          <Text style={s.brand}>MILA</Text>
+          <Text style={s.brand}>appMila</Text>
         </View>
         <Pressable onPress={() => void supabase.auth.signOut()}>
           <Text style={s.logout}>{t('signOut')}</Text>

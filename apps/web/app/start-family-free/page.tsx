@@ -4,8 +4,8 @@ import { getTranslations } from 'next-intl/server'
 import { SignupForm } from './_form'
 
 export const metadata: Metadata = {
-  title: 'Family Free · MILA',
-  description: 'Crie sua conta gratuita do MILA: 1 usuário e até 15 demandas por dia.',
+  title: 'Family Free · appMila',
+  description: 'Crie sua conta gratuita do appMila: 1 usuário e até 15 demandas por dia.',
 }
 
 const DICT_KEYS = [
@@ -31,7 +31,7 @@ export default async function StartFamilyFreePage({ searchParams }: { searchPara
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <span className="text-2xl font-bold tracking-tight text-white">MILA</span>
+            <span className="text-2xl font-bold tracking-tight text-white">appMila</span>
             <span className="h-4 w-1 rounded-full bg-cyan-400" />
           </Link>
           <h1 className="mt-5 text-2xl font-bold text-white">{t('title')}</h1>

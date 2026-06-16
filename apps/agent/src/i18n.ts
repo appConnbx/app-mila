@@ -6,7 +6,7 @@ export type Lang = 'pt-BR' | 'en' | 'es'
 
 const DICT = {
   'pt-BR': {
-    pillTitle: 'MILA — suas demandas',
+    pillTitle: 'appMila — suas demandas',
     pillMicTitle: 'Demanda por voz',
     micTitle: 'Demanda por voz',
     micHoldHint: 'Segure o botão e fale (até 10s)',
@@ -22,7 +22,7 @@ const DICT = {
     micRefuse: '✕ Recusar',
     micAccept: '✓ OK',
     micRefused: 'Descartada — grave outra se quiser.',
-    loginHint: 'Entre com a mesma conta do MILA web.',
+    loginHint: 'Entre com a mesma conta do appMila web.',
     email: 'E-mail',
     password: 'Senha',
     signIn: 'Entrar',
@@ -48,7 +48,7 @@ const DICT = {
     webTip: 'Para o acesso completo e todas as funcionalidades, use o sistema web. Clique para abrir.',
   },
   en: {
-    pillTitle: 'MILA — your tasks',
+    pillTitle: 'appMila — your tasks',
     pillMicTitle: 'Voice task',
     micTitle: 'Voice task',
     micHoldHint: 'Hold the button and speak (up to 10s)',
@@ -64,7 +64,7 @@ const DICT = {
     micRefuse: '✕ Discard',
     micAccept: '✓ OK',
     micRefused: 'Discarded — record another if you like.',
-    loginHint: 'Sign in with the same MILA web account.',
+    loginHint: 'Sign in with the same appMila web account.',
     email: 'Email',
     password: 'Password',
     signIn: 'Sign in',
@@ -90,7 +90,7 @@ const DICT = {
     webTip: 'For full access and every feature, use the web app. Click to open.',
   },
   es: {
-    pillTitle: 'MILA — tus tareas',
+    pillTitle: 'appMila — tus tareas',
     pillMicTitle: 'Tarea por voz',
     micTitle: 'Tarea por voz',
     micHoldHint: 'Mantén el botón y habla (hasta 10s)',
@@ -106,7 +106,7 @@ const DICT = {
     micRefuse: '✕ Rechazar',
     micAccept: '✓ OK',
     micRefused: 'Descartada — graba otra si quieres.',
-    loginHint: 'Entra con la misma cuenta de MILA web.',
+    loginHint: 'Entra con la misma cuenta de appMila web.',
     email: 'Correo',
     password: 'Contraseña',
     signIn: 'Entrar',

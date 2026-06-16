@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * Demo interativo do "segure-e-fale" do MILA. Tenta CAPTURA REAL de áudio
+ * Demo interativo do "segure-e-fale" do appMila. Tenta CAPTURA REAL de áudio
  * (microfone + transcrição via /api/demo/transcribe). Se o visitante negar o
  * microfone, não tiver suporte, ou a transcrição falhar, cai num exemplo
  * simulado — o demo nunca quebra. Máx. 5 itens; cada um alterna p/ "trabalhando".

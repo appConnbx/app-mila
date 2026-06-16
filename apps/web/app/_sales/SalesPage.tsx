@@ -142,7 +142,7 @@ export async function SalesPage({ c }: { c: SalesContent }) {
         <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5">
           <Link href="/" className="flex items-center gap-2">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">M</span>
-            <span className="text-lg font-bold tracking-tight text-white">MILA</span>
+            <span className="text-lg font-bold tracking-tight text-white">appMila</span>
           </Link>
         </nav>
       </header>

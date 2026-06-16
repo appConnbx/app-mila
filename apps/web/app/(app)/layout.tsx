@@ -98,7 +98,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         {/* Linha 1: marca + ações */}
         <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link href={isHome ? '/dashboard' : '/tasks'} className="flex shrink-0 items-center gap-2">
-            <span className="text-xl font-bold tracking-tight text-white">MILA</span>
+            <span className="text-xl font-bold tracking-tight text-white">appMila</span>
             <span className="h-4 w-1 rounded-full bg-brand" />
           </Link>
 

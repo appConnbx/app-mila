@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { SubmitButton } from '@/components/pending'
 import { finishOnboarding } from './actions'
 
-export const metadata = { title: 'Onboarding · MILA' }
+export const metadata = { title: 'Onboarding · appMila' }
 
 type Pending = { holding_id: string; name: string; kind: 'corporate' | 'family'; plan_slug: string | null }
 
@@ -51,7 +51,7 @@ export default async function OnboardingPage() {
 
   return (
     <div className={`mx-auto max-w-2xl ${isFamily ? 'theme-family' : ''}`}>
-      <p className="text-sm font-semibold uppercase tracking-wider text-brand">MILA</p>
+      <p className="text-sm font-semibold uppercase tracking-wider text-brand">appMila</p>
       <h1 className="mt-1 text-3xl font-bold tracking-tight text-white">{t('welcome', { name: pending.name })}</h1>
       <p className="mt-1 text-slate-400">{t('subtitle')}</p>
 

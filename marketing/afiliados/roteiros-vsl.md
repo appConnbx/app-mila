@@ -1,4 +1,4 @@
-# APP MILA — Pack de Afiliados · Roteiros de VSL
+# appMila — Pack de Afiliados · Roteiros de VSL
 
 **6 vídeos** · conceito VSL (Video Sales Letter) de marketing digital · tom cinematográfico, ritmo de tração, foco em conversão.
 Idiomas: Português · English · Español. Linhas: Corporativo e Família.
@@ -10,7 +10,7 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 ## Identidade visual (working palette — guia completo é entrega separada)
 
 - **Grafite** `#0F172A` — fundo dominante, clima executivo/cinematográfico.
-- **Ciano elétrico** `#22D3EE` — cor-âncora da marca MILA, destaques, UI, CTA corporativo.
+- **Ciano elétrico** `#22D3EE` — cor-âncora da marca appMila, destaques, UI, CTA corporativo.
 - **Laranja** `#F97316` — acento da linha **Família** (calor, casa, vida pessoal).
 - **Branco/Cinza claro** `#FFFFFF` / `#E2E8F0` — textos sobre fundo escuro.
 - Tipografia sans-serif, pesos altos para frases-âncora. Movimento: câmera lenta, transições suaves, motion da UI em destaque (mockups do produto).
@@ -48,9 +48,9 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[TELA]` **O que você não enxerga, você não controla.**
 
 **00:34–00:46 · Virada (a ferramenta)**
-`[CENA]` Fundo grafite. Logo MILA surge em ciano com leve glow. Transição para o dashboard real.
-`[VO]` "É exatamente isso que o MILA resolve. Ele transforma conversas e reuniões em execução organizada — com responsável, prazo e acompanhamento."
-`[TELA]` **MILA — nunca mais perca uma demanda.**
+`[CENA]` Fundo grafite. Logo appMila surge em ciano com leve glow. Transição para o dashboard real.
+`[VO]` "É exatamente isso que o appMila resolve. Ele transforma conversas e reuniões em execução organizada — com responsável, prazo e acompanhamento."
+`[TELA]` **appMila — nunca mais perca uma demanda.**
 
 **00:46–01:08 · Demonstração: estrutura**
 `[CENA]` Animação do organograma: Organização → Áreas → Equipes → Pessoas, montando-se em camadas.
@@ -73,8 +73,8 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[TELA]` **Resultado: execução que a liderança enxerga.**
 
 **02:18–02:36 · Benefício colaborador (licença Família)**
-`[CENA]` Transição suave do ciano (trabalho) para um tom quente; colaborador em casa, organizando a rotina da família no MILA.
-`[VO]` "E tem mais: cada colaborador pode levar o MILA para casa, com uma licença Família. Organização não fica só no trabalho — vai junto para a vida."
+`[CENA]` Transição suave do ciano (trabalho) para um tom quente; colaborador em casa, organizando a rotina da família no appMila.
+`[VO]` "E tem mais: cada colaborador pode levar o appMila para casa, com uma licença Família. Organização não fica só no trabalho — vai junto para a vida."
 `[TELA]` **Trabalho e casa, na mesma conta.**
 
 **02:36–02:50 · Oferta + CTA**
@@ -105,9 +105,9 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[TELA]` "Achei que VOCÊ ia fazer."
 
 **00:20–00:34 · Virada**
-`[CENA]` Fundo quente; logo MILA com acento laranja. Tela do app modo Família.
-`[VO]` "O MILA organiza a casa sem complicar. Cada um sabe sua parte — e o que foi combinado deixa de virar discussão."
-`[TELA]` **MILA — a casa em harmonia.**
+`[CENA]` Fundo quente; logo appMila com acento laranja. Tela do app modo Família.
+`[VO]` "O appMila organiza a casa sem complicar. Cada um sabe sua parte — e o que foi combinado deixa de virar discussão."
+`[TELA]` **appMila — a casa em harmonia.**
 
 **00:34–01:00 · Demonstração**
 `[CENA]` Cadastro simples de pessoas da família (sem estrutura corporativa); criação de uma demanda "Levar o carro na revisão" com responsável + prazo + lembrete.
@@ -125,7 +125,7 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[TELA]` Family · Family Plus · Garantia de 7 dias
 
 **02:00–02:20 · CTA**
-`[CENA]` Família reunida, leve; logo MILA + CTA laranja.
+`[CENA]` Família reunida, leve; logo appMila + CTA laranja.
 `[VO]` "Coloque a casa em ordem hoje. Comece em minutos."
 `[TELA]` **appmila.co** · [link do afiliado]
 
@@ -152,8 +152,8 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[SCREEN]` **What you can't see, you can't control.**
 
 **00:34–00:46 · Turn**
-`[VO]` "That's exactly what MILA solves. It turns conversations and meetings into organized execution — with an owner, a deadline, and full tracking."
-`[SCREEN]` **MILA — never lose a task again.**
+`[VO]` "That's exactly what appMila solves. It turns conversations and meetings into organized execution — with an owner, a deadline, and full tracking."
+`[SCREEN]` **appMila — never lose a task again.**
 
 **00:46–01:08 · Structure**
 `[VO]` "Structure your company as it really is: organization, areas, and teams. Each manager sees their scope — and leadership sees everything."
@@ -172,7 +172,7 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[SCREEN]` **Result: execution leadership can see.**
 
 **02:18–02:36 · Employee benefit (Family license)**
-`[VO]` "And there's more: every team member can take MILA home with a Family license. Organization doesn't stay at work — it comes home too."
+`[VO]` "And there's more: every team member can take appMila home with a Family license. Organization doesn't stay at work — it comes home too."
 `[SCREEN]` **Work and home, in the same account.**
 
 **02:36–02:50 · Offer + CTA**
@@ -194,8 +194,8 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[SCREEN]` "I thought YOU were doing it."
 
 **00:20–00:34 · Turn**
-`[VO]` "MILA organizes the home without the hassle. Everyone knows their part — and what was agreed stops turning into a fight."
-`[SCREEN]` **MILA — a home in harmony.**
+`[VO]` "appMila organizes the home without the hassle. Everyone knows their part — and what was agreed stops turning into a fight."
+`[SCREEN]` **appMila — a home in harmony.**
 
 **00:34–01:00 · Demo**
 `[VO]` "Add your family in seconds. Create what needs to get done, set who does it, with a due date and a reminder. Simple as that."
@@ -232,8 +232,8 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[PANTALLA]` **Lo que no ves, no lo controlas.**
 
 **00:34–00:46 · Giro**
-`[VO]` "Eso es exactamente lo que MILA resuelve. Convierte conversaciones y reuniones en ejecución organizada — con responsable, plazo y seguimiento."
-`[PANTALLA]` **MILA — nunca más pierdas una tarea.**
+`[VO]` "Eso es exactamente lo que appMila resuelve. Convierte conversaciones y reuniones en ejecución organizada — con responsable, plazo y seguimiento."
+`[PANTALLA]` **appMila — nunca más pierdas una tarea.**
 
 **00:46–01:08 · Estructura**
 `[VO]` "Estructura tu empresa como realmente es: organización, áreas y equipos. Cada gerente ve su alcance — y el liderazgo lo ve todo."
@@ -252,7 +252,7 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[PANTALLA]` **Resultado: ejecución que el liderazgo ve.**
 
 **02:18–02:36 · Beneficio del colaborador (licencia Familia)**
-`[VO]` "Y hay más: cada colaborador puede llevar MILA a casa, con una licencia Familia. La organización no se queda en el trabajo — también va a casa."
+`[VO]` "Y hay más: cada colaborador puede llevar appMila a casa, con una licencia Familia. La organización no se queda en el trabajo — también va a casa."
 `[PANTALLA]` **Trabajo y hogar, en la misma cuenta.**
 
 **02:36–02:50 · Oferta + CTA**
@@ -274,8 +274,8 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 `[PANTALLA]` "Creí que lo hacías TÚ."
 
 **00:20–00:34 · Giro**
-`[VO]` "MILA organiza la casa sin complicar. Cada uno sabe su parte — y lo acordado deja de volverse discusión."
-`[PANTALLA]` **MILA — el hogar en armonía.**
+`[VO]` "appMila organiza la casa sin complicar. Cada uno sabe su parte — y lo acordado deja de volverse discusión."
+`[PANTALLA]` **appMila — el hogar en armonía.**
 
 **00:34–01:00 · Demo**
 `[VO]` "Registra a tu familia en segundos. Crea lo que hay que hacer, define quién lo hace, con plazo y recordatorio. Así de simple."
@@ -297,7 +297,7 @@ Idiomas: Português · English · Español. Linhas: Corporativo e Família.
 
 ## Notas para o editor / ferramenta de IA de vídeo
 
-- **Capturas de tela reais** do MILA são o herói visual: organograma, criação de Evento + atividades, dashboards/cascata, ranking com chama, KPIs. Gravar em tela cheia, alta resolução, com motion suave (zoom/scroll lento).
+- **Capturas de tela reais** do appMila são o herói visual: organograma, criação de Evento + atividades, dashboards/cascata, ranking com chama, KPIs. Gravar em tela cheia, alta resolução, com motion suave (zoom/scroll lento).
 - Manter **consistência de paleta** (ciano corporativo / laranja família) e tipografia sans-serif pesada nos textos-âncora.
 - Locução: voz profissional, ritmo confiante; corporativo mais grave/seguro, família mais quente/acolhedor.
 - Exportar cada vídeo em 16:9, 9:16 e 1:1, e gerar os cortes de 60s e 30s.

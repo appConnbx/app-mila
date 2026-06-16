@@ -6,5 +6,5 @@
     </mask>
   </defs>
   <rect x="10" y="10" width="120" height="120" rx="28" fill="#0F172A" mask="url(#kp)"/>
-  <text x="158" y="98" font-family="Arial, 'Segoe UI', sans-serif" font-size="74" font-weight="800" letter-spacing="2" fill="#0F172A">MILA</text>
+  <text x="158" y="98" font-family="Arial, 'Segoe UI', sans-serif" font-size="74" font-weight="800" letter-spacing="2" fill="#0F172A">appMila</text>
 </svg>

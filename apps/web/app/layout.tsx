@@ -9,7 +9,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'MILA',
+  title: 'appMila',
   description: 'Gestão de demandas, eventos e produtividade',
   // Verificação de propriedade do site no Google Search Console (usada para a
   // verificação da organização no Google Play Console).

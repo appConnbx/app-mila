@@ -1,6 +1,6 @@
-# Tom de Voz — MILA
+# Tom de Voz — appMila
 
-> Como o MILA fala. Para afiliados e parceiros comunicarem com consistência. v1 (jun/2026).
+> Como o appMila fala. Para afiliados e parceiros comunicarem com consistência. v1 (jun/2026).
 
 ## Essência
 **Direto, prático e humano.** Começa pela conclusão, sem floreio. Fala como quem resolve a vida de gente ocupada — não como software corporativo distante.
@@ -28,17 +28,17 @@
 - Evitar: "solução all-in-one", "revolucionário", "disruptivo", "potencialize", "alavanque".
 
 ## Ganchos por público
-- **Empresa:** "Saí da reunião com 8 tarefas na cabeça — falei e o MILA organizou." / "Pare de perder o que foi combinado na correria."
+- **Empresa:** "Saí da reunião com 8 tarefas na cabeça — falei e o appMila organizou." / "Pare de perder o que foi combinado na correria."
 - **Família:** "Mãos ocupadas? Fale a tarefa." / "A carga mental não é só sua: fale, divida, acompanhe."
 - **Afiliado (recrutamento):** "Indique uma vez, receba enquanto o cliente usar." / "Renda recorrente — sua receita acumula em vez de zerar."
 
 ## Exemplos (antes → depois)
 - ❌ "Maximize a eficiência do seu fluxo de trabalho com nossa solução inovadora."
-  ✅ "Fale a tarefa. O MILA organiza. Você executa."
+  ✅ "Fale a tarefa. O appMila organiza. Você executa."
 - ❌ "A ferramenta definitiva que vai revolucionar sua produtividade em 300%."
   ✅ "Capture em segundos, delegue com prazo e acompanhe até concluir."
 - ❌ "Ganhe muito dinheiro fácil como afiliado!"
-  ✅ "Comissão recorrente: indique o MILA e receba mês após mês."
+  ✅ "Comissão recorrente: indique o appMila e receba mês após mês."
 
 ## Conformidade (anúncios)
 - Sem promessa de resultado garantido (cliente ou afiliado).

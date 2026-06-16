@@ -2,7 +2,7 @@
 export const SUPABASE_URL = 'https://jqgdexxydtsbcebgvyvh.supabase.co'
 export const SUPABASE_ANON_KEY = 'sb_publishable_daqXhyvWAQUfS-Gp6mApIg_JZBZTfz2'
 
-// Backend do MILA (rota de transcrição de voz, autenticada por sessão).
+// Backend do appMila (rota de transcrição de voz, autenticada por sessão).
 export const APP_BASE_URL = 'https://www.appmila.co'
 
 // Polling leve da lista (1 RPC por ciclo).

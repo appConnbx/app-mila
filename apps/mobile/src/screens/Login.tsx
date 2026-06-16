@@ -32,7 +32,7 @@ export function Login() {
         <View style={s.mark}>
           <Text style={s.markM}>M</Text>
         </View>
-        <Text style={s.brand}>MILA</Text>
+        <Text style={s.brand}>appMila</Text>
       </View>
       <Text style={s.tagline}>{t('appTagline')}</Text>
       <Text style={s.hint}>{t('loginHint')}</Text>
