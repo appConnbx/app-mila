@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Avatar, Badge, Tag } from '@/components/ui'
 import { useDialog } from '@/components/use-dialog'
-import { advanceDemandStatus, toggleDemandPinned } from '@/app/(app)/tasks/actions'
+import { advanceDemandStatus, toggleDemandPinned, getDemandThread, addObservationInline, type DemandThread } from '@/app/(app)/tasks/actions'
 
 type Status = 'nova' | 'trabalhando' | 'finalizada'
 const NEXT: Record<Status, Status> = { nova: 'trabalhando', trabalhando: 'finalizada', finalizada: 'nova' }
@@ -34,6 +34,13 @@ export type DemandCardLabels = {
   start: string // → trabalhando
   reopen: string // → nova
   finish: string // → finalizada
+  observations: string
+  history: string
+  obsPlaceholder: string
+  send: string
+  noObs: string
+  noHistory: string
+  loading: string
 }
 
 /** Card interativo da lista ativa: clique abre modal de visualização; chip de
@@ -63,18 +70,46 @@ export function DemandCard({
   const [open, setOpen] = useState(false)
   const [leaving, setLeaving] = useState(false)
   const [busy, startTx] = useTransition()
+  const [thread, setThread] = useState<DemandThread | null>(null)
+  const [loadingThread, setLoadingThread] = useState(false)
+  const [obsText, setObsText] = useState('')
+  const [sending, setSending] = useState(false)
   const router = useRouter()
   const rootRef = useRef<HTMLDivElement>(null)
   const dialogRef = useDialog<HTMLDivElement>(open, () => setOpen(false))
 
+  const loadThread = useCallback(async () => {
+    setLoadingThread(true)
+    try {
+      setThread(await getDemandThread(demand.id))
+    } finally {
+      setLoadingThread(false)
+    }
+  }, [demand.id])
+
   useEffect(() => {
     if (!open) return
+    if (thread === null) void loadThread()
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
       document.body.style.overflow = prev
     }
-  }, [open])
+  }, [open, thread, loadThread])
+
+  function sendObs() {
+    const text = obsText.trim()
+    if (!text || sending) return
+    setSending(true)
+    void (async () => {
+      const res = await addObservationInline(demand.id, text)
+      if (res.ok) {
+        setObsText('')
+        await loadThread()
+      }
+      setSending(false)
+    })()
+  }
 
   function burstAndRefresh() {
     const row = rootRef.current
@@ -100,6 +135,7 @@ export function DemandCard({
       startTx(async () => {
         await advanceDemandStatus(demand.id, from, to)
         router.refresh()
+        if (open) void loadThread() // histórico atualiza no modal
       })
     }
   }
@@ -202,7 +238,7 @@ export function DemandCard({
             role="dialog"
             aria-modal="true"
             aria-labelledby="demand-view-title"
-            className={`glass glow-top my-auto w-full max-w-lg p-6 outline-none ${pinned ? 'ring-1 ring-orange-400/40' : ''}`}
+            className={`glass glow-top my-auto max-h-[88vh] w-full max-w-lg overflow-y-auto p-6 outline-none ${pinned ? 'ring-1 ring-orange-400/40' : ''}`}
           >
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
@@ -255,6 +291,53 @@ export function DemandCard({
                   {l.finish}
                 </button>
               </div>
+            </div>
+
+            {/* Observações */}
+            <div className="mt-6 border-t border-white/10 pt-4">
+              <h3 className="text-sm font-semibold text-white">{l.observations}</h3>
+              <div className="mt-2 flex gap-2">
+                <textarea
+                  value={obsText}
+                  onChange={(e) => setObsText(e.target.value)}
+                  rows={2}
+                  placeholder={l.obsPlaceholder}
+                  className="flex-1 rounded-lg border border-surface-border bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
+                />
+                <button
+                  type="button"
+                  onClick={sendObs}
+                  disabled={sending || !obsText.trim()}
+                  className="self-end rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500 disabled:opacity-50"
+                >
+                  {l.send}
+                </button>
+              </div>
+              <ul className="mt-3 space-y-2">
+                {loadingThread && !thread && <li className="text-sm text-slate-500">{l.loading}</li>}
+                {thread?.observations.map((o) => (
+                  <li key={o.id} className="rounded-lg bg-slate-900/40 px-3 py-2">
+                    <p className="whitespace-pre-wrap text-sm text-slate-200">{o.body}</p>
+                    <p className="mt-1 text-xs text-slate-500">{o.author} · {o.when}</p>
+                  </li>
+                ))}
+                {thread && thread.observations.length === 0 && <li className="text-sm text-slate-500">{l.noObs}</li>}
+              </ul>
+            </div>
+
+            {/* Histórico */}
+            <div className="mt-5 border-t border-white/10 pt-4">
+              <h3 className="text-sm font-semibold text-white">{l.history}</h3>
+              <ul className="mt-2 space-y-2">
+                {loadingThread && !thread && <li className="text-sm text-slate-500">{l.loading}</li>}
+                {thread?.history.map((h) => (
+                  <li key={h.id} className="text-xs">
+                    <p className="text-slate-300">{h.text}</p>
+                    <p className="text-slate-500">{h.who} · {h.when}</p>
+                  </li>
+                ))}
+                {thread && thread.history.length === 0 && <li className="text-sm text-slate-500">{l.noHistory}</li>}
+              </ul>
             </div>
 
             <button

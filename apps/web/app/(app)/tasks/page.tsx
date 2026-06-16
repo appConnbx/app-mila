@@ -220,6 +220,13 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
     start: locale === 'en' ? 'Start' : locale === 'es' ? 'Empezar' : 'Trabalhar',
     reopen: locale === 'en' ? 'Reopen' : 'Reabrir',
     finish: locale === 'en' ? 'Finish' : 'Concluir',
+    observations: locale === 'en' ? 'Notes' : locale === 'es' ? 'Observaciones' : 'Observações',
+    history: locale === 'en' ? 'History' : locale === 'es' ? 'Historial' : 'Histórico',
+    obsPlaceholder: locale === 'en' ? 'Write a note…' : locale === 'es' ? 'Escribe una observación…' : 'Escreva uma observação…',
+    send: locale === 'en' ? 'Send' : 'Enviar',
+    noObs: locale === 'en' ? 'No notes yet.' : locale === 'es' ? 'Sin observaciones.' : 'Sem observações.',
+    noHistory: locale === 'en' ? 'No history.' : locale === 'es' ? 'Sin historial.' : 'Sem histórico.',
+    loading: locale === 'en' ? 'Loading…' : locale === 'es' ? 'Cargando…' : 'Carregando…',
   }
 
   // Card ativo = componente cliente (clique → modal de visualização; concluir →
