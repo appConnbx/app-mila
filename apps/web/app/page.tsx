@@ -9,15 +9,15 @@ import { FamilyBonusCallout } from '@/components/family-bonus'
 import type { Locale } from '@/i18n/config'
 
 export const metadata: Metadata = {
-  title: 'MILA — Nunca mais perca uma demanda',
+  title: 'appMila — Nunca mais perca uma demanda',
   description:
-    'O MILA transforma conversas, reuniões e decisões em execução organizada — no trabalho e em casa. Capture, delegue, acompanhe e conclua. Tudo em uma só conta.',
+    'O appMila transforma conversas, reuniões e decisões em execução organizada — no trabalho e em casa. Capture, delegue, acompanhe e conclua. Tudo em uma só conta.',
   openGraph: {
-    title: 'MILA — Nunca mais perca uma demanda',
+    title: 'appMila — Nunca mais perca uma demanda',
     description:
       'Capture, delegue, acompanhe e conclua. Suas demandas do trabalho e as pessoais, na mesma conta.',
     url: 'https://www.appmila.co',
-    siteName: 'MILA',
+    siteName: 'appMila',
     locale: 'pt_BR',
     type: 'website',
   },
@@ -44,7 +44,7 @@ function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2">
       <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">M</span>
-      <span className="text-lg font-bold tracking-tight text-white">MILA</span>
+      <span className="text-lg font-bold tracking-tight text-white">appMila</span>
     </Link>
   )
 }

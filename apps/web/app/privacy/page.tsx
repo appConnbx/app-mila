@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidade — MILA',
-  description: 'Como o APP MILA coleta, usa e protege seus dados (LGPD).',
+  title: 'Política de Privacidade — appMila',
+  description: 'Como o appMila coleta, usa e protege seus dados (LGPD).',
 }
 
 const H = ({ children }: { children: React.ReactNode }) => (
@@ -19,11 +19,11 @@ export default function PrivacidadePage() {
     <div className="min-h-screen bg-surface text-slate-200">
       <div className="mx-auto max-w-3xl px-4 py-14">
         <Link href="/" className="text-sm text-brand hover:underline">← appmila.co</Link>
-        <h1 className="mt-4 text-3xl font-extrabold text-white">Política de Privacidade — APP MILA</h1>
+        <h1 className="mt-4 text-3xl font-extrabold text-white">Política de Privacidade — appMila</h1>
         <p className="mt-2 text-sm text-slate-500">Última atualização: 11 de junho de 2026</p>
 
         <P>
-          O APP MILA («MILA», «nós») é uma plataforma de gestão de demandas para empresas e
+          O appMila («appMila», «nós») é uma plataforma de gestão de demandas para empresas e
           famílias — um produto CONNBX, operado por Olivaldo Serafim Filho Consultoria em
           Tecnologia da Informação LTDA, CNPJ 49.848.097/0001-86, Piracicaba/SP. Esta política
           explica, em conformidade com a LGPD (Lei nº 13.709/2018), como tratamos seus dados no

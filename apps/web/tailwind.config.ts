@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Cor-âncora do MILA — via CSS var p/ tema por contexto
+        // Cor-âncora do appMila — via CSS var p/ tema por contexto
         // (corporativo=ciano/azul, família=verde). Ver --brand-rgb em globals.css.
         brand: {
           DEFAULT: 'rgb(var(--brand-rgb) / <alpha-value>)',

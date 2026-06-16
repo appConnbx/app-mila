@@ -9,7 +9,7 @@ import { priceId, STRIPE_PRICES_TEST, type MilaPlan } from '@/lib/stripe/catalog
 import { PLANS } from '@/lib/plans'
 import { rateLimit, clientIp } from '@/lib/rate-limit'
 
-export const metadata = { title: 'Assinar · MILA', robots: { index: false } }
+export const metadata = { title: 'Assinar · appMila', robots: { index: false } }
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -35,7 +35,7 @@ export default async function SubscribePage({
   const t = await getTranslations({ locale, namespace: 'access' })
   const nx = safeNext(next)
 
-  // Gate "bloquear e orientar": se o e-mail já tem login MILA, não cria conta nova.
+  // Gate "bloquear e orientar": se o e-mail já tem login appMila, não cria conta nova.
   async function start(formData: FormData) {
     'use server'
     const email = String(formData.get('email') ?? '').trim().toLowerCase()
@@ -80,7 +80,7 @@ export default async function SubscribePage({
       <Aurora />
       <div className="glass glow-top w-full max-w-sm p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-white">MILA</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">appMila</h1>
           <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-brand" />
         </div>
 

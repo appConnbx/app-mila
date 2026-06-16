@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Segurança — MILA',
-  description: 'Como o APP MILA protege os dados da sua empresa e da sua família.',
+  title: 'Segurança — appMila',
+  description: 'Como o appMila protege os dados da sua empresa e da sua família.',
 }
 
 const H = ({ children }: { children: React.ReactNode }) => (
@@ -19,11 +19,11 @@ export default function SegurancaPage() {
     <div className="min-h-screen bg-surface text-slate-200">
       <div className="mx-auto max-w-3xl px-4 py-14">
         <Link href="/" className="text-sm text-brand hover:underline">← appmila.co</Link>
-        <h1 className="mt-4 text-3xl font-extrabold text-white">Segurança no APP MILA</h1>
+        <h1 className="mt-4 text-3xl font-extrabold text-white">Segurança no appMila</h1>
         <p className="mt-2 text-sm text-slate-500">Última atualização: 12 de junho de 2026</p>
 
         <P>
-          O MILA foi desenhado para empresas e famílias confiarem suas demandas do dia a dia.
+          O appMila foi desenhado para empresas e famílias confiarem suas demandas do dia a dia.
           Abaixo, como protegemos seus dados em todas as camadas — site, sistema web, agente
           desktop e aplicativo móvel.
         </P>

@@ -3,7 +3,7 @@
 import { useMemo, useState, type ReactNode } from 'react'
 
 /* =========================================================================
-   Simulador de comissão — Programa de Afiliados MILA.
+   Simulador de comissão — Programa de Afiliados appMila.
 
    Dois motores de ganho (modelo real):
    - BRASIL = VENDA ÚNICA. O cliente parcela em 12x, mas para o afiliado é uma

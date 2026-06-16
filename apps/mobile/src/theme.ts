@@ -1,4 +1,4 @@
-// Tema MILA (mesma identidade do agente desktop e do web).
+// Tema appMila (mesma identidade do agente desktop e do web).
 export const C = {
   bg: '#0F172A',
   card: 'rgba(255,255,255,0.05)',

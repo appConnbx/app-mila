@@ -5,8 +5,8 @@ import type { Locale } from '@/i18n/config'
 import { StartWizard } from './_wizard'
 
 export const metadata: Metadata = {
-  title: 'Começar · MILA',
-  description: 'Responda algumas perguntas rápidas e descubra o plano ideal do MILA.',
+  title: 'Começar · appMila',
+  description: 'Responda algumas perguntas rápidas e descubra o plano ideal do appMila.',
 }
 
 const DICT_KEYS = [
@@ -59,7 +59,7 @@ export default async function StartPage() {
       <div className="mb-8 text-center">
         <Link href="/" className="inline-flex items-center gap-2">
           <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">M</span>
-          <span className="text-lg font-bold tracking-tight text-white">MILA</span>
+          <span className="text-lg font-bold tracking-tight text-white">appMila</span>
         </Link>
       </div>
       <StartWizard dict={dict} plans={plans} freeHref="/start-family-free" />

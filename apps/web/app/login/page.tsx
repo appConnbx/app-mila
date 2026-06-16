@@ -23,7 +23,7 @@ export default async function LoginPage({
           <LanguageSwitcher current={locale} />
         </div>
         <div className="mb-7 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-white">MILA</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">appMila</h1>
           <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-brand" />
           <p className="mt-3 text-sm text-slate-400">{t('subtitle')}</p>
         </div>

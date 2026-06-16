@@ -7,9 +7,9 @@ import { corpPlansBR, corpPlansINTL, famPlansBR, famPlansINTL } from './plans'
    social fica vazia até o cliente fornecer depoimentos REAIS. */
 
 const COMPANY_BR =
-  'APP MILA é um produto CONNBX — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brasil.'
+  'appMila é um produto CONNBX — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brasil.'
 const COMPANY_INTL =
-  'MILA is a CONNBX product — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · Tax ID 49.848.097/0001-86 · Piracicaba/SP, Brazil.'
+  'appMila is a CONNBX product — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · Tax ID 49.848.097/0001-86 · Piracicaba/SP, Brazil.'
 const SUPPORT = 'help@appmila.co'
 
 const hlBrand = (s: string) => <span className="text-brand">{s}</span>
@@ -23,7 +23,7 @@ export const brEmpresa: SalesContent = {
   badge: 'Para empresas e equipes',
   headline: <>Sua equipe {hlBrand('para de perder demanda')} no boca a boca</>,
   subtitle:
-    'O MILA transforma o que é combinado em reuniões, conversas e corredores em tarefas com responsável, prazo e acompanhamento — para a liderança enxergar a execução, não só promessas.',
+    'O appMila transforma o que é combinado em reuniões, conversas e corredores em tarefas com responsável, prazo e acompanhamento — para a liderança enxergar a execução, não só promessas.',
   ctaPrimary: 'Ver planos',
   trustline: 'Garantia de 7 dias · Acesso imediato · Cancele quando quiser',
   heroBullets: ['Captura por voz e texto', 'Painéis por área e equipe', 'Bônus Family Plus para cada colaborador'],
@@ -60,12 +60,12 @@ export const brEmpresa: SalesContent = {
     { n: '04', t: 'Conclua', d: 'Registre o que foi feito. Vira histórico e indicador.' },
   ],
 
-  authTitle: 'Por que criamos o MILA',
+  authTitle: 'Por que criamos o appMila',
   authBody: [
-    'O MILA nasceu dentro da CONNBX, uma consultoria de tecnologia, da dor real de ver decisões importantes se perderem entre reuniões, mensagens e a memória de cada um.',
+    'O appMila nasceu dentro da CONNBX, uma consultoria de tecnologia, da dor real de ver decisões importantes se perderem entre reuniões, mensagens e a memória de cada um.',
     'Testamos planilhas, grupos de mensagem e ferramentas complexas demais. Nada resolvia o essencial: capturar a demanda em segundos e garantir que ela chegasse a alguém, com prazo. Então construímos a ferramenta que faltava — e abrimos para outras empresas.',
   ],
-  authSignature: '— Equipe CONNBX, criadora do MILA',
+  authSignature: '— Equipe CONNBX, criadora do appMila',
 
   plansKicker: 'Planos corporativos',
   plansTitle: 'Escolha pelo tamanho da sua equipe',
@@ -78,12 +78,12 @@ export const brEmpresa: SalesContent = {
 
   guaranteeTitle: 'Garantia incondicional de 7 dias',
   guaranteeBody:
-    'Experimente sem risco. Se nos primeiros 7 dias o MILA não fizer sentido para a sua empresa, devolvemos 100% do valor — sem perguntas.',
+    'Experimente sem risco. Se nos primeiros 7 dias o appMila não fizer sentido para a sua empresa, devolvemos 100% do valor — sem perguntas.',
 
   faqTitle: 'Perguntas frequentes',
   faqs: [
     { q: 'Como funciona a cobrança?', a: 'O plano é anual e pode ser parcelado em até 12x no cartão de crédito. O pagamento é processado com segurança em ambiente criptografado.' },
-    { q: 'Preciso instalar algo?', a: 'Não é obrigatório. O MILA funciona no navegador. Há também um gadget para Windows e o app de celular, opcionais.' },
+    { q: 'Preciso instalar algo?', a: 'Não é obrigatório. O appMila funciona no navegador. Há também um gadget para Windows e o app de celular, opcionais.' },
     { q: 'O que é o bônus Family Plus?', a: 'Cada colaborador do plano corporativo ganha um plano Family Plus licenciado para organizar a casa e a família, enquanto a empresa mantiver a assinatura.' },
     { q: 'Posso aumentar o número de usuários depois?', a: 'Sim. É só migrar para um plano maior a qualquer momento, conforme a equipe cresce.' },
     { q: 'E se eu quiser cancelar?', a: 'Você cancela quando quiser. Nos primeiros 7 dias o reembolso é integral.' },
@@ -95,7 +95,7 @@ export const brEmpresa: SalesContent = {
 
   footerCompany: COMPANY_BR,
   footerDisclaimer:
-    'MILA é um software de organização de demandas e produtividade. Não comercializamos nem prometemos resultados financeiros. Pagamentos processados em ambiente seguro e criptografado.',
+    'appMila é um software de organização de demandas e produtividade. Não comercializamos nem prometemos resultados financeiros. Pagamentos processados em ambiente seguro e criptografado.',
   privacyLabel: 'Política de Privacidade',
   termsLabel: 'Segurança',
   supportEmail: SUPPORT,
@@ -108,7 +108,7 @@ export const brPessoal: SalesContent = {
   badge: 'Para a casa e a família',
   headline: <>Combinados claros, {hlOrange('casa em harmonia')}</>,
   subtitle:
-    'Chega de “achei que você ia fazer”. O MILA organiza o que precisa ser feito em casa — com responsável, prazo e lembrete — para cada um saber sua parte sem cobrança.',
+    'Chega de “achei que você ia fazer”. O appMila organiza o que precisa ser feito em casa — com responsável, prazo e lembrete — para cada um saber sua parte sem cobrança.',
   ctaPrimary: 'Ver planos',
   trustline: 'Garantia de 7 dias · Comece em minutos · Cancele quando quiser',
   heroBullets: ['Captura por voz e texto', 'Até 5 ou 10 pessoas', 'No celular e no computador'],
@@ -145,10 +145,10 @@ export const brPessoal: SalesContent = {
 
   authTitle: 'De uma ferramenta de empresa para a sua casa',
   authBody: [
-    'O MILA começou ajudando empresas a não perder demandas. Mas a mesma bagunça acontece em casa — só que com gente que a gente ama.',
+    'O appMila começou ajudando empresas a não perder demandas. Mas a mesma bagunça acontece em casa — só que com gente que a gente ama.',
     'Por isso criamos os planos família: a mesma praticidade de capturar por voz e combinar com prazo, num formato simples, sem estrutura corporativa, por um preço acessível.',
   ],
-  authSignature: '— Equipe CONNBX, criadora do MILA',
+  authSignature: '— Equipe CONNBX, criadora do appMila',
 
   plansKicker: 'Planos família',
   plansTitle: 'Escolha pelo tamanho da sua família',
@@ -182,7 +182,7 @@ export const brPessoal: SalesContent = {
 
   footerCompany: COMPANY_BR,
   footerDisclaimer:
-    'MILA é um software de organização de tarefas e produtividade. Pagamentos processados em ambiente seguro e criptografado.',
+    'appMila é um software de organização de tarefas e produtividade. Pagamentos processados em ambiente seguro e criptografado.',
   privacyLabel: 'Política de Privacidade',
   termsLabel: 'Segurança',
   supportEmail: SUPPORT,
@@ -196,7 +196,7 @@ export const enBusiness: SalesContent = {
   badge: 'For companies and teams',
   headline: <>Stop letting your team {hlBrand('lose tasks')} in hallway conversations</>,
   subtitle:
-    'MILA turns what gets agreed in meetings, chats and hallways into tasks with an owner, a deadline and follow-up — so leadership sees execution, not just promises.',
+    'appMila turns what gets agreed in meetings, chats and hallways into tasks with an owner, a deadline and follow-up — so leadership sees execution, not just promises.',
   ctaPrimary: 'See plans',
   trustline: '7-day guarantee · Instant access · Cancel anytime',
   heroBullets: ['Voice & text capture', 'Dashboards by team & area', 'Family Plus bonus for every employee'],
@@ -233,12 +233,12 @@ export const enBusiness: SalesContent = {
     { n: '04', t: 'Complete', d: 'Log what was done. It becomes history and a metric.' },
   ],
 
-  authTitle: 'Why we built MILA',
+  authTitle: 'Why we built appMila',
   authBody: [
-    'MILA was born inside CONNBX, a technology consultancy, out of the real pain of watching important decisions get lost between meetings, messages and everyone’s memory.',
+    'appMila was born inside CONNBX, a technology consultancy, out of the real pain of watching important decisions get lost between meetings, messages and everyone’s memory.',
     'We tried spreadsheets, chat groups and overly complex tools. None solved the essential: capture a task in seconds and make sure it reached someone, with a deadline. So we built the tool we were missing — and opened it to other companies.',
   ],
-  authSignature: '— The CONNBX team, makers of MILA',
+  authSignature: '— The CONNBX team, makers of appMila',
 
   plansKicker: 'Corporate plans',
   plansTitle: 'Choose by the size of your team',
@@ -252,12 +252,12 @@ export const enBusiness: SalesContent = {
   }),
 
   guaranteeTitle: '7-day money-back guarantee',
-  guaranteeBody: 'Try it risk-free. If MILA isn’t right for your company within the first 7 days, we refund 100% — no questions asked.',
+  guaranteeBody: 'Try it risk-free. If appMila isn’t right for your company within the first 7 days, we refund 100% — no questions asked.',
 
   faqTitle: 'Frequently asked questions',
   faqs: [
     { q: 'How does billing work?', a: 'A monthly subscription, processed securely. Cancel anytime.' },
-    { q: 'Do I need to install anything?', a: 'No. MILA runs in the browser. There is also an optional Windows gadget and a mobile app.' },
+    { q: 'Do I need to install anything?', a: 'No. appMila runs in the browser. There is also an optional Windows gadget and a mobile app.' },
     { q: 'What is the Family Plus bonus?', a: 'Every employee on a corporate plan gets a licensed Family Plus to organize home and family, while the company keeps the subscription.' },
     { q: 'Can I add more users later?', a: 'Yes. Move to a larger plan anytime as your team grows.' },
     { q: 'What if I want to cancel?', a: 'Cancel anytime. Within the first 7 days the refund is full.' },
@@ -269,7 +269,7 @@ export const enBusiness: SalesContent = {
 
   footerCompany: COMPANY_INTL,
   footerDisclaimer:
-    'MILA is task-management and productivity software. We do not sell or promise financial results. Payments are processed securely.',
+    'appMila is task-management and productivity software. We do not sell or promise financial results. Payments are processed securely.',
   privacyLabel: 'Privacy Policy',
   termsLabel: 'Security',
   supportEmail: SUPPORT,
@@ -282,7 +282,7 @@ export const enPersonal: SalesContent = {
   badge: 'For home and family',
   headline: <>Clear agreements, {hlOrange('a calmer home')}</>,
   subtitle:
-    'No more “I thought you were doing that.” MILA organizes what needs to get done at home — with an owner, a deadline and reminders — so everyone knows their part without nagging.',
+    'No more “I thought you were doing that.” appMila organizes what needs to get done at home — with an owner, a deadline and reminders — so everyone knows their part without nagging.',
   ctaPrimary: 'See plans',
   trustline: '7-day guarantee · Start in minutes · Cancel anytime',
   heroBullets: ['Voice & text capture', 'Up to 5 or 10 people', 'On phone and computer'],
@@ -319,10 +319,10 @@ export const enPersonal: SalesContent = {
 
   authTitle: 'From a business tool to your home',
   authBody: [
-    'MILA started by helping companies stop losing tasks. But the same chaos happens at home — only with the people we love.',
+    'appMila started by helping companies stop losing tasks. But the same chaos happens at home — only with the people we love.',
     'So we created the family plans: the same ease of voice capture and agreed deadlines, in a simple format, with no corporate structure, at an affordable price.',
   ],
-  authSignature: '— The CONNBX team, makers of MILA',
+  authSignature: '— The CONNBX team, makers of appMila',
 
   plansKicker: 'Family plans',
   plansTitle: 'Choose by the size of your family',
@@ -357,7 +357,7 @@ export const enPersonal: SalesContent = {
   finalCta: 'Organize my family',
 
   footerCompany: COMPANY_INTL,
-  footerDisclaimer: 'MILA is task-management and productivity software. Payments are processed securely.',
+  footerDisclaimer: 'appMila is task-management and productivity software. Payments are processed securely.',
   privacyLabel: 'Privacy Policy',
   termsLabel: 'Security',
   supportEmail: SUPPORT,
@@ -371,7 +371,7 @@ export const esBusiness: SalesContent = {
   badge: 'Para empresas y equipos',
   headline: <>Que tu equipo {hlBrand('deje de perder tareas')} en conversaciones de pasillo</>,
   subtitle:
-    'MILA convierte lo que se acuerda en reuniones, chats y pasillos en tareas con responsable, plazo y seguimiento — para que la dirección vea ejecución, no solo promesas.',
+    'appMila convierte lo que se acuerda en reuniones, chats y pasillos en tareas con responsable, plazo y seguimiento — para que la dirección vea ejecución, no solo promesas.',
   ctaPrimary: 'Ver planes',
   trustline: 'Garantía de 7 días · Acceso inmediato · Cancela cuando quieras',
   heroBullets: ['Captura por voz y texto', 'Paneles por equipo y área', 'Bono Family Plus para cada empleado'],
@@ -408,12 +408,12 @@ export const esBusiness: SalesContent = {
     { n: '04', t: 'Completa', d: 'Registra lo hecho. Se vuelve historial e indicador.' },
   ],
 
-  authTitle: 'Por qué creamos MILA',
+  authTitle: 'Por qué creamos appMila',
   authBody: [
-    'MILA nació dentro de CONNBX, una consultora de tecnología, del dolor real de ver decisiones importantes perderse entre reuniones, mensajes y la memoria de cada uno.',
+    'appMila nació dentro de CONNBX, una consultora de tecnología, del dolor real de ver decisiones importantes perderse entre reuniones, mensajes y la memoria de cada uno.',
     'Probamos hojas de cálculo, grupos de chat y herramientas demasiado complejas. Nada resolvía lo esencial: capturar una tarea en segundos y asegurar que llegara a alguien, con plazo. Así construimos la herramienta que faltaba — y la abrimos a otras empresas.',
   ],
-  authSignature: '— El equipo de CONNBX, creadores de MILA',
+  authSignature: '— El equipo de CONNBX, creadores de appMila',
 
   plansKicker: 'Planes corporativos',
   plansTitle: 'Elige según el tamaño de tu equipo',
@@ -427,12 +427,12 @@ export const esBusiness: SalesContent = {
   }),
 
   guaranteeTitle: 'Garantía de 7 días',
-  guaranteeBody: 'Pruébalo sin riesgo. Si MILA no encaja con tu empresa en los primeros 7 días, devolvemos el 100% — sin preguntas.',
+  guaranteeBody: 'Pruébalo sin riesgo. Si appMila no encaja con tu empresa en los primeros 7 días, devolvemos el 100% — sin preguntas.',
 
   faqTitle: 'Preguntas frecuentes',
   faqs: [
     { q: '¿Cómo funciona el cobro?', a: 'Una suscripción mensual, procesada de forma segura. Cancela cuando quieras.' },
-    { q: '¿Necesito instalar algo?', a: 'No. MILA funciona en el navegador. También hay un gadget para Windows y una app móvil, opcionales.' },
+    { q: '¿Necesito instalar algo?', a: 'No. appMila funciona en el navegador. También hay un gadget para Windows y una app móvil, opcionales.' },
     { q: '¿Qué es el bono Family Plus?', a: 'Cada empleado del plan corporativo recibe un Family Plus con licencia para organizar el hogar y la familia, mientras la empresa mantenga la suscripción.' },
     { q: '¿Puedo agregar más usuarios después?', a: 'Sí. Cambia a un plan mayor cuando quieras, a medida que crece el equipo.' },
     { q: '¿Y si quiero cancelar?', a: 'Cancela cuando quieras. En los primeros 7 días el reembolso es total.' },
@@ -444,7 +444,7 @@ export const esBusiness: SalesContent = {
 
   footerCompany: COMPANY_INTL,
   footerDisclaimer:
-    'MILA es software de gestión de tareas y productividad. No vendemos ni prometemos resultados financieros. Pagos procesados de forma segura.',
+    'appMila es software de gestión de tareas y productividad. No vendemos ni prometemos resultados financieros. Pagos procesados de forma segura.',
   privacyLabel: 'Política de Privacidad',
   termsLabel: 'Seguridad',
   supportEmail: SUPPORT,
@@ -457,7 +457,7 @@ export const esPersonal: SalesContent = {
   badge: 'Para el hogar y la familia',
   headline: <>Acuerdos claros, {hlOrange('un hogar más tranquilo')}</>,
   subtitle:
-    'Se acabó el “pensé que tú lo harías”. MILA organiza lo que hay que hacer en casa — con responsable, plazo y recordatorios — para que cada uno sepa su parte sin reclamos.',
+    'Se acabó el “pensé que tú lo harías”. appMila organiza lo que hay que hacer en casa — con responsable, plazo y recordatorios — para que cada uno sepa su parte sin reclamos.',
   ctaPrimary: 'Ver planes',
   trustline: 'Garantía de 7 días · Empieza en minutos · Cancela cuando quieras',
   heroBullets: ['Captura por voz y texto', 'Hasta 5 o 10 personas', 'En el móvil y la computadora'],
@@ -494,10 +494,10 @@ export const esPersonal: SalesContent = {
 
   authTitle: 'De una herramienta de empresa a tu hogar',
   authBody: [
-    'MILA empezó ayudando a empresas a no perder tareas. Pero el mismo caos pasa en casa — solo que con la gente que amamos.',
+    'appMila empezó ayudando a empresas a no perder tareas. Pero el mismo caos pasa en casa — solo que con la gente que amamos.',
     'Por eso creamos los planes familia: la misma facilidad de capturar por voz y acordar plazos, en un formato simple, sin estructura corporativa, a un precio accesible.',
   ],
-  authSignature: '— El equipo de CONNBX, creadores de MILA',
+  authSignature: '— El equipo de CONNBX, creadores de appMila',
 
   plansKicker: 'Planes familia',
   plansTitle: 'Elige según el tamaño de tu familia',
@@ -532,7 +532,7 @@ export const esPersonal: SalesContent = {
   finalCta: 'Organizar mi familia',
 
   footerCompany: COMPANY_INTL,
-  footerDisclaimer: 'MILA es software de gestión de tareas y productividad. Pagos procesados de forma segura.',
+  footerDisclaimer: 'appMila es software de gestión de tareas y productividad. Pagos procesados de forma segura.',
   privacyLabel: 'Política de Privacidad',
   termsLabel: 'Seguridad',
   supportEmail: SUPPORT,

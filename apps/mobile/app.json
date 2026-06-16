@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "MILA",
+    "name": "appMila",
     "slug": "mila-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -41,7 +41,7 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "O MILA usa o microfone para criar demandas por voz."
+          "microphonePermission": "O appMila usa o microfone para criar demandas por voz."
         }
       ],
       "expo-secure-store",

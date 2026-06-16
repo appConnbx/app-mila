@@ -6,7 +6,7 @@ import { AffiliateSimulator, type SimPlan } from '@/components/affiliate-simulat
 import { PLANS, CORP_PLANS, FAM_PLANS } from '@/lib/plans'
 
 /* =========================================================================
-   Programa de Afiliados MILA — página de recrutamento (pt-BR, mercado BR).
+   Programa de Afiliados appMila — página de recrutamento (pt-BR, mercado BR).
    Modelo de ganho:
    - BRASIL = VENDA ÚNICA (cliente parcela em 12x; afiliado recebe comissão
      sobre o valor TOTAL, de uma vez) → "faturamento direto". Posicionamento
@@ -42,7 +42,7 @@ const COMM: Record<string, { c25: number; c50: number }> = {
 }
 
 export const metadata: Metadata = {
-  title: 'Seja Afiliado MILA — 25% de comissão (50% no lançamento de junho/2026)',
+  title: 'Seja Afiliado appMila — 25% de comissão (50% no lançamento de junho/2026)',
   description:
     'Fature de duas formas: comissão cheia em cada venda no Brasil (como um sócio) e renda recorrente em dólar no internacional. Comissão de 25% — e 50% em todas as vendas de junho/2026. Simule seus ganhos.',
   robots: { index: true, follow: true },
@@ -148,7 +148,7 @@ export default function AffiliatesPage() {
         <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5">
           <Link href="/" className="flex items-center gap-2">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">M</span>
-            <span className="text-lg font-bold tracking-tight text-white">MILA</span>
+            <span className="text-lg font-bold tracking-tight text-white">appMila</span>
           </Link>
         </nav>
       </header>
@@ -182,10 +182,10 @@ export default function AffiliatesPage() {
         </div>
       </section>
 
-      {/* POR QUE MILA — dois motores de ganho */}
+      {/* POR QUE appMila — dois motores de ganho */}
       <section className="mx-auto max-w-5xl px-4 py-14">
         <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-brand">Por que vender MILA</p>
+          <p className="text-sm font-semibold uppercase tracking-wider text-brand">Por que vender appMila</p>
           <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">Você não ganha de um jeito só. Ganha de dois.</h2>
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">
             No Brasil, você entra como sócio de cada venda. No mundo, constrói uma renda recorrente em dólar. E faz isso com
@@ -198,7 +198,7 @@ export default function AffiliatesPage() {
             de uma vez. Quanto maior o plano, maior o seu corte. Você não é só divulgador — é parte do negócio.
           </Card>
           <Card title="Recorrência em dólar (internacional)">
-            Lá fora o MILA é assinatura mensal. Cada cliente que você indica paga você todo mês, em dólar, enquanto usar. Indique
+            Lá fora o appMila é assinatura mensal. Cada cliente que você indica paga você todo mês, em dólar, enquanto usar. Indique
             uma vez, receba muitas. É a renda que se acumula.
           </Card>
           <Card title="High ticket e low ticket, no mesmo produto">
@@ -206,7 +206,7 @@ export default function AffiliatesPage() {
             Você escolhe onde atacar — ou faz os dois e equilibra sua carteira.
           </Card>
           <Card title="Sistema multilíngue: pt / en / es">
-            Todo o MILA funciona em português, inglês e espanhol. Você vende no Brasil e no mundo com o mesmo produto, sem
+            Todo o appMila funciona em português, inglês e espanhol. Você vende no Brasil e no mundo com o mesmo produto, sem
             barreira de idioma — e abre a porta do faturamento em dólar.
           </Card>
           <Card title="Produto que as pessoas usam todo dia">
@@ -227,7 +227,7 @@ export default function AffiliatesPage() {
           <h2 className="mt-2 text-3xl font-bold text-white">Entre como sócio. Cresça como consultor.</h2>
           <div className="mt-4 space-y-3 leading-relaxed text-slate-300">
             <p>
-              Você pode divulgar o MILA como faz com qualquer produto: seu link, suas redes, sua audiência. No Brasil, cada venda
+              Você pode divulgar o appMila como faz com qualquer produto: seu link, suas redes, sua audiência. No Brasil, cada venda
               já te coloca como <strong className="text-white">sócio do resultado</strong> — comissão cheia sobre o valor total,
               recebida de uma vez.
             </p>
@@ -298,8 +298,8 @@ export default function AffiliatesPage() {
           <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">O arsenal que vem junto com a sua afiliação</h2>
         </div>
         <div className="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          <Card title="Manual da marca + logos">Identidade visual, cores e versões do logo para você criar material com a cara do MILA.</Card>
-          <Card title="Tom de voz">Como o MILA fala. Você comunica com consistência e profissionalismo desde o primeiro post.</Card>
+          <Card title="Manual da marca + logos">Identidade visual, cores e versões do logo para você criar material com a cara do appMila.</Card>
+          <Card title="Tom de voz">Como o appMila fala. Você comunica com consistência e profissionalismo desde o primeiro post.</Card>
           <Card title="Prompts de IA">Prompts prontos para gerar copy, anúncios, roteiros e estratégia de campanha em minutos.</Card>
           <Card title="Páginas de vendas por produto">LPs prontas para empresa e pessoal, Brasil e exterior, em pt/en/es — é só usar o seu link.</Card>
           <Card title="Demonstração interativa">O cliente testa a captura por voz na hora, direto na página. Sua conversão agradece.</Card>
@@ -312,7 +312,7 @@ export default function AffiliatesPage() {
         <h2 className="text-center text-3xl font-bold text-white">Perguntas frequentes</h2>
         <div className="mt-8 space-y-3">
           {[
-            { q: 'Como funciona a comissão?', a: 'No Brasil a venda é única: você recebe a comissão sobre o plano de uma vez (o cliente é quem parcela em até 12x). No internacional o MILA é assinatura mensal em dólar: você recebe a comissão recorrente todo mês, enquanto o cliente mantiver a assinatura. Os valores exibidos no simulador são os praticados pela Hotmart (já com as taxas da plataforma) e podem variar conforme a modalidade de parcelamento escolhida pelo comprador.' },
+            { q: 'Como funciona a comissão?', a: 'No Brasil a venda é única: você recebe a comissão sobre o plano de uma vez (o cliente é quem parcela em até 12x). No internacional o appMila é assinatura mensal em dólar: você recebe a comissão recorrente todo mês, enquanto o cliente mantiver a assinatura. Os valores exibidos no simulador são os praticados pela Hotmart (já com as taxas da plataforma) e podem variar conforme a modalidade de parcelamento escolhida pelo comprador.' },
             { q: 'O que muda no lançamento de junho/2026?', a: 'Em junho a comissão sobe para 50% em todas as vendas. No Brasil, é o dobro do faturamento direto por venda. No internacional, esses 50% valem para sempre — em cada renovação da assinatura que você fechar em junho. Depois do mês, novas vendas voltam a 25%.' },
             { q: 'O que é high ticket e low ticket?', a: 'O mesmo produto tem planos de empresa (high ticket, valores maiores) e de uso pessoal/família (low ticket, entrada baixa e volume). Você pode focar em um, ou trabalhar os dois para equilibrar valor por venda e volume.' },
             { q: 'Preciso ser especialista para vender?', a: 'Não. Você pode divulgar como já faz com qualquer produto. Quem quiser ir além, atuando como consultor, tende a fechar tickets maiores e construir carteira recorrente — e damos o material para isso.' },
@@ -373,9 +373,9 @@ export default function AffiliatesPage() {
             em até 12x); no internacional é assinatura recorrente em dólar. Resultados dependem do seu esforço de divulgação, das
             vendas efetivas, de aprovações, reembolsos e renovações, e das regras da Hotmart.
           </p>
-          <p>MILA · Programa de Afiliados</p>
+          <p>appMila · Programa de Afiliados</p>
           <p className="flex flex-wrap gap-x-5 gap-y-1">
-            <Link href="/" className="hover:text-white">Conhecer o MILA</Link>
+            <Link href="/" className="hover:text-white">Conhecer o appMila</Link>
             <Link href="/privacy" className="hover:text-white">Privacidade</Link>
             <Link href="/security" className="hover:text-white">Segurança</Link>
           </p>

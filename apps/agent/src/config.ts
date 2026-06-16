@@ -11,7 +11,7 @@ export const MIC = { w: 260, h: 210 }
 // Polling leve (1 RPC por ciclo) — 20s para a notificação chegar rápido.
 export const POLL_MS = 20_000
 
-// Backend do MILA (rota de transcrição de voz, autenticada por sessão).
+// Backend do appMila (rota de transcrição de voz, autenticada por sessão).
 export const APP_BASE_URL = 'https://www.appmila.co'
 
 // Gravação de voz (segure-e-fale da pílula): solta ou estoura 10s = cria.

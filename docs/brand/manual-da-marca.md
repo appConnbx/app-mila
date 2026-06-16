@@ -1,9 +1,9 @@
-# Manual da Marca — MILA
+# Manual da Marca — appMila
 
-> Guia para afiliados e parceiros criarem material com a cara do MILA. v1 (jun/2026).
+> Guia para afiliados e parceiros criarem material com a cara do appMila. v1 (jun/2026).
 
 ## 1. A marca
-- **Nome:** MILA (sempre em caixa alta no logotipo; "MILA" no texto, nunca "Mila" em peças).
+- **Nome:** appMila (sempre com **a** minúsculo e **M** maiúsculo, estilo "iPhone"/"eBay" — inclusive no início de frase; nunca "MILA", "Mila", "App Mila" ou "AppMila").
 - **O que é:** app/sistema que **transforma voz em demanda organizada** — para empresas e famílias. Web + agente para computador + app de celular. Multilíngue (pt-BR, inglês, espanhol).
 - **Promessa central:** *"Nunca mais perca uma demanda."* Capture em segundos, até por voz; delegue com responsável e prazo; acompanhe até concluir.
 - **Diferencial-âncora:** **captura por voz** (tira o atrito de digitar/organizar dos concorrentes).
@@ -26,7 +26,7 @@
 Regra: **ciano é a cor-âncora** da marca; **dourado** só para oferta/lançamento (ex.: os 50%). Fundo escuro é o padrão (estética "dashboard executivo").
 
 ## 4. Logo
-- Símbolo: **"M"** em quadrado arredondado ciano, fundo escuro; wordmark **MILA** ao lado.
+- Símbolo: **"M"** em quadrado arredondado ciano, fundo escuro; wordmark **appMila** ao lado.
 - Espaço de respiro: manter margem ≥ a altura do "M" ao redor do logo.
 - Não: distorcer, trocar as cores, aplicar sombra pesada, colocar sobre fundo de baixo contraste, rotacionar.
 - Fundos: usar versão clara do wordmark em fundo escuro; versão escura em fundo claro.
@@ -42,7 +42,7 @@ Regra: **ciano é a cor-âncora** da marca; **dourado** só para oferta/lançame
 - Mostrar o produto em uso real (falar a tarefa; lista organizada; no carro/cozinha/entre reuniões).
 
 ## 7. Nome do produto e claims
-- Escreva **MILA** (não "App Mila"). Domínio: **appmila.co**.
+- Escreva **appMila** (a minúsculo, M maiúsculo; nunca "MILA", "Mila", "App Mila" ou "AppMila"). Domínio: **appmila.co**.
 - Planos: Starter, Growth, Scale, Enterprise (empresa); Family, Family Plus (pessoal); Family Free (grátis).
 - Não invente preço/condição: use os valores oficiais vigentes.
 

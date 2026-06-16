@@ -1,5 +1,5 @@
 // Supabase Auth "Send Email Hook" — envia os e-mails de autenticação (convite,
-// recuperação de senha, etc.) com a marca MILA e NO IDIOMA DA CONTA (holdings.language),
+// recuperação de senha, etc.) com a marca appMila e NO IDIOMA DA CONTA (holdings.language),
 // usando o Resend (FROM no-reply@appmila.co).
 //
 // Deploy: supabase functions deploy send-email  (ou via MCP)
@@ -18,7 +18,7 @@ const HOOK_SECRET = Deno.env.get('SEND_EMAIL_HOOK_SECRET') ?? ''
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 const BASE = Deno.env.get('APP_BASE_URL') ?? 'https://www.appmila.co'
-const FROM = 'MILA <no-reply@appmila.co>'
+const FROM = 'appMila <no-reply@appmila.co>'
 
 type Lang = 'pt-BR' | 'en' | 'es'
 
@@ -37,26 +37,26 @@ async function accountLanguage(email: string): Promise<Lang> {
 
 const COPY: Record<Lang, Record<'invite' | 'recovery' | 'generic', { subject: string; body: string; cta: string }>> = {
   'pt-BR': {
-    invite: { subject: 'Bem-vindo ao MILA — crie sua senha', body: 'Sua conta no MILA está pronta. Falta só criar sua senha para acessar e começar a organizar suas demandas.', cta: 'Criar minha senha' },
-    recovery: { subject: 'Redefina sua senha do MILA', body: 'Recebemos um pedido para redefinir sua senha. Clique no botão abaixo para criar uma nova.', cta: 'Criar nova senha' },
-    generic: { subject: 'Acesse sua conta MILA', body: 'Clique no botão abaixo para continuar o acesso à sua conta MILA.', cta: 'Acessar minha conta' },
+    invite: { subject: 'Bem-vindo ao appMila — crie sua senha', body: 'Sua conta no appMila está pronta. Falta só criar sua senha para acessar e começar a organizar suas demandas.', cta: 'Criar minha senha' },
+    recovery: { subject: 'Redefina sua senha do appMila', body: 'Recebemos um pedido para redefinir sua senha. Clique no botão abaixo para criar uma nova.', cta: 'Criar nova senha' },
+    generic: { subject: 'Acesse sua conta appMila', body: 'Clique no botão abaixo para continuar o acesso à sua conta appMila.', cta: 'Acessar minha conta' },
   },
   en: {
-    invite: { subject: 'Welcome to MILA — create your password', body: 'Your MILA account is ready. Just create your password to sign in and start organizing your tasks.', cta: 'Create my password' },
-    recovery: { subject: 'Reset your MILA password', body: 'We received a request to reset your password. Click the button below to create a new one.', cta: 'Create new password' },
-    generic: { subject: 'Access your MILA account', body: 'Click the button below to continue accessing your MILA account.', cta: 'Access my account' },
+    invite: { subject: 'Welcome to appMila — create your password', body: 'Your appMila account is ready. Just create your password to sign in and start organizing your tasks.', cta: 'Create my password' },
+    recovery: { subject: 'Reset your appMila password', body: 'We received a request to reset your password. Click the button below to create a new one.', cta: 'Create new password' },
+    generic: { subject: 'Access your appMila account', body: 'Click the button below to continue accessing your appMila account.', cta: 'Access my account' },
   },
   es: {
-    invite: { subject: 'Bienvenido a MILA — crea tu contraseña', body: 'Tu cuenta MILA está lista. Solo crea tu contraseña para entrar y empezar a organizar tus tareas.', cta: 'Crear mi contraseña' },
-    recovery: { subject: 'Restablece tu contraseña de MILA', body: 'Recibimos una solicitud para restablecer tu contraseña. Haz clic abajo para crear una nueva.', cta: 'Crear nueva contraseña' },
-    generic: { subject: 'Accede a tu cuenta MILA', body: 'Haz clic en el botón de abajo para continuar el acceso a tu cuenta MILA.', cta: 'Acceder a mi cuenta' },
+    invite: { subject: 'Bienvenido a appMila — crea tu contraseña', body: 'Tu cuenta appMila está lista. Solo crea tu contraseña para entrar y empezar a organizar tus tareas.', cta: 'Crear mi contraseña' },
+    recovery: { subject: 'Restablece tu contraseña de appMila', body: 'Recibimos una solicitud para restablecer tu contraseña. Haz clic abajo para crear una nueva.', cta: 'Crear nueva contraseña' },
+    generic: { subject: 'Accede a tu cuenta appMila', body: 'Haz clic en el botón de abajo para continuar el acceso a tu cuenta appMila.', cta: 'Acceder a mi cuenta' },
   },
 }
 
 const FOOTER: Record<Lang, string> = {
-  'pt-BR': 'Este link é pessoal e expira em algumas horas. Se você não esperava este e-mail, pode ignorá-lo. MILA — gestão de demandas e produtividade · Um produto CONNBX.',
-  en: 'This link is personal and expires in a few hours. If you didn’t expect this email, you can ignore it. MILA — demand management and productivity · A CONNBX product.',
-  es: 'Este enlace es personal y caduca en unas horas. Si no esperabas este correo, puedes ignorarlo. MILA — gestión de demandas y productividad · Un producto CONNBX.',
+  'pt-BR': 'Este link é pessoal e expira em algumas horas. Se você não esperava este e-mail, pode ignorá-lo. appMila — gestão de demandas e produtividade · Um produto CONNBX.',
+  en: 'This link is personal and expires in a few hours. If you didn’t expect this email, you can ignore it. appMila — demand management and productivity · A CONNBX product.',
+  es: 'Este enlace es personal y caduca en unas horas. Si no esperabas este correo, puedes ignorarlo. appMila — gestión de demandas y productividad · Un producto CONNBX.',
 }
 
 function renderHtml(lang: Lang, kind: 'invite' | 'recovery' | 'generic', link: string): string {
@@ -64,7 +64,7 @@ function renderHtml(lang: Lang, kind: 'invite' | 'recovery' | 'generic', link: s
   return `<div style="max-width:480px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
   <div style="background:#0F172A;padding:22px 28px">
     <span style="display:inline-block;width:28px;height:28px;border-radius:8px;background:#22D3EE;color:#0F172A;font-weight:bold;text-align:center;line-height:28px">M</span>
-    <span style="color:#fff;font-size:18px;font-weight:bold;vertical-align:middle;margin-left:8px">MILA</span>
+    <span style="color:#fff;font-size:18px;font-weight:bold;vertical-align:middle;margin-left:8px">appMila</span>
   </div>
   <div style="padding:28px;background:#fff">
     <p style="margin:0 0 14px;font-size:15px;line-height:1.7;color:#334155">${c.body}</p>

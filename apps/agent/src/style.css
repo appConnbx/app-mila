@@ -1,4 +1,4 @@
-/* MILA Agente — widget glass. O blur real vem do acrílico nativo (Rust);
+/* appMila Agente — widget glass. O blur real vem do acrílico nativo (Rust);
    aqui só tinta translúcida + bordas. Fundo da página precisa ser transparente. */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 /* hidden SEMPRE vence display:flex das views (sem isto, login e lista

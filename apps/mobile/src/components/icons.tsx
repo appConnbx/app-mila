@@ -1,6 +1,6 @@
 import Svg, { Path, Rect } from 'react-native-svg'
 
-// Ícones do padrão MILA (mesmas formas do sistema web e do agente desktop).
+// Ícones do padrão appMila (mesmas formas do sistema web e do agente desktop).
 type IconProps = { size?: number; color: string }
 
 /** Microfone — mesma forma do agente desktop. */

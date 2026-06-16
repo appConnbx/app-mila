@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "MILA",
+    "appName": "appMila",
     "search": "Search…",
     "signOut": "Sign out",
     "add": "Add",
@@ -82,7 +82,7 @@
     "editProfile": "Edit profile",
     "profileSubtitle": "Complete your profile: photo, phone and skills.",
     "profileNudge": "Your profile is incomplete — add a photo, phone and skills.",
-    "agentTitle": "MILA Agent for Windows",
+    "agentTitle": "appMila Agent for Windows",
     "agentDesc": "A handy gadget on the edge of your screen: your pending tasks always in sight, quick capture, and a visual alert when something new lands on you. Sign in with the same account.",
     "agentCta": "Download for Windows",
     "agentNote": "On all plans · Windows 10/11 · updates itself"
@@ -181,7 +181,7 @@
     "welcomeHint": "Didn't arrive in a few minutes? You can set your password via \"Forgot my password\" on the sign-in screen.",
     "welcomeLoginCta": "Go to the sign-in screen",
     "setTitle": "Create your password",
-    "setSubtitle": "Set a password to access your MILA account.",
+    "setSubtitle": "Set a password to access your appMila account.",
     "setLangLabel": "Account language",
     "setPlaceholder": "New password (min. 6 characters)",
     "setConfirmPlaceholder": "Confirm password",
@@ -203,7 +203,7 @@
     "subEmailHint": "This will be your account login. Use an email you can access.",
     "subSubmit": "Continue to payment",
     "subSending": "Please wait…",
-    "subExistsTitle": "You already have a MILA account",
+    "subExistsTitle": "You already have a appMila account",
     "subExistsBody": "This email already has access. Sign in to subscribe or manage your plan from there.",
     "subLoginCta": "Sign in to my account",
     "subErr": "Something went wrong. Please try again."
@@ -347,7 +347,7 @@
     "addAliasPlaceholder": "nickname",
     "holdingMgmt": "Holding settings",
     "holdingMgmtDesc": "Group registration data.",
-    "onboardingTitle": "Welcome to MILA! Let's set up your company.",
+    "onboardingTitle": "Welcome to appMila! Let's set up your company.",
     "onboardingDesc": "Fill in your holding details below. Then, under Administration, create organizations, areas and teams and register your users (they join the holding and are attached to teams).",
     "manualTitle": "Setup manual",
     "manualDesc": "Step-by-step to configure the account. Open online or download as PDF.",
@@ -484,16 +484,16 @@
     "switch": "Switch instance",
     "help": "Contact support",
     "renewTitle": "Your license has expired",
-    "renewDescCorp": "To use MILA with your team again, choose a plan below. Your data is kept safe.",
-    "renewDescFamily": "To use MILA again, choose a plan below. Your data is kept safe.",
+    "renewDescCorp": "To use appMila with your team again, choose a plan below. Your data is kept safe.",
+    "renewDescFamily": "To use appMila again, choose a plan below. Your data is kept safe.",
     "renewSponsored": "Your family account was a benefit tied to your work account, which is no longer active. Get a plan to continue.",
     "renewFreeHint": "Prefer to start for free?"
   },
   "start": {
-    "title": "Let's find the right MILA for you",
+    "title": "Let's find the right appMila for you",
     "subtitle": "Just 3 quick questions — under 1 minute.",
     "back": "Back",
-    "q1Title": "Is MILA for your work or your personal life?",
+    "q1Title": "Is appMila for your work or your personal life?",
     "q1Business": "For my company",
     "q1BusinessSub": "Team, departments and task management",
     "q1Personal": "For me and my family",
@@ -516,7 +516,7 @@
     "reflectForget": "Forgetting agreements and commitments",
     "reflectChase": "Chasing people (and being chased)",
     "reflectScatter": "Things scattered across many places",
-    "reflectAck": "That's exactly what MILA solves: everything in one place, with an owner and a deadline. You stop relying on memory.",
+    "reflectAck": "That's exactly what appMila solves: everything in one place, with an owner and a deadline. You stop relying on memory.",
     "continue": "Continue",
     "doubtTitle": "Still unsure?",
     "doubtDesc": "You have 7 days to try it. If it's not a fit, just cancel and get a full refund. Zero risk.",
@@ -578,7 +578,7 @@
     "hero": {
       "badge": "Work and personal life, in one account",
       "headline": "Never lose a task again <hl>for lack of a note</hl>",
-      "subtitle": "MILA turns conversations, meetings and decisions into organized execution — on the web, on the computer agent and on your phone. Capture in seconds, even by voice, delegate with an owner and deadline, and track to done.",
+      "subtitle": "appMila turns conversations, meetings and decisions into organized execution — on the web, on the computer agent and on your phone. Capture in seconds, even by voice, delegate with an owner and deadline, and track to done.",
       "emailPlaceholder": "Your best email",
       "cta": "Get started",
       "finePrint": "Set up in minutes · Plans for companies and families · Cancel anytime"
@@ -620,7 +620,7 @@
     "eco": {
       "kicker": "Practicality",
       "title": "Capture a task in seconds, wherever you are",
-      "subtitle": "MILA's edge is practicality: ideas don't wait for you to open a system. Web, computer and phone — always one tap away.",
+      "subtitle": "appMila's edge is practicality: ideas don't wait for you to open a system. Web, computer and phone — always one tap away.",
       "bothNote": "Works the same for companies (corporate plans) and personal use (family plans).",
       "capWindows": "Windows gadget",
       "capMobile": "Mobile app",
@@ -693,7 +693,7 @@
     },
     "plans": {
       "kicker": "Pricing",
-      "title": "Choose how MILA fits you",
+      "title": "Choose how appMila fits you",
       "subtitle": "Start with what makes sense today. You can have a company plan and a family plan in the same account.",
       "perMonth": "/mo",
       "start": "Subscribe",
@@ -719,25 +719,25 @@
     },
     "affiliates": {
       "badge": "Affiliate Program · Launch month",
-      "title": "Refer MILA and build recurring income",
+      "title": "Refer appMila and build recurring income",
       "desc": "Become an affiliate: earn on every sale and build recurring income in dollars. Simulate your earnings.",
       "cta": "Become an affiliate",
       "soon": "Launch opportunity · June 2026"
     },
     "finalCta": {
       "title": "The next task, you won't forget.",
-      "subtitle": "Put everything in its place — at work and at home. Start using MILA today.",
+      "subtitle": "Put everything in its place — at work and at home. Start using appMila today.",
       "cta": "Get started"
     },
     "footer": {
       "tagline": "Turns scattered tasks, meetings and decisions into organized execution.",
-      "company": "APP MILA is a CONNBX product — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brazil",
+      "company": "appMila is a CONNBX product — Olivaldo Serafim Filho Consultoria em Tecnologia da Informação LTDA · CNPJ 49.848.097/0001-86 · Piracicaba/SP, Brazil",
       "support": "Support",
       "sales": "Sales",
       "corporate": "Corporate",
       "privacy": "Privacy Policy",
       "security": "Security",
-      "copyright": "© 2026 MILA. All rights reserved."
+      "copyright": "© 2026 appMila. All rights reserved."
     }
   },
   "affiliatesPage": {
@@ -745,8 +745,8 @@
     "badge": "Affiliate Program",
     "title": "Refer & Earn",
     "titleAccent": "is coming",
-    "desc": "We're building a program to reward those who refer MILA to companies and families. Soon you'll be able to generate your link, track your referrals and earn for every new subscription.",
-    "ctaKnow": "Discover MILA",
+    "desc": "We're building a program to reward those who refer appMila to companies and families. Soon you'll be able to generate your link, track your referrals and earn for every new subscription.",
+    "ctaKnow": "Discover appMila",
     "ctaApp": "Go to the app",
     "construction": "Page under construction · Check back soon"
   },
@@ -777,7 +777,7 @@
     "micDenied": "Microphone not allowed — showing a generic example."
   },
   "onboarding": {
-    "welcome": "Welcome to MILA, {name}!",
+    "welcome": "Welcome to appMila, {name}!",
     "subtitle": "Let's get everything ready in a few steps.",
     "instancesTitle": "What are instances",
     "instancesDesc": "Your account (your login) can hold several instances: each company and also your family is an instance. You switch between them — and it's inside an instance that you create and delegate tasks. Everything stays linked to the same login.",
@@ -787,7 +787,7 @@
     "freeTitle": "You're on Family Free 🎉",
     "freeDesc": "Free plan with up to 15 tasks per day. Add your family and start organizing — upgrade to Family anytime for more.",
     "buyTitle": "Plan purchased",
-    "buyDesc": "Your subscription is active. Thank you for choosing MILA.",
+    "buyDesc": "Your subscription is active. Thank you for choosing appMila.",
     "accessTitle": "First access",
     "accessDesc": "Your account was created and you're already inside.",
     "configTitle": "Initial setup",
@@ -805,7 +805,7 @@
     "backToApp": "Back",
     "empresa": {
       "title": "Setup manual — Company",
-      "intro": "Quick guide to configure your corporate MILA account and start delegating tasks clearly.",
+      "intro": "Quick guide to configure your corporate appMila account and start delegating tasks clearly.",
       "sections": [
         { "h": "1. Holding details", "items": ["Go to Structure → Manage holding.", "Fill in legal name, tax ID, email, phone, timezone and language.", "Upload the company logo (appears in the org chart and reports)."] },
         { "h": "2. Organizations", "items": ["Under Structure, create the organizations (companies/units of the group).", "Assign one or more administrators per organization."] },
@@ -817,7 +817,7 @@
     },
     "familia": {
       "title": "Setup manual — Family",
-      "intro": "Quick guide to organize your family's and household staff's tasks in MILA.",
+      "intro": "Quick guide to organize your family's and household staff's tasks in appMila.",
       "sections": [
         { "h": "1. Family details", "items": ["Go to Structure → Manage holding.", "Set the account's name, timezone and language."] },
         { "h": "2. Family members", "items": ["Register spouse, children and parents.", "Provide the email of anyone who will have their own app access."] },
@@ -829,15 +829,15 @@
   },
   "memberOnboarding": {
     "welcome": "Welcome, {name}!",
-    "subtitle": "You're part of {instance} on MILA. Here's how to get the most out of it.",
+    "subtitle": "You're part of {instance} on appMila. Here's how to get the most out of it.",
     "canTitle": "What you can do",
     "canCorp": ["Receive and track the tasks delegated to you", "Create tasks by voice (hold the microphone) or by typing", "Track due dates and change status (Working / Done)", "See what's yours, what's delegated and what's shared"],
     "canFamily": ["Receive and track the family's tasks", "Create by voice (hold the microphone) or by typing", "Track due dates and finish with one tap", "Everything in one place for the family and household staff"],
     "appsTitle": "Install the apps for more productivity",
-    "appsDesc": "For the best experience, use MILA on your phone and computer.",
+    "appsDesc": "For the best experience, use appMila on your phone and computer.",
     "mobileTitle": "On mobile (Android/iOS)",
     "mobileDesc": "Capture tasks by voice anywhere and get notified.",
-    "mobileCta": "Open MILA",
+    "mobileCta": "Open appMila",
     "agentTitle": "Windows agent",
     "agentDesc": "One tap on the bar to speak and create a task without opening the browser.",
     "agentCta": "Download agent",
@@ -846,7 +846,7 @@
   "familyBonus": {
     "kicker": "A PERK FOR YOUR TEAM",
     "title": "Your company, a partner in your employees lives",
-    "desc": "On the corporate plan, every employee gets a licensed MILA Family Plus — at no extra cost, for as long as the company keeps the plan. Bring the same practicality from work to your teams home.",
+    "desc": "On the corporate plan, every employee gets a licensed appMila Family Plus — at no extra cost, for as long as the company keeps the plan. Bring the same practicality from work to your teams home.",
     "p1": "Retention-driving perk: a real benefit that follows employees beyond office hours.",
     "p2": "An organized home means a clearer mind — a more present, productive employee.",
     "p3": "Already included: the bonus is part of the company plan, no extra fee."

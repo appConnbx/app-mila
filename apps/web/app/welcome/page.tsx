@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { Aurora } from '@/components/ui'
 
-export const metadata = { title: 'Bem-vindo · MILA', robots: { index: false } }
+export const metadata = { title: 'Bem-vindo · appMila', robots: { index: false } }
 
 function toLocale(lang?: string) {
   return lang === 'en' ? 'en' : lang === 'es' ? 'es' : lang === 'pt-BR' ? 'pt-BR' : null
