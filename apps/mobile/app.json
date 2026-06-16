@@ -44,6 +44,15 @@
           "microphonePermission": "O appMila usa o microfone para criar demandas por voz."
         }
       ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0F172A"
+        }
+      ],
       "expo-secure-store",
       "expo-localization"
     ],

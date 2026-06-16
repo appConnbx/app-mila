@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import * as Linking from 'expo-linking'
 import { getLocales } from 'expo-localization'
@@ -8,6 +8,7 @@ import { supabase } from './src/api'
 import { initLang } from './src/i18n'
 import { Login } from './src/screens/Login'
 import { Home } from './src/screens/Home'
+import { AnimatedSplash } from './src/components/AnimatedSplash'
 import { C } from './src/theme'
 
 export default function App() {
@@ -36,9 +37,7 @@ export default function App() {
     <View style={s.root}>
       <StatusBar style="light" />
       {!ready ? (
-        <View style={s.center}>
-          <ActivityIndicator color={C.cyan} size="large" />
-        </View>
+        <AnimatedSplash />
       ) : session ? (
         <Home openRecordSignal={recordSignal} />
       ) : (
@@ -50,5 +49,4 @@ export default function App() {
 
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: C.bg },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 })
