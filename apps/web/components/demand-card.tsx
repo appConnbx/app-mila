@@ -350,15 +350,16 @@ export function DemandCard({
           ref={rootRef}
           data-demand-row=""
           onClick={() => setOpen(true)}
-          className={`demand-row glass relative flex cursor-pointer items-center gap-3 overflow-visible px-4 py-2.5 transition hover:border-brand/40 ${
+          className={`demand-row group/row glass relative flex cursor-pointer items-center gap-3 overflow-visible px-4 py-2.5 transition hover:z-20 hover:border-brand/40 ${
             pinned ? '!border-orange-400/60 ring-1 ring-orange-400/40' : overdue ? '!border-rose-500/30' : ''
           }`}
         >
           {pinBtn}
-          <div className="group/t relative min-w-0 flex-1">
-            <p tabIndex={0} className="truncate text-sm font-medium text-slate-100 outline-none">{demand.title}</p>
-            {/* Balão de informação no hover/foco do título */}
-            <div className="pointer-events-none absolute left-0 top-full z-30 mt-1.5 hidden w-72 max-w-[80vw] rounded-xl border border-white/10 bg-slate-900/95 p-3 text-left shadow-xl backdrop-blur group-hover/t:block group-focus-within/t:block">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-slate-100">{demand.title}</p>
+            {/* Balão de informação no hover da linha (opaco e elevado p/ não
+                sobrepor com as linhas vizinhas) */}
+            <div className="pointer-events-none invisible absolute left-3 right-3 top-full z-40 mt-1 w-auto max-w-md rounded-xl border border-white/15 bg-slate-800 p-3 text-left opacity-0 shadow-2xl transition-opacity duration-150 group-hover/row:visible group-hover/row:opacity-100 sm:w-80">
               <p className="text-sm font-semibold text-white">{demand.title}</p>
               {demand.description ? (
                 <p className="mt-1 line-clamp-4 whitespace-pre-wrap text-xs text-slate-300">{demand.description}</p>
