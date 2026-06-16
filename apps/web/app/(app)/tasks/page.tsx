@@ -3,8 +3,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
-import { Button, Badge, EmptyState, Avatar, Tag } from '@/components/ui'
+import { Badge, EmptyState, Avatar, Tag } from '@/components/ui'
 import { DemandStatusToggle } from '@/components/demand-status-toggle'
+import { NewDemandModal } from '@/components/new-demand-modal'
 import { fmtDayMonth } from '@/lib/datetime'
 
 type Demand = {
@@ -64,6 +65,40 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
     .eq('holding_id', holdingId)
     .limit(1)
   const me = (meRows as unknown as { id: string }[] | null)?.[0]?.id ?? ''
+
+  // Dados + rótulos do modal de Nova Demanda (criação sem trocar de página).
+  const isFamily = holding?.kind === 'family'
+  const [peopleRes, eventsRes] = await Promise.all([
+    supabase.from('people').select('id, full_name').eq('is_active', true).eq('holding_id', holdingId).order('full_name'),
+    supabase.from('events').select('id, name').eq('status', 'aberto').order('opened_at', { ascending: false }),
+  ])
+  const peopleList = (peopleRes.data ?? []) as unknown as { id: string; full_name: string }[]
+  const eventsList = (eventsRes.data ?? []) as unknown as { id: string; name: string }[]
+  const tn = await getTranslations('newDemand')
+  const newDemandLabels = {
+    triggerNew: t('new'),
+    title: tn('title'),
+    demand: tn('demand'),
+    demandPlaceholder: isFamily ? tn('demandPlaceholderFamily') : tn('demandPlaceholder'),
+    description: tn('description'),
+    responsible: tn('responsible'),
+    selectPlaceholder: tn('selectPlaceholder'),
+    priority: tn('priority'),
+    priorityLow: tn('priorityLow'),
+    priorityMedium: tn('priorityMedium'),
+    priorityHigh: tn('priorityHigh'),
+    due: tn('due'),
+    event: tn('event'),
+    eventNone: tn('eventNone'),
+    visibility: tn('visibility'),
+    visPrivate: tn('visPrivate'),
+    visPublic: isFamily ? tn('visPublicFamily') : tn('visPublicCorp'),
+    visHint: isFamily ? tn('visHintFamily') : tn('visHintCorp'),
+    cancel: tn('cancel'),
+    submit: tn('submit'),
+    createError: tn('createError'),
+    requiredError: tn('createError'),
+  }
 
   const { data, error } = await supabase
     .from('demands')
@@ -220,7 +255,7 @@ export default async function DemandasPage({ searchParams }: { searchParams: Pro
           <p className="text-sm text-slate-400">{holding?.name ?? t('instanceFallback')}</p>
           <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
         </div>
-        <Button href="/tasks/new" size="sm">{t('new')}</Button>
+        <NewDemandModal people={peopleList} events={eventsList} isFamily={isFamily} labels={newDemandLabels} />
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">

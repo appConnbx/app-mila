@@ -60,6 +60,59 @@ export async function createDemand(formData: FormData) {
   redirect('/tasks')
 }
 
+export type CreateDemandResult = { ok: boolean; error?: 'required' | 'forbidden' | 'session' }
+
+/** Cria demanda e RETORNA o resultado (sem redirect) — para o modal de Nova
+ *  Demanda fechar e o cliente dar router.refresh() sem trocar de página. */
+export async function createDemandInline(formData: FormData): Promise<CreateDemandResult> {
+  const cookieStore = await cookies()
+  const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
+  if (!holdingId) return { ok: false, error: 'session' }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'session' }
+
+  const { data: meRows } = await supabase
+    .from('people')
+    .select('id')
+    .eq('auth_user_id', user.id)
+    .eq('holding_id', holdingId)
+    .limit(1)
+  const me = (meRows as unknown as { id: string }[] | null)?.[0]?.id
+  if (!me) return { ok: false, error: 'forbidden' }
+
+  const title = String(formData.get('title') ?? '').trim()
+  const description = String(formData.get('description') ?? '').trim() || null
+  const responsible_id = String(formData.get('responsible_id') ?? '')
+  const priority = String(formData.get('priority') ?? 'media')
+  const due_date = String(formData.get('due_date') ?? '') || null
+  const event_id = String(formData.get('event_id') ?? '') || null
+  const visibility = String(formData.get('visibility') ?? 'private') === 'public' ? 'public' : 'private'
+  if (!title || !responsible_id) return { ok: false, error: 'required' }
+
+  const tags = generateTags(title, description, priority)
+  const { error } = await supabase.from('demands').insert({
+    holding_id: holdingId,
+    title,
+    description,
+    responsible_id,
+    origin_id: me,
+    priority,
+    due_date,
+    event_id,
+    tags,
+    visibility,
+    channel: 'web',
+  } as never)
+  if (error) return { ok: false, error: 'forbidden' }
+
+  revalidatePath('/tasks')
+  return { ok: true }
+}
+
 async function currentPersonId() {
   const cookieStore = await cookies()
   const holdingId = cookieStore.get(ACTIVE_HOLDING_COOKIE)?.value
