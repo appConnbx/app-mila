@@ -23,14 +23,27 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": ["RECORD_AUDIO", "INTERNET"],
-      "blockedPermissions": ["android.permission.SYSTEM_ALERT_WINDOW"],
+      "permissions": [
+        "RECORD_AUDIO",
+        "INTERNET"
+      ],
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ],
       "intentFilters": [
         {
           "action": "VIEW",
           "autoVerify": true,
-          "data": [{ "scheme": "https", "host": "go.appmila.co" }],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "data": [
+            {
+              "scheme": "https",
+              "host": "go.appmila.co"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -54,7 +67,24 @@
         }
       ],
       "expo-secure-store",
-      "expo-localization"
+      "expo-localization",
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "Record",
+              "label": "appMila — Gravar",
+              "description": "Toque para criar uma demanda por voz",
+              "minWidth": "110dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 1,
+              "targetCellHeight": 1,
+              "previewImage": "./assets/widget-preview.png"
+            }
+          ]
+        }
+      ]
     ],
     "extra": {
       "eas": {
