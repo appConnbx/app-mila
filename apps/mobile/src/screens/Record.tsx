@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   useAudioRecorder,
   RecordingPresets,
@@ -28,6 +29,7 @@ export function RecordModal({
   onCreated: () => void
 }) {
   useLang() // re-renderiza quando o idioma da instância chega
+  const insets = useSafeAreaInsets()
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)
   const [phase, setPhase] = useState<Phase>('idle')
   const [status, setStatus] = useState('')
@@ -175,7 +177,7 @@ export function RecordModal({
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={s.backdrop}>
-        <View style={s.sheet}>
+        <View style={[s.sheet, { paddingBottom: Math.max(36, insets.bottom + 24) }]}>
           <Text style={s.title}>{t('voiceTitle')}</Text>
 
           {phase === 'preview' ? (
