@@ -1,4 +1,5 @@
 import { getCurrentWindow, currentMonitor, LogicalSize, LogicalPosition } from '@tauri-apps/api/window'
+import { getVersion } from '@tauri-apps/api/app'
 import { enable as autostartEnable, disable as autostartDisable, isEnabled as autostartIsEnabled } from '@tauri-apps/plugin-autostart'
 import { check as checkUpdate } from '@tauri-apps/plugin-updater'
 import { relaunch } from '@tauri-apps/plugin-process'
@@ -18,6 +19,12 @@ const viewLogin = $<HTMLElement>('view-login')
 const viewMain = $<HTMLElement>('view-main')
 const listEl = $<HTMLDivElement>('list')
 const btnLogout = $<HTMLButtonElement>('btn-logout')
+
+// Versão em execução no rodapé (confere se a atualização pegou).
+void getVersion().then((v) => {
+  const el = document.getElementById('app-ver')
+  if (el) el.textContent = `v${v}`
+})
 
 // ---------------- Estado ----------------
 type Mode = 'collapsed' | 'panel' | 'mic'
