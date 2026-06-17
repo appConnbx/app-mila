@@ -14,6 +14,7 @@ import { C } from './src/theme'
 
 export default function App() {
   const [ready, setReady] = useState(false)
+  const [splashMin, setSplashMin] = useState(false) // tempo mínimo p/ o intro tocar
   const [session, setSession] = useState<Session | null>(null)
   const [recordSignal, setRecordSignal] = useState(0)
   const url = Linking.useURL()
@@ -25,8 +26,13 @@ export default function App() {
       setSession(data.session)
       setReady(true)
     })()
+    // Garante que a abertura (crescer + varredura de luz) sempre apareça.
+    const t = setTimeout(() => setSplashMin(true), 1500)
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => setSession(s))
-    return () => sub.subscription.unsubscribe()
+    return () => {
+      clearTimeout(t)
+      sub.subscription.unsubscribe()
+    }
   }, [])
 
   // Deep link do widget/atalho (mila://record): abre o gravador de voz.
@@ -38,7 +44,7 @@ export default function App() {
     <SafeAreaProvider>
       <View style={s.root}>
         <StatusBar style="light" />
-        {!ready ? (
+        {!ready || !splashMin ? (
           <AnimatedSplash />
         ) : session ? (
           <Home openRecordSignal={recordSignal} />
