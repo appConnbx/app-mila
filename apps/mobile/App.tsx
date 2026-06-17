@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import * as Linking from 'expo-linking'
 import { getLocales } from 'expo-localization'
@@ -34,16 +35,18 @@ export default function App() {
   }, [url])
 
   return (
-    <View style={s.root}>
-      <StatusBar style="light" />
-      {!ready ? (
-        <AnimatedSplash />
-      ) : session ? (
-        <Home openRecordSignal={recordSignal} />
-      ) : (
-        <Login />
-      )}
-    </View>
+    <SafeAreaProvider>
+      <View style={s.root}>
+        <StatusBar style="light" />
+        {!ready ? (
+          <AnimatedSplash />
+        ) : session ? (
+          <Home openRecordSignal={recordSignal} />
+        ) : (
+          <Login />
+        )}
+      </View>
+    </SafeAreaProvider>
   )
 }
 

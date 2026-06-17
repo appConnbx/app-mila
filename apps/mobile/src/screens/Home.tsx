@@ -9,6 +9,7 @@ import {
   RefreshControl,
   AppState,
 } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   supabase,
   fetchPending,
@@ -58,6 +59,7 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
   const [refreshing, setRefreshing] = useState(false)
   const [recordOpen, setRecordOpen] = useState(false)
   const uiLang = useLang() // re-renderiza quando o idioma da instância chega
+  const insets = useSafeAreaInsets()
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const holdingsRef = useRef<Holding[]>([])
 
@@ -170,7 +172,7 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
   }
 
   return (
-    <View style={s.wrap}>
+    <View style={[s.wrap, { paddingTop: insets.top + 12 }]}>
       {/* Header */}
       <View style={s.header}>
         <View style={s.brandRow}>
@@ -228,7 +230,7 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
         extraData={uiLang}
         keyExtractor={(d) => d.id}
         renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 120 }}
+        contentContainerStyle={{ paddingBottom: 140 + insets.bottom }}
         ListEmptyComponent={<Text style={s.empty}>{t('emptyList')}</Text>}
         refreshControl={
           <RefreshControl
@@ -243,8 +245,8 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
         }
       />
 
-      {/* Botão de voz (FAB) */}
-      <Pressable style={s.fab} onPress={() => setRecordOpen(true)}>
+      {/* Botão de voz (FAB) — acima da navegação do sistema (safe area) */}
+      <Pressable style={[s.fab, { bottom: insets.bottom + 24 }]} onPress={() => setRecordOpen(true)}>
         <MicIcon size={28} color={C.bg} />
       </Pressable>
 
