@@ -11,21 +11,21 @@ type Status = 'nova' | 'trabalhando' | 'finalizada'
 const NEXT: Record<Status, Status> = { nova: 'trabalhando', trabalhando: 'finalizada', finalizada: 'nova' }
 const VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 
-// Estilhaços do PUFF (deslocamento, tamanho, atraso e rotação de cada um).
-// Espalham para TODOS os lados — efeito de explosão.
-const PUFF: { tx: string; ty: string; s: string; d: string; r: string }[] = [
-  { tx: '-120px', ty: '-44px', s: '24px', d: '0s', r: '-160deg' },
-  { tx: '118px', ty: '-52px', s: '28px', d: '.03s', r: '150deg' },
-  { tx: '-150px', ty: '12px', s: '22px', d: '.02s', r: '-70deg' },
-  { tx: '150px', ty: '6px', s: '26px', d: '.04s', r: '110deg' },
-  { tx: '-70px', ty: '56px', s: '20px', d: '.05s', r: '-40deg' },
-  { tx: '78px', ty: '60px', s: '22px', d: '.03s', r: '60deg' },
-  { tx: '4px', ty: '-86px', s: '30px', d: '.06s', r: '20deg' },
-  { tx: '-24px', ty: '76px', s: '18px', d: '.07s', r: '-100deg' },
-  { tx: '44px', ty: '-40px', s: '18px', d: '.04s', r: '130deg' },
-  { tx: '-52px', ty: '-30px', s: '20px', d: '.05s', r: '-120deg' },
-  { tx: '96px', ty: '-12px', s: '16px', d: '.06s', r: '80deg' },
-  { tx: '-96px', ty: '40px', s: '16px', d: '.08s', r: '-30deg' },
+// Estilhaços coloridos do PUFF (deslocamento, tamanho, atraso, rotação e cor).
+// Espalham para TODOS os lados — efeito de explosão (mesmo do mobile/agente).
+const PUFF: { tx: string; ty: string; s: string; d: string; r: string; c: string }[] = [
+  { tx: '-120px', ty: '-44px', s: '12px', d: '0s', r: '-160deg', c: '#22D3EE' },
+  { tx: '118px', ty: '-52px', s: '11px', d: '.03s', r: '150deg', c: '#FFFFFF' },
+  { tx: '-150px', ty: '12px', s: '12px', d: '.02s', r: '-70deg', c: '#4ADE80' },
+  { tx: '150px', ty: '6px', s: '13px', d: '.04s', r: '110deg', c: '#22D3EE' },
+  { tx: '-70px', ty: '56px', s: '9px', d: '.05s', r: '-40deg', c: '#FBBF24' },
+  { tx: '78px', ty: '60px', s: '11px', d: '.03s', r: '60deg', c: '#22D3EE' },
+  { tx: '4px', ty: '-88px', s: '12px', d: '.06s', r: '20deg', c: '#FFFFFF' },
+  { tx: '-24px', ty: '78px', s: '9px', d: '.07s', r: '-100deg', c: '#4ADE80' },
+  { tx: '44px', ty: '-40px', s: '8px', d: '.04s', r: '130deg', c: '#22D3EE' },
+  { tx: '-52px', ty: '-30px', s: '9px', d: '.05s', r: '-120deg', c: '#FFFFFF' },
+  { tx: '96px', ty: '-12px', s: '8px', d: '.06s', r: '80deg', c: '#22D3EE' },
+  { tx: '-96px', ty: '40px', s: '8px', d: '.08s', r: '-30deg', c: '#FBBF24' },
 ]
 
 export type CardDemand = {
@@ -141,18 +141,15 @@ export function DemandCard({
   }
 
   function advance(to: Status) {
-    if (busy || leaving) return
+    if (leaving) return
     const from = status
-    setStatus(to)
+    setStatus(to) // otimista: a UI muda na hora; o back vai em paralelo
     if (to === 'finalizada') {
       setOpen(false)
-      startTx(async () => {
-        await advanceDemandStatus(demand.id, from, 'finalizada')
-        burstAndRefresh()
-      })
+      burstAndRefresh() // PUFF imediato (não espera o servidor)
+      void advanceDemandStatus(demand.id, from, 'finalizada')
     } else {
-      startTx(async () => {
-        await advanceDemandStatus(demand.id, from, to)
+      void advanceDemandStatus(demand.id, from, to).then(() => {
         router.refresh()
         if (open) void loadThread() // histórico atualiza no modal
       })
@@ -214,7 +211,7 @@ export function DemandCard({
   const puff = leaving && (
     <span className="demand-puff" aria-hidden="true">
       {PUFF.map((p, i) => (
-        <span key={i} className="puff-dot" style={{ '--tx': p.tx, '--ty': p.ty, '--s': p.s, '--d': p.d, '--r': p.r } as React.CSSProperties} />
+        <span key={i} className="puff-dot" style={{ '--tx': p.tx, '--ty': p.ty, '--s': p.s, '--d': p.d, '--r': p.r, '--c': p.c } as React.CSSProperties} />
       ))}
     </span>
   )

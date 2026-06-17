@@ -72,7 +72,7 @@ html {
   40%  { transform: translateX(0) scale(1.12); filter: blur(0); }
   100% { transform: scale(0.5); opacity: 0; filter: blur(6px); }
 }
-/* Nuvem de estilhaços/fumaça sobreposta ao card durante o PUFF. */
+/* Estilhaços coloridos arremessados durante o PUFF (mesmo visual do mobile). */
 .demand-puff {
   position: absolute;
   inset: 0;
@@ -83,20 +83,19 @@ html {
 }
 .demand-puff .puff-dot {
   position: absolute;
-  width: var(--s, 26px);
-  height: var(--s, 26px);
-  border-radius: 9999px;
-  background: radial-gradient(circle at 50% 50%, rgba(226, 232, 240, 0.97), rgba(148, 163, 184, 0.55) 55%, rgba(148, 163, 184, 0) 72%);
-  filter: blur(2px);
+  width: var(--s, 12px);
+  height: var(--s, 12px);
+  border-radius: 3px;
+  background: var(--c, #22d3ee);
   opacity: 0;
   /* espera o "treme" (~0,2s) e então é arremessado para longe */
   animation: puff-burst 0.5s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
   animation-delay: calc(0.2s + var(--d, 0s));
 }
 @keyframes puff-burst {
-  0%   { transform: translate(0, 0) scale(0.25) rotate(0deg); opacity: 0; }
+  0%   { transform: translate(0, 0) scale(0.3) rotate(0deg); opacity: 0; }
   20%  { opacity: 1; }
-  100% { transform: translate(var(--tx, 0), var(--ty, -30px)) scale(2.1) rotate(var(--r, 90deg)); opacity: 0; }
+  100% { transform: translate(var(--tx, 0), var(--ty, -30px)) scale(0.6) rotate(var(--r, 90deg)); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .demand-row.demand-leaving { animation: none; opacity: 0; }
