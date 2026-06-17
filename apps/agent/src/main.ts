@@ -201,6 +201,42 @@ function fmtDue(due: string | null): { label: string; cls: string } | null {
   return { label: d.toLocaleDateString(lang(), { day: '2-digit', month: '2-digit' }), cls: '' }
 }
 
+// Estilhaços do PUFF (deslocamento, rotação, cor, tamanho e atraso de cada um).
+const SHARDS: { tx: string; ty: string; r: string; c: string; s: string; d: string }[] = [
+  { tx: '-90px', ty: '-34px', r: '-160deg', c: '#22D3EE', s: '11px', d: '0s' },
+  { tx: '92px', ty: '-40px', r: '150deg', c: '#FFFFFF', s: '9px', d: '.03s' },
+  { tx: '-110px', ty: '8px', r: '-70deg', c: '#4ADE80', s: '10px', d: '.02s' },
+  { tx: '112px', ty: '4px', r: '110deg', c: '#22D3EE', s: '12px', d: '.04s' },
+  { tx: '-56px', ty: '44px', r: '-40deg', c: '#FBBF24', s: '8px', d: '.05s' },
+  { tx: '64px', ty: '48px', r: '60deg', c: '#22D3EE', s: '10px', d: '.03s' },
+  { tx: '4px', ty: '-62px', r: '20deg', c: '#FFFFFF', s: '10px', d: '.06s' },
+  { tx: '-20px', ty: '58px', r: '-100deg', c: '#4ADE80', s: '8px', d: '.07s' },
+  { tx: '40px', ty: '-30px', r: '130deg', c: '#22D3EE', s: '7px', d: '.04s' },
+  { tx: '-44px', ty: '-24px', r: '-120deg', c: '#FFFFFF', s: '8px', d: '.05s' },
+]
+
+/** Concluir: dispara o back (otimista), TREME e EXPLODE em estilhaços, e então
+ *  remove da lista — mesmo padrão visual do mobile e do web. */
+function completeDemand(card: HTMLElement, d: Demand) {
+  void setDemandStatus(d.id, 'finalizada').catch(() => void refresh())
+  card.classList.add('leaving')
+  const layer = document.createElement('span')
+  layer.className = 'item-puff'
+  for (const p of SHARDS) {
+    const sh = document.createElement('span')
+    sh.className = 'shard'
+    sh.style.cssText = `--tx:${p.tx};--ty:${p.ty};--r:${p.r};--c:${p.c};--s:${p.s};--d:${p.d}`
+    layer.appendChild(sh)
+  }
+  card.appendChild(layer)
+  window.setTimeout(() => {
+    demands = demands.filter((x) => x.id !== d.id)
+    seen.delete(d.id)
+    renderList(demands)
+    updateBadge()
+  }, 620)
+}
+
 function renderList(items: Demand[]) {
   listEl.innerHTML = ''
   if (items.length === 0) {
@@ -269,14 +305,19 @@ function renderList(items: Demand[]) {
       b.className = `st-btn ${cls}`
       b.textContent = label
       b.title = titleTxt
-      b.addEventListener('click', async () => {
-        b.disabled = true
-        try {
-          await setDemandStatus(d.id, next)
-          await refresh()
-        } catch {
-          b.disabled = false
+      b.addEventListener('click', () => {
+        // Concluir: PUFF com estilhaços + remove. Demais: troca otimista na hora.
+        if (next === 'finalizada') {
+          completeDemand(card, d)
+          return
         }
+        const idx = demands.findIndex((x) => x.id === d.id)
+        if (idx >= 0) {
+          demands[idx] = { ...demands[idx], status: next }
+          renderList(demands)
+          updateBadge()
+        }
+        void setDemandStatus(d.id, next).catch(() => void refresh())
       })
       return b
     }
