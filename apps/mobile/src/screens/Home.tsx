@@ -17,38 +17,14 @@ import {
   createDemand,
   setDemandStatus,
   type Demand,
-  type DemandStatus,
   type Holding,
 } from '../api'
-import { t, lang, applyHoldingsLang, useLang } from '../i18n'
+import { t, applyHoldingsLang, useLang } from '../i18n'
 import { C } from '../theme'
 import { POLL_MS } from '../config'
 import { RecordModal } from './Record'
-import { MicIcon, PlayIcon, PauseIcon, CheckIcon } from '../components/icons'
-
-function fmtDue(due: string | null): { label: string; bg: string; color: string } | null {
-  if (!due) return null
-  const today = new Date()
-  const d = new Date(due + 'T00:00:00')
-  const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
-  const diff = Math.round((d.getTime() - t0) / 86_400_000)
-  if (diff < 0) return { label: t('dueOverdue'), bg: C.redDim, color: C.redText }
-  if (diff === 0) return { label: t('dueToday'), bg: C.blueDim, color: C.blueText }
-  if (diff === 1) return { label: t('dueTomorrow'), bg: C.card, color: C.muted }
-  return {
-    label: d.toLocaleDateString(lang(), { day: '2-digit', month: '2-digit' }),
-    bg: C.card,
-    color: C.muted,
-  }
-}
-
-function Chip({ label, bg, color }: { label: string; bg: string; color: string }) {
-  return (
-    <View style={[s.chip, { backgroundColor: bg }]}>
-      <Text style={[s.chipText, { color }]}>{label}</Text>
-    </View>
-  )
-}
+import { MicIcon } from '../components/icons'
+import { DemandRow } from '../components/DemandRow'
 
 export function Home({ openRecordSignal }: { openRecordSignal: number }) {
   const [demands, setDemands] = useState<Demand[]>([])
@@ -122,53 +98,20 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
     }
   }
 
-  async function setStatus(d: Demand, status: DemandStatus) {
-    try {
-      await setDemandStatus(d.id, status)
-      await refresh()
-    } catch {
-      /* silencioso */
-    }
+  // Otimista: a tela muda na hora; o back vai junto e só reconcilia em erro.
+  function advance(d: Demand, status: 'nova' | 'trabalhando') {
+    setDemands((prev) => prev.map((x) => (x.id === d.id ? { ...x, status } : x)))
+    setDemandStatus(d.id, status).catch(() => void refresh())
+  }
+
+  // Chamado pelo DemandRow APÓS o PUFF: remove da lista e finaliza no back.
+  function complete(d: Demand) {
+    setDemands((prev) => prev.filter((x) => x.id !== d.id))
+    setDemandStatus(d.id, 'finalizada').catch(() => void refresh())
   }
 
   function renderItem({ item: d }: { item: Demand }) {
-    const due = fmtDue(d.due_date)
-    return (
-      <View style={[s.card, d.pinned && s.cardPinned]}>
-        <Text style={s.cardTitle}>{d.title}</Text>
-        {d.description ? (
-          <Text style={s.cardDesc} numberOfLines={2}>
-            {d.description}
-          </Text>
-        ) : null}
-        <View style={s.metaRow}>
-          <Chip
-            label={d.holding_name}
-            bg={d.holding_kind === 'family' ? C.orangeDim : C.cyanDim}
-            color={d.holding_kind === 'family' ? C.orange : C.cyan}
-          />
-          {d.status === 'trabalhando' && (
-            <Chip label={t('chipWorking')} bg={C.amberDim} color={C.amber} />
-          )}
-          {d.priority === 'alta' && <Chip label={t('chipHigh')} bg={C.redDim} color={C.redText} />}
-          {due && <Chip label={due.label} bg={due.bg} color={due.color} />}
-          <View style={s.actions}>
-            {d.status === 'nova' ? (
-              <Pressable style={s.stBtn} onPress={() => void setStatus(d, 'trabalhando')}>
-                <PlayIcon size={13} color={C.light} />
-              </Pressable>
-            ) : (
-              <Pressable style={s.stBtn} onPress={() => void setStatus(d, 'nova')}>
-                <PauseIcon size={13} color={C.light} />
-              </Pressable>
-            )}
-            <Pressable style={[s.stBtn, s.stBtnDone]} onPress={() => void setStatus(d, 'finalizada')}>
-              <CheckIcon size={13} color={C.green} />
-            </Pressable>
-          </View>
-        </View>
-      </View>
-    )
+    return <DemandRow demand={d} onAdvance={(status) => advance(d, status)} onComplete={() => complete(d)} />
   }
 
   return (
@@ -312,32 +255,6 @@ const s = StyleSheet.create({
   createBtnText: { color: C.bg, fontWeight: '700', fontSize: 13 },
   sectionTitle: { color: C.white, fontWeight: '700', fontSize: 15, marginBottom: 8 },
   empty: { color: C.muted, textAlign: 'center', marginTop: 40, fontSize: 14 },
-  card: {
-    backgroundColor: C.card,
-    borderColor: C.cardBorder,
-    borderWidth: 1,
-    borderRadius: 14,
-    padding: 12,
-    marginBottom: 8,
-  },
-  cardPinned: { borderColor: C.orange, borderWidth: 1.5 },
-  cardTitle: { color: C.white, fontWeight: '600', fontSize: 14.5, lineHeight: 20 },
-  cardDesc: { color: C.muted, fontStyle: 'italic', fontSize: 12.5, marginTop: 3, lineHeight: 17 },
-  metaRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginTop: 8 },
-  chip: { borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3 },
-  chipText: { fontSize: 10.5, fontWeight: '700' },
-  actions: { flexDirection: 'row', gap: 6, marginLeft: 'auto' },
-  stBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 9,
-    borderWidth: 1,
-    borderColor: C.cardBorder,
-    backgroundColor: C.card,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stBtnDone: { borderColor: 'rgba(34,197,94,0.4)', backgroundColor: C.greenDim },
   fab: {
     position: 'absolute',
     right: 20,

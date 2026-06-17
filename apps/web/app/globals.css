@@ -58,15 +58,21 @@ html {
 .demand-row.demand-leaving {
   overflow: visible;
   pointer-events: none;
-  z-index: 1;
-  animation: demand-poof 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  z-index: 2;
+  transform-origin: center;
+  animation: demand-poof 0.62s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
 }
+/* Treme e EXPLODE: balança rápido, incha e colapsa sumindo. */
 @keyframes demand-poof {
-  0%   { transform: scale(1); opacity: 1; filter: blur(0); }
-  22%  { transform: scale(1.04); opacity: 1; }
-  100% { transform: scale(0.82); opacity: 0; filter: blur(4px); }
+  0%   { transform: translateX(0) scale(1); opacity: 1; filter: blur(0); }
+  8%   { transform: translateX(-7px) scale(1.02); }
+  16%  { transform: translateX(7px) scale(1.04); }
+  24%  { transform: translateX(-5px) scale(1.07); }
+  32%  { transform: translateX(4px) scale(1.1); opacity: 1; }
+  40%  { transform: translateX(0) scale(1.12); filter: blur(0); }
+  100% { transform: scale(0.5); opacity: 0; filter: blur(6px); }
 }
-/* Nuvem de fumaça sobreposta ao card durante o PUFF. */
+/* Nuvem de estilhaços/fumaça sobreposta ao card durante o PUFF. */
 .demand-puff {
   position: absolute;
   inset: 0;
@@ -80,16 +86,17 @@ html {
   width: var(--s, 26px);
   height: var(--s, 26px);
   border-radius: 9999px;
-  background: radial-gradient(circle at 50% 50%, rgba(226, 232, 240, 0.95), rgba(148, 163, 184, 0.5) 55%, rgba(148, 163, 184, 0) 72%);
-  filter: blur(3px);
+  background: radial-gradient(circle at 50% 50%, rgba(226, 232, 240, 0.97), rgba(148, 163, 184, 0.55) 55%, rgba(148, 163, 184, 0) 72%);
+  filter: blur(2px);
   opacity: 0;
-  animation: puff-rise 0.7s ease-out forwards;
-  animation-delay: var(--d, 0s);
+  /* espera o "treme" (~0,2s) e então é arremessado para longe */
+  animation: puff-burst 0.5s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
+  animation-delay: calc(0.2s + var(--d, 0s));
 }
-@keyframes puff-rise {
-  0%   { transform: translate(0, 8px) scale(0.3); opacity: 0; }
-  25%  { opacity: 0.9; }
-  100% { transform: translate(var(--tx, 0), var(--ty, -30px)) scale(1.8); opacity: 0; }
+@keyframes puff-burst {
+  0%   { transform: translate(0, 0) scale(0.25) rotate(0deg); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translate(var(--tx, 0), var(--ty, -30px)) scale(2.1) rotate(var(--r, 90deg)); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .demand-row.demand-leaving { animation: none; opacity: 0; }
