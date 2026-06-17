@@ -1,4 +1,4 @@
-import { FlexWidget, SvgWidget, TextWidget } from 'react-native-android-widget'
+import { FlexWidget, TextWidget } from 'react-native-android-widget'
 
 // Cores da marca (literais; o widget nativo exige cor no formato #RRGGBB[AA]).
 const CYAN = '#22D3EE'
@@ -6,13 +6,10 @@ const DARK = '#0F172A'
 const LIGHT = '#E2E8F0'
 const BORDER = '#22D3EE66' // ciano 40%
 
-// Microfone (mesma forma do app). Cor escura sobre o círculo ciano.
-const MIC_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${DARK}"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>`
-
 /**
- * Widget de tela inicial (Android): tile escuro com a cara do appMila —
- * microfone ciano em destaque + rótulo "Gravar". Ao tocar, abre o app no
- * deep link mila://record (cai direto no gravador de voz).
+ * Widget de tela inicial (Android): tile escuro com o badge M da marca e o
+ * rótulo "Nova demanda". Ao tocar, abre o app no deep link mila://record
+ * (gravador de voz).
  */
 export function RecordWidget() {
   return (
@@ -36,15 +33,15 @@ export function RecordWidget() {
         style={{
           height: 60,
           width: 60,
-          borderRadius: 30,
+          borderRadius: 16,
           backgroundColor: CYAN,
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
-        <SvgWidget svg={MIC_SVG} style={{ height: 32, width: 32 }} />
+        <TextWidget text="M" style={{ fontSize: 38, fontWeight: 'bold', color: DARK }} />
       </FlexWidget>
-      <TextWidget text="Gravar" style={{ fontSize: 13, fontWeight: 'bold', color: LIGHT, marginTop: 8 }} />
+      <TextWidget text="Nova demanda" style={{ fontSize: 12, fontWeight: 'bold', color: LIGHT, marginTop: 8 }} />
     </FlexWidget>
   )
 }
