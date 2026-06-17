@@ -11,15 +11,21 @@ type Status = 'nova' | 'trabalhando' | 'finalizada'
 const NEXT: Record<Status, Status> = { nova: 'trabalhando', trabalhando: 'finalizada', finalizada: 'nova' }
 const VARIANT = { nova: 'info', trabalhando: 'warning', finalizada: 'success' } as const
 
-// Partículas da "fumaça" do PUFF (deslocamento, tamanho e atraso de cada uma).
-const PUFF: { tx: string; ty: string; s: string; d: string }[] = [
-  { tx: '-34px', ty: '-24px', s: '26px', d: '0s' },
-  { tx: '32px', ty: '-28px', s: '30px', d: '.04s' },
-  { tx: '-10px', ty: '-38px', s: '32px', d: '.02s' },
-  { tx: '16px', ty: '-14px', s: '24px', d: '.06s' },
-  { tx: '-30px', ty: '8px', s: '22px', d: '.05s' },
-  { tx: '38px', ty: '6px', s: '24px', d: '.03s' },
-  { tx: '2px', ty: '-48px', s: '28px', d: '.08s' },
+// Estilhaços do PUFF (deslocamento, tamanho, atraso e rotação de cada um).
+// Espalham para TODOS os lados — efeito de explosão.
+const PUFF: { tx: string; ty: string; s: string; d: string; r: string }[] = [
+  { tx: '-120px', ty: '-44px', s: '24px', d: '0s', r: '-160deg' },
+  { tx: '118px', ty: '-52px', s: '28px', d: '.03s', r: '150deg' },
+  { tx: '-150px', ty: '12px', s: '22px', d: '.02s', r: '-70deg' },
+  { tx: '150px', ty: '6px', s: '26px', d: '.04s', r: '110deg' },
+  { tx: '-70px', ty: '56px', s: '20px', d: '.05s', r: '-40deg' },
+  { tx: '78px', ty: '60px', s: '22px', d: '.03s', r: '60deg' },
+  { tx: '4px', ty: '-86px', s: '30px', d: '.06s', r: '20deg' },
+  { tx: '-24px', ty: '76px', s: '18px', d: '.07s', r: '-100deg' },
+  { tx: '44px', ty: '-40px', s: '18px', d: '.04s', r: '130deg' },
+  { tx: '-52px', ty: '-30px', s: '20px', d: '.05s', r: '-120deg' },
+  { tx: '96px', ty: '-12px', s: '16px', d: '.06s', r: '80deg' },
+  { tx: '-96px', ty: '40px', s: '16px', d: '.08s', r: '-30deg' },
 ]
 
 export type CardDemand = {
@@ -208,7 +214,7 @@ export function DemandCard({
   const puff = leaving && (
     <span className="demand-puff" aria-hidden="true">
       {PUFF.map((p, i) => (
-        <span key={i} className="puff-dot" style={{ '--tx': p.tx, '--ty': p.ty, '--s': p.s, '--d': p.d } as React.CSSProperties} />
+        <span key={i} className="puff-dot" style={{ '--tx': p.tx, '--ty': p.ty, '--s': p.s, '--d': p.d, '--r': p.r } as React.CSSProperties} />
       ))}
     </span>
   )
