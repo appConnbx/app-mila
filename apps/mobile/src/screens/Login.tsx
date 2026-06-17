@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Pla
 import { supabase } from '../api'
 import { t, useLang } from '../i18n'
 import { C } from '../theme'
+import { VersionTag } from '../components/VersionTag'
 
 export function Login() {
   useLang() // re-renderiza se o idioma mudar
@@ -61,6 +62,8 @@ export function Login() {
         <Text style={s.btnText}>{busy ? t('signingIn') : t('signIn')}</Text>
       </Pressable>
       {error && <Text style={s.error}>{error}</Text>}
+
+      <VersionTag style={s.ver} />
     </KeyboardAvoidingView>
   )
 }
@@ -101,4 +104,5 @@ const s = StyleSheet.create({
   btnBusy: { opacity: 0.6 },
   btnText: { color: C.bg, fontWeight: '700', fontSize: 15 },
   error: { color: C.redText, marginTop: 10, textAlign: 'center', fontSize: 13 },
+  ver: { position: 'absolute', bottom: 20, left: 0, right: 0, textAlign: 'center' },
 })

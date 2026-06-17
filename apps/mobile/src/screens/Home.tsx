@@ -25,6 +25,7 @@ import { POLL_MS } from '../config'
 import { RecordModal } from './Record'
 import { MicIcon } from '../components/icons'
 import { DemandRow } from '../components/DemandRow'
+import { VersionTag } from '../components/VersionTag'
 
 export function Home({ openRecordSignal }: { openRecordSignal: number }) {
   const [demands, setDemands] = useState<Demand[]>([])
@@ -199,6 +200,8 @@ export function Home({ openRecordSignal }: { openRecordSignal: number }) {
         onClose={() => setRecordOpen(false)}
         onCreated={() => void refresh()}
       />
+
+      <VersionTag style={{ position: 'absolute', left: 16, bottom: insets.bottom + 12 }} />
     </View>
   )
 }
