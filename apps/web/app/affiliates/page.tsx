@@ -42,10 +42,35 @@ const COMM: Record<string, { c25: number; c50: number }> = {
 }
 
 export const metadata: Metadata = {
-  title: 'Seja Afiliado appMila — 25% de comissão (50% no lançamento de junho/2026)',
+  title: 'Programa de Afiliados appMila — produto digital para promover (até 50% de comissão)',
   description:
-    'Fature de duas formas: comissão cheia em cada venda no Brasil (como um sócio) e renda recorrente em dólar no internacional. Comissão de 25% — e 50% em todas as vendas de junho/2026. Simule seus ganhos.',
+    'Procurando um bom produto para afiliar? O appMila paga comissão cheia em cada venda no Brasil (como um sócio) e renda recorrente em dólar no internacional. 25% padrão — 50% em todas as vendas do lançamento de junho/2026. Simule seus ganhos.',
+  keywords: ['programa de afiliados', 'produto para afiliado promover', 'afiliado comissão recorrente', 'produto digital para vender', 'melhor programa de afiliados', 'afiliado Hotmart'],
+  alternates: { canonical: 'https://www.appmila.co/affiliates' },
+  openGraph: {
+    title: 'Programa de Afiliados appMila — até 50% de comissão',
+    description: 'Comissão cheia em cada venda (BR) + recorrência em dólar (internacional). Simule seus ganhos como afiliado appMila.',
+    url: 'https://www.appmila.co/affiliates',
+    siteName: 'appMila',
+    locale: 'pt_BR',
+    type: 'website',
+  },
   robots: { index: true, follow: true },
+}
+
+// FAQ do programa de afiliados (visível na página + JSON-LD). Mira buscas de
+// quem procura "bom produto para promover" e alimenta rich result / IA.
+const AFF_FAQ: { q: string; a: string }[] = [
+  { q: 'O appMila é um bom produto para afiliados promoverem?', a: 'Sim. É um SaaS de produtividade (gestão de demandas por voz) com dois modelos de ganho: no Brasil o cliente paga em até 12x e o afiliado recebe comissão sobre o valor total de uma vez (venda única); no internacional é assinatura mensal em dólar, gerando renda recorrente.' },
+  { q: 'Qual é a comissão de afiliado do appMila?', a: 'A comissão padrão é de 25%. No lançamento de junho de 2026, todas as vendas pagam 50%.' },
+  { q: 'Como funciona a recorrência internacional?', a: 'Nas vendas internacionais (planos em dólar, assinatura mensal), o afiliado recebe comissão recorrente enquanto o cliente mantiver a assinatura ativa.' },
+  { q: 'Tem produto de ticket alto e de ticket baixo?', a: 'Sim. Há planos para empresas (ticket alto, comissões maiores por venda) e planos para família/pessoal (ticket baixo, volume), no mesmo programa.' },
+  { q: 'Como me torno afiliado do appMila?', a: 'A afiliação é feita pela Hotmart. Há um link de recrutamento para o produto Brasil e outro para o internacional — ambos disponíveis nesta página.' },
+]
+const AFF_FAQ_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: AFF_FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
 }
 
 // Dados do simulador: preço do plano de lib/plans.ts (fonte única); comissão de
@@ -362,6 +387,20 @@ export default function AffiliatesPage() {
             </a>
           </div>
           <p className="mt-4 text-xs text-slate-500">Comissões processadas pela Hotmart, conforme regras e prazos da plataforma.</p>
+        </div>
+      </section>
+
+      {/* FAQ (visível + JSON-LD para rich result / IA) */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(AFF_FAQ_JSONLD) }} />
+      <section className="mx-auto max-w-3xl px-4 py-16">
+        <h2 className="text-2xl font-bold text-white sm:text-3xl">Perguntas frequentes</h2>
+        <div className="mt-6 space-y-3">
+          {AFF_FAQ.map((f) => (
+            <details key={f.q} className="group rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <summary className="cursor-pointer list-none font-semibold text-slate-100 marker:hidden">{f.q}</summary>
+              <p className="mt-2 text-sm leading-relaxed text-slate-400">{f.a}</p>
+            </details>
+          ))}
         </div>
       </section>
 
