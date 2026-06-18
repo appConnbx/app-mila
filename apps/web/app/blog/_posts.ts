@@ -56,6 +56,46 @@ export const POSTS: Post[] = [
     dateLabel: '18 de junho de 2026',
     tag: 'Gestão',
   },
+  {
+    slug: '5-problemas-em-casa-que-o-appmila-evita',
+    title: '5 problemas que você evita em casa usando o appMila',
+    description:
+      'Esquecer compras, sobrecarregar uma pessoa só, combinados que viram discussão: veja 5 problemas comuns da rotina familiar e como o appMila resolve cada um com responsável, prazo e captura por voz.',
+    excerpt: 'Compras esquecidas, divisão injusta, “achei que você ia fazer”: 5 dores de casa e como evitá-las.',
+    dateISO: '2026-06-18',
+    dateLabel: '18 de junho de 2026',
+    tag: 'Família',
+  },
+  {
+    slug: '5-problemas-no-trabalho-que-o-appmila-evita',
+    title: '5 problemas que você evita no trabalho usando o appMila',
+    description:
+      'Decisões de reunião que não viram ação, retrabalho, prazos estourados e falta de visibilidade. Veja 5 problemas que custam caro à equipe e como o appMila evita cada um.',
+    excerpt: 'Decisões que somem, retrabalho, prazos estourados: 5 dores da equipe e como evitá-las.',
+    dateISO: '2026-06-18',
+    dateLabel: '18 de junho de 2026',
+    tag: 'Trabalho',
+  },
+  {
+    slug: '10-beneficios-de-um-gestor-de-demandas',
+    title: '10 benefícios de um gestor de demandas de resposta rápida',
+    description:
+      'Capturar em segundos, nada se perder, responsável e prazo claros, visão do status e priorização. Veja 10 benefícios de usar um gestor de demandas rápido como o appMila — no trabalho e em casa.',
+    excerpt: 'Captura em segundos, nada se perde, status claro: 10 ganhos de um gestor de demandas rápido.',
+    dateISO: '2026-06-18',
+    dateLabel: '18 de junho de 2026',
+    tag: 'Produtividade',
+  },
+  {
+    slug: 'sistema-de-demandas-simples-vs-complexo',
+    title: 'Por que escolher um sistema de demandas simples (e não um complexo)',
+    description:
+      'Ferramentas complexas falham porque ninguém usa. Entenda por que um sistema de demandas simples — com captura rápida, responsável, prazo e status — vence na adoção e na execução real.',
+    excerpt: 'Ferramenta complexa que ninguém usa não resolve. Por que a simplicidade ganha na prática.',
+    dateISO: '2026-06-18',
+    dateLabel: '18 de junho de 2026',
+    tag: 'Gestão',
+  },
 ]
 
 export const getPost = (slug: string): Post | undefined => POSTS.find((p) => p.slug === slug)
