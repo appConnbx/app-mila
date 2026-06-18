@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { POSTS } from './blog/_posts'
 
 const SITE = 'https://www.appmila.co'
 
@@ -37,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Programa de afiliados (recrutamento) + blog (conteúdo).
     entry('/affiliates', 0.7, 'monthly'),
     entry('/blog', 0.7, 'weekly'),
-    entry('/blog/organizar-tarefas-por-voz', 0.6, 'monthly'),
+    ...POSTS.map((p) => entry(`/blog/${p.slug}`, 0.6, 'monthly')),
     // Institucionais / conversão.
     entry('/start', 0.6, 'monthly'),
     entry('/start-family-free', 0.6, 'monthly'),

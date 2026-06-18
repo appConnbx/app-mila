@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Aurora } from '@/components/ui'
+import { POSTS } from './_posts'
 
 export const metadata: Metadata = {
   title: 'Blog do appMila — produtividade, demandas e organização',
@@ -16,17 +17,6 @@ export const metadata: Metadata = {
     locale: 'pt_BR',
   },
 }
-
-// Lista de artigos (cresce aqui conforme novos posts forem publicados).
-const POSTS = [
-  {
-    slug: 'organizar-tarefas-por-voz',
-    title: 'Como organizar tarefas por voz (e parar de esquecer demandas)',
-    excerpt: 'Você fala, vira demanda com responsável e prazo. O jeito mais rápido de não perder o que foi combinado.',
-    date: '18 de junho de 2026',
-    tag: 'Produtividade',
-  },
-]
 
 export default function BlogIndex() {
   return (
@@ -53,7 +43,7 @@ export default function BlogIndex() {
               href={`/blog/${p.slug}`}
               className="block rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-brand/40"
             >
-              <p className="text-xs text-brand">{p.tag} · {p.date}</p>
+              <p className="text-xs text-brand">{p.tag} · {p.dateLabel}</p>
               <h2 className="mt-1 text-xl font-bold text-white">{p.title}</h2>
               <p className="mt-2 text-sm text-slate-400">{p.excerpt}</p>
             </Link>
