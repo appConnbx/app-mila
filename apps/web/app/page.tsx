@@ -315,10 +315,11 @@ export default async function LandingPage() {
     if (p.brAnnual)
       return (
         <div className="mt-4">
-          <p className="text-3xl font-extrabold text-white">
-            R${p.brAnnual}<span className="text-base font-medium text-slate-400">/ano</span>
+          <p className="flex items-baseline gap-1.5">
+            <span className="text-sm font-medium text-slate-400">12x</span>
+            <span className="text-3xl font-extrabold text-white">R${p.brParcela}</span>
           </p>
-          <p className="mt-0.5 text-xs text-slate-400">ou 12x de R${p.brParcela}</p>
+          <p className="mt-0.5 text-xs text-slate-400">ou R${p.brAnnual} à vista · plano anual</p>
         </div>
       )
     return (
