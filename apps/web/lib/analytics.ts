@@ -13,7 +13,7 @@ export const ANALYTICS_ENABLED = !!(GA4_ID || GOOGLE_ADS_ID || META_PIXEL_ID || 
 
 // Só rastreia páginas públicas de marketing — nunca o app autenticado nem /cbx.
 const MARKETING_EXACT = new Set(['/', '/en', '/es', '/start', '/welcome', '/affiliates'])
-const MARKETING_PREFIX = ['/br-', '/en-', '/es-']
+const MARKETING_PREFIX = ['/br-', '/en-', '/es-', '/blog']
 export function isMarketingPath(pathname: string): boolean {
   return MARKETING_EXACT.has(pathname) || MARKETING_PREFIX.some((p) => pathname.startsWith(p))
 }
