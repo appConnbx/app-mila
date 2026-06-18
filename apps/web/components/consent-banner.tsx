@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { ANALYTICS_ENABLED, getConsent, setConsent, isMarketingPath } from '@/lib/analytics'
+import { ANALYTICS_ENABLED, getConsent, setConsent, isMarketingPath, isAnalyticsHost } from '@/lib/analytics'
 
 // Banner de consentimento (LGPD/GDPR). Só aparece quando há pixel configurado,
 // em página de marketing, e ainda não houve decisão. Recusar = não rastrear.
@@ -11,7 +11,7 @@ export function ConsentBanner() {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
-    if (ANALYTICS_ENABLED && isMarketingPath(pathname) && getConsent() === null) setShow(true)
+    if (ANALYTICS_ENABLED && isAnalyticsHost() && isMarketingPath(pathname) && getConsent() === null) setShow(true)
   }, [pathname])
 
   if (!show) return null

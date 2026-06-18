@@ -10,6 +10,7 @@ import {
   TIKTOK_PIXEL_ID,
   getConsent,
   isMarketingPath,
+  isAnalyticsHost,
 } from '@/lib/analytics'
 
 // Carrega os pixels SÓ quando: há ID configurado, a rota é de marketing e o
@@ -17,6 +18,7 @@ import {
 export function Analytics() {
   const pathname = usePathname()
   if (!ANALYTICS_ENABLED) return null
+  if (!isAnalyticsHost()) return null
   if (!isMarketingPath(pathname)) return null
   if (getConsent() !== 'granted') return null
 
