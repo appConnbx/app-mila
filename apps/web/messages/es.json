@@ -850,5 +850,15 @@
     "p1": "Endomarketing que retiene: un beneficio real que acompaña al colaborador fuera del horario.",
     "p2": "Hogar organizado, mente tranquila — un colaborador más presente y productivo.",
     "p3": "Ya incluido: el bono es parte del plan de la empresa, sin mensualidad adicional."
+  },
+  "homeFaq": {
+    "title": "Preguntas frecuentes",
+    "items": [
+      { "q": "¿Qué es appMila?", "a": "appMila es una plataforma de gestión de tareas que convierte lo que se habla — en reuniones, conversaciones y el día a día — en tareas con responsable y plazo. Funciona para equipos de empresa y para la familia, en una sola cuenta." },
+      { "q": "¿Cómo funciona la captura por voz?", "a": "Mantén pulsado el micrófono, habla hasta 10 segundos y suelta. Tu voz se transcribe en una tarea con título, responsable y plazo para revisar antes de crearla." },
+      { "q": "¿Sirve para empresas y familias?", "a": "Sí. appMila organiza tanto las tareas del trabajo (con tu equipo) como la rutina de la familia — todo en una sola cuenta, con vistas separadas." },
+      { "q": "¿En qué dispositivos funciona appMila?", "a": "En la web (navegador), en la app de móvil (Android, con iOS en camino) y en un agente para computadora. Tus tareas quedan sincronizadas entre ellos." },
+      { "q": "¿appMila tiene plan gratis?", "a": "Sí. Hay un plan gratis para que las familias empiecen, además de planes de pago para familias más grandes y para empresas." }
+    ]
   }
 }

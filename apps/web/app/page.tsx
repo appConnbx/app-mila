@@ -267,6 +267,15 @@ export default async function LandingPage() {
   const tfb = await getTranslations('familyBonus')
   const fbLabels = { kicker: tfb('kicker'), title: tfb('title'), desc: tfb('desc'), p1: tfb('p1'), p2: tfb('p2'), p3: tfb('p3') }
 
+  // FAQ trilíngue (pt/en/es) — visível + JSON-LD FAQPage no idioma da página.
+  const tfaq = await getTranslations('homeFaq')
+  const faqItems = tfaq.raw('items') as { q: string; a: string }[]
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  }
+
   const bold = { b: (chunks: ReactNode) => <span className="font-semibold text-white">{chunks}</span> }
   const pains = t.raw('triggers.items') as { p: string; r: string }[]
   const corpBullets = t.raw('contexts.corpBullets') as string[]
@@ -681,6 +690,20 @@ export default async function LandingPage() {
               {t('finalCta.cta')} <Arrow className="h-4 w-4" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ---------------- FAQ (i18n + JSON-LD FAQPage) ---------------- */}
+      <section className="mx-auto max-w-3xl px-4 py-20">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+        <h2 className="text-center text-3xl font-bold text-white sm:text-4xl">{tfaq('title')}</h2>
+        <div className="mt-8 space-y-3">
+          {faqItems.map((f) => (
+            <details key={f.q} className="group rounded-xl border border-white/10 bg-white/[0.03] p-5">
+              <summary className="cursor-pointer list-none font-semibold text-slate-100 marker:hidden">{f.q}</summary>
+              <p className="mt-2 text-sm leading-relaxed text-slate-400">{f.a}</p>
+            </details>
+          ))}
         </div>
       </section>
 

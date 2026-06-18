@@ -850,5 +850,15 @@
     "p1": "Retention-driving perk: a real benefit that follows employees beyond office hours.",
     "p2": "An organized home means a clearer mind — a more present, productive employee.",
     "p3": "Already included: the bonus is part of the company plan, no extra fee."
+  },
+  "homeFaq": {
+    "title": "Frequently asked questions",
+    "items": [
+      { "q": "What is appMila?", "a": "appMila is a task management platform that turns what gets said — in meetings, chats and daily life — into tasks with an owner and a deadline. It works for company teams and for families, in one account." },
+      { "q": "How does voice capture work?", "a": "Hold the microphone, speak for up to 10 seconds and release. Your speech is transcribed into a task with a title, owner and deadline for you to review before creating it." },
+      { "q": "Is it for businesses and families?", "a": "Yes. appMila organizes both your work tasks (with your team) and your family routine — all in one account, with separate views." },
+      { "q": "Which devices does appMila work on?", "a": "On the web app (browser), the mobile app (Android, with iOS on the way) and a desktop agent. Your tasks stay in sync across them." },
+      { "q": "Does appMila have a free plan?", "a": "Yes. There's a free plan for families to start, plus paid plans for larger families and for companies." }
+    ]
   }
 }

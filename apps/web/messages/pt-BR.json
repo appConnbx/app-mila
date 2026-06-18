@@ -850,5 +850,15 @@
     "p1": "Endomarketing que retém: um benefício real que acompanha o colaborador fora do expediente.",
     "p2": "Casa organizada, mente tranquila — colaborador mais presente e produtivo.",
     "p3": "Já incluso: o bônus faz parte do plano da empresa, sem mensalidade adicional."
+  },
+  "homeFaq": {
+    "title": "Perguntas frequentes",
+    "items": [
+      { "q": "O que é o appMila?", "a": "O appMila é uma plataforma de gestão de demandas que transforma o que é falado — em reuniões, conversas e no dia a dia — em tarefas com responsável e prazo. Funciona para equipes de empresa e para a família, na mesma conta." },
+      { "q": "Como funciona a captura por voz?", "a": "Você segura o microfone, fala por até 10 segundos e solta. A fala é transcrita e vira uma demanda com título, responsável e prazo para você revisar antes de criar." },
+      { "q": "Serve para empresas e para famílias?", "a": "Sim. O appMila organiza tanto as demandas do trabalho (com a equipe) quanto a rotina da família — tudo na mesma conta, com visões separadas." },
+      { "q": "Em quais dispositivos o appMila funciona?", "a": "No sistema web (navegador), no app de celular (Android, com iOS a caminho) e em um agente para computador. Suas demandas ficam sincronizadas entre eles." },
+      { "q": "O appMila tem plano gratuito?", "a": "Sim. Há um plano gratuito para famílias começarem, além de planos pagos para famílias maiores e para empresas." }
+    ]
   }
 }
