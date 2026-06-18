@@ -12,6 +12,15 @@ export const metadata: Metadata = {
   title: 'appMila — Nunca mais perca uma demanda',
   description:
     'O appMila transforma conversas, reuniões e decisões em execução organizada — no trabalho e em casa. Capture, delegue, acompanhe e conclua. Tudo em uma só conta.',
+  alternates: {
+    canonical: 'https://www.appmila.co',
+    languages: {
+      'pt-BR': 'https://www.appmila.co',
+      en: 'https://www.appmila.co/en',
+      es: 'https://www.appmila.co/es',
+      'x-default': 'https://www.appmila.co',
+    },
+  },
   openGraph: {
     title: 'appMila — Nunca mais perca uma demanda',
     description:
@@ -21,6 +30,20 @@ export const metadata: Metadata = {
     locale: 'pt_BR',
     type: 'website',
   },
+}
+
+// JSON-LD do produto (SoftwareApplication) — vale para /, /en e /es (compartilham
+// este componente). Mostra ao Google/AI que é um app multiplataforma com plano grátis.
+const APP_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'appMila',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Android, iOS, Web, Windows',
+  url: 'https://www.appmila.co',
+  description:
+    'appMila captura demandas por voz e organiza tudo com responsável e prazo — para equipes e famílias. Sistema web, app de celular e agente para computador.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
 }
 
 /* ---------- Ícones (inline, leves) ---------- */
@@ -302,6 +325,7 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden text-slate-200">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(APP_JSON_LD) }} />
       <Aurora />
       {/* ---------------- NAV ---------------- */}
       <header className="sticky top-0 z-50 border-b border-white/5 bg-surface/80 backdrop-blur">

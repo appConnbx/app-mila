@@ -9,7 +9,15 @@ export const metadata: Metadata = {
   title: 'appMila — Never lose a task again',
   description:
     'appMila turns conversations, meetings and decisions into organized execution — at work and at home. Capture, delegate, track and complete. All in one account.',
-  alternates: { canonical: 'https://www.appmila.co/en' },
+  alternates: {
+    canonical: 'https://www.appmila.co/en',
+    languages: {
+      'pt-BR': 'https://www.appmila.co',
+      en: 'https://www.appmila.co/en',
+      es: 'https://www.appmila.co/es',
+      'x-default': 'https://www.appmila.co',
+    },
+  },
   openGraph: {
     title: 'appMila — Never lose a task again',
     description:
