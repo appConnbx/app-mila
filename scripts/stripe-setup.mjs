@@ -44,12 +44,12 @@ async function api(method, path, body) {
 }
 
 const PLANS = [
-  { id: 'mila_starter', name: 'MILA Starter', amount: 8700, plan: 'starter', segment: 'corporate', users: 'até 20 usuários' },
-  { id: 'mila_growth', name: 'MILA Growth', amount: 16700, plan: 'growth', segment: 'corporate', users: 'até 50 usuários' },
-  { id: 'mila_scale', name: 'MILA Scale', amount: 33700, plan: 'scale', segment: 'corporate', users: 'até 200 usuários' },
-  { id: 'mila_enterprise', name: 'MILA Enterprise', amount: 66700, plan: 'enterprise', segment: 'corporate', users: 'usuários ilimitados' },
-  { id: 'mila_family', name: 'MILA Family', amount: 1300, plan: 'family', segment: 'family', users: 'até 5 pessoas' },
-  { id: 'mila_family_plus', name: 'MILA Family Plus', amount: 1700, plan: 'family_plus', segment: 'family', users: 'até 10 pessoas' },
+  { id: 'mila_starter', name: 'appMila Starter', amount: 8700, plan: 'starter', segment: 'corporate', users: 'até 20 usuários' },
+  { id: 'mila_growth', name: 'appMila Growth', amount: 16700, plan: 'growth', segment: 'corporate', users: 'até 50 usuários' },
+  { id: 'mila_scale', name: 'appMila Scale', amount: 33700, plan: 'scale', segment: 'corporate', users: 'até 200 usuários' },
+  { id: 'mila_enterprise', name: 'appMila Enterprise', amount: 66700, plan: 'enterprise', segment: 'corporate', users: 'usuários ilimitados' },
+  { id: 'mila_family', name: 'appMila Family', amount: 1300, plan: 'family', segment: 'family', users: 'até 5 pessoas' },
+  { id: 'mila_family_plus', name: 'appMila Family Plus', amount: 1700, plan: 'family_plus', segment: 'family', users: 'até 10 pessoas' },
 ]
 
 const result = []
