@@ -3,13 +3,22 @@
 // carrega e o banner de consentimento não aparece — zero mudança no site.
 // Quando os IDs forem configurados na Vercel + redeploy, ativa sozinho.
 
-export const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID ?? ''
+// ID de medição GA4 (público — aparece no HTML). Pode ser sobrescrito por env
+// na Vercel; o default deixa a medição ativa em produção sem configuração extra.
+export const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID ?? 'G-2S5C5ZCD9F'
 export const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? '' // formato AW-XXXXXXXXX
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? ''
 export const TIKTOK_PIXEL_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID ?? ''
 
 /** Há pelo menos um pixel configurado? Controla banner + carregamento. */
 export const ANALYTICS_ENABLED = !!(GA4_ID || GOOGLE_ADS_ID || META_PIXEL_ID || TIKTOK_PIXEL_ID)
+
+/** Só mede no domínio de produção (appmila.co) — preview *.vercel.app e
+ *  localhost não poluem os dados. Avaliado no cliente. */
+export function isAnalyticsHost(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.location.hostname.endsWith('appmila.co')
+}
 
 // Só rastreia páginas públicas de marketing — nunca o app autenticado nem /cbx.
 const MARKETING_EXACT = new Set(['/', '/en', '/es', '/start', '/welcome', '/affiliates'])
