@@ -12,6 +12,13 @@ export const P = ({ children }: { children: ReactNode }) => (
   <p className="mt-4 text-[15px] leading-relaxed text-slate-300">{children}</p>
 )
 export const B = ({ children }: { children: ReactNode }) => <strong className="text-slate-100">{children}</strong>
+export const UL = ({ children }: { children: ReactNode }) => (
+  <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-relaxed text-slate-300 marker:text-brand">{children}</ul>
+)
+export const OL = ({ children }: { children: ReactNode }) => (
+  <ol className="mt-4 list-decimal space-y-2 pl-5 text-[15px] leading-relaxed text-slate-300 marker:font-bold marker:text-brand">{children}</ol>
+)
+export const LI = ({ children }: { children: ReactNode }) => <li>{children}</li>
 
 /** Casca padrão de artigo: nav + cabeçalho (título/data/tag de _posts) +
  *  JSON-LD BlogPosting + CTA. O conteúdo entra como children. */
