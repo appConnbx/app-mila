@@ -44,5 +44,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry('/start-family-free', 0.6, 'monthly'),
     entry('/privacy', 0.3, 'yearly'),
     entry('/security', 0.3, 'yearly'),
+    entry('/terms', 0.3, 'yearly'),
   ]
 }

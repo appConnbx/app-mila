@@ -736,6 +736,7 @@ export default async function LandingPage() {
             <p className="flex flex-wrap gap-x-5 gap-y-1">
               <Link href="/privacy" className="hover:text-white">{t('footer.privacy')}</Link>
               <Link href="/security" className="hover:text-white">{t('footer.security')}</Link>
+              <Link href="/terms" className="hover:text-white">{t('footer.terms')}</Link>
             </p>
             <p>{t('footer.copyright')}</p>
           </div>
