@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
-import { SubmitButton } from '@/components/pending'
 import { finishOnboarding } from './actions'
+import { OnboardingActionsGate } from './_actions-gate'
 
 export const metadata = { title: 'Onboarding · appMila' }
 
@@ -135,13 +135,19 @@ export default async function OnboardingPage() {
         </div>
       </div>
 
-      {/* Ações: entrar e configurar (seleciona a instância) ou pular */}
-      <form action={finishOnboarding} className="mt-8 flex flex-wrap items-center gap-4 border-t border-white/10 pt-5">
+      {/* Ações: aceite obrigatório dos Termos + entrar e configurar ou pular */}
+      <form action={finishOnboarding} className="mt-8 border-t border-white/10 pt-5">
         <input type="hidden" name="holding_id" value={pending.holding_id} />
-        <SubmitButton name="go" value="config" className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500">
-          {t('goConfig')}
-        </SubmitButton>
-        <SubmitButton className="text-sm text-slate-400 transition hover:text-white">{t('skip')}</SubmitButton>
+        <OnboardingActionsGate
+          labels={{
+            acceptPre: t('acceptPre'),
+            terms: t('acceptTerms'),
+            and: t('acceptAnd'),
+            privacy: t('acceptPrivacy'),
+            goConfig: t('goConfig'),
+            skip: t('skip'),
+          }}
+        />
       </form>
     </div>
   )

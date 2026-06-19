@@ -13,9 +13,15 @@ import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
 export async function finishOnboarding(formData: FormData) {
   const goConfig = String(formData.get('go') ?? '') === 'config'
   const holdingId = String(formData.get('holding_id') ?? '')
+  const accepted = String(formData.get('terms_accepted') ?? '') === '1'
+
+  // Aceite dos Termos é obrigatório para concluir o onboarding (bloqueante no
+  // cliente; reforçado aqui no servidor). Sem aceite, volta ao onboarding.
+  if (!accepted) redirect('/onboarding')
 
   const supabase = await createClient()
   const sb = supabase as unknown as { rpc: (n: string) => Promise<unknown> }
+  await sb.rpc('accept_terms') // registra data/hora do aceite (prova)
   await sb.rpc('finish_my_onboarding')
   revalidatePath('/', 'layout')
 

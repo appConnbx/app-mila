@@ -800,7 +800,11 @@
     "manualCta": "Baixar manual de configuração",
     "goConfig": "Entrar e configurar",
     "finish": "Concluir e ir para o app",
-    "skip": "Pular por agora"
+    "skip": "Pular por agora",
+    "acceptPre": "Li e concordo com os",
+    "acceptTerms": "Termos de Uso",
+    "acceptAnd": "e a",
+    "acceptPrivacy": "Política de Privacidade"
   },
   "manual": {
     "downloadCta": "Baixar / Imprimir PDF",
