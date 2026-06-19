@@ -550,6 +550,7 @@
     "docPhOther": "Documento oficial",
     "consentPre": "O documento é usado apenas para validar a conta gratuita e fica restrito à equipe CONNBX — nunca aparece no aplicativo. Ao continuar, você concorda com a",
     "privacy": "Política de Privacidade",
+    "terms": "Termos de Uso",
     "submit": "Criar minha conta gratuita",
     "note": "Plano gratuito: 1 usuário · até 15 demandas por dia. Sem cartão.",
     "morePlansPre": "Precisa de mais?",
@@ -737,6 +738,7 @@
       "corporate": "Institucional",
       "privacy": "Política de Privacidade",
       "security": "Segurança",
+      "terms": "Termos de Uso",
       "copyright": "© 2026 appMila. Todos os direitos reservados."
     }
   },

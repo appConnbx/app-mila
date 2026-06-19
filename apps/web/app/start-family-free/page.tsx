@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const DICT_KEYS = [
   'name', 'namePh', 'email', 'password', 'passwordPh', 'confirm', 'confirmPh', 'mismatch',
-  'country', 'doc', 'docOther', 'docPh', 'docPhOther', 'consentPre', 'privacy',
+  'country', 'doc', 'docOther', 'docPh', 'docPhOther', 'consentPre', 'privacy', 'terms',
   'submit', 'note', 'morePlansPre', 'morePlansLink',
 ] as const
 
