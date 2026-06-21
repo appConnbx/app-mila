@@ -12,7 +12,7 @@ import { PLANS, CORP_PLANS, FAM_PLANS } from '@/lib/plans'
      sobre o valor TOTAL, de uma vez) → "faturamento direto". Posicionamento
      de sócio em cada venda.
    - INTERNACIONAL = ASSINATURA mensal em US$ → "recorrente internacional".
-   Comissão padrão 25%; lançamento de junho/2026 = 50%.
+   Comissão padrão 25%; lançamento (junho e julho/2026) = 50%.
    Há HIGH TICKET (Empresas) e LOW TICKET (Pessoal/Família) no mesmo produto.
    ========================================================================= */
 
@@ -44,7 +44,7 @@ const COMM: Record<string, { c25: number; c50: number }> = {
 export const metadata: Metadata = {
   title: 'Programa de Afiliados appMila — produto digital para promover (até 50% de comissão)',
   description:
-    'Procurando um bom produto para afiliar? O appMila paga comissão cheia em cada venda no Brasil (como um sócio) e renda recorrente em dólar no internacional. 25% padrão — 50% em todas as vendas do lançamento de junho/2026. Simule seus ganhos.',
+    'Procurando um bom produto para afiliar? O appMila paga comissão cheia em cada venda no Brasil (como um sócio) e renda recorrente em dólar no internacional. 25% padrão — 50% em todas as vendas do lançamento (junho e julho/2026). Simule seus ganhos.',
   keywords: ['programa de afiliados', 'produto para afiliado promover', 'afiliado comissão recorrente', 'produto digital para vender', 'melhor programa de afiliados', 'afiliado Hotmart'],
   alternates: { canonical: 'https://www.appmila.co/affiliates' },
   openGraph: {
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 // quem procura "bom produto para promover" e alimenta rich result / IA.
 const AFF_FAQ: { q: string; a: string }[] = [
   { q: 'O appMila é um bom produto para afiliados promoverem?', a: 'Sim. É um SaaS de produtividade (gestão de demandas por voz) com dois modelos de ganho: no Brasil o cliente paga em até 12x e o afiliado recebe comissão sobre o valor total de uma vez (venda única); no internacional é assinatura mensal em dólar, gerando renda recorrente.' },
-  { q: 'Qual é a comissão de afiliado do appMila?', a: 'A comissão padrão é de 25%. No lançamento de junho de 2026, todas as vendas pagam 50%.' },
+  { q: 'Qual é a comissão de afiliado do appMila?', a: 'A comissão padrão é de 25%. No lançamento (junho e julho de 2026), todas as vendas pagam 50%.' },
   { q: 'Como funciona a recorrência internacional?', a: 'Nas vendas internacionais (planos em dólar, assinatura mensal), o afiliado recebe comissão recorrente enquanto o cliente mantiver a assinatura ativa.' },
   { q: 'Tem produto de ticket alto e de ticket baixo?', a: 'Sim. Há planos para empresas (ticket alto, comissões maiores por venda) e planos para família/pessoal (ticket baixo, volume), no mesmo programa.' },
   { q: 'Como me torno afiliado do appMila?', a: 'A afiliação é feita pela Hotmart. Há um link de recrutamento para o produto Brasil e outro para o internacional — ambos disponíveis nesta página.' },
@@ -99,7 +99,7 @@ const simDefaults: Record<string, number> = { 'br-growth': 1, 'br-scale': 1, 'in
 
 const simLabels = {
   table25Title: 'Comissão padrão — 25%',
-  table50Title: '🔥 Lançamento de junho — 50% (mesmas quantidades)',
+  table50Title: '🔥 Lançamento (junho e julho) — 50% (mesmas quantidades)',
   colPlan: 'Plano',
   colPrice: 'Preço do plano',
   colCommission: 'Sua comissão',
@@ -123,18 +123,18 @@ const simLabels = {
 const launchBlock: ReactNode = (
   <div className="relative overflow-hidden rounded-3xl border border-amber-400/40 bg-gradient-to-br from-amber-500/15 via-amber-500/[0.06] to-transparent p-8 text-center sm:p-12">
     <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-300">
-      Somente em junho/2026
+      Junho e julho/2026
     </span>
     <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-extrabold text-white sm:text-4xl">
       Sua comissão sobe para <span className="text-amber-300">50%</span>.
     </h2>
     <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-200">
-      No mês de lançamento, <strong className="text-amber-200">toda venda fechada em junho/2026 rende 50% de comissão</strong>.
+      No período de lançamento, <strong className="text-amber-200">toda venda fechada em junho e julho/2026 rende 50% de comissão</strong>.
       No Brasil, é o dobro do faturamento direto em cada venda. No internacional, esses 50% valem
       <strong className="text-amber-200"> para sempre</strong> — em cada renovação, pela vida inteira do cliente.
     </p>
     <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-400">
-      Depois de junho, a comissão volta aos 25%. As assinaturas internacionais que você fechar agora continuam pagando 50%.
+      A partir de agosto, a comissão volta aos 25%. As assinaturas internacionais que você fechar agora continuam pagando 50%.
       Essa janela não volta. Veja abaixo o mesmo cenário com 50%.
     </p>
   </div>
@@ -186,7 +186,7 @@ export default function AffiliatesPage() {
         <div className="mx-auto max-w-3xl px-4 pb-12 pt-16 text-center lg:pt-24">
           <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-300">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-            Mês de lançamento · Oportunidade exclusiva · Junho/2026
+            Período de lançamento · Oportunidade exclusiva · Junho e julho/2026
           </span>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-[1.07] tracking-tight text-white sm:text-5xl">
             Não é mais um produto para afiliar.
@@ -312,7 +312,7 @@ export default function AffiliatesPage() {
       {/* CTA pós-simulador */}
       <section className="mx-auto max-w-4xl px-4 pb-2 text-center">
         <a href="#afiliar" className="inline-flex items-center justify-center rounded-xl bg-amber-400 px-8 py-3.5 text-sm font-bold text-slate-950 transition hover:bg-amber-300">
-          Garantir meus 50% de junho
+          Garantir meus 50% (junho e julho)
         </a>
       </section>
 
@@ -338,7 +338,7 @@ export default function AffiliatesPage() {
         <div className="mt-8 space-y-3">
           {[
             { q: 'Como funciona a comissão?', a: 'No Brasil a venda é única: você recebe a comissão sobre o plano de uma vez (o cliente é quem parcela em até 12x). No internacional o appMila é assinatura mensal em dólar: você recebe a comissão recorrente todo mês, enquanto o cliente mantiver a assinatura. Os valores exibidos no simulador são os praticados pela Hotmart (já com as taxas da plataforma) e podem variar conforme a modalidade de parcelamento escolhida pelo comprador.' },
-            { q: 'O que muda no lançamento de junho/2026?', a: 'Em junho a comissão sobe para 50% em todas as vendas. No Brasil, é o dobro do faturamento direto por venda. No internacional, esses 50% valem para sempre — em cada renovação da assinatura que você fechar em junho. Depois do mês, novas vendas voltam a 25%.' },
+            { q: 'O que muda no lançamento (junho e julho/2026)?', a: 'Em junho e julho a comissão sobe para 50% em todas as vendas. No Brasil, é o dobro do faturamento direto por venda. No internacional, esses 50% valem para sempre — em cada renovação da assinatura que você fechar nesse período. A partir de agosto, novas vendas voltam a 25%.' },
             { q: 'O que é high ticket e low ticket?', a: 'O mesmo produto tem planos de empresa (high ticket, valores maiores) e de uso pessoal/família (low ticket, entrada baixa e volume). Você pode focar em um, ou trabalhar os dois para equilibrar valor por venda e volume.' },
             { q: 'Preciso ser especialista para vender?', a: 'Não. Você pode divulgar como já faz com qualquer produto. Quem quiser ir além, atuando como consultor, tende a fechar tickets maiores e construir carteira recorrente — e damos o material para isso.' },
             { q: 'Posso vender para fora do Brasil?', a: 'Sim. Todo o sistema é multilíngue (português, inglês e espanhol) e há planos internacionais em dólar, para empresas e uso pessoal. Sua comissão sobre essas vendas entra em US$ e é recorrente.' },
@@ -360,7 +360,7 @@ export default function AffiliatesPage() {
         <div className="rounded-3xl border border-amber-400/30 bg-gradient-to-b from-amber-500/[0.08] to-white/[0.03] p-10 text-center sm:p-14">
           <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">Pronto para faturar direto e recorrente?</h2>
           <p className="mx-auto mt-3 max-w-xl text-slate-300">
-            Afilie-se agora na Hotmart e garanta os <strong className="text-amber-200">50% em todas as vendas de junho/2026</strong>.
+            Afilie-se agora na Hotmart e garanta os <strong className="text-amber-200">50% em todas as vendas de junho e julho/2026</strong>.
             São <strong className="text-white">dois produtos</strong> — afilie-se aos dois para faturar no Brasil e no mundo.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">

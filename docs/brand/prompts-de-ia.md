@@ -53,7 +53,7 @@ Crie 5 frases curtas (até 120 caracteres) para bio/CTA de link, vendendo o appM
 ## 7. Recrutamento de outros afiliados (para quem monta rede)
 ```
 [contexto base, público = afiliados]
-Escreva 3 mensagens curtas convidando afiliados/gestores de tráfego a promover o appMila. Ângulos: (a) renda recorrente que acumula; (b) 50% de comissão no lançamento de junho (urgência); (c) é SaaS, reembolso baixo. Honesto, sem "renda garantida". pt-BR.
+Escreva 3 mensagens curtas convidando afiliados/gestores de tráfego a promover o appMila. Ângulos: (a) renda recorrente que acumula; (b) 50% de comissão no lançamento (junho e julho/2026; volta a 25% em agosto — urgência); (c) é SaaS, reembolso baixo. Honesto, sem "renda garantida". pt-BR.
 ```
 
 ## 8. Resposta a objeções (DM/comentário)

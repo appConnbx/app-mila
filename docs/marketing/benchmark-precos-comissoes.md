@@ -43,7 +43,7 @@ Notas: Monday tem mínimo de 3 assentos; grandes contas têm desconto de volume;
 
 ## 5. Recomendações
 1. **Manter 25% como padrão permanente** (mediana sustentável; já supera Asana/ClickUp).
-2. **50% só no lançamento, com prazo/condição explícitos** ("50% até 30/jun" ou "100 primeiras vendas"); considerar **tiers de volume** para premiar top-afiliados.
+2. **50% só no lançamento, com prazo/condição explícitos** ("50% até 31/jul" ou "100 primeiras vendas"); considerar **tiers de volume** para premiar top-afiliados.
 3. **Definir cookie em 60–90 dias** e **recorrência (recomendo 1º ano)** para previsibilidade de margem.
 4. **Preço por empresa = eixo de posicionamento:** "Preço fechado por empresa — seu time cresce, seu custo não."
 5. **Criar porta de entrada barata para times de 1–3** (onde hoje fica caro vs. Trello/Todoist/ClickUp) — família reposicionada ou Starter com teto menor.
