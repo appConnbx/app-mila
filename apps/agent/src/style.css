@@ -192,6 +192,10 @@ body.expanded #pill { display: none; }
   cursor: pointer; font-size: 13px; line-height: 1;
 }
 .icon-btn:hover { background: rgba(34, 211, 238, 0.18); color: #fff; }
+.icon-btn.danger:hover { background: rgba(239, 68, 68, 0.22); color: #fff; }
+/* Giro do botão Atualizar enquanto a busca roda (feedback de clique). */
+.icon-btn.spinning { animation: spin360 0.52s linear infinite; }
+@keyframes spin360 { to { transform: rotate(360deg); } }
 
 /* ---------- Login ---------- */
 #view-login { padding: 18px 16px; }

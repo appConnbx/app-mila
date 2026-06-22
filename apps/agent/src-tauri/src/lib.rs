@@ -26,12 +26,12 @@ pub fn run() {
             // sobre a janela transparente — cantos limpos.
             let _window = app.get_webview_window("main").expect("janela main");
 
-            // Bandeja: única forma de encerrar o widget (não há janela com X).
-            let quit = MenuItem::with_id(app, "quit", "Sair do MILA", true, None::<&str>)?;
+            // Bandeja: encerra o widget (também há o botão ✕ no cabeçalho da janela).
+            let quit = MenuItem::with_id(app, "quit", "Sair do appMila", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&quit])?;
             TrayIconBuilder::new()
                 .icon(app.default_window_icon().expect("ícone").clone())
-                .tooltip("MILA — agente de demandas")
+                .tooltip("appMila — agente de demandas")
                 .menu(&menu)
                 .on_menu_event(|app, event| {
                     if event.id().as_ref() == "quit" {
@@ -43,5 +43,5 @@ pub fn run() {
             Ok(())
         })
         .run(tauri::generate_context!())
-        .expect("erro ao iniciar o agente MILA");
+        .expect("erro ao iniciar o agente appMila");
 }

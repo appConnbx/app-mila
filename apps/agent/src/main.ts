@@ -2,7 +2,7 @@ import { getCurrentWindow, currentMonitor, LogicalSize, LogicalPosition } from '
 import { getVersion } from '@tauri-apps/api/app'
 import { enable as autostartEnable, disable as autostartDisable, isEnabled as autostartIsEnabled } from '@tauri-apps/plugin-autostart'
 import { check as checkUpdate } from '@tauri-apps/plugin-updater'
-import { relaunch } from '@tauri-apps/plugin-process'
+import { relaunch, exit } from '@tauri-apps/plugin-process'
 import { openUrl } from '@tauri-apps/plugin-opener'
 import { supabase, fetchPending, fetchHoldings, createDemand, setDemandStatus, type Demand, type DemandStatus, type Holding } from './supabase'
 import { COLLAPSED, EXPANDED, MIC, POLL_MS, APP_BASE_URL, MIC_HOLD_MS } from './config'
@@ -657,7 +657,28 @@ holdBtn.addEventListener('pointerup', () => void holdStop())
 holdBtn.addEventListener('pointercancel', () => void holdStop())
 holdBtn.addEventListener('pointerleave', () => void holdStop())
 
-$<HTMLButtonElement>('btn-refresh').addEventListener('click', () => void refresh())
+// Atualizar manual: gira o ícone (feedback) e força sessão válida antes de
+// buscar — o agente fica sempre aberto e o token pode ter expirado enquanto o
+// PC dormia; sem isso a busca falharia em silêncio e "não atualizaria".
+const btnRefresh = $<HTMLButtonElement>('btn-refresh')
+btnRefresh.addEventListener('click', async () => {
+  if (btnRefresh.classList.contains('spinning')) return
+  btnRefresh.classList.add('spinning')
+  const started = Date.now()
+  try {
+    await validToken()
+    await refresh()
+  } catch {
+    /* mantém o que tem; próxima rodada tenta de novo */
+  } finally {
+    // garante que o giro seja visível mesmo quando a busca volta instantânea
+    const elapsed = Date.now() - started
+    window.setTimeout(() => btnRefresh.classList.remove('spinning'), Math.max(0, 520 - elapsed))
+  }
+})
+
+// Fechar o appMila (logado ou não): encerra de fato, igual ao "Sair" da bandeja.
+$<HTMLButtonElement>('btn-close').addEventListener('click', () => void exit(0))
 
 // Acesso completo pelo sistema web — abre no navegador padrão (fora do widget).
 $<HTMLButtonElement>('open-web').addEventListener('click', () => {
