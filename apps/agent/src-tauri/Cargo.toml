@@ -8,6 +8,12 @@ edition = "2021"
 name = "mila_agent_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+[features]
+# Build para a Microsoft Store: compila SEM o auto-updater. Na Store, as
+# atualizações vêm pela própria loja; um app que baixa/instala código sozinho
+# é reprovado na certificação. Use: `tauri build --no-bundle --features store`.
+store = []
+
 # Pin temporário (jun/2026): o crate `time` 0.3.48 introduziu uma impl que
 # dispara um E0119 de coerência ao compilar `tauri-utils` (assets.rs, AssetKey).
 # Travado em time 0.3.47 (último que compilava). Por seguranca, mantemos tambem

@@ -1,0 +1,167 @@
+# appMila Agente — pacote MSIX para a Microsoft Store.
+#
+# Tauri NÃO gera MSIX: este workflow compila o app em "modo Store" (feature
+# `store`, SEM auto-updater — exigência da certificação) e empacota o .exe num
+# .msix com makeappx/signtool do Windows SDK (presente no runner windows-latest).
+#
+# Só roda manualmente (workflow_dispatch). O .msix sai como artifact para baixar.
+#
+# IDENTIDADE DO PACOTE (inputs abaixo): os campos Name e Publisher PRECISAM ser
+# exatamente os que o Partner Center mostra na página "Identidade do app" depois
+# de reservar o nome "appMila". Com valores errados, o upload é recusado. Com os
+# defaults (placeholder) o .msix instala localmente para teste, mas não serve
+# para submeter à Store.
+name: appMila Agente — MSIX (Microsoft Store)
+
+on:
+  workflow_dispatch:
+    inputs:
+      identity_name:
+        description: 'Package/Identity Name (Partner Center > Identidade do app). Ex.: 12345AppMila.appMila'
+        required: true
+        default: 'appMila'
+      publisher:
+        description: 'Publisher (Partner Center). Ex.: CN=ABCDEF12-3456-...'
+        required: true
+        default: 'CN=appMila'
+      publisher_display_name:
+        description: 'Nome do publicador exibido na loja'
+        required: true
+        default: 'appMila'
+      version:
+        description: 'Versão MSIX em 4 partes (x.y.z.0)'
+        required: true
+        default: '0.1.16.0'
+
+permissions:
+  contents: read
+
+jobs:
+  build-msix:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/agent/src-tauri
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Gerar ícones (inclui logos de Store)
+        run: pnpm --filter agent exec tauri icon src-tauri/icon-source.png
+
+      # Modo Store: sem bundle NSIS e sem updater (feature `store`).
+      - name: Compilar agente (modo Store)
+        run: pnpm --filter agent exec tauri build --no-bundle --features store
+
+      - name: Empacotar e assinar MSIX
+        shell: pwsh
+        env:
+          IDENTITY_NAME: ${{ github.event.inputs.identity_name }}
+          PUBLISHER: ${{ github.event.inputs.publisher }}
+          PUBLISHER_DISPLAY: ${{ github.event.inputs.publisher_display_name }}
+          MSIX_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root  = 'apps/agent/src-tauri'
+          $exe   = Join-Path $root 'target/release/MILA Agente.exe'
+          if (-not (Test-Path $exe)) { throw "Executável não encontrado: $exe" }
+
+          # ----- Staging -----
+          $stage = Join-Path $env:RUNNER_TEMP 'msix-stage'
+          $assets = Join-Path $stage 'Assets'
+          New-Item -ItemType Directory -Force -Path $assets | Out-Null
+          Copy-Item $exe (Join-Path $stage 'MILA Agente.exe') -Force
+          foreach ($logo in @('StoreLogo.png','Square150x150Logo.png','Square44x44Logo.png')) {
+            Copy-Item (Join-Path $root "icons/$logo") (Join-Path $assets $logo) -Force
+          }
+
+          # ----- AppxManifest.xml -----
+          $manifest = @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <Package
+            xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+            xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+            xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+            IgnorableNamespaces="uap rescap">
+            <Identity Name="$env:IDENTITY_NAME" Publisher="$env:PUBLISHER" Version="$env:MSIX_VERSION" ProcessorArchitecture="x64" />
+            <Properties>
+              <DisplayName>appMila</DisplayName>
+              <PublisherDisplayName>$env:PUBLISHER_DISPLAY</PublisherDisplayName>
+              <Logo>Assets\StoreLogo.png</Logo>
+            </Properties>
+            <Dependencies>
+              <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22621.0" />
+            </Dependencies>
+            <Resources>
+              <Resource Language="pt-BR" />
+            </Resources>
+            <Applications>
+              <Application Id="appMila" Executable="MILA Agente.exe" EntryPoint="Windows.FullTrustApplication">
+                <uap:VisualElements
+                  DisplayName="appMila"
+                  Description="Suas demandas por voz, sempre à mão."
+                  BackgroundColor="#0F172A"
+                  Square150x150Logo="Assets\Square150x150Logo.png"
+                  Square44x44Logo="Assets\Square44x44Logo.png" />
+              </Application>
+            </Applications>
+            <Capabilities>
+              <rescap:Capability Name="runFullTrust" />
+              <DeviceCapability Name="microphone" />
+            </Capabilities>
+          </Package>
+          "@
+          # Remove a indentação do here-string (XML não pode ter espaços antes do prolog).
+          $manifest = ($manifest -split "`n" | ForEach-Object { $_.TrimStart() }) -join "`n"
+          Set-Content -Path (Join-Path $stage 'AppxManifest.xml') -Value $manifest -Encoding utf8
+
+          # ----- Localizar makeappx / signtool no Windows SDK -----
+          $kit = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Directory |
+                 Where-Object { Test-Path (Join-Path $_.FullName 'x64\makeappx.exe') } |
+                 Sort-Object Name -Descending | Select-Object -First 1
+          if (-not $kit) { throw 'Windows SDK (makeappx) não encontrado no runner.' }
+          $makeappx = Join-Path $kit.FullName 'x64\makeappx.exe'
+          $signtool = Join-Path $kit.FullName 'x64\signtool.exe'
+          Write-Host "makeappx: $makeappx"
+
+          # ----- Empacotar -----
+          $msix = Join-Path $env:RUNNER_TEMP 'appMila.msix'
+          & $makeappx pack /d $stage /p $msix /o
+          if ($LASTEXITCODE -ne 0) { throw "makeappx falhou ($LASTEXITCODE)" }
+
+          # ----- Assinar com certificado self-signed (apenas para teste local; a
+          # Store reassina na submissão). O Subject precisa ser IGUAL ao Publisher. -----
+          $cert = New-SelfSignedCertificate -Type Custom -Subject $env:PUBLISHER `
+                    -KeyUsage DigitalSignature -FriendlyName 'appMila test signing' `
+                    -CertStoreLocation 'Cert:\CurrentUser\My' `
+                    -TextExtension @('2.5.29.37={text}1.3.6.1.5.5.7.3.3','2.5.29.19={text}')
+          $pfxPwd = ConvertTo-SecureString -String 'appmila-ci' -Force -AsPlainText
+          $pfx = Join-Path $env:RUNNER_TEMP 'test.pfx'
+          Export-PfxCertificate -Cert ("Cert:\CurrentUser\My\" + $cert.Thumbprint) -FilePath $pfx -Password $pfxPwd | Out-Null
+          & $signtool sign /fd SHA256 /a /f $pfx /p 'appmila-ci' $msix
+          if ($LASTEXITCODE -ne 0) { throw "signtool falhou ($LASTEXITCODE)" }
+
+          # Exporta o .cer para o usuário confiar no PC ao testar localmente.
+          Export-Certificate -Cert ("Cert:\CurrentUser\My\" + $cert.Thumbprint) -FilePath (Join-Path $env:RUNNER_TEMP 'appMila-test.cer') | Out-Null
+          Write-Host "MSIX gerado: $msix"
+
+      - name: Publicar MSIX como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: appmila-agente-msix
+          path: |
+            ${{ runner.temp }}/appMila.msix
+            ${{ runner.temp }}/appMila-test.cer
+          if-no-files-found: error
