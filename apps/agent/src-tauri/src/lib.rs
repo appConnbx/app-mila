@@ -5,7 +5,7 @@ use tauri::{
 };
 
 pub fn run() {
-    tauri::Builder::default()
+    let mut builder = tauri::Builder::default()
         // Uma instância só: abrir de novo apenas foca o widget existente.
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             if let Some(w) = app.get_webview_window("main") {
@@ -17,9 +17,19 @@ pub fn run() {
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             None,
         ))
-        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_opener::init());
+
+    // Auto-update só FORA da Store (feature `store` desliga). Na Microsoft Store
+    // as atualizações vêm pela loja; o updater interno faria a certificação
+    // reprovar o pacote. No build de Store o checkUpdate() do front cai no
+    // try/catch e vira no-op.
+    #[cfg(not(feature = "store"))]
+    {
+        builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
+    }
+
+    builder
         .setup(|app| {
             // Sem acrílico nativo: ele pinta o retângulo inteiro da janela e
             // "vaza" nos cantos arredondados. O vidro vem do CSS translúcido
