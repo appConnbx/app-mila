@@ -75,14 +75,17 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $root  = 'apps/agent/src-tauri'
-          $exe   = Join-Path $root 'target/release/MILA Agente.exe'
-          if (-not (Test-Path $exe)) { throw "Executável não encontrado: $exe" }
+          # Com --no-bundle nao ha rename para o productName: o binario fica com o
+          # nome do crate (mila-agent.exe). Pega o unico .exe no topo de release.
+          $exeSrc = Get-ChildItem (Join-Path $root 'target/release') -Filter *.exe -File -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $exeSrc) { throw 'Executável não encontrado em target/release' }
+          Write-Host "exe: $($exeSrc.FullName)"
 
           # ----- Staging -----
           $stage = Join-Path $env:RUNNER_TEMP 'msix-stage'
           $assets = Join-Path $stage 'Assets'
           New-Item -ItemType Directory -Force -Path $assets | Out-Null
-          Copy-Item $exe (Join-Path $stage 'MILA Agente.exe') -Force
+          Copy-Item $exeSrc.FullName (Join-Path $stage 'appMila.exe') -Force
           foreach ($logo in @('StoreLogo.png','Square150x150Logo.png','Square44x44Logo.png')) {
             Copy-Item (Join-Path $root "icons/$logo") (Join-Path $assets $logo) -Force
           }
@@ -108,7 +111,7 @@ jobs:
               <Resource Language="pt-BR" />
             </Resources>
             <Applications>
-              <Application Id="appMila" Executable="MILA Agente.exe" EntryPoint="Windows.FullTrustApplication">
+              <Application Id="appMila" Executable="appMila.exe" EntryPoint="Windows.FullTrustApplication">
                 <uap:VisualElements
                   DisplayName="appMila"
                   Description="Suas demandas por voz, sempre à mão."
