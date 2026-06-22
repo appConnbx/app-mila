@@ -74,7 +74,7 @@
           "widgets": [
             {
               "name": "Record",
-              "label": "appMila — Gravar",
+              "label": "appMila — Nova demanda",
               "description": "Toque para criar uma demanda por voz",
               "minWidth": "110dp",
               "minHeight": "110dp",
