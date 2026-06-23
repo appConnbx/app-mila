@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { fieldClasses } from '@/components/ui'
+import { fieldClasses } from "@/components/ui";
+import { createClient } from "@/lib/supabase/client";
+import { useState } from "react";
 
-export type RecoverDict = { email: string; submit: string; sent: string; sending: string }
+export type RecoverDict = { email: string; submit: string; sent: string; sending: string };
 
 export function RecoverForm({ dict, lang }: { dict: RecoverDict; lang?: string }) {
-  const [email, setEmail] = useState('')
-  const [sent, setSent] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    const supabase = createClient()
-    const next = encodeURIComponent('/create-password')
-    const langQs = lang ? `&lang=${encodeURIComponent(lang)}` : ''
+    e.preventDefault();
+    setLoading(true);
+    const supabase = createClient();
+    const next = encodeURIComponent("/create-password");
+    const langQs = lang ? `&lang=${encodeURIComponent(lang)}` : "";
     await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/confirm?next=${next}${langQs}`,
-    })
+    });
     // Mensagem neutra (não revela se o e-mail existe).
-    setSent(true)
-    setLoading(false)
+    setSent(true);
+    setLoading(false);
   }
 
   if (sent) {
@@ -30,7 +30,7 @@ export function RecoverForm({ dict, lang }: { dict: RecoverDict; lang?: string }
       <p className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-200">
         {dict.sent}
       </p>
-    )
+    );
   }
 
   return (
@@ -52,5 +52,5 @@ export function RecoverForm({ dict, lang }: { dict: RecoverDict; lang?: string }
         {loading ? dict.sending : dict.submit}
       </button>
     </form>
-  )
+  );
 }

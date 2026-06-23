@@ -1,23 +1,23 @@
-import Link from 'next/link'
-import { getLocale, getTranslations } from 'next-intl/server'
-import { Aurora } from '@/components/ui'
-import { SetPasswordForm } from './_form'
+import { Aurora } from "@/components/ui";
+import { getLocale, getTranslations } from "next-intl/server";
+import Link from "next/link";
+import { SetPasswordForm } from "./_form";
 
-export const metadata = { title: 'Criar senha · appMila', robots: { index: false } }
+export const metadata = { title: "Criar senha · appMila", robots: { index: false } };
 
 function toLocale(lang?: string) {
-  return lang === 'en' ? 'en' : lang === 'es' ? 'es' : lang === 'pt-BR' ? 'pt-BR' : null
+  return lang === "en" ? "en" : lang === "es" ? "es" : lang === "pt-BR" ? "pt-BR" : null;
 }
 
 export default async function DefinirSenhaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ lang?: string; erro?: string }>
+  searchParams: Promise<{ lang?: string; erro?: string }>;
 }) {
-  const { lang, erro } = await searchParams
-  const locale = toLocale(lang) ?? (await getLocale())
-  const t = await getTranslations({ locale, namespace: 'access' })
-  const langQs = lang ? `?lang=${encodeURIComponent(lang)}` : ''
+  const { lang, erro } = await searchParams;
+  const locale = toLocale(lang) ?? (await getLocale());
+  const t = await getTranslations({ locale, namespace: "access" });
+  const langQs = lang ? `?lang=${encodeURIComponent(lang)}` : "";
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
@@ -28,41 +28,45 @@ export default async function DefinirSenhaPage({
           <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-brand" />
         </div>
 
-        {erro === 'link' ? (
+        {erro === "link" ? (
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-white">{t('setInvalidTitle')}</h2>
-            <p className="mt-2 text-sm text-slate-400">{t('setInvalidBody')}</p>
+            <h2 className="text-lg font-semibold text-white">{t("setInvalidTitle")}</h2>
+            <p className="mt-2 text-sm text-slate-400">{t("setInvalidBody")}</p>
             <Link
               href={`/forgot-password${langQs}`}
               className="mt-5 inline-block w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
             >
-              {t('setRequestNew')}
+              {t("setRequestNew")}
             </Link>
           </div>
         ) : (
           <>
             <div className="mb-6 text-center">
-              <h2 className="text-lg font-semibold text-white">{t('setTitle')}</h2>
-              <p className="mt-1 text-sm text-slate-400">{t('setSubtitle')}</p>
+              <h2 className="text-lg font-semibold text-white">{t("setTitle")}</h2>
+              <p className="mt-1 text-sm text-slate-400">{t("setSubtitle")}</p>
             </div>
             <SetPasswordForm
               forgotHref={`/forgot-password${langQs}`}
               dict={{
-                placeholder: t('setPlaceholder'),
-                confirmPlaceholder: t('setConfirmPlaceholder'),
-                mismatch: t('setMismatch'),
-                short: t('setShort'),
-                submit: t('setSubmit'),
-                saving: t('setSaving'),
-                expiredTitle: t('setInvalidTitle'),
-                expiredBody: t('setInvalidBody'),
-                requestNew: t('setRequestNew'),
+                placeholder: t("setPlaceholder"),
+                confirmPlaceholder: t("setConfirmPlaceholder"),
+                mismatch: t("setMismatch"),
+                short: t("setShort"),
+                submit: t("setSubmit"),
+                saving: t("setSaving"),
+                expiredTitle: t("setInvalidTitle"),
+                expiredBody: t("setInvalidBody"),
+                requestNew: t("setRequestNew"),
               }}
-              langChoice={lang === 'en' || lang === 'es' ? { label: t('setLangLabel'), initial: lang } : undefined}
+              langChoice={
+                lang === "en" || lang === "es"
+                  ? { label: t("setLangLabel"), initial: lang }
+                  : undefined
+              }
             />
           </>
         )}
       </div>
     </main>
-  )
+  );
 }

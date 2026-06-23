@@ -1,6 +1,6 @@
-'use server'
+"use server";
 
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 
 /**
  * CTA do hero/landing. Por ora encaminha para o acesso ao app.
@@ -8,5 +8,5 @@ import { redirect } from 'next/navigation'
  * dados pessoais via querystring.)
  */
 export async function startNow() {
-  redirect('/login')
+  redirect("/login");
 }

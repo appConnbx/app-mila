@@ -1,19 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
-  useAudioRecorder,
   RecordingPresets,
   requestRecordingPermissionsAsync,
   setAudioModeAsync,
-} from 'expo-audio'
-import { transcribeAudio, splitTranscript, createDemand, tomorrowISO, type Holding } from '../api'
-import { t, useLang } from '../i18n'
-import { C } from '../theme'
-import { MIC_HOLD_MS } from '../config'
-import { MicIcon, XIcon, CheckIcon } from '../components/icons'
+  useAudioRecorder,
+} from "expo-audio";
+import { useEffect, useRef, useState } from "react";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { type Holding, createDemand, splitTranscript, tomorrowISO, transcribeAudio } from "../api";
+import { CheckIcon, MicIcon, XIcon } from "../components/icons";
+import { MIC_HOLD_MS } from "../config";
+import { t, useLang } from "../i18n";
+import { C } from "../theme";
 
-type Phase = 'idle' | 'recording' | 'transcribing' | 'preview' | 'creating' | 'done' | 'error'
+type Phase = "idle" | "recording" | "transcribing" | "preview" | "creating" | "done" | "error";
 
 /** Gravador segure-e-fale: solta = transcreve; aceita por padrão (contagem);
  *  "Recusar" descarta antes de criar. Mesmo fluxo do agente desktop. */
@@ -23,164 +23,164 @@ export function RecordModal({
   onClose,
   onCreated,
 }: {
-  visible: boolean
-  holding: Holding | undefined
-  onClose: () => void
-  onCreated: () => void
+  visible: boolean;
+  holding: Holding | undefined;
+  onClose: () => void;
+  onCreated: () => void;
 }) {
-  useLang() // re-renderiza quando o idioma da instância chega
-  const insets = useSafeAreaInsets()
-  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)
-  const [phase, setPhase] = useState<Phase>('idle')
-  const [status, setStatus] = useState('')
-  const [preview, setPreview] = useState('')
-  const [progress, setProgress] = useState(0) // 0..1 da gravação
-  const startedAt = useRef(0)
-  const capTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const tickTimer = useRef<ReturnType<typeof setInterval> | null>(null)
-  const countTimer = useRef<ReturnType<typeof setInterval> | null>(null)
-  const stopping = useRef(false)
+  useLang(); // re-renderiza quando o idioma da instância chega
+  const insets = useSafeAreaInsets();
+  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [status, setStatus] = useState("");
+  const [preview, setPreview] = useState("");
+  const [progress, setProgress] = useState(0); // 0..1 da gravação
+  const startedAt = useRef(0);
+  const capTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tickTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const countTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const stopping = useRef(false);
 
   function clearTimers() {
-    if (capTimer.current) clearTimeout(capTimer.current)
-    if (tickTimer.current) clearInterval(tickTimer.current)
-    if (countTimer.current) clearInterval(countTimer.current)
-    capTimer.current = null
-    tickTimer.current = null
-    countTimer.current = null
+    if (capTimer.current) clearTimeout(capTimer.current);
+    if (tickTimer.current) clearInterval(tickTimer.current);
+    if (countTimer.current) clearInterval(countTimer.current);
+    capTimer.current = null;
+    tickTimer.current = null;
+    countTimer.current = null;
   }
 
   useEffect(() => {
     if (visible) {
-      setPhase('idle')
-      setStatus(t('voiceHoldHint'))
-      setPreview('')
-      setProgress(0)
+      setPhase("idle");
+      setStatus(t("voiceHoldHint"));
+      setPreview("");
+      setProgress(0);
     }
-    return clearTimers
-  }, [visible])
+    return clearTimers;
+  }, [visible]);
 
   async function startHold() {
-    if (phase !== 'idle' && phase !== 'error') return
+    if (phase !== "idle" && phase !== "error") return;
     try {
-      const perm = await requestRecordingPermissionsAsync()
+      const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
-        setPhase('error')
-        setStatus(t('voiceUnavailable'))
-        return
+        setPhase("error");
+        setStatus(t("voiceUnavailable"));
+        return;
       }
-      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true })
-      await recorder.prepareToRecordAsync()
-      recorder.record()
-      stopping.current = false
-      startedAt.current = Date.now()
-      setPhase('recording')
-      const totalSecs = Math.round(MIC_HOLD_MS / 1000)
-      setStatus(`${t('voiceRecording')} · ${totalSecs}s`)
-      setProgress(0)
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
+      await recorder.prepareToRecordAsync();
+      recorder.record();
+      stopping.current = false;
+      startedAt.current = Date.now();
+      setPhase("recording");
+      const totalSecs = Math.round(MIC_HOLD_MS / 1000);
+      setStatus(`${t("voiceRecording")} · ${totalSecs}s`);
+      setProgress(0);
       // Contador regressivo dos 10s correndo durante a gravação (+ barra).
       tickTimer.current = setInterval(() => {
-        const elapsed = Date.now() - startedAt.current
-        setProgress(Math.min(1, elapsed / MIC_HOLD_MS))
-        const left = Math.max(0, Math.ceil((MIC_HOLD_MS - elapsed) / 1000))
-        setStatus(`${t('voiceRecording')} · ${left}s`)
-      }, 100)
-      capTimer.current = setTimeout(() => void stopHold(), MIC_HOLD_MS)
+        const elapsed = Date.now() - startedAt.current;
+        setProgress(Math.min(1, elapsed / MIC_HOLD_MS));
+        const left = Math.max(0, Math.ceil((MIC_HOLD_MS - elapsed) / 1000));
+        setStatus(`${t("voiceRecording")} · ${left}s`);
+      }, 100);
+      capTimer.current = setTimeout(() => void stopHold(), MIC_HOLD_MS);
     } catch {
-      setPhase('error')
-      setStatus(t('voiceUnavailable'))
+      setPhase("error");
+      setStatus(t("voiceUnavailable"));
     }
   }
 
   async function stopHold() {
-    if (stopping.current || phase === 'idle') return
-    stopping.current = true
-    clearTimers()
-    setProgress(0)
-    const duration = Date.now() - startedAt.current
+    if (stopping.current || phase === "idle") return;
+    stopping.current = true;
+    clearTimers();
+    setProgress(0);
+    const duration = Date.now() - startedAt.current;
     try {
-      await recorder.stop()
+      await recorder.stop();
     } catch {
       /* já parado */
     }
     if (duration < 500) {
-      setPhase('error')
-      setStatus(t('voiceTooShort'))
-      return
+      setPhase("error");
+      setStatus(t("voiceTooShort"));
+      return;
     }
-    const uri = recorder.uri
+    const uri = recorder.uri;
     if (!uri) {
-      setPhase('error')
-      setStatus(t('voiceFailed'))
-      return
+      setPhase("error");
+      setStatus(t("voiceFailed"));
+      return;
     }
-    setPhase('transcribing')
-    setStatus(t('voiceTranscribing'))
+    setPhase("transcribing");
+    setStatus(t("voiceTranscribing"));
     try {
-      const text = await transcribeAudio(uri)
-      showPreview(text)
+      const text = await transcribeAudio(uri);
+      showPreview(text);
     } catch (err) {
-      setPhase('error')
-      const m = (err as Error).message
-      if (m === 'nao-configurada') {
-        setStatus(t('voiceNotConfigured'))
+      setPhase("error");
+      const m = (err as Error).message;
+      if (m === "nao-configurada") {
+        setStatus(t("voiceNotConfigured"));
       } else {
         // Inclui o código para diagnóstico (ex.: 502 = provedor, 422 = silêncio).
-        setStatus(`${t('voiceFailed')} [${m}]`)
+        setStatus(`${t("voiceFailed")} [${m}]`);
       }
     }
   }
 
   function showPreview(text: string) {
-    setPreview(text)
-    setPhase('preview')
-    let count = 5
-    setStatus(t('voiceCountdown').replace('{s}', String(count)))
+    setPreview(text);
+    setPhase("preview");
+    let count = 5;
+    setStatus(t("voiceCountdown").replace("{s}", String(count)));
     countTimer.current = setInterval(() => {
-      count -= 1
+      count -= 1;
       if (count <= 0) {
-        clearTimers()
-        void accept(text)
-        return
+        clearTimers();
+        void accept(text);
+        return;
       }
-      setStatus(t('voiceCountdown').replace('{s}', String(count)))
-    }, 1000)
+      setStatus(t("voiceCountdown").replace("{s}", String(count)));
+    }, 1000);
   }
 
   async function accept(text: string) {
-    setPhase('creating')
-    setStatus(t('voiceCreating'))
+    setPhase("creating");
+    setStatus(t("voiceCreating"));
     try {
-      if (!holding) throw new Error('sem-instancia')
-      const { title, description } = splitTranscript(text)
-      await createDemand(holding.id, title, description, tomorrowISO())
-      onCreated()
-      setPhase('done')
-      setStatus(`${t('voiceCreated')}: ${title.slice(0, 40)}${title.length > 40 ? '…' : ''}`)
-      setTimeout(onClose, 1300)
+      if (!holding) throw new Error("sem-instancia");
+      const { title, description } = splitTranscript(text);
+      await createDemand(holding.id, title, description, tomorrowISO());
+      onCreated();
+      setPhase("done");
+      setStatus(`${t("voiceCreated")}: ${title.slice(0, 40)}${title.length > 40 ? "…" : ""}`);
+      setTimeout(onClose, 1300);
     } catch {
-      setPhase('error')
-      setStatus(t('voiceFailed'))
+      setPhase("error");
+      setStatus(t("voiceFailed"));
     }
   }
 
   function refuse() {
-    clearTimers()
-    setPreview('')
-    setPhase('idle')
-    setStatus(t('voiceRefused'))
+    clearTimers();
+    setPreview("");
+    setPhase("idle");
+    setStatus(t("voiceRefused"));
   }
 
-  const recording = phase === 'recording'
-  const busy = phase === 'transcribing' || phase === 'creating'
+  const recording = phase === "recording";
+  const busy = phase === "transcribing" || phase === "creating";
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={s.backdrop}>
         <View style={[s.sheet, { paddingBottom: Math.max(36, insets.bottom + 24) }]}>
-          <Text style={s.title}>{t('voiceTitle')}</Text>
+          <Text style={s.title}>{t("voiceTitle")}</Text>
 
-          {phase === 'preview' ? (
+          {phase === "preview" ? (
             <>
               <Text style={s.preview} numberOfLines={4}>
                 {preview}
@@ -188,17 +188,17 @@ export function RecordModal({
               <View style={s.reviewRow}>
                 <Pressable style={s.refuseBtn} onPress={refuse}>
                   <XIcon size={13} color={C.redText} />
-                  <Text style={s.refuseText}>{t('voiceRefuse').replace('✕ ', '')}</Text>
+                  <Text style={s.refuseText}>{t("voiceRefuse").replace("✕ ", "")}</Text>
                 </Pressable>
                 <Pressable
                   style={s.acceptBtn}
                   onPress={() => {
-                    clearTimers()
-                    void accept(preview)
+                    clearTimers();
+                    void accept(preview);
                   }}
                 >
                   <CheckIcon size={13} color={C.green} />
-                  <Text style={s.acceptText}>{t('voiceAccept').replace('✓ ', '')}</Text>
+                  <Text style={s.acceptText}>{t("voiceAccept").replace("✓ ", "")}</Text>
                 </Pressable>
               </View>
             </>
@@ -207,7 +207,7 @@ export function RecordModal({
               style={[s.holdBtn, recording && s.holdBtnRec, busy && s.holdBtnBusy]}
               onPressIn={startHold}
               onPressOut={() => void stopHold()}
-              disabled={busy || phase === 'done'}
+              disabled={busy || phase === "done"}
             >
               <MicIcon size={recording ? 42 : 38} color={recording ? C.redText : C.cyan} />
             </Pressable>
@@ -218,30 +218,26 @@ export function RecordModal({
           </View>
 
           <Text
-            style={[
-              s.status,
-              phase === 'done' && s.statusOk,
-              phase === 'error' && s.statusErr,
-            ]}
+            style={[s.status, phase === "done" && s.statusOk, phase === "error" && s.statusErr]}
           >
             {status}
           </Text>
           {holding && <Text style={s.target}>→ {holding.name}</Text>}
 
           <Pressable style={s.closeBtn} onPress={onClose}>
-            <Text style={s.closeText}>{t('close')}</Text>
+            <Text style={s.closeText}>{t("close")}</Text>
           </Pressable>
         </View>
       </View>
     </Modal>
-  )
+  );
 }
 
 const s = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(2,6,17,0.75)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(2,6,17,0.75)",
+    justifyContent: "flex-end",
   },
   sheet: {
     backgroundColor: C.bg,
@@ -249,73 +245,73 @@ const s = StyleSheet.create({
     borderTopRightRadius: 22,
     borderWidth: 1,
     borderColor: C.cardBorder,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 24,
     paddingBottom: 36,
     gap: 12,
   },
-  title: { color: C.white, fontWeight: '700', fontSize: 16 },
+  title: { color: C.white, fontWeight: "700", fontSize: 16 },
   holdBtn: {
     width: 96,
     height: 96,
     borderRadius: 48,
     borderWidth: 2,
-    borderColor: 'rgba(34,211,238,0.6)',
+    borderColor: "rgba(34,211,238,0.6)",
     backgroundColor: C.cyanDim,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   holdBtnRec: {
     borderColor: C.red,
-    backgroundColor: 'rgba(244,63,94,0.25)',
+    backgroundColor: "rgba(244,63,94,0.25)",
     transform: [{ scale: 1.1 }],
   },
   holdBtnBusy: { opacity: 0.55 },
   preview: {
     color: C.light,
-    fontStyle: 'italic',
+    fontStyle: "italic",
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 20,
     paddingHorizontal: 8,
   },
-  reviewRow: { flexDirection: 'row', gap: 10 },
+  reviewRow: { flexDirection: "row", gap: 10 },
   refuseBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 7,
     borderWidth: 1,
-    borderColor: 'rgba(244,63,94,0.5)',
+    borderColor: "rgba(244,63,94,0.5)",
     backgroundColor: C.redDim,
     borderRadius: 12,
     paddingHorizontal: 18,
     paddingVertical: 9,
   },
-  refuseText: { color: C.redText, fontWeight: '700', fontSize: 14 },
+  refuseText: { color: C.redText, fontWeight: "700", fontSize: 14 },
   acceptBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 7,
     borderWidth: 1,
-    borderColor: 'rgba(34,197,94,0.5)',
-    backgroundColor: 'rgba(34,197,94,0.14)',
+    borderColor: "rgba(34,197,94,0.5)",
+    backgroundColor: "rgba(34,197,94,0.14)",
     borderRadius: 12,
     paddingHorizontal: 18,
     paddingVertical: 9,
   },
-  acceptText: { color: C.green, fontWeight: '700', fontSize: 14 },
+  acceptText: { color: C.green, fontWeight: "700", fontSize: 14 },
   bar: {
-    width: '100%',
+    width: "100%",
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    overflow: 'hidden',
+    backgroundColor: "rgba(255,255,255,0.08)",
+    overflow: "hidden",
   },
-  barFill: { height: '100%', backgroundColor: C.cyan, borderRadius: 2 },
-  status: { color: C.muted, fontSize: 13, textAlign: 'center' },
+  barFill: { height: "100%", backgroundColor: C.cyan, borderRadius: 2 },
+  status: { color: C.muted, fontSize: 13, textAlign: "center" },
   statusOk: { color: C.green },
   statusErr: { color: C.redText },
   target: { color: C.cyan, fontSize: 12 },
   closeBtn: { marginTop: 4, padding: 6 },
   closeText: { color: C.faint, fontSize: 13 },
-})
+});

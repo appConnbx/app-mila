@@ -5,20 +5,20 @@
 :root {
   color-scheme: dark;
   /* Tema por contexto. Padrão = corporativo / visão pessoal (ciano-azulado). */
-  --brand-rgb: 34 211 238;       /* #22D3EE */
-  --brand-500-rgb: 6 182 212;    /* #06B6D4 */
-  --glow-rgb: 34 211 238;        /* spotlight dos cards */
-  --aurora-rgb: 56 130 246;      /* brilho azul do fundo */
+  --brand-rgb: 34 211 238; /* #22D3EE */
+  --brand-500-rgb: 6 182 212; /* #06B6D4 */
+  --glow-rgb: 34 211 238; /* spotlight dos cards */
+  --aurora-rgb: 56 130 246; /* brilho azul do fundo */
   /* Superfícies (dark = valores atuais; .light sobrescreve abaixo). */
-  --surface-rgb: 11 17 32;       /* #0B1120 */
-  --surface-card-rgb: 17 26 46;  /* #111A2E */
-  --surface-border-rgb: 30 41 59;/* #1E293B */
+  --surface-rgb: 11 17 32; /* #0B1120 */
+  --surface-card-rgb: 17 26 46; /* #111A2E */
+  --surface-border-rgb: 30 41 59; /* #1E293B */
 }
 
 /* Instância familiar → tema esverdeado (aplicado no wrapper do app). */
 .theme-family {
-  --brand-rgb: 52 211 153;       /* emerald-400 */
-  --brand-500-rgb: 16 185 129;   /* emerald-500 */
+  --brand-rgb: 52 211 153; /* emerald-400 */
+  --brand-500-rgb: 16 185 129; /* emerald-500 */
   --glow-rgb: 16 185 129;
   --aurora-rgb: 16 185 129;
 }
@@ -37,7 +37,9 @@ html {
 
 /* Respeita "reduzir movimento" do SO: praticamente zera animações/transições. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
@@ -47,9 +49,19 @@ html {
 
 /* Impressão do manual: só a área do manual sai no PDF (sem header/nav do app). */
 @media print {
-  body * { visibility: hidden !important; }
-  .manual-print-area, .manual-print-area * { visibility: visible !important; }
-  .manual-print-area { position: absolute; left: 0; top: 0; width: 100%; }
+  body * {
+    visibility: hidden !important;
+  }
+  .manual-print-area,
+  .manual-print-area * {
+    visibility: visible !important;
+  }
+  .manual-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
 }
 
 /* Lista de demandas: ao finalizar, a demanda dá um "PUFF" — incha de leve e
@@ -64,13 +76,33 @@ html {
 }
 /* Treme e EXPLODE: balança rápido, incha e colapsa sumindo. */
 @keyframes demand-poof {
-  0%   { transform: translateX(0) scale(1); opacity: 1; filter: blur(0); }
-  8%   { transform: translateX(-7px) scale(1.02); }
-  16%  { transform: translateX(7px) scale(1.04); }
-  24%  { transform: translateX(-5px) scale(1.07); }
-  32%  { transform: translateX(4px) scale(1.1); opacity: 1; }
-  40%  { transform: translateX(0) scale(1.12); filter: blur(0); }
-  100% { transform: scale(0.5); opacity: 0; filter: blur(6px); }
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  8% {
+    transform: translateX(-7px) scale(1.02);
+  }
+  16% {
+    transform: translateX(7px) scale(1.04);
+  }
+  24% {
+    transform: translateX(-5px) scale(1.07);
+  }
+  32% {
+    transform: translateX(4px) scale(1.1);
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(0) scale(1.12);
+    filter: blur(0);
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+    filter: blur(6px);
+  }
 }
 /* Estilhaços coloridos arremessados durante o PUFF (mesmo visual do mobile). */
 .demand-puff {
@@ -93,13 +125,26 @@ html {
   animation-delay: calc(0.2s + var(--d, 0s));
 }
 @keyframes puff-burst {
-  0%   { transform: translate(0, 0) scale(0.3) rotate(0deg); opacity: 0; }
-  20%  { opacity: 1; }
-  100% { transform: translate(var(--tx, 0), var(--ty, -30px)) scale(0.6) rotate(var(--r, 90deg)); opacity: 0; }
+  0% {
+    transform: translate(0, 0) scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx, 0), var(--ty, -30px)) scale(0.6) rotate(var(--r, 90deg));
+    opacity: 0;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .demand-row.demand-leaving { animation: none; opacity: 0; }
-  .demand-puff { display: none; }
+  .demand-row.demand-leaving {
+    animation: none;
+    opacity: 0;
+  }
+  .demand-puff {
+    display: none;
+  }
 }
 
 body {
@@ -126,7 +171,7 @@ body {
   }
   /* Glow superior (spotlight) — para cards de destaque */
   .glow-top::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 50%;
     top: -1px;
@@ -153,18 +198,19 @@ body {
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background:
-    radial-gradient(1100px 620px at 50% -10%, rgb(var(--aurora-rgb) / 0.30), transparent 60%),
-    radial-gradient(880px 520px at 88% 2%, rgb(var(--glow-rgb) / 0.18), transparent 55%),
+  background: radial-gradient(
+      1100px 620px at 50% -10%,
+      rgb(var(--aurora-rgb) / 0.3),
+      transparent 60%
+    ), radial-gradient(880px 520px at 88% 2%, rgb(var(--glow-rgb) / 0.18), transparent 55%),
     radial-gradient(720px 520px at 6% 16%, rgba(99, 102, 241, 0.14), transparent 60%),
     linear-gradient(180deg, #070b16 0%, #06080f 55%, #05070d 100%);
 }
 .aurora::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+  background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 95% 75% at 50% 12%, #000 26%, transparent 78%);
@@ -182,7 +228,7 @@ body {
   color-scheme: light;
   /* Superfícies no claro — afeta todas as variantes (bg-surface, bg-surface/70,
      border-surface-border, etc.) por serem var-backed no tailwind.config. */
-  --surface-rgb: 248 250 252;      /* slate-50 */
+  --surface-rgb: 248 250 252; /* slate-50 */
   --surface-card-rgb: 255 255 255; /* branco */
   --surface-border-rgb: 226 232 240; /* slate-200 */
 }
@@ -199,14 +245,30 @@ body {
 
 /* Texto: do mais forte ao mais sutil (contraste sobre fundo claro).
    text-slate-950 (texto escuro sobre cor/brand) NÃO é alterado. */
-.light .text-white { color: #0f172a; }      /* slate-900 */
-.light .text-slate-100 { color: #0f172a; }
-.light .text-slate-200 { color: #1e293b; }   /* slate-800 */
-.light .text-slate-300 { color: #334155; }   /* slate-700 */
-.light .text-slate-400 { color: #475569; }   /* slate-600 */
-.light .text-slate-500 { color: #64748b; }   /* slate-500 */
-.light .text-slate-600 { color: #64748b; }
-.light .placeholder\:text-slate-500::placeholder { color: #94a3b8; }
+.light .text-white {
+  color: #0f172a;
+} /* slate-900 */
+.light .text-slate-100 {
+  color: #0f172a;
+}
+.light .text-slate-200 {
+  color: #1e293b;
+} /* slate-800 */
+.light .text-slate-300 {
+  color: #334155;
+} /* slate-700 */
+.light .text-slate-400 {
+  color: #475569;
+} /* slate-600 */
+.light .text-slate-500 {
+  color: #64748b;
+} /* slate-500 */
+.light .text-slate-600 {
+  color: #64748b;
+}
+.light .placeholder\:text-slate-500::placeholder {
+  color: #94a3b8;
+}
 
 /* Superfícies escuras → claras (painéis, inputs, popovers) */
 .light .bg-slate-950,
@@ -215,13 +277,17 @@ body {
 .light .bg-slate-900\/40,
 .light .bg-slate-900\/60,
 .light .bg-slate-900\/70,
-.light .bg-slate-900\/90 { background-color: #ffffff; }
+.light .bg-slate-900\/90 {
+  background-color: #ffffff;
+}
 
 /* Hovers / realces sutis */
 .light .bg-slate-800,
 .light .bg-slate-800\/30,
 .light .bg-slate-800\/60,
-.light .bg-slate-600\/30 { background-color: #f1f5f9; } /* slate-100 */
+.light .bg-slate-600\/30 {
+  background-color: #f1f5f9;
+} /* slate-100 */
 
 /* Overlays brancos (realces no dark) → overlays escuros sutis no light */
 .light .bg-white\/\[0\.02\],
@@ -233,40 +299,59 @@ body {
 .light .bg-white\/\[0\.08\],
 .light .bg-white\/5,
 .light .bg-white\/10,
-.light .bg-white\/15 { background-color: rgba(15, 23, 42, 0.04); }
+.light .bg-white\/15 {
+  background-color: rgba(15, 23, 42, 0.04);
+}
 
 /* Bordas e ring brancos → tom escuro sutil */
-.light .border-white\/5 { border-color: rgba(15, 23, 42, 0.06); }
-.light .border-white\/10 { border-color: rgba(15, 23, 42, 0.10); }
-.light .border-white\/20 { border-color: rgba(15, 23, 42, 0.16); }
-.light .ring-white\/10 { --tw-ring-color: rgba(15, 23, 42, 0.10); }
+.light .border-white\/5 {
+  border-color: rgba(15, 23, 42, 0.06);
+}
+.light .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+.light .border-white\/20 {
+  border-color: rgba(15, 23, 42, 0.16);
+}
+.light .ring-white\/10 {
+  --tw-ring-color: rgba(15, 23, 42, 0.1);
+}
 
 /* Chips de marca (organograma: equipes/setores, skills): no claro o tint da
    marca fica fraco e o texto cyan-claro ilegível. Reforça o tint (continua via
    --brand-rgb, então respeita corp=ciano e família=verde) e usa texto neutro
    escuro p/ contraste em qualquer contexto. Dark permanece intocado. */
-.light .bg-brand\/10 { background-color: rgb(var(--brand-rgb) / 0.16); }
-.light .bg-brand\/15 { background-color: rgb(var(--brand-rgb) / 0.18); }
-.light .text-cyan-200 { color: #1e293b; }        /* slate-800 */
-.light .text-cyan-300\/60 { color: #64748b; }    /* slate-500 (contagem) */
+.light .bg-brand\/10 {
+  background-color: rgb(var(--brand-rgb) / 0.16);
+}
+.light .bg-brand\/15 {
+  background-color: rgb(var(--brand-rgb) / 0.18);
+}
+.light .text-cyan-200 {
+  color: #1e293b;
+} /* slate-800 */
+.light .text-cyan-300\/60 {
+  color: #64748b;
+} /* slate-500 (contagem) */
 
 /* Card vitrificado no claro: vidro fosco branco */
 .light .glass {
   border-color: rgba(15, 23, 42, 0.08);
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.80));
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.8));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 18px 40px -28px rgba(15, 23, 42, 0.22);
 }
 
 /* Cena de fundo no claro: aurora suave sobre quase-branco + grade discreta */
 .light .aurora {
-  background:
-    radial-gradient(1100px 620px at 50% -10%, rgb(var(--aurora-rgb) / 0.10), transparent 60%),
-    radial-gradient(880px 520px at 88% 2%, rgb(var(--glow-rgb) / 0.08), transparent 55%),
+  background: radial-gradient(
+      1100px 620px at 50% -10%,
+      rgb(var(--aurora-rgb) / 0.1),
+      transparent 60%
+    ), radial-gradient(880px 520px at 88% 2%, rgb(var(--glow-rgb) / 0.08), transparent 55%),
     radial-gradient(720px 520px at 6% 16%, rgba(99, 102, 241, 0.06), transparent 60%),
     linear-gradient(180deg, #f8fafc 0%, #f1f5f9 60%, #eef2f7 100%);
 }
 .light .aurora::before {
-  background-image:
-    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+  background-image: linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
 }

@@ -1,37 +1,41 @@
-import createNextIntlPlugin from 'next-intl/plugin'
+import createNextIntlPlugin from "next-intl/plugin";
 
-const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@mila/supabase', '@mila/shared'],
+  transpilePackages: ["@mila/supabase", "@mila/shared"],
   // Slugs públicos passaram para inglês (produto internacional). Redirects 301
   // preservam links já compartilhados/indexados (ex.: política de privacidade
   // referenciada pelas lojas de app).
   async redirects() {
     // Slugs simples (públicos).
     const simple = {
-      '/privacidade': '/privacy',
-      '/seguranca': '/security',
-      '/bem-vindo': '/welcome',
-      '/definir-senha': '/create-password',
-      '/recuperar': '/forgot-password',
-      '/br-empresa': '/br-business',
-      '/br-pessoal': '/br-personal',
-      '/organograma': '/org-chart',
-      '/painel': '/panel',
-      '/perfil': '/profile',
-      '/assinatura': '/subscription',
-    }
+      "/privacidade": "/privacy",
+      "/seguranca": "/security",
+      "/bem-vindo": "/welcome",
+      "/definir-senha": "/create-password",
+      "/recuperar": "/forgot-password",
+      "/br-empresa": "/br-business",
+      "/br-pessoal": "/br-personal",
+      "/organograma": "/org-chart",
+      "/painel": "/panel",
+      "/perfil": "/profile",
+      "/assinatura": "/subscription",
+    };
     return [
-      ...Object.entries(simple).map(([source, destination]) => ({ source, destination, permanent: true })),
+      ...Object.entries(simple).map(([source, destination]) => ({
+        source,
+        destination,
+        permanent: true,
+      })),
       // Rotas internas com subrotas — específicos antes dos curingas (ordem importa).
-      { source: '/demandas/nova', destination: '/tasks/new', permanent: true },
-      { source: '/demandas/:path*', destination: '/tasks/:path*', permanent: true },
-      { source: '/estrutura/usuarios', destination: '/structure/users', permanent: true },
-      { source: '/estrutura/:path*', destination: '/structure/:path*', permanent: true },
-      { source: '/eventos/:path*', destination: '/events/:path*', permanent: true },
-    ]
+      { source: "/demandas/nova", destination: "/tasks/new", permanent: true },
+      { source: "/demandas/:path*", destination: "/tasks/:path*", permanent: true },
+      { source: "/estrutura/usuarios", destination: "/structure/users", permanent: true },
+      { source: "/estrutura/:path*", destination: "/structure/:path*", permanent: true },
+      { source: "/eventos/:path*", destination: "/events/:path*", permanent: true },
+    ];
   },
   // Headers de segurança globais. Referrer-Policy strict-origin-when-cross-origin
   // já evita vazar token_hash (em /auth/confirm) via Referer p/ terceiros.
@@ -40,68 +44,71 @@ const nextConfig = {
     // produção, só os destinos reais (Supabase/Stripe/Resend). script-src mantém
     // 'unsafe-inline'/'unsafe-eval' (exigidos pela hidratação do Next sem nonce;
     // endurecer com nonce é um follow-up).
-    const dev = process.env.NODE_ENV !== 'production'
+    const dev = process.env.NODE_ENV !== "production";
     // Domínios de analytics (GA4/Google Ads, Meta Pixel, TikTok). Permitir os
     // hosts não carrega nada sozinho — os pixels só sobem com ID + consentimento.
     const analyticsScript = [
-      'https://www.googletagmanager.com',
-      'https://www.google-analytics.com',
-      'https://connect.facebook.net',
-      'https://analytics.tiktok.com',
-      'https://*.tiktok.com',
-    ]
+      "https://www.googletagmanager.com",
+      "https://www.google-analytics.com",
+      "https://connect.facebook.net",
+      "https://analytics.tiktok.com",
+      "https://*.tiktok.com",
+    ];
     const analyticsConnect = [
-      'https://www.googletagmanager.com',
-      'https://www.google-analytics.com',
-      'https://*.google-analytics.com',
-      'https://*.analytics.google.com',
-      'https://connect.facebook.net',
-      'https://*.facebook.com',
-      'https://analytics.tiktok.com',
-      'https://*.tiktok.com',
-      'https://www.google.com',
-      'https://googleads.g.doubleclick.net',
-    ]
+      "https://www.googletagmanager.com",
+      "https://www.google-analytics.com",
+      "https://*.google-analytics.com",
+      "https://*.analytics.google.com",
+      "https://connect.facebook.net",
+      "https://*.facebook.com",
+      "https://analytics.tiktok.com",
+      "https://*.tiktok.com",
+      "https://www.google.com",
+      "https://googleads.g.doubleclick.net",
+    ];
     const connectSrc = [
       "'self'",
-      'https://*.supabase.co',
-      'wss://*.supabase.co',
-      'https://api.stripe.com',
-      'https://api.resend.com',
+      "https://*.supabase.co",
+      "wss://*.supabase.co",
+      "https://api.stripe.com",
+      "https://api.resend.com",
       ...analyticsConnect,
-      ...(dev ? ['ws://localhost:*', 'http://localhost:*'] : []),
-    ].join(' ')
+      ...(dev ? ["ws://localhost:*", "http://localhost:*"] : []),
+    ].join(" ");
     const csp = [
       "default-src 'self'",
       "base-uri 'self'",
       "frame-ancestors 'none'",
       "object-src 'none'",
       // Next.js injeta scripts inline de hidratação; libs podem usar eval.
-      `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${analyticsScript.join(' ')}`,
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${analyticsScript.join(" ")}`,
       "style-src 'self' 'unsafe-inline'",
-      'img-src \'self\' data: blob: https:',
+      "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
       // Supabase (REST/Realtime/Storage), Stripe e Resend + analytics (+ HMR no dev).
       `connect-src ${connectSrc}`,
       // Stripe.js (se carregado), frames de pagamento e conversão do Google Ads.
-      'frame-src https://js.stripe.com https://*.stripe.com https://hooks.stripe.com https://td.doubleclick.net',
+      "frame-src https://js.stripe.com https://*.stripe.com https://hooks.stripe.com https://td.doubleclick.net",
       // Checkout externo (Hotmart/Stripe) é navegação por link, não form-post.
       "form-action 'self'",
-    ].join('; ')
+    ].join("; ");
     return [
       {
-        source: '/:path*',
+        source: "/:path*",
         headers: [
-          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=()' },
-          { key: 'Content-Security-Policy', value: csp },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=()" },
+          { key: "Content-Security-Policy", value: csp },
         ],
       },
-    ]
+    ];
   },
-}
+};
 
-export default withNextIntl(nextConfig)
+export default withNextIntl(nextConfig);
