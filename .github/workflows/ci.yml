@@ -1,0 +1,27 @@
+# Gate de CI: typecheck em todo push/PR (pega erro de tipo antes do deploy na Vercel).
+# Lint real entra quando adotarmos o Biome (next lint não está configurado).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Verificar (typecheck)
+        run: pnpm verify
