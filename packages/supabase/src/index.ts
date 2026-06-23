@@ -5,4 +5,4 @@ export type {
   TablesInsert,
   TablesUpdate,
   Enums,
-} from './database.types'
+} from "./database.types";

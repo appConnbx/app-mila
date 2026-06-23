@@ -1,18 +1,21 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { inputCbx } from './_ui'
+import { useState } from "react";
+import { inputCbx } from "./_ui";
 
 function gen() {
-  const chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-  let s = ''
-  for (let i = 0; i < 10; i++) s += chars[Math.floor(Math.random() * chars.length)]
-  return s
+  const chars = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let s = "";
+  for (let i = 0; i < 10; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
 }
 
 /** Campo de senha visível com gerador — o operador vê e repassa a senha. */
-export function PasswordField({ name = 'password', placeholder = 'Senha' }: { name?: string; placeholder?: string }) {
-  const [v, setV] = useState('')
+export function PasswordField({
+  name = "password",
+  placeholder = "Senha",
+}: { name?: string; placeholder?: string }) {
+  const [v, setV] = useState("");
   return (
     <div className="flex gap-2">
       <input
@@ -33,5 +36,5 @@ export function PasswordField({ name = 'password', placeholder = 'Senha' }: { na
         Gerar
       </button>
     </div>
-  )
+  );
 }

@@ -1,25 +1,27 @@
-import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
-import { PrintButton } from '@/components/print-button'
+import { PrintButton } from "@/components/print-button";
+import { getTranslations } from "next-intl/server";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export const metadata = { title: 'Manual · appMila' }
+export const metadata = { title: "Manual · appMila" };
 
-type Section = { h: string; items: string[] }
-type Manual = { title: string; intro: string; sections: Section[] }
+type Section = { h: string; items: string[] };
+type Manual = { title: string; intro: string; sections: Section[] };
 
 export default async function ManualPage({ params }: { params: Promise<{ seg: string }> }) {
-  const { seg } = await params
-  if (seg !== 'empresa' && seg !== 'familia') notFound()
-  const t = await getTranslations('manual')
-  const m = t.raw(seg) as Manual
+  const { seg } = await params;
+  if (seg !== "empresa" && seg !== "familia") notFound();
+  const t = await getTranslations("manual");
+  const m = t.raw(seg) as Manual;
 
   return (
     <div className="mx-auto max-w-3xl">
       {/* Barra de ações (oculta na impressão) */}
       <div className="mb-6 flex items-center justify-between gap-3 print:hidden">
-        <Link href="/onboarding" className="text-sm text-slate-400 transition hover:text-white">← {t('backToApp')}</Link>
-        <PrintButton label={t('downloadCta')} />
+        <Link href="/onboarding" className="text-sm text-slate-400 transition hover:text-white">
+          ← {t("backToApp")}
+        </Link>
+        <PrintButton label={t("downloadCta")} />
       </div>
 
       {/* Área imprimível */}
@@ -47,5 +49,5 @@ export default async function ManualPage({ params }: { params: Promise<{ seg: st
         </div>
       </article>
     </div>
-  )
+  );
 }

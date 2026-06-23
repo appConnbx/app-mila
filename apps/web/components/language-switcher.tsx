@@ -1,21 +1,21 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
-import { locales, localeLabels, LOCALE_COOKIE, type Locale } from '@/i18n/config'
+import { LOCALE_COOKIE, type Locale, localeLabels, locales } from "@/i18n/config";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 /**
  * Troca de idioma sem prefixo de rota: grava o cookie `mila_locale`
  * e atualiza o servidor (router.refresh lê o novo idioma no próximo render).
  */
 export function LanguageSwitcher({ current }: { current: Locale }) {
-  const router = useRouter()
-  const [pending, startTransition] = useTransition()
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
 
   function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const value = e.target.value
-    document.cookie = `${LOCALE_COOKIE}=${value};path=/;max-age=31536000;samesite=lax`
-    startTransition(() => router.refresh())
+    const value = e.target.value;
+    document.cookie = `${LOCALE_COOKIE}=${value};path=/;max-age=31536000;samesite=lax`;
+    startTransition(() => router.refresh());
   }
 
   return (
@@ -32,5 +32,5 @@ export function LanguageSwitcher({ current }: { current: Locale }) {
         </option>
       ))}
     </select>
-  )
+  );
 }

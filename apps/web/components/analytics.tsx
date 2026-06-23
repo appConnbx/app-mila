@@ -1,7 +1,5 @@
-'use client'
+"use client";
 
-import Script from 'next/script'
-import { usePathname } from 'next/navigation'
 import {
   ANALYTICS_ENABLED,
   GA4_ID,
@@ -9,30 +7,35 @@ import {
   META_PIXEL_ID,
   TIKTOK_PIXEL_ID,
   getConsent,
-  isMarketingPath,
   isAnalyticsHost,
-} from '@/lib/analytics'
+  isMarketingPath,
+} from "@/lib/analytics";
+import { usePathname } from "next/navigation";
+import Script from "next/script";
 
 // Carrega os pixels SÓ quando: há ID configurado, a rota é de marketing e o
 // usuário consentiu. Sem isso, não renderiza nada.
 export function Analytics() {
-  const pathname = usePathname()
-  if (!ANALYTICS_ENABLED) return null
-  if (!isAnalyticsHost()) return null
-  if (!isMarketingPath(pathname)) return null
-  if (getConsent() !== 'granted') return null
+  const pathname = usePathname();
+  if (!ANALYTICS_ENABLED) return null;
+  if (!isAnalyticsHost()) return null;
+  if (!isMarketingPath(pathname)) return null;
+  if (getConsent() !== "granted") return null;
 
-  const gtagId = GA4_ID || GOOGLE_ADS_ID
+  const gtagId = GA4_ID || GOOGLE_ADS_ID;
 
   return (
     <>
       {gtagId && (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`} strategy="afterInteractive" />
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`}
+            strategy="afterInteractive"
+          />
           <Script id="gtag-init" strategy="afterInteractive">
             {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());${
-              GA4_ID ? `gtag('config','${GA4_ID}');` : ''
-            }${GOOGLE_ADS_ID ? `gtag('config','${GOOGLE_ADS_ID}');` : ''}`}
+              GA4_ID ? `gtag('config','${GA4_ID}');` : ""
+            }${GOOGLE_ADS_ID ? `gtag('config','${GOOGLE_ADS_ID}');` : ""}`}
           </Script>
         </>
       )}
@@ -49,5 +52,5 @@ export function Analytics() {
         </Script>
       )}
     </>
-  )
+  );
 }

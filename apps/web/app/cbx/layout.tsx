@@ -1,28 +1,30 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { cbxMe, hasPerm, CBX_AREAS } from './_lib'
-import { CbxNav } from './_nav'
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { CBX_AREAS, cbxMe, hasPerm } from "./_lib";
+import { CbxNav } from "./_nav";
 
 // Portal interno: jamais indexado (o middleware reforça com X-Robots-Tag).
 export const metadata: Metadata = {
-  title: 'CBX',
+  title: "CBX",
   robots: { index: false, follow: false },
-}
+};
 
 export default async function CbxLayout({ children }: { children: React.ReactNode }) {
   // Quem não é da equipe CONNBX recebe 404 — o portal não admite que existe.
-  const me = await cbxMe()
-  if (!me.is_staff) notFound()
+  const me = await cbxMe();
+  if (!me.is_staff) notFound();
 
-  const areas = CBX_AREAS.filter((a) => hasPerm(me, a.perm))
+  const areas = CBX_AREAS.filter((a) => hasPerm(me, a.perm));
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       <header className="sticky top-0 z-10 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link href="/cbx" className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400 text-sm font-black text-slate-950">CX</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400 text-sm font-black text-slate-950">
+              CX
+            </span>
             <span className="text-lg font-bold tracking-tight text-white">CONNBX</span>
           </Link>
           <CbxNav items={areas.map((a) => ({ href: a.href, label: a.label }))} />
@@ -38,5 +40,5 @@ export default async function CbxLayout({ children }: { children: React.ReactNod
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
     </div>
-  )
+  );
 }

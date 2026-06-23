@@ -1,8 +1,8 @@
-import Link from 'next/link'
-import type { ReactNode } from 'react'
-import { getTranslations } from 'next-intl/server'
-import { VoiceDemo } from '@/components/voice-demo'
-import { FamilyBonusCallout } from '@/components/family-bonus'
+import { FamilyBonusCallout } from "@/components/family-bonus";
+import { VoiceDemo } from "@/components/voice-demo";
+import { getTranslations } from "next-intl/server";
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 /* =========================================================================
    Motor de página de vendas (LP para anúncios).
@@ -14,126 +14,156 @@ import { FamilyBonusCallout } from '@/components/family-bonus'
    ========================================================================= */
 
 export type SalesPlan = {
-  name: string
-  users: string
-  priceMain: string
-  priceUnit?: string
-  priceSub?: string
-  href: string
-  cta: string
-  featured?: boolean
-  popular?: string
-}
+  name: string;
+  users: string;
+  priceMain: string;
+  priceUnit?: string;
+  priceSub?: string;
+  href: string;
+  cta: string;
+  featured?: boolean;
+  popular?: string;
+};
 
 export type SalesContent = {
-  locale: 'pt-BR' | 'en' | 'es'
-  accent: 'brand' | 'orange'
+  locale: "pt-BR" | "en" | "es";
+  accent: "brand" | "orange";
 
-  badge: string
-  headline: ReactNode
-  subtitle: string
-  ctaPrimary: string
-  trustline: string
-  heroBullets: string[]
+  badge: string;
+  headline: ReactNode;
+  subtitle: string;
+  ctaPrimary: string;
+  trustline: string;
+  heroBullets: string[];
 
-  painKicker: string
-  painTitle: string
-  painSubtitle: string
-  pains: { p: string; r: string }[]
+  painKicker: string;
+  painTitle: string;
+  painSubtitle: string;
+  pains: { p: string; r: string }[];
 
-  solKicker: string
-  solTitle: string
-  solDesc: string
-  features: { t: string; d: string }[]
+  solKicker: string;
+  solTitle: string;
+  solDesc: string;
+  features: { t: string; d: string }[];
   // LP corporativa: exibe o callout do bônus família (endomarketing).
-  showFamilyBonus?: boolean
+  showFamilyBonus?: boolean;
 
-  howTitle: string
-  howSub: string
-  steps: { n: string; t: string; d: string }[]
+  howTitle: string;
+  howSub: string;
+  steps: { n: string; t: string; d: string }[];
 
-  authTitle: string
-  authBody: string[]
-  authSignature: string
+  authTitle: string;
+  authBody: string[];
+  authSignature: string;
 
-  proofTitle?: string
-  proof?: { quote: string; who: string }[]
+  proofTitle?: string;
+  proof?: { quote: string; who: string }[];
 
-  plansKicker: string
-  plansTitle: string
-  plansSub: string
-  plans: SalesPlan[]
-  freeNote?: { text: string; cta: string; href: string }
+  plansKicker: string;
+  plansTitle: string;
+  plansSub: string;
+  plans: SalesPlan[];
+  freeNote?: { text: string; cta: string; href: string };
 
-  guaranteeTitle: string
-  guaranteeBody: string
+  guaranteeTitle: string;
+  guaranteeBody: string;
 
-  faqTitle: string
-  faqs: { q: string; a: string }[]
+  faqTitle: string;
+  faqs: { q: string; a: string }[];
 
-  finalTitle: string
-  finalSub: string
-  finalCta: string
+  finalTitle: string;
+  finalSub: string;
+  finalCta: string;
 
-  footerCompany: string
-  footerDisclaimer: string
-  privacyLabel: string
-  termsLabel: string
-  supportEmail: string
-}
+  footerCompany: string;
+  footerDisclaimer: string;
+  privacyLabel: string;
+  termsLabel: string;
+  supportEmail: string;
+};
 
-function Check({ className = '' }: { className?: string }) {
+function Check({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <path d="M5 10.5l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M5 10.5l3 3 7-7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
-  )
+  );
 }
-function Arrow({ className = '' }: { className?: string }) {
+function Arrow({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M4 10h11M11 5l5 5-5 5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
-  )
+  );
 }
 
 export async function SalesPage({ c }: { c: SalesContent }) {
   // Textos do demo interativo (fonte única nas mensagens, pelo locale da LP).
-  const tv = await getTranslations({ locale: c.locale, namespace: 'voiceDemo' })
+  const tv = await getTranslations({ locale: c.locale, namespace: "voiceDemo" });
   const voiceLabels = {
-    badge: tv('badge'), title: tv('title'), subtitle: tv('subtitle'), holdHint: tv('holdHint'),
-    recording: tv('recording'), transcribing: tv('transcribing'), formPlaceholder: tv('formPlaceholder'),
-    add: tv('add'), listTitle: tv('listTitle'), empty: tv('empty'),
-    statusNova: tv('statusNova'), statusTrabalhando: tv('statusTrabalhando'), statusFinalizada: tv('statusFinalizada'), limit: tv('limit'),
-    micPrompt: tv('micPrompt'), micDenied: tv('micDenied'),
-  }
-  const voiceSamples = tv.raw('samples') as string[]
-  const tfb = await getTranslations({ locale: c.locale, namespace: 'familyBonus' })
-  const fbLabels = { kicker: tfb('kicker'), title: tfb('title'), desc: tfb('desc'), p1: tfb('p1'), p2: tfb('p2'), p3: tfb('p3') }
+    badge: tv("badge"),
+    title: tv("title"),
+    subtitle: tv("subtitle"),
+    holdHint: tv("holdHint"),
+    recording: tv("recording"),
+    transcribing: tv("transcribing"),
+    formPlaceholder: tv("formPlaceholder"),
+    add: tv("add"),
+    listTitle: tv("listTitle"),
+    empty: tv("empty"),
+    statusNova: tv("statusNova"),
+    statusTrabalhando: tv("statusTrabalhando"),
+    statusFinalizada: tv("statusFinalizada"),
+    limit: tv("limit"),
+    micPrompt: tv("micPrompt"),
+    micDenied: tv("micDenied"),
+  };
+  const voiceSamples = tv.raw("samples") as string[];
+  const tfb = await getTranslations({ locale: c.locale, namespace: "familyBonus" });
+  const fbLabels = {
+    kicker: tfb("kicker"),
+    title: tfb("title"),
+    desc: tfb("desc"),
+    p1: tfb("p1"),
+    p2: tfb("p2"),
+    p3: tfb("p3"),
+  };
 
   // Cores de destaque conforme o segmento.
   const a =
-    c.accent === 'orange'
+    c.accent === "orange"
       ? {
-          text: 'text-orange-300',
-          bg: 'bg-orange-500',
-          bgHover: 'hover:bg-orange-400',
-          ring: 'ring-orange-400/40',
-          border: 'border-orange-400/50',
-          soft: 'bg-orange-500/[0.06]',
-          softBorder: 'border-orange-400/30',
-          chipBg: 'bg-orange-500/15',
+          text: "text-orange-300",
+          bg: "bg-orange-500",
+          bgHover: "hover:bg-orange-400",
+          ring: "ring-orange-400/40",
+          border: "border-orange-400/50",
+          soft: "bg-orange-500/[0.06]",
+          softBorder: "border-orange-400/30",
+          chipBg: "bg-orange-500/15",
         }
       : {
-          text: 'text-brand',
-          bg: 'bg-brand',
-          bgHover: 'hover:bg-brand-500',
-          ring: 'ring-brand/40',
-          border: 'border-brand/50',
-          soft: 'bg-brand/[0.06]',
-          softBorder: 'border-brand/30',
-          chipBg: 'bg-brand/15',
-        }
+          text: "text-brand",
+          bg: "bg-brand",
+          bgHover: "hover:bg-brand-500",
+          ring: "ring-brand/40",
+          border: "border-brand/50",
+          soft: "bg-brand/[0.06]",
+          softBorder: "border-brand/30",
+          chipBg: "bg-brand/15",
+        };
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-slate-950 text-slate-200">
@@ -141,7 +171,9 @@ export async function SalesPage({ c }: { c: SalesContent }) {
       <header className="sticky top-0 z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur">
         <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5">
           <Link href="/" className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">M</span>
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-sm font-black text-slate-950">
+              M
+            </span>
             <span className="text-lg font-bold tracking-tight text-white">appMila</span>
           </Link>
         </nav>
@@ -160,7 +192,9 @@ export async function SalesPage({ c }: { c: SalesContent }) {
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-[1.07] tracking-tight text-white sm:text-5xl">
             {c.headline}
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-400">{c.subtitle}</p>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-400">
+            {c.subtitle}
+          </p>
           <p className="mt-6 text-xs text-slate-500">{c.trustline}</p>
           <ul className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-300">
             {c.heroBullets.map((b) => (
@@ -175,7 +209,9 @@ export async function SalesPage({ c }: { c: SalesContent }) {
       {/* DOR / AGITAÇÃO */}
       <section className="mx-auto max-w-5xl px-4 py-14">
         <div className="text-center">
-          <p className={`text-sm font-semibold uppercase tracking-wider ${a.text}`}>{c.painKicker}</p>
+          <p className={`text-sm font-semibold uppercase tracking-wider ${a.text}`}>
+            {c.painKicker}
+          </p>
           <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">{c.painTitle}</h2>
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">{c.painSubtitle}</p>
         </div>
@@ -195,7 +231,9 @@ export async function SalesPage({ c }: { c: SalesContent }) {
       {/* SOLUÇÃO / FEATURES */}
       <section className="mx-auto max-w-5xl px-4 py-14">
         <div className="text-center">
-          <p className={`text-sm font-semibold uppercase tracking-wider ${a.text}`}>{c.solKicker}</p>
+          <p className={`text-sm font-semibold uppercase tracking-wider ${a.text}`}>
+            {c.solKicker}
+          </p>
           <h2 className="mx-auto mt-2 max-w-2xl text-3xl font-bold text-white">{c.solTitle}</h2>
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">{c.solDesc}</p>
         </div>
@@ -247,7 +285,9 @@ export async function SalesPage({ c }: { c: SalesContent }) {
           <h2 className="text-2xl font-bold text-white">{c.authTitle}</h2>
           <div className="mt-4 space-y-3 text-slate-300">
             {c.authBody.map((p, i) => (
-              <p key={i} className="leading-relaxed">{p}</p>
+              <p key={i} className="leading-relaxed">
+                {p}
+              </p>
             ))}
           </div>
           <p className={`mt-5 text-sm font-semibold ${a.text}`}>{c.authSignature}</p>
@@ -261,7 +301,9 @@ export async function SalesPage({ c }: { c: SalesContent }) {
           <div className="mt-9 grid gap-5 md:grid-cols-3">
             {c.proof.map((t, i) => (
               <figure key={i} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                <blockquote className="text-sm leading-relaxed text-slate-200">“{t.quote}”</blockquote>
+                <blockquote className="text-sm leading-relaxed text-slate-200">
+                  “{t.quote}”
+                </blockquote>
                 <figcaption className="mt-3 text-xs font-medium text-slate-500">{t.who}</figcaption>
               </figure>
             ))}
@@ -272,20 +314,26 @@ export async function SalesPage({ c }: { c: SalesContent }) {
       {/* PLANOS */}
       <section id="planos" className="mx-auto max-w-5xl scroll-mt-20 px-4 py-14">
         <div className="text-center">
-          <p className={`text-sm font-semibold uppercase tracking-wider ${a.text}`}>{c.plansKicker}</p>
+          <p className={`text-sm font-semibold uppercase tracking-wider ${a.text}`}>
+            {c.plansKicker}
+          </p>
           <h2 className="mt-2 text-3xl font-bold text-white">{c.plansTitle}</h2>
           <p className="mx-auto mt-3 max-w-2xl text-slate-400">{c.plansSub}</p>
         </div>
-        <div className={`mt-9 grid gap-5 ${c.plans.length >= 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-2'}`}>
+        <div
+          className={`mt-9 grid gap-5 ${c.plans.length >= 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-2"}`}
+        >
           {c.plans.map((p) => (
             <div
               key={p.name}
               className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-6 ${
-                p.featured ? `${a.border} ring-2 ${a.ring}` : 'border-white/10'
+                p.featured ? `${a.border} ring-2 ${a.ring}` : "border-white/10"
               }`}
             >
               {p.featured && p.popular && (
-                <span className={`absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full ${a.bg} px-3 py-0.5 text-[11px] font-bold text-slate-950`}>
+                <span
+                  className={`absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full ${a.bg} px-3 py-0.5 text-[11px] font-bold text-slate-950`}
+                >
                   ⭐ {p.popular}
                 </span>
               )}
@@ -294,7 +342,9 @@ export async function SalesPage({ c }: { c: SalesContent }) {
               <div className="mt-4">
                 <p className="text-3xl font-extrabold text-white">
                   {p.priceMain}
-                  {p.priceUnit && <span className="text-base font-medium text-slate-400">{p.priceUnit}</span>}
+                  {p.priceUnit && (
+                    <span className="text-base font-medium text-slate-400">{p.priceUnit}</span>
+                  )}
                 </p>
                 {p.priceSub && <p className="mt-0.5 text-xs text-slate-400">{p.priceSub}</p>}
               </div>
@@ -303,7 +353,9 @@ export async function SalesPage({ c }: { c: SalesContent }) {
                 target="_blank"
                 rel="noreferrer"
                 className={`mt-5 block rounded-xl px-4 py-2.5 text-center text-sm font-semibold transition ${
-                  p.featured ? `${a.bg} text-slate-950 ${a.bgHover}` : 'border border-white/10 text-slate-200 hover:bg-white/5'
+                  p.featured
+                    ? `${a.bg} text-slate-950 ${a.bgHover}`
+                    : "border border-white/10 text-slate-200 hover:bg-white/5"
                 }`}
               >
                 {p.cta}
@@ -315,7 +367,10 @@ export async function SalesPage({ c }: { c: SalesContent }) {
         {c.freeNote && (
           <div className="mt-5 flex flex-col items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:flex-row sm:items-center">
             <p className="text-sm text-slate-400">{c.freeNote.text}</p>
-            <Link href={c.freeNote.href} className="shrink-0 rounded-lg border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10">
+            <Link
+              href={c.freeNote.href}
+              className="shrink-0 rounded-lg border border-emerald-500/40 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/10"
+            >
               {c.freeNote.cta}
             </Link>
           </div>
@@ -325,7 +380,11 @@ export async function SalesPage({ c }: { c: SalesContent }) {
       {/* GARANTIA */}
       <section className="mx-auto max-w-3xl px-4 py-10">
         <div className={`flex items-start gap-4 rounded-2xl border ${a.softBorder} ${a.soft} p-6`}>
-          <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${a.chipBg} text-2xl`}>🛡️</span>
+          <span
+            className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${a.chipBg} text-2xl`}
+          >
+            🛡️
+          </span>
           <div>
             <p className="text-base font-semibold text-white">{c.guaranteeTitle}</p>
             <p className="mt-1 text-sm leading-relaxed text-slate-300">{c.guaranteeBody}</p>
@@ -338,10 +397,15 @@ export async function SalesPage({ c }: { c: SalesContent }) {
         <h2 className="text-center text-3xl font-bold text-white">{c.faqTitle}</h2>
         <div className="mt-8 space-y-3">
           {c.faqs.map((f) => (
-            <details key={f.q} className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5 [&_summary::-webkit-details-marker]:hidden">
+            <details
+              key={f.q}
+              className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5 [&_summary::-webkit-details-marker]:hidden"
+            >
               <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm font-semibold text-white">
                 {f.q}
-                <span className={`shrink-0 text-lg ${a.text} transition group-open:rotate-45`}>+</span>
+                <span className={`shrink-0 text-lg ${a.text} transition group-open:rotate-45`}>
+                  +
+                </span>
               </summary>
               <p className="mt-3 text-sm leading-relaxed text-slate-400">{f.a}</p>
             </details>
@@ -352,10 +416,15 @@ export async function SalesPage({ c }: { c: SalesContent }) {
       {/* CTA FINAL */}
       <section className="mx-auto max-w-5xl px-4 py-14">
         <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center sm:p-14">
-          <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">{c.finalTitle}</h2>
+          <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white sm:text-4xl">
+            {c.finalTitle}
+          </h2>
           <p className="mx-auto mt-3 max-w-xl text-slate-400">{c.finalSub}</p>
           <div className="mt-7 flex justify-center">
-            <a href="#planos" className={`inline-flex items-center gap-2 rounded-xl ${a.bg} px-7 py-3.5 text-sm font-semibold text-slate-950 transition ${a.bgHover}`}>
+            <a
+              href="#planos"
+              className={`inline-flex items-center gap-2 rounded-xl ${a.bg} px-7 py-3.5 text-sm font-semibold text-slate-950 transition ${a.bgHover}`}
+            >
               {c.finalCta} <Arrow className="h-4 w-4" />
             </a>
           </div>
@@ -369,12 +438,18 @@ export async function SalesPage({ c }: { c: SalesContent }) {
           <p className="text-slate-400">{c.footerDisclaimer}</p>
           <p>{c.footerCompany}</p>
           <p className="flex flex-wrap gap-x-5 gap-y-1">
-            <Link href="/privacy" className="hover:text-white">{c.privacyLabel}</Link>
-            <Link href="/security" className="hover:text-white">{c.termsLabel}</Link>
-            <a href={`mailto:${c.supportEmail}`} className="hover:text-white">{c.supportEmail}</a>
+            <Link href="/privacy" className="hover:text-white">
+              {c.privacyLabel}
+            </Link>
+            <Link href="/security" className="hover:text-white">
+              {c.termsLabel}
+            </Link>
+            <a href={`mailto:${c.supportEmail}`} className="hover:text-white">
+              {c.supportEmail}
+            </a>
           </p>
         </div>
       </footer>
     </div>
-  )
+  );
 }

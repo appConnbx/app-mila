@@ -20,5 +20,5 @@ export function PageSkeleton({ rows = 4, kpis = true }: { rows?: number; kpis?: 
         ))}
       </div>
     </div>
-  )
+  );
 }

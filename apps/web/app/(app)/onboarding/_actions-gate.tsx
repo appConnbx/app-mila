@@ -1,27 +1,27 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { SubmitButton } from '@/components/pending'
+import { SubmitButton } from "@/components/pending";
+import Link from "next/link";
+import { useState } from "react";
 
 export type GateLabels = {
-  acceptPre: string
-  terms: string
-  and: string
-  privacy: string
-  goConfig: string
-  skip: string
-}
+  acceptPre: string;
+  terms: string;
+  and: string;
+  privacy: string;
+  goConfig: string;
+  skip: string;
+};
 
 /** Aceite bloqueante dos Termos: enquanto a caixa não for marcada, os botões de
  *  concluir/pular ficam desabilitados. O aceite vai no form (terms_accepted) e
  *  é reforçado no servidor (finishOnboarding). */
 export function OnboardingActionsGate({ labels: l }: { labels: GateLabels }) {
-  const [accepted, setAccepted] = useState(false)
+  const [accepted, setAccepted] = useState(false);
 
   return (
     <div className="space-y-4">
-      <input type="hidden" name="terms_accepted" value={accepted ? '1' : '0'} />
+      <input type="hidden" name="terms_accepted" value={accepted ? "1" : "0"} />
       <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-300">
         <input
           type="checkbox"
@@ -30,9 +30,15 @@ export function OnboardingActionsGate({ labels: l }: { labels: GateLabels }) {
           className="mt-0.5 h-4 w-4 shrink-0 accent-brand"
         />
         <span>
-          {l.acceptPre}{' '}
-          <Link href="/terms" target="_blank" className="text-brand hover:underline">{l.terms}</Link> {l.and}{' '}
-          <Link href="/privacy" target="_blank" className="text-brand hover:underline">{l.privacy}</Link>.
+          {l.acceptPre}{" "}
+          <Link href="/terms" target="_blank" className="text-brand hover:underline">
+            {l.terms}
+          </Link>{" "}
+          {l.and}{" "}
+          <Link href="/privacy" target="_blank" className="text-brand hover:underline">
+            {l.privacy}
+          </Link>
+          .
         </span>
       </label>
 
@@ -45,10 +51,13 @@ export function OnboardingActionsGate({ labels: l }: { labels: GateLabels }) {
         >
           {l.goConfig}
         </SubmitButton>
-        <SubmitButton disabled={!accepted} className="text-sm text-slate-400 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-50">
+        <SubmitButton
+          disabled={!accepted}
+          className="text-sm text-slate-400 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+        >
           {l.skip}
         </SubmitButton>
       </div>
     </div>
-  )
+  );
 }

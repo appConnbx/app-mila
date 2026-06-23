@@ -1,292 +1,326 @@
-'use server'
+"use server";
 
-import { cookies } from 'next/headers'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { createClient, ACTIVE_HOLDING_COOKIE } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createAdminClient } from "@/lib/supabase/admin";
+import { ACTIVE_HOLDING_COOKIE, createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-const STRUCTURE_TABLES = { organization: 'organizations', area: 'areas', team: 'teams' } as const
-type StructureKind = keyof typeof STRUCTURE_TABLES
+const STRUCTURE_TABLES = { organization: "organizations", area: "areas", team: "teams" } as const;
+type StructureKind = keyof typeof STRUCTURE_TABLES;
 
 function slugify(s: string) {
   return (
     s
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 40) || 'org'
-  )
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40) || "org"
+  );
 }
 
 async function ctx() {
-  const c = await cookies()
-  const holdingId = c.get(ACTIVE_HOLDING_COOKIE)?.value
-  const supabase = await createClient()
-  return { holdingId, supabase }
+  const c = await cookies();
+  const holdingId = c.get(ACTIVE_HOLDING_COOKIE)?.value;
+  const supabase = await createClient();
+  return { holdingId, supabase };
 }
 
 function revalidate() {
-  revalidatePath('/structure', 'layout')
-  revalidatePath('/structure/users')
+  revalidatePath("/structure", "layout");
+  revalidatePath("/structure/users");
 }
 
 // ---------------------------------------------------------------- Logo (foto de perfil)
 // Salva a URL pública (já enviada ao storage no cliente) na holding ativa ou
 // numa organização dela. RLS garante que só admin do escopo consegue gravar.
 export async function setEntityLogo(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  if (!holdingId) return
-  const kind = String(formData.get('kind') ?? '')
-  const url = String(formData.get('logo_url') ?? '').trim() || null
-  if (kind === 'holding') {
-    await supabase.from('holdings').update({ logo_url: url } as never).eq('id', holdingId)
-  } else if (kind === 'organization') {
-    const id = String(formData.get('id') ?? '')
-    if (!id) return
+  const { holdingId, supabase } = await ctx();
+  if (!holdingId) return;
+  const kind = String(formData.get("kind") ?? "");
+  const url = String(formData.get("logo_url") ?? "").trim() || null;
+  if (kind === "holding") {
     await supabase
-      .from('organizations')
+      .from("holdings")
       .update({ logo_url: url } as never)
-      .eq('id', id)
-      .eq('holding_id', holdingId)
+      .eq("id", holdingId);
+  } else if (kind === "organization") {
+    const id = String(formData.get("id") ?? "");
+    if (!id) return;
+    await supabase
+      .from("organizations")
+      .update({ logo_url: url } as never)
+      .eq("id", id)
+      .eq("holding_id", holdingId);
   } else {
-    return
+    return;
   }
-  revalidate()
+  revalidate();
 }
 
 // ---------------------------------------------------------------- Holding
 export async function updateHolding(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  if (!holdingId) return
+  const { holdingId, supabase } = await ctx();
+  if (!holdingId) return;
   const patch = {
-    name: String(formData.get('name') ?? '').trim(),
-    legal_name: String(formData.get('legal_name') ?? '').trim() || null,
-    tax_id: String(formData.get('tax_id') ?? '').trim() || null,
-    contact_email: String(formData.get('contact_email') ?? '').trim() || null,
-    phone: String(formData.get('phone') ?? '').trim() || null,
-    timezone: String(formData.get('timezone') ?? '').trim() || 'America/Sao_Paulo',
+    name: String(formData.get("name") ?? "").trim(),
+    legal_name: String(formData.get("legal_name") ?? "").trim() || null,
+    tax_id: String(formData.get("tax_id") ?? "").trim() || null,
+    contact_email: String(formData.get("contact_email") ?? "").trim() || null,
+    phone: String(formData.get("phone") ?? "").trim() || null,
+    timezone: String(formData.get("timezone") ?? "").trim() || "America/Sao_Paulo",
     // Idioma padrão da instância (o agente desktop usa; corporativa prevalece).
-    language: ['pt-BR', 'en', 'es'].includes(String(formData.get('language')))
-      ? String(formData.get('language'))
-      : 'pt-BR',
-  }
-  if (!patch.name) redirect('/structure/holding?tab=config&cfg=erro')
-  await supabase.from('holdings').update(patch as never).eq('id', holdingId)
-  revalidate()
-  redirect('/structure/holding?tab=config&cfg=ok')
+    language: ["pt-BR", "en", "es"].includes(String(formData.get("language")))
+      ? String(formData.get("language"))
+      : "pt-BR",
+  };
+  if (!patch.name) redirect("/structure/holding?tab=config&cfg=erro");
+  await supabase
+    .from("holdings")
+    .update(patch as never)
+    .eq("id", holdingId);
+  revalidate();
+  redirect("/structure/holding?tab=config&cfg=ok");
 }
 
 // ---------------------------------------------------------------- Organização
 export async function createOrganization(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  const name = String(formData.get('name') ?? '').trim()
-  if (!holdingId || !name) return
-  await supabase
-    .from('organizations')
-    .insert({ holding_id: holdingId, name, slug: `${slugify(name)}-${Date.now().toString(36)}` } as never)
-  revalidate()
+  const { holdingId, supabase } = await ctx();
+  const name = String(formData.get("name") ?? "").trim();
+  if (!holdingId || !name) return;
+  await supabase.from("organizations").insert({
+    holding_id: holdingId,
+    name,
+    slug: `${slugify(name)}-${Date.now().toString(36)}`,
+  } as never);
+  revalidate();
 }
 
 // ---------------------------------------------------------------- Área
 export async function createArea(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  const name = String(formData.get('name') ?? '').trim()
-  const organization_id = String(formData.get('organization_id') ?? '')
-  if (!holdingId || !name || !organization_id) return
-  await supabase.from('areas').insert({ holding_id: holdingId, organization_id, name } as never)
-  revalidate()
+  const { holdingId, supabase } = await ctx();
+  const name = String(formData.get("name") ?? "").trim();
+  const organization_id = String(formData.get("organization_id") ?? "");
+  if (!holdingId || !name || !organization_id) return;
+  await supabase.from("areas").insert({ holding_id: holdingId, organization_id, name } as never);
+  revalidate();
 }
 
 // ---------------------------------------------------------------- Equipe
 export async function createTeam(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  const name = String(formData.get('name') ?? '').trim()
-  const area_id = String(formData.get('area_id') ?? '')
-  if (!holdingId || !name || !area_id) return
+  const { holdingId, supabase } = await ctx();
+  const name = String(formData.get("name") ?? "").trim();
+  const area_id = String(formData.get("area_id") ?? "");
+  if (!holdingId || !name || !area_id) return;
   const { data: area } = await supabase
-    .from('areas')
-    .select('organization_id')
-    .eq('id', area_id)
-    .single()
-  const organization_id = (area as unknown as { organization_id: string } | null)?.organization_id
-  if (!organization_id) return
-  await supabase.from('teams').insert({ holding_id: holdingId, organization_id, area_id, name } as never)
-  revalidate()
+    .from("areas")
+    .select("organization_id")
+    .eq("id", area_id)
+    .single();
+  const organization_id = (area as unknown as { organization_id: string } | null)?.organization_id;
+  if (!organization_id) return;
+  await supabase
+    .from("teams")
+    .insert({ holding_id: holdingId, organization_id, area_id, name } as never);
+  revalidate();
 }
 
 // ---------------------------------------------------------------- Pessoa
 export async function createPerson(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  const full_name = String(formData.get('full_name') ?? '').trim()
-  let organization_id = String(formData.get('organization_id') ?? '')
-  const email = String(formData.get('email') ?? '').trim() || null
-  const role_title = String(formData.get('role_title') ?? '').trim() || null
-  const can_delegate = formData.get('can_delegate') === 'on'
-  const aliasesRaw = String(formData.get('aliases') ?? '').trim()
-  if (!holdingId || !full_name) return
+  const { holdingId, supabase } = await ctx();
+  const full_name = String(formData.get("full_name") ?? "").trim();
+  let organization_id = String(formData.get("organization_id") ?? "");
+  const email = String(formData.get("email") ?? "").trim() || null;
+  const role_title = String(formData.get("role_title") ?? "").trim() || null;
+  const can_delegate = formData.get("can_delegate") === "on";
+  const aliasesRaw = String(formData.get("aliases") ?? "").trim();
+  if (!holdingId || !full_name) return;
 
   // Organização é opcional no cadastro: assume a 1ª organização da instância.
   // O vínculo a áreas/equipes é configurado depois.
   if (!organization_id) {
     const { data: defOrg } = await supabase
-      .from('organizations')
-      .select('id')
-      .eq('holding_id', holdingId)
-      .order('created_at', { ascending: true })
-      .limit(1)
-    organization_id = (defOrg as unknown as { id: string }[] | null)?.[0]?.id ?? ''
+      .from("organizations")
+      .select("id")
+      .eq("holding_id", holdingId)
+      .order("created_at", { ascending: true })
+      .limit(1);
+    organization_id = (defOrg as unknown as { id: string }[] | null)?.[0]?.id ?? "";
   }
-  if (!organization_id) return
+  if (!organization_id) return;
 
   const { data: inserted, error } = await supabase
-    .from('people')
-    .insert({ holding_id: holdingId, organization_id, full_name, email, role_title, can_delegate } as never)
-    .select('id')
-    .single()
+    .from("people")
+    .insert({
+      holding_id: holdingId,
+      organization_id,
+      full_name,
+      email,
+      role_title,
+      can_delegate,
+    } as never)
+    .select("id")
+    .single();
 
   // O trigger app.enforce_seat_limit bloqueia além do limite do plano; antes
   // disso a falha era silenciosa (parecia "não cadastra"). Agora avisa.
   if (error) {
-    revalidate()
-    const seat = /limite/i.test(error.message ?? '')
-    redirect(`/structure/users?err=${seat ? 'seat_limit' : 'create'}`)
+    revalidate();
+    const seat = /limite/i.test(error.message ?? "");
+    redirect(`/structure/users?err=${seat ? "seat_limit" : "create"}`);
   }
 
-  const personId = (inserted as unknown as { id: string } | null)?.id
+  const personId = (inserted as unknown as { id: string } | null)?.id;
   if (personId && aliasesRaw) {
     const rows = aliasesRaw
-      .split(',')
+      .split(",")
       .map((a) => a.trim())
       .filter(Boolean)
-      .map((alias) => ({ holding_id: holdingId, person_id: personId, alias }))
-    if (rows.length) await supabase.from('person_aliases').insert(rows as never)
+      .map((alias) => ({ holding_id: holdingId, person_id: personId, alias }));
+    if (rows.length) await supabase.from("person_aliases").insert(rows as never);
   }
-  revalidate()
+  revalidate();
 }
 
 export async function addAlias(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  const person_id = String(formData.get('person_id') ?? '')
-  const alias = String(formData.get('alias') ?? '').trim()
-  if (!holdingId || !person_id || !alias) return
-  await supabase.from('person_aliases').insert({ holding_id: holdingId, person_id, alias } as never)
-  revalidate()
+  const { holdingId, supabase } = await ctx();
+  const person_id = String(formData.get("person_id") ?? "");
+  const alias = String(formData.get("alias") ?? "").trim();
+  if (!holdingId || !person_id || !alias) return;
+  await supabase
+    .from("person_aliases")
+    .insert({ holding_id: holdingId, person_id, alias } as never);
+  revalidate();
 }
 
 export async function removeAlias(formData: FormData) {
-  const { supabase } = await ctx()
-  const id = String(formData.get('id') ?? '')
-  if (!id) return
-  await supabase.from('person_aliases').delete().eq('id', id)
-  revalidate()
+  const { supabase } = await ctx();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await supabase.from("person_aliases").delete().eq("id", id);
+  revalidate();
 }
 
 // ---------------------------------------------------------------- Administradores por escopo
 export async function assignAdmin(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  const person_id = String(formData.get('person_id') ?? '')
-  const role = String(formData.get('role') ?? '')
-  const scope_level = String(formData.get('scope_level') ?? '')
-  const scope_id = String(formData.get('scope_id') ?? '')
-  if (!holdingId || !person_id || !role || !scope_level || !scope_id) return
+  const { holdingId, supabase } = await ctx();
+  const person_id = String(formData.get("person_id") ?? "");
+  const role = String(formData.get("role") ?? "");
+  const scope_level = String(formData.get("scope_level") ?? "");
+  const scope_id = String(formData.get("scope_id") ?? "");
+  if (!holdingId || !person_id || !role || !scope_level || !scope_id) return;
   await supabase
-    .from('memberships')
-    .insert({ holding_id: holdingId, person_id, role, scope_level, scope_id } as never)
-  revalidate()
+    .from("memberships")
+    .insert({ holding_id: holdingId, person_id, role, scope_level, scope_id } as never);
+  revalidate();
 }
 
 export async function removeAdmin(formData: FormData) {
-  const { supabase } = await ctx()
-  const id = String(formData.get('id') ?? '')
-  if (!id) return
-  await supabase.from('memberships').delete().eq('id', id)
-  revalidate()
+  const { supabase } = await ctx();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await supabase.from("memberships").delete().eq("id", id);
+  revalidate();
 }
 
 // ---------------------------------------------------------------- Membros da equipe
 export async function addTeamMember(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  const team_id = String(formData.get('team_id') ?? '')
-  const person_id = String(formData.get('person_id') ?? '')
-  if (!holdingId || !team_id || !person_id) return
-  await supabase.from('team_members').insert({ holding_id: holdingId, team_id, person_id } as never)
-  revalidate()
+  const { holdingId, supabase } = await ctx();
+  const team_id = String(formData.get("team_id") ?? "");
+  const person_id = String(formData.get("person_id") ?? "");
+  if (!holdingId || !team_id || !person_id) return;
+  await supabase
+    .from("team_members")
+    .insert({ holding_id: holdingId, team_id, person_id } as never);
+  revalidate();
 }
 
 export async function removeTeamMember(formData: FormData) {
-  const { supabase } = await ctx()
-  const id = String(formData.get('id') ?? '')
-  if (!id) return
-  await supabase.from('team_members').delete().eq('id', id)
-  revalidate()
+  const { supabase } = await ctx();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await supabase.from("team_members").delete().eq("id", id);
+  revalidate();
 }
 
 // ---------------------------------------------------------------- Editar estruturas
 export async function renameStructure(formData: FormData) {
-  const { supabase } = await ctx()
-  const kind = String(formData.get('kind') ?? '') as StructureKind
-  const id = String(formData.get('id') ?? '')
-  const name = String(formData.get('name') ?? '').trim()
-  const table = STRUCTURE_TABLES[kind]
-  if (!table || !id || !name) return
-  await supabase.from(table).update({ name } as never).eq('id', id)
-  revalidate()
+  const { supabase } = await ctx();
+  const kind = String(formData.get("kind") ?? "") as StructureKind;
+  const id = String(formData.get("id") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
+  const table = STRUCTURE_TABLES[kind];
+  if (!table || !id || !name) return;
+  await supabase
+    .from(table)
+    .update({ name } as never)
+    .eq("id", id);
+  revalidate();
 }
 
 export async function setStructureActive(formData: FormData) {
-  const { supabase } = await ctx()
-  const kind = String(formData.get('kind') ?? '') as StructureKind
-  const id = String(formData.get('id') ?? '')
-  const is_active = String(formData.get('active') ?? '') === '1'
-  if (!kind || !id) return
+  const { supabase } = await ctx();
+  const kind = String(formData.get("kind") ?? "") as StructureKind;
+  const id = String(formData.get("id") ?? "");
+  const is_active = String(formData.get("active") ?? "") === "1";
+  if (!kind || !id) return;
   // Desativar cascateia para a estrutura abaixo (áreas/equipes); nunca toca em pessoas.
-  const sb = supabase as unknown as { rpc: (n: string, args: Record<string, unknown>) => Promise<unknown> }
-  await sb.rpc('set_structure_active', { p_kind: kind, p_id: id, p_active: is_active })
-  revalidate()
+  const sb = supabase as unknown as {
+    rpc: (n: string, args: Record<string, unknown>) => Promise<unknown>;
+  };
+  await sb.rpc("set_structure_active", { p_kind: kind, p_id: id, p_active: is_active });
+  revalidate();
 }
 
 export async function deleteStructure(formData: FormData) {
-  const { supabase } = await ctx()
-  const kind = String(formData.get('kind') ?? '') as StructureKind
-  const id = String(formData.get('id') ?? '')
-  const back = String(formData.get('redirect') ?? '/structure')
-  const table = STRUCTURE_TABLES[kind]
-  if (table && id) await supabase.from(table).delete().eq('id', id)
-  revalidate()
-  redirect(back)
+  const { supabase } = await ctx();
+  const kind = String(formData.get("kind") ?? "") as StructureKind;
+  const id = String(formData.get("id") ?? "");
+  const back = String(formData.get("redirect") ?? "/structure");
+  const table = STRUCTURE_TABLES[kind];
+  if (table && id) await supabase.from(table).delete().eq("id", id);
+  revalidate();
+  redirect(back);
 }
 
 // ---------------------------------------------------------------- Usuários (admin da holding)
 export async function setPersonActive(formData: FormData) {
-  const { supabase } = await ctx()
-  const id = String(formData.get('id') ?? '')
-  const is_active = String(formData.get('active') ?? '') === '1'
-  if (!id) return
+  const { supabase } = await ctx();
+  const id = String(formData.get("id") ?? "");
+  const is_active = String(formData.get("active") ?? "") === "1";
+  if (!id) return;
   if (is_active) {
-    await supabase.from('people').update({ is_active: true } as never).eq('id', id)
+    await supabase
+      .from("people")
+      .update({ is_active: true } as never)
+      .eq("id", id);
   } else {
     // Desativa e reatribui as demandas abertas ao admin da equipe (com observação).
-    const sb = supabase as unknown as { rpc: (n: string, args: Record<string, unknown>) => Promise<unknown> }
-    await sb.rpc('deactivate_person', { p_id: id })
+    const sb = supabase as unknown as {
+      rpc: (n: string, args: Record<string, unknown>) => Promise<unknown>;
+    };
+    await sb.rpc("deactivate_person", { p_id: id });
   }
-  revalidate()
+  revalidate();
 }
 
 /** Edita os dados cadastrais da pessoa (admin da holding). */
 export async function updatePerson(formData: FormData) {
-  const { supabase } = await ctx()
-  const id = String(formData.get('id') ?? '')
-  if (!id) return
+  const { supabase } = await ctx();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
   const patch = {
-    full_name: String(formData.get('full_name') ?? '').trim(),
-    email: String(formData.get('email') ?? '').trim() || null,
-    role_title: String(formData.get('role_title') ?? '').trim() || null,
-    can_delegate: formData.get('can_delegate') === 'on',
-  }
-  if (!patch.full_name) return
-  await supabase.from('people').update(patch as never).eq('id', id)
-  revalidate()
+    full_name: String(formData.get("full_name") ?? "").trim(),
+    email: String(formData.get("email") ?? "").trim() || null,
+    role_title: String(formData.get("role_title") ?? "").trim() || null,
+    can_delegate: formData.get("can_delegate") === "on",
+  };
+  if (!patch.full_name) return;
+  await supabase
+    .from("people")
+    .update(patch as never)
+    .eq("id", id);
+  revalidate();
 }
 
 /**
@@ -295,52 +329,55 @@ export async function updatePerson(formData: FormData) {
  * opcionalmente reatribui o trabalho a outra pessoa antes de excluir.
  */
 export async function deletePerson(formData: FormData) {
-  const { supabase } = await ctx()
-  const id = String(formData.get('id') ?? '')
-  const reassign = String(formData.get('reassign_to') ?? '') || null
-  if (!id) return
+  const { supabase } = await ctx();
+  const id = String(formData.get("id") ?? "");
+  const reassign = String(formData.get("reassign_to") ?? "") || null;
+  if (!id) return;
   const sb = supabase as unknown as {
-    rpc: (name: string, args: Record<string, unknown>) => Promise<{ data: { ok: boolean; reason?: string } | null }>
-  }
-  const { data } = await sb.rpc('admin_delete_person', { p_id: id, p_reassign: reassign })
-  revalidate()
+    rpc: (
+      name: string,
+      args: Record<string, unknown>,
+    ) => Promise<{ data: { ok: boolean; reason?: string } | null }>;
+  };
+  const { data } = await sb.rpc("admin_delete_person", { p_id: id, p_reassign: reassign });
+  revalidate();
   if (data?.ok) {
-    redirect('/structure/users?ok=deleted')
+    redirect("/structure/users?ok=deleted");
   } else {
-    redirect(`/structure/users?err=${data?.reason ?? 'delete'}`)
+    redirect(`/structure/users?err=${data?.reason ?? "delete"}`);
   }
 }
 
 export async function setHoldingAdmin(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  const person_id = String(formData.get('person_id') ?? '')
-  const make = String(formData.get('make') ?? '') === '1'
-  if (!holdingId || !person_id) return
+  const { holdingId, supabase } = await ctx();
+  const person_id = String(formData.get("person_id") ?? "");
+  const make = String(formData.get("make") ?? "") === "1";
+  if (!holdingId || !person_id) return;
   if (make) {
-    await supabase.from('memberships').insert({
+    await supabase.from("memberships").insert({
       holding_id: holdingId,
       person_id,
-      role: 'holding_admin',
-      scope_level: 'holding',
+      role: "holding_admin",
+      scope_level: "holding",
       scope_id: holdingId,
-    } as never)
+    } as never);
   } else {
     await supabase
-      .from('memberships')
+      .from("memberships")
       .delete()
-      .eq('person_id', person_id)
-      .eq('role', 'holding_admin')
-      .eq('scope_id', holdingId)
+      .eq("person_id", person_id)
+      .eq("role", "holding_admin")
+      .eq("scope_id", holdingId);
   }
-  revalidate()
+  revalidate();
 }
 
 export async function sendPasswordReset(formData: FormData) {
-  const { supabase } = await ctx()
-  const email = String(formData.get('email') ?? '').trim()
-  if (!email) return
-  await supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://www.appmila.co/login' })
-  revalidate()
+  const { supabase } = await ctx();
+  const email = String(formData.get("email") ?? "").trim();
+  if (!email) return;
+  await supabase.auth.resetPasswordForEmail(email, { redirectTo: "https://www.appmila.co/login" });
+  revalidate();
 }
 
 /**
@@ -349,84 +386,128 @@ export async function sendPasswordReset(formData: FormData) {
  * Usa o cliente admin (service_role) — exige SUPABASE_SERVICE_ROLE_KEY.
  */
 export async function adminSetPassword(formData: FormData) {
-  const { holdingId, supabase } = await ctx()
-  if (!holdingId) return
-  const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: boolean | null }> }
-  const { data: isAdmin } = await sb.rpc('is_holding_admin')
-  if (!isAdmin) redirect('/structure/users?err=forbidden')
+  const { holdingId, supabase } = await ctx();
+  if (!holdingId) return;
+  const sb = supabase as unknown as { rpc: (n: string) => Promise<{ data: boolean | null }> };
+  const { data: isAdmin } = await sb.rpc("is_holding_admin");
+  if (!isAdmin) redirect("/structure/users?err=forbidden");
 
-  const personId = String(formData.get('person_id') ?? '')
-  const password = String(formData.get('password') ?? '')
-  if (!personId) return
-  if (password.length < 8) redirect('/structure/users?err=pwshort')
+  const personId = String(formData.get("person_id") ?? "");
+  const password = String(formData.get("password") ?? "");
+  if (!personId) return;
+  if (password.length < 8) redirect("/structure/users?err=pwshort");
 
-  const admin = createAdminClient()
-  const { data: person } = await admin.from('people').select('id, holding_id, email, auth_user_id').eq('id', personId).single()
-  const p = person as unknown as { id: string; holding_id: string; email: string | null; auth_user_id: string | null } | null
-  if (!p || p.holding_id !== holdingId) redirect('/structure/users?err=forbidden')
-  if (!p!.email) redirect('/structure/users?err=noemail')
+  const admin = createAdminClient();
+  const { data: person } = await admin
+    .from("people")
+    .select("id, holding_id, email, auth_user_id")
+    .eq("id", personId)
+    .single();
+  const p = person as unknown as {
+    id: string;
+    holding_id: string;
+    email: string | null;
+    auth_user_id: string | null;
+  } | null;
+  if (!p || p.holding_id !== holdingId) redirect("/structure/users?err=forbidden");
+  if (!p!.email) redirect("/structure/users?err=noemail");
 
   if (p!.auth_user_id) {
-    await admin.auth.admin.updateUserById(p!.auth_user_id, { password })
+    await admin.auth.admin.updateUserById(p!.auth_user_id, { password });
   } else {
-    const { data: created } = await admin.auth.admin.createUser({ email: p!.email!, password, email_confirm: true })
-    let uid = created?.user?.id ?? null
+    const { data: created } = await admin.auth.admin.createUser({
+      email: p!.email!,
+      password,
+      email_confirm: true,
+    });
+    let uid = created?.user?.id ?? null;
     if (!uid) {
       // e-mail já possui conta auth → recupera o id e atualiza a senha
-      const sbAdmin = admin as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: string | null }> }
-      const { data: existing } = await sbAdmin.rpc('auth_user_id_by_email', { p_email: p!.email! })
-      uid = existing ?? null
-      if (uid) await admin.auth.admin.updateUserById(uid, { password })
+      const sbAdmin = admin as unknown as {
+        rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: string | null }>;
+      };
+      const { data: existing } = await sbAdmin.rpc("auth_user_id_by_email", { p_email: p!.email! });
+      uid = existing ?? null;
+      if (uid) await admin.auth.admin.updateUserById(uid, { password });
     }
-    if (uid) await admin.from('people').update({ auth_user_id: uid } as never).eq('id', p!.id)
+    if (uid)
+      await admin
+        .from("people")
+        .update({ auth_user_id: uid } as never)
+        .eq("id", p!.id);
   }
-  revalidate()
-  redirect('/structure/users?ok=pwset')
+  revalidate();
+  redirect("/structure/users?ok=pwset");
 }
 
-type SupRpc = { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: { ok?: boolean; reason?: string } | null }> }
+type SupRpc = {
+  rpc: (
+    n: string,
+    a: Record<string, unknown>,
+  ) => Promise<{ data: { ok?: boolean; reason?: string } | null }>;
+};
 
 /** Admin da holding abre um ticket de suporte → alimenta a fila do portal CBX.
  *  Cliente NÃO escolhe o tipo (solicitação/incidente) — quem classifica é o CBX. */
 export async function openSupportTicket(formData: FormData) {
-  const supabase = await createClient()
-  const title = String(formData.get('title') ?? '').trim()
-  const description = String(formData.get('description') ?? '').trim() || null
-  if (!title) redirect('/structure/holding?tab=support&support=campos')
-  const { data } = await (supabase as unknown as SupRpc).rpc('client_open_ticket', {
-    p_title: title, p_type: 'solicitacao', p_description: description,
-  })
-  revalidatePath('/structure/holding')
-  redirect(`/structure/holding?tab=support&support=${data?.ok ? 'ok' : data?.reason ?? 'erro'}`)
+  const supabase = await createClient();
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim() || null;
+  if (!title) redirect("/structure/holding?tab=support&support=campos");
+  const { data } = await (supabase as unknown as SupRpc).rpc("client_open_ticket", {
+    p_title: title,
+    p_type: "solicitacao",
+    p_description: description,
+  });
+  revalidatePath("/structure/holding");
+  redirect(`/structure/holding?tab=support&support=${data?.ok ? "ok" : (data?.reason ?? "erro")}`);
 }
 
 /** Cliente responde (interação visível ao suporte) num chamado da sua holding. */
 export async function clientReplyTicket(formData: FormData) {
-  const supabase = await createClient()
-  const id = String(formData.get('id') ?? '')
-  const body = String(formData.get('body') ?? '').trim()
-  if (!id || !body) return
-  await (supabase as unknown as SupRpc).rpc('client_reply_ticket', { p_id: id, p_body: body })
-  revalidatePath('/structure/holding')
+  const supabase = await createClient();
+  const id = String(formData.get("id") ?? "");
+  const body = String(formData.get("body") ?? "").trim();
+  if (!id || !body) return;
+  await (supabase as unknown as SupRpc).rpc("client_reply_ticket", { p_id: id, p_body: body });
+  revalidatePath("/structure/holding");
 }
 
 /** Cliente fecha o próprio chamado. */
 export async function clientCloseTicket(formData: FormData) {
-  const supabase = await createClient()
-  const id = String(formData.get('id') ?? '')
-  if (!id) return
-  await (supabase as unknown as SupRpc).rpc('client_close_ticket', { p_id: id })
-  revalidatePath('/structure/holding')
+  const supabase = await createClient();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await (supabase as unknown as SupRpc).rpc("client_close_ticket", { p_id: id });
+  revalidatePath("/structure/holding");
 }
 
-type ThreadMsg = { id: string; author: string; body: string; created_at: string; from_support: boolean }
-type Thread = { ok: boolean; ticket?: { id: string; title: string; description: string | null; status: string; created_at: string }; messages?: ThreadMsg[] }
+type ThreadMsg = {
+  id: string;
+  author: string;
+  body: string;
+  created_at: string;
+  from_support: boolean;
+};
+type Thread = {
+  ok: boolean;
+  ticket?: {
+    id: string;
+    title: string;
+    description: string | null;
+    status: string;
+    created_at: string;
+  };
+  messages?: ThreadMsg[];
+};
 
 /** Busca a conversa de um chamado (e marca como lido). Retorna dados ao cliente. */
 export async function clientTicketThread(id: string): Promise<Thread | null> {
-  const supabase = await createClient()
-  const sb = supabase as unknown as { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: Thread | null }> }
-  const { data } = await sb.rpc('client_ticket_thread', { p_id: id })
-  revalidatePath('/structure/holding')
-  return data
+  const supabase = await createClient();
+  const sb = supabase as unknown as {
+    rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: Thread | null }>;
+  };
+  const { data } = await sb.rpc("client_ticket_thread", { p_id: id });
+  revalidatePath("/structure/holding");
+  return data;
 }

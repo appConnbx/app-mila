@@ -1,8 +1,8 @@
-import { registerRootComponent } from 'expo';
-import { registerWidgetTaskHandler } from 'react-native-android-widget';
+import { registerRootComponent } from "expo";
+import { registerWidgetTaskHandler } from "react-native-android-widget";
 
-import App from './App';
-import { widgetTaskHandler } from './src/widget/taskHandler';
+import App from "./App";
+import { widgetTaskHandler } from "./src/widget/taskHandler";
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,
