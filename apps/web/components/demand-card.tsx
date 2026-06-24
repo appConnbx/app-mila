@@ -109,6 +109,13 @@ export function DemandCard({
   const rootRef = useRef<HTMLDivElement>(null);
   const dialogRef = useDialog<HTMLDivElement>(open, () => setOpen(false));
 
+  const onOpenKey = (e: React.KeyboardEvent) => {
+    if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
+      e.preventDefault();
+      setOpen(true);
+    }
+  };
+
   const loadThread = useCallback(async () => {
     setLoadingThread(true);
     try {
@@ -428,6 +435,9 @@ export function DemandCard({
           ref={rootRef}
           data-demand-row=""
           onClick={() => setOpen(true)}
+          onKeyDown={onOpenKey}
+          role="button"
+          tabIndex={0}
           className={`demand-row group/row glass relative flex cursor-pointer items-center gap-3 overflow-visible px-4 py-2.5 transition hover:z-20 hover:border-brand/40 ${
             pinned
               ? "!border-orange-400/60 ring-1 ring-orange-400/40"
@@ -477,6 +487,9 @@ export function DemandCard({
         ref={rootRef}
         data-demand-row=""
         onClick={() => setOpen(true)}
+        onKeyDown={onOpenKey}
+        role="button"
+        tabIndex={0}
         className={`demand-row glass relative flex cursor-pointer gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${
           pinned
             ? "!border-orange-400/60 ring-1 ring-orange-400/40"

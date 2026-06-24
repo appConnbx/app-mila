@@ -191,6 +191,15 @@ export function OrgChart({ data }: { data: ChartData }) {
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setSel(null)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                e.preventDefault();
+                setSel(null);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={t("close")}
           />
           <div
             ref={selRef}
@@ -246,6 +255,15 @@ export function OrgChart({ data }: { data: ChartData }) {
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setPerson(null)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                e.preventDefault();
+                setPerson(null);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={t("close")}
           />
           <div
             ref={personRef}

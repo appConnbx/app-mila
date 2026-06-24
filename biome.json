@@ -45,9 +45,11 @@
       },
       "security": { "noDangerouslySetInnerHtml": "off" },
       "a11y": {
-        "useKeyWithClickEvents": "off",
         "useSemanticElements": "off",
-        "useValidAriaRole": "off"
+        "useValidAriaRole": {
+          "level": "error",
+          "options": { "ignoreNonDom": true }
+        }
       }
     }
   }

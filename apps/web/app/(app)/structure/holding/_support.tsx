@@ -238,6 +238,15 @@ export function ClientSupport({
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setModal(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                e.preventDefault();
+                setModal(false);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={t("close")}
           />
           <div
             ref={modalRef}
@@ -301,6 +310,16 @@ export function ClientSupport({
               setOpenId(null);
               setThread(null);
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                e.preventDefault();
+                setOpenId(null);
+                setThread(null);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={t("close")}
           />
           <div
             ref={drawerRef}
