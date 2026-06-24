@@ -345,7 +345,13 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
                     className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold transition ${chipCls}`}
                   >
                     {done && (
-                      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 16 16"
+                        width="11"
+                        height="11"
+                        fill="none"
+                        aria-hidden="true"
+                      >
                         <path
                           d="M3.5 8.5l3 3 6-7"
                           stroke="currentColor"

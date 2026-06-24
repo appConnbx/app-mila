@@ -260,7 +260,12 @@ export default async function DashboardPage() {
         <div className="glass glow-top flex flex-wrap items-center gap-5 p-6">
           <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand/15">
             {/* Janela do Windows estilizada */}
-            <svg className="h-7 w-7 text-brand" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <svg
+              className="h-7 w-7 text-brand"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
               <path d="M3 5.5L10.5 4.4v7.1H3V5.5zM11.6 4.2L21 3v8.5h-9.4V4.2zM3 12.5h7.5v7.1L3 18.5v-6zM11.6 12.5H21V21l-9.4-1.2v-7.3z" />
             </svg>
           </div>
