@@ -115,6 +115,7 @@ export function DrillTable({ areas }: { areas: DrillArea[] }) {
                   className="cursor-pointer border-b border-white/5 transition hover:bg-white/[0.03]"
                   onClick={() => setOpenAreas((s) => toggleSet(s, area.id))}
                   onKeyDown={onRowKey(() => setOpenAreas((s) => toggleSet(s, area.id)))}
+                  // biome-ignore lint/a11y/useSemanticElements: linha de tabela clicavel; ja tem role/teclado, <button> invalido em <tr>
                   role="button"
                   tabIndex={0}
                 >
@@ -139,6 +140,7 @@ export function DrillTable({ areas }: { areas: DrillArea[] }) {
                           className="cursor-pointer border-b border-white/5 bg-white/[0.02] transition hover:bg-white/[0.05]"
                           onClick={() => setOpenTeams((s) => toggleSet(s, team.id))}
                           onKeyDown={onRowKey(() => setOpenTeams((s) => toggleSet(s, team.id)))}
+                          // biome-ignore lint/a11y/useSemanticElements: linha de tabela clicavel; ja tem role/teclado, <button> invalido em <tr>
                           role="button"
                           tabIndex={0}
                         >

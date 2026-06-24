@@ -294,7 +294,12 @@ export function UsersManager({
 
       {/* Drawer de edição */}
       {open && (
-        <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true">
+        <div
+          className="fixed inset-0 z-50 flex justify-end"
+          // biome-ignore lint/a11y/useSemanticElements: drawer controlado por estado React (foco-trap/Escape via useDialog); <dialog> nativo exige showModal() e quebraria o controle
+          role="dialog"
+          aria-modal="true"
+        >
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setOpenId(null)}

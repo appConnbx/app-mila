@@ -103,6 +103,7 @@ export function NewDemandModal({
           <div
             ref={dialogRef}
             tabIndex={-1}
+            // biome-ignore lint/a11y/useSemanticElements: dialogo controlado por estado React (foco-trap/Escape via useDialog); <dialog> nativo exige showModal() e quebraria o controle
             role="dialog"
             aria-modal="true"
             aria-labelledby="new-demand-title"

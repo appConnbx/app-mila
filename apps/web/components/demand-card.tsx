@@ -266,6 +266,7 @@ export function DemandCard({
       <div
         ref={dialogRef}
         tabIndex={-1}
+        // biome-ignore lint/a11y/useSemanticElements: dialogo controlado por estado React (foco-trap/Escape via useDialog); <dialog> nativo exige showModal() e quebraria o controle
         role="dialog"
         aria-modal="true"
         aria-labelledby="demand-view-title"
@@ -436,6 +437,7 @@ export function DemandCard({
           data-demand-row=""
           onClick={() => setOpen(true)}
           onKeyDown={onOpenKey}
+          // biome-ignore lint/a11y/useSemanticElements: card clicavel contem elementos interativos (pin/status/link); <button> aninhado invalido
           role="button"
           tabIndex={0}
           className={`demand-row group/row glass relative flex cursor-pointer items-center gap-3 overflow-visible px-4 py-2.5 transition hover:z-20 hover:border-brand/40 ${
@@ -488,6 +490,7 @@ export function DemandCard({
         data-demand-row=""
         onClick={() => setOpen(true)}
         onKeyDown={onOpenKey}
+        // biome-ignore lint/a11y/useSemanticElements: card clicavel contem elementos interativos (pin/status); <button> aninhado invalido
         role="button"
         tabIndex={0}
         className={`demand-row glass relative flex cursor-pointer gap-4 overflow-hidden p-5 pb-6 transition hover:border-brand/40 ${

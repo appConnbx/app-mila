@@ -194,6 +194,7 @@ export function InstanceUsers({
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          // biome-ignore lint/a11y/useSemanticElements: modal controlado por estado React (foco-trap/Escape via useDialog); <dialog> nativo exige showModal() e quebraria o controle
           role="dialog"
           aria-modal="true"
         >
