@@ -52,6 +52,12 @@ export function DrillTable({ areas }: { areas: DrillArea[] }) {
     else next.add(id);
     return next;
   };
+  const onRowKey = (action: () => void) => (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      action();
+    }
+  };
 
   const cols: { key: Key; label: string }[] = [
     { key: "name", label: t("colStructure") },
@@ -108,6 +114,9 @@ export function DrillTable({ areas }: { areas: DrillArea[] }) {
                 <tr
                   className="cursor-pointer border-b border-white/5 transition hover:bg-white/[0.03]"
                   onClick={() => setOpenAreas((s) => toggleSet(s, area.id))}
+                  onKeyDown={onRowKey(() => setOpenAreas((s) => toggleSet(s, area.id)))}
+                  role="button"
+                  tabIndex={0}
                 >
                   <td className="px-3 py-2.5 font-semibold text-slate-100">
                     <span
@@ -129,6 +138,9 @@ export function DrillTable({ areas }: { areas: DrillArea[] }) {
                         <tr
                           className="cursor-pointer border-b border-white/5 bg-white/[0.02] transition hover:bg-white/[0.05]"
                           onClick={() => setOpenTeams((s) => toggleSet(s, team.id))}
+                          onKeyDown={onRowKey(() => setOpenTeams((s) => toggleSet(s, team.id)))}
+                          role="button"
+                          tabIndex={0}
                         >
                           <td className="px-3 py-2.5 pl-9 font-medium text-slate-200">
                             <span

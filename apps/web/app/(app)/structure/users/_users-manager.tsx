@@ -298,6 +298,15 @@ export function UsersManager({
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setOpenId(null)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                e.preventDefault();
+                setOpenId(null);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={t("close")}
           />
           <div
             ref={drawerRef}
