@@ -45,7 +45,6 @@
       },
       "security": { "noDangerouslySetInnerHtml": "off" },
       "a11y": {
-        "noLabelWithoutControl": "off",
         "useKeyWithClickEvents": "off",
         "useSemanticElements": "off",
         "useValidAriaRole": "off"

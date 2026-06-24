@@ -111,8 +111,15 @@ export function SetPasswordForm({
     <form onSubmit={onSubmit} className="space-y-4">
       {langChoice && (
         <div>
-          <label className="mb-1 block text-sm text-slate-300">{langChoice.label}</label>
-          <select value={lang} onChange={(e) => setLang(e.target.value)} className={fieldClasses}>
+          <label htmlFor="cp-lang" className="mb-1 block text-sm text-slate-300">
+            {langChoice.label}
+          </label>
+          <select
+            id="cp-lang"
+            value={lang}
+            onChange={(e) => setLang(e.target.value)}
+            className={fieldClasses}
+          >
             <option value="en">English</option>
             <option value="es">Español</option>
           </select>

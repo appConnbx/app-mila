@@ -33,8 +33,11 @@ export function FamilyAccount({ defaultName }: { defaultName: string }) {
         />
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className={labelClasses}>{t("famName")}</label>
+            <label htmlFor="fam-name" className={labelClasses}>
+              {t("famName")}
+            </label>
             <input
+              id="fam-name"
               name="name"
               defaultValue={defaultName}
               required
@@ -43,8 +46,11 @@ export function FamilyAccount({ defaultName }: { defaultName: string }) {
             />
           </div>
           <div>
-            <label className={labelClasses}>{t("famEmail")}</label>
+            <label htmlFor="fam-email" className={labelClasses}>
+              {t("famEmail")}
+            </label>
             <input
+              id="fam-email"
               name="email"
               type="email"
               required
@@ -54,9 +60,12 @@ export function FamilyAccount({ defaultName }: { defaultName: string }) {
             />
           </div>
           <div>
-            <label className={labelClasses}>{t("famPassword")}</label>
+            <label htmlFor="fam-password" className={labelClasses}>
+              {t("famPassword")}
+            </label>
             <div className="mt-1">
               <PasswordInput
+                id="fam-password"
                 name="password"
                 required
                 minLength={6}
@@ -67,9 +76,12 @@ export function FamilyAccount({ defaultName }: { defaultName: string }) {
             </div>
           </div>
           <div>
-            <label className={labelClasses}>{t("famConfirm")}</label>
+            <label htmlFor="fam-confirm" className={labelClasses}>
+              {t("famConfirm")}
+            </label>
             <div className="mt-1">
               <PasswordInput
+                id="fam-confirm"
                 name="confirm"
                 required
                 minLength={6}

@@ -247,10 +247,16 @@ export function InstanceUsers({
                   >
                     <input type="hidden" name="holding_id" value={holdingId} />
                     <input type="hidden" name="person_id" value={open.id} />
-                    <label className="block text-[11px] uppercase tracking-wide text-slate-500">
+                    <label
+                      htmlFor="cbx-instance-set-password"
+                      className="block text-[11px] uppercase tracking-wide text-slate-500"
+                    >
                       Definir senha (super admin)
                     </label>
-                    <PasswordField placeholder="Nova senha (mín. 6)" />
+                    <PasswordField
+                      id="cbx-instance-set-password"
+                      placeholder="Nova senha (mín. 6)"
+                    />
                     <button
                       type="submit"
                       className="w-full rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"

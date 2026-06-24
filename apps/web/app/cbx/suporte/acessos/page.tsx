@@ -85,8 +85,16 @@ export default async function AcessosPage({
       <CbxCard title="Gerar acesso">
         <form action={createSupportAccess} className="grid gap-3 sm:grid-cols-3">
           <div>
-            <label className={labelCbx}>Cliente</label>
-            <select name="holding_id" required defaultValue="" className={`mt-1 ${inputCbx}`}>
+            <label htmlFor="cbx-access-holding-id" className={labelCbx}>
+              Cliente
+            </label>
+            <select
+              id="cbx-access-holding-id"
+              name="holding_id"
+              required
+              defaultValue=""
+              className={`mt-1 ${inputCbx}`}
+            >
               <option value="" disabled>
                 Escolha o cliente
               </option>
@@ -98,8 +106,11 @@ export default async function AcessosPage({
             </select>
           </div>
           <div>
-            <label className={labelCbx}>Validade (horas)</label>
+            <label htmlFor="cbx-access-hours" className={labelCbx}>
+              Validade (horas)
+            </label>
             <input
+              id="cbx-access-hours"
               name="hours"
               type="number"
               min={1}
@@ -109,9 +120,11 @@ export default async function AcessosPage({
             />
           </div>
           <div>
-            <label className={labelCbx}>Senha do acesso</label>
+            <label htmlFor="cbx-access-password" className={labelCbx}>
+              Senha do acesso
+            </label>
             <div className="mt-1">
-              <PasswordField />
+              <PasswordField id="cbx-access-password" />
             </div>
           </div>
           <div className="sm:col-span-3">

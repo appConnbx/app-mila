@@ -233,8 +233,11 @@ export default async function FichaClientePage({
               <form action={setLicense} className="space-y-3">
                 <input type="hidden" name="holding_id" value={h.id} />
                 <div>
-                  <label className={labelCbx}>Plano</label>
+                  <label htmlFor="cbx-license-plan-id" className={labelCbx}>
+                    Plano
+                  </label>
                   <select
+                    id="cbx-license-plan-id"
                     name="plan_id"
                     defaultValue={lic?.plan_id ?? ""}
                     required
@@ -251,8 +254,11 @@ export default async function FichaClientePage({
                   </select>
                 </div>
                 <div>
-                  <label className={labelCbx}>Limite personalizado (opcional)</label>
+                  <label htmlFor="cbx-license-seats" className={labelCbx}>
+                    Limite personalizado (opcional)
+                  </label>
                   <input
+                    id="cbx-license-seats"
                     name="seats"
                     type="number"
                     min={1}

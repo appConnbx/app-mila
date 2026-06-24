@@ -160,24 +160,41 @@ export default async function CbxAdminPage({
       <CbxCard title="Adicionar operador">
         <form action={createStaff} className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className={labelCbx}>Nome completo</label>
-            <input name="full_name" required className={`mt-1 ${inputCbx}`} />
+            <label htmlFor="cbx-staff-full-name" className={labelCbx}>
+              Nome completo
+            </label>
+            <input
+              id="cbx-staff-full-name"
+              name="full_name"
+              required
+              className={`mt-1 ${inputCbx}`}
+            />
           </div>
           <div>
-            <label className={labelCbx}>E-mail</label>
-            <input name="email" type="email" required className={`mt-1 ${inputCbx}`} />
+            <label htmlFor="cbx-staff-email" className={labelCbx}>
+              E-mail
+            </label>
+            <input
+              id="cbx-staff-email"
+              name="email"
+              type="email"
+              required
+              className={`mt-1 ${inputCbx}`}
+            />
           </div>
           <div>
-            <label className={labelCbx}>Senha de acesso</label>
+            <label htmlFor="cbx-staff-password" className={labelCbx}>
+              Senha de acesso
+            </label>
             <div className="mt-1">
-              <PasswordField />
+              <PasswordField id="cbx-staff-password" />
             </div>
             <p className="mt-1 text-xs text-slate-500">
               Anote e repasse pessoalmente. Não enviamos e-mail.
             </p>
           </div>
           <div>
-            <label className={labelCbx}>Permissões</label>
+            <span className={labelCbx}>Permissões</span>
             <div className="mt-2 flex flex-wrap gap-3">
               {PERMS.map((p) => (
                 <label key={p} className="flex items-center gap-1.5 text-sm text-slate-300">

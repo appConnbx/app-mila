@@ -44,8 +44,11 @@ export function ClientProfileForm({
       <input type="hidden" name="holding_id" value={holdingId} />
 
       <div>
-        <label className={labelCbx}>Tipo de negócio</label>
+        <label htmlFor="cbx-profile-business-type" className={labelCbx}>
+          Tipo de negócio
+        </label>
         <select
+          id="cbx-profile-business-type"
           name="business_type"
           defaultValue={initial.business_type ?? ""}
           className={`mt-1 ${inputCbx}`}
@@ -61,8 +64,11 @@ export function ClientProfileForm({
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div>
-          <label className={labelCbx}>País</label>
+          <label htmlFor="cbx-profile-country" className={labelCbx}>
+            País
+          </label>
           <select
+            id="cbx-profile-country"
             name="country"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
@@ -76,9 +82,16 @@ export function ClientProfileForm({
           </select>
         </div>
         <div>
-          <label className={labelCbx}>Estado</label>
+          <label htmlFor="cbx-profile-state" className={labelCbx}>
+            Estado
+          </label>
           {isBR ? (
-            <select name="state" defaultValue={initial.state ?? ""} className={`mt-1 ${inputCbx}`}>
+            <select
+              id="cbx-profile-state"
+              name="state"
+              defaultValue={initial.state ?? ""}
+              className={`mt-1 ${inputCbx}`}
+            >
               <option value="">— UF —</option>
               {BR_STATES.map(([uf, nome]) => (
                 <option key={uf} value={uf}>
@@ -88,6 +101,7 @@ export function ClientProfileForm({
             </select>
           ) : (
             <input
+              id="cbx-profile-state"
               name="state"
               defaultValue={initial.state ?? ""}
               placeholder="Estado/Província"
@@ -96,8 +110,11 @@ export function ClientProfileForm({
           )}
         </div>
         <div>
-          <label className={labelCbx}>Cidade</label>
+          <label htmlFor="cbx-profile-city" className={labelCbx}>
+            Cidade
+          </label>
           <input
+            id="cbx-profile-city"
             name="city"
             defaultValue={initial.city ?? ""}
             placeholder="Cidade"
@@ -108,16 +125,22 @@ export function ClientProfileForm({
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div>
-          <label className={labelCbx}>Contato responsável</label>
+          <label htmlFor="cbx-profile-contact-name" className={labelCbx}>
+            Contato responsável
+          </label>
           <input
+            id="cbx-profile-contact-name"
             name="contact_name"
             defaultValue={initial.contact_name ?? ""}
             className={`mt-1 ${inputCbx}`}
           />
         </div>
         <div>
-          <label className={labelCbx}>E-mail do contato</label>
+          <label htmlFor="cbx-profile-contact-email" className={labelCbx}>
+            E-mail do contato
+          </label>
           <input
+            id="cbx-profile-contact-email"
             name="contact_email"
             type="email"
             defaultValue={initial.contact_email ?? ""}
@@ -125,8 +148,11 @@ export function ClientProfileForm({
           />
         </div>
         <div>
-          <label className={labelCbx}>Telefone</label>
+          <label htmlFor="cbx-profile-contact-phone" className={labelCbx}>
+            Telefone
+          </label>
           <input
+            id="cbx-profile-contact-phone"
             name="contact_phone"
             defaultValue={initial.contact_phone ?? ""}
             className={`mt-1 ${inputCbx}`}
