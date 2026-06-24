@@ -98,7 +98,11 @@ export function StartWizard({
   return (
     <div className="w-full max-w-lg">
       {history.length > 0 && step !== "result" && (
-        <button onClick={back} className="mb-4 text-sm text-slate-500 transition hover:text-white">
+        <button
+          type="button"
+          onClick={back}
+          className="mb-4 text-sm text-slate-500 transition hover:text-white"
+        >
           ← {dict.back}
         </button>
       )}
@@ -168,6 +172,7 @@ export function StartWizard({
           <div className="text-3xl">🎁</div>
           <p className="mt-3 text-slate-200">{dict.bizPerkDesc}</p>
           <button
+            type="button"
             onClick={() => go("reflect")}
             className="mt-5 w-full rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
           >
@@ -217,6 +222,7 @@ export function StartWizard({
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
               <p className="text-slate-200">{dict.reflectAck}</p>
               <button
+                type="button"
                 onClick={() => go("doubt")}
                 className="mt-5 w-full rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
               >
@@ -232,6 +238,7 @@ export function StartWizard({
         <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-6">
           <p className="text-slate-300">{dict.doubtDesc}</p>
           <button
+            type="button"
             onClick={() => go("result")}
             className="mt-5 w-full rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
           >
