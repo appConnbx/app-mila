@@ -49,6 +49,7 @@ export function DemandList({
     <div className="mt-4">
       <div className="mb-3 flex justify-end">
         <div
+          // biome-ignore lint/a11y/useSemanticElements: toggle de visao (botoes nativos); <fieldset> e p/ grupo de campos de formulario, nao se aplica
           role="group"
           aria-label={toggle.view}
           className="inline-flex rounded-lg border border-white/10 bg-white/[0.03] p-1"

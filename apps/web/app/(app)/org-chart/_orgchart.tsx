@@ -185,6 +185,7 @@ export function OrgChart({ data }: { data: ChartData }) {
       {sel && (
         <div
           className="fixed inset-0 z-40 flex items-center justify-center p-4"
+          // biome-ignore lint/a11y/useSemanticElements: modal controlado por estado React (foco-trap/Escape via useDialog); <dialog> nativo exige showModal() e quebraria o controle
           role="dialog"
           aria-modal="true"
         >
@@ -249,6 +250,7 @@ export function OrgChart({ data }: { data: ChartData }) {
       {person && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          // biome-ignore lint/a11y/useSemanticElements: modal controlado por estado React (foco-trap/Escape via useDialog); <dialog> nativo exige showModal() e quebraria o controle
           role="dialog"
           aria-modal="true"
         >
