@@ -92,16 +92,30 @@ export default async function TicketPage({
         <form action={updateTicket} className="grid gap-3 sm:grid-cols-3">
           <input type="hidden" name="id" value={t.id} />
           <div>
-            <label className={labelCbx}>Status</label>
-            <select name="status" defaultValue={t.status} className={`mt-1 ${inputCbx}`}>
+            <label htmlFor="cbx-ticket-status" className={labelCbx}>
+              Status
+            </label>
+            <select
+              id="cbx-ticket-status"
+              name="status"
+              defaultValue={t.status}
+              className={`mt-1 ${inputCbx}`}
+            >
               <option value="aberto">Aberto</option>
               <option value="em_atendimento">Em atendimento</option>
               <option value="resolvido">Resolvido</option>
             </select>
           </div>
           <div>
-            <label className={labelCbx}>Responsável</label>
-            <select name="assignee" defaultValue="" className={`mt-1 ${inputCbx}`}>
+            <label htmlFor="cbx-ticket-assignee" className={labelCbx}>
+              Responsável
+            </label>
+            <select
+              id="cbx-ticket-assignee"
+              name="assignee"
+              defaultValue=""
+              className={`mt-1 ${inputCbx}`}
+            >
               <option value="">
                 {t.assignee_name ? `(manter: ${t.assignee_name})` : "— sem responsável —"}
               </option>

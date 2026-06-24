@@ -57,8 +57,11 @@ export default async function NovoClientePage({
         <form action={createClientAccount} className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className={labelCbx}>Nome do cliente / conta</label>
+              <label htmlFor="cbx-new-name" className={labelCbx}>
+                Nome do cliente / conta
+              </label>
               <input
+                id="cbx-new-name"
                 name="name"
                 required
                 className={`mt-1 ${inputCbx}`}
@@ -66,8 +69,15 @@ export default async function NovoClientePage({
               />
             </div>
             <div>
-              <label className={labelCbx}>Tipo</label>
-              <select name="kind" className={`mt-1 ${inputCbx}`} defaultValue="corporate">
+              <label htmlFor="cbx-new-kind" className={labelCbx}>
+                Tipo
+              </label>
+              <select
+                id="cbx-new-kind"
+                name="kind"
+                className={`mt-1 ${inputCbx}`}
+                defaultValue="corporate"
+              >
                 <option value="corporate">Corporativo</option>
                 <option value="family">Família</option>
               </select>
@@ -76,8 +86,16 @@ export default async function NovoClientePage({
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className={labelCbx}>Plano / licença</label>
-              <select name="plan_id" required defaultValue="" className={`mt-1 ${inputCbx}`}>
+              <label htmlFor="cbx-new-plan-id" className={labelCbx}>
+                Plano / licença
+              </label>
+              <select
+                id="cbx-new-plan-id"
+                name="plan_id"
+                required
+                defaultValue=""
+                className={`mt-1 ${inputCbx}`}
+              >
                 <option value="" disabled>
                   Escolha o plano
                 </option>
@@ -89,8 +107,11 @@ export default async function NovoClientePage({
               </select>
             </div>
             <div>
-              <label className={labelCbx}>Limite personalizado (opcional)</label>
+              <label htmlFor="cbx-new-seats" className={labelCbx}>
+                Limite personalizado (opcional)
+              </label>
               <input
+                id="cbx-new-seats"
                 name="seats"
                 type="number"
                 min={1}
@@ -107,12 +128,22 @@ export default async function NovoClientePage({
             <p className="mb-3 text-sm font-semibold text-slate-200">Administrador da conta</p>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <label className={labelCbx}>Nome</label>
-                <input name="admin_name" className={`mt-1 ${inputCbx}`} />
+                <label htmlFor="cbx-new-admin-name" className={labelCbx}>
+                  Nome
+                </label>
+                <input id="cbx-new-admin-name" name="admin_name" className={`mt-1 ${inputCbx}`} />
               </div>
               <div>
-                <label className={labelCbx}>E-mail (login)</label>
-                <input name="admin_email" type="email" required className={`mt-1 ${inputCbx}`} />
+                <label htmlFor="cbx-new-admin-email" className={labelCbx}>
+                  E-mail (login)
+                </label>
+                <input
+                  id="cbx-new-admin-email"
+                  name="admin_email"
+                  type="email"
+                  required
+                  className={`mt-1 ${inputCbx}`}
+                />
               </div>
               <div className="sm:col-span-2">
                 <p className="rounded-lg border border-sky-500/20 bg-sky-500/10 px-3 py-2 text-xs text-sky-200">

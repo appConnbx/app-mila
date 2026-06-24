@@ -12,13 +12,15 @@ function gen() {
 
 /** Campo de senha visível com gerador — o operador vê e repassa a senha. */
 export function PasswordField({
+  id,
   name = "password",
   placeholder = "Senha",
-}: { name?: string; placeholder?: string }) {
+}: { id?: string; name?: string; placeholder?: string }) {
   const [v, setV] = useState("");
   return (
     <div className="flex gap-2">
       <input
+        id={id}
         name={name}
         value={v}
         onChange={(e) => setV(e.target.value)}

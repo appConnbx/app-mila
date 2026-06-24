@@ -73,9 +73,12 @@ export function SignupForm({ dict }: { dict: Dict }) {
         />
       </div>
       <div>
-        <label className={label}>{dict.password}</label>
+        <label htmlFor="sf-password" className={label}>
+          {dict.password}
+        </label>
         <div className="mt-1">
           <PasswordInput
+            id="sf-password"
             name="password"
             required
             minLength={8}
@@ -87,9 +90,12 @@ export function SignupForm({ dict }: { dict: Dict }) {
         </div>
       </div>
       <div>
-        <label className={label}>{dict.confirm}</label>
+        <label htmlFor="sf-confirm" className={label}>
+          {dict.confirm}
+        </label>
         <div className="mt-1">
           <PasswordInput
+            id="sf-confirm"
             name="confirm"
             required
             minLength={8}

@@ -329,8 +329,11 @@ export function UsersManager({
             <form action={updatePerson} className="mt-5 space-y-3">
               <input type="hidden" name="id" value={open.id} />
               <div>
-                <label className={labelClasses}>{t("fullName")}</label>
+                <label htmlFor="user-full-name" className={labelClasses}>
+                  {t("fullName")}
+                </label>
                 <input
+                  id="user-full-name"
                   name="full_name"
                   defaultValue={open.full_name}
                   className={`mt-1 ${fieldClasses}`}
@@ -338,8 +341,11 @@ export function UsersManager({
                 />
               </div>
               <div>
-                <label className={labelClasses}>{t("emailOptional")}</label>
+                <label htmlFor="user-email" className={labelClasses}>
+                  {t("emailOptional")}
+                </label>
                 <input
+                  id="user-email"
                   name="email"
                   type="email"
                   defaultValue={open.email ?? ""}
@@ -347,8 +353,11 @@ export function UsersManager({
                 />
               </div>
               <div>
-                <label className={labelClasses}>{t("roleOptional")}</label>
+                <label htmlFor="user-role-title" className={labelClasses}>
+                  {t("roleOptional")}
+                </label>
                 <input
+                  id="user-role-title"
                   name="role_title"
                   defaultValue={open.role_title ?? ""}
                   className={`mt-1 ${fieldClasses}`}
@@ -392,11 +401,14 @@ export function UsersManager({
               className="mt-4 space-y-2 rounded-xl border border-white/10 bg-slate-900/40 p-3"
             >
               <input type="hidden" name="person_id" value={open.id} />
-              <label className={labelClasses}>{t("setPassword")}</label>
+              <label htmlFor="user-set-password" className={labelClasses}>
+                {t("setPassword")}
+              </label>
               {open.email ? (
                 <>
                   <div className="flex gap-2">
                     <input
+                      id="user-set-password"
                       name="password"
                       value={pw}
                       onChange={(e) => setPw(e.target.value)}
@@ -429,8 +441,15 @@ export function UsersManager({
             {/* Excluir (com reatribuição) */}
             <form action={deletePerson} className="mt-5 space-y-2 border-t border-white/10 pt-4">
               <input type="hidden" name="id" value={open.id} />
-              <label className={labelClasses}>{t("reassignLabel")}</label>
-              <select name="reassign_to" defaultValue="" className={fieldClasses}>
+              <label htmlFor="user-reassign-to" className={labelClasses}>
+                {t("reassignLabel")}
+              </label>
+              <select
+                id="user-reassign-to"
+                name="reassign_to"
+                defaultValue=""
+                className={fieldClasses}
+              >
                 <option value="">{t("reassignKeep")}</option>
                 {reassignCandidates.map((c) => (
                   <option key={c.id} value={c.id}>

@@ -105,8 +105,11 @@ export function ProfileEditor({
 
       <div className="mt-6 space-y-4">
         <div>
-          <label className={labelClasses}>{t("headline")}</label>
+          <label htmlFor="profile-headline" className={labelClasses}>
+            {t("headline")}
+          </label>
           <input
+            id="profile-headline"
             value={headline}
             onChange={(e) => setHeadline(e.target.value)}
             placeholder={t("headlinePlaceholder")}
@@ -114,8 +117,11 @@ export function ProfileEditor({
           />
         </div>
         <div>
-          <label className={labelClasses}>{t("phone")}</label>
+          <label htmlFor="profile-phone" className={labelClasses}>
+            {t("phone")}
+          </label>
           <input
+            id="profile-phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+55 11 9 9999-9999"
@@ -123,7 +129,9 @@ export function ProfileEditor({
           />
         </div>
         <div>
-          <label className={labelClasses}>{t("skills")}</label>
+          <label htmlFor="profile-skills" className={labelClasses}>
+            {t("skills")}
+          </label>
           <div className="mt-1 flex flex-wrap gap-1.5">
             {skills.map((s) => (
               <span
@@ -143,6 +151,7 @@ export function ProfileEditor({
           </div>
           <div className="mt-2 flex gap-2">
             <input
+              id="profile-skills"
               value={skillInput}
               onChange={(e) => setSkillInput(e.target.value)}
               onKeyDown={(e) => {

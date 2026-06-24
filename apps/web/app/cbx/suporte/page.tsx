@@ -167,8 +167,16 @@ export default async function CbxSuportePage({
       <CbxCard title="Abrir ticket">
         <form action={createTicket} className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className={labelCbx}>Cliente</label>
-            <select name="holding_id" required defaultValue="" className={`mt-1 ${inputCbx}`}>
+            <label htmlFor="cbx-ticket-new-holding-id" className={labelCbx}>
+              Cliente
+            </label>
+            <select
+              id="cbx-ticket-new-holding-id"
+              name="holding_id"
+              required
+              defaultValue=""
+              className={`mt-1 ${inputCbx}`}
+            >
               <option value="" disabled>
                 Escolha o cliente
               </option>
@@ -180,15 +188,25 @@ export default async function CbxSuportePage({
             </select>
           </div>
           <div>
-            <label className={labelCbx}>Tipo</label>
-            <select name="type" className={`mt-1 ${inputCbx}`} defaultValue="solicitacao">
+            <label htmlFor="cbx-ticket-new-type" className={labelCbx}>
+              Tipo
+            </label>
+            <select
+              id="cbx-ticket-new-type"
+              name="type"
+              className={`mt-1 ${inputCbx}`}
+              defaultValue="solicitacao"
+            >
               <option value="solicitacao">Solicitação</option>
               <option value="incidente">Incidente</option>
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className={labelCbx}>Título</label>
+            <label htmlFor="cbx-ticket-new-title" className={labelCbx}>
+              Título
+            </label>
             <input
+              id="cbx-ticket-new-title"
               name="title"
               required
               className={`mt-1 ${inputCbx}`}
@@ -196,8 +214,11 @@ export default async function CbxSuportePage({
             />
           </div>
           <div className="sm:col-span-2">
-            <label className={labelCbx}>Descrição</label>
+            <label htmlFor="cbx-ticket-new-description" className={labelCbx}>
+              Descrição
+            </label>
             <textarea
+              id="cbx-ticket-new-description"
               name="description"
               rows={3}
               className={`mt-1 ${inputCbx}`}
@@ -205,8 +226,15 @@ export default async function CbxSuportePage({
             />
           </div>
           <div>
-            <label className={labelCbx}>Responsável</label>
-            <select name="assignee" defaultValue="" className={`mt-1 ${inputCbx}`}>
+            <label htmlFor="cbx-ticket-new-assignee" className={labelCbx}>
+              Responsável
+            </label>
+            <select
+              id="cbx-ticket-new-assignee"
+              name="assignee"
+              defaultValue=""
+              className={`mt-1 ${inputCbx}`}
+            >
               <option value="">— sem responsável —</option>
               {staff.map((s) => (
                 <option key={s.id} value={s.id}>
