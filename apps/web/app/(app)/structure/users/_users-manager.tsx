@@ -316,6 +316,7 @@ export function UsersManager({
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setOpenId(null)}
                 className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white"
                 aria-label={t("close")}

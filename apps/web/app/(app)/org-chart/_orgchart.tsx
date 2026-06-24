@@ -208,6 +208,7 @@ export function OrgChart({ data }: { data: ChartData }) {
                 </h3>
               </div>
               <button
+                type="button"
                 onClick={() => setSel(null)}
                 className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white"
                 aria-label={t("close")}
@@ -253,6 +254,7 @@ export function OrgChart({ data }: { data: ChartData }) {
             className="glass glow-top relative w-full max-w-sm p-6 outline-none"
           >
             <button
+              type="button"
               onClick={() => setPerson(null)}
               className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white"
               aria-label={t("close")}

@@ -111,7 +111,10 @@ export default async function CbxAdminPage({
                           {p}
                         </label>
                       ))}
-                      <button className="rounded-md border border-white/10 px-2 py-0.5 text-[11px] text-slate-300 transition hover:bg-white/10">
+                      <button
+                        type="submit"
+                        className="rounded-md border border-white/10 px-2 py-0.5 text-[11px] text-slate-300 transition hover:bg-white/10"
+                      >
                         Salvar
                       </button>
                     </form>
@@ -130,7 +133,10 @@ export default async function CbxAdminPage({
                         {s.permissions.map((p) => (
                           <input key={p} type="hidden" name={`perm_${p}`} value="on" />
                         ))}
-                        <button className="text-xs text-slate-500 underline-offset-2 transition hover:text-white hover:underline">
+                        <button
+                          type="submit"
+                          className="text-xs text-slate-500 underline-offset-2 transition hover:text-white hover:underline"
+                        >
                           {s.is_active ? "Desativar" : "Reativar"}
                         </button>
                       </form>

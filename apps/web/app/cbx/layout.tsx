@@ -31,7 +31,10 @@ export default async function CbxLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-3">
             <span className="hidden text-sm text-slate-400 md:inline">{me.full_name}</span>
             <form action="/auth/signout" method="post">
-              <button className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <button
+                type="submit"
+                className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
+              >
                 Sair
               </button>
             </form>

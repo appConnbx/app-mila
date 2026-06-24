@@ -48,12 +48,14 @@ export function ConsentBanner() {
         </p>
         <div className="flex shrink-0 gap-2">
           <button
+            type="button"
             onClick={() => decide("denied")}
             className="rounded-lg border border-white/15 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/5"
           >
             Recusar
           </button>
           <button
+            type="button"
             onClick={() => decide("granted")}
             className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-500"
           >

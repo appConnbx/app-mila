@@ -250,6 +250,7 @@ export function ClientSupport({
                 {t("supportNewTitle")}
               </h3>
               <button
+                type="button"
                 onClick={() => setModal(false)}
                 className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white"
                 aria-label={t("close")}
@@ -312,6 +313,7 @@ export function ClientSupport({
                 {thread?.ticket?.title ?? "…"}
               </h3>
               <button
+                type="button"
                 onClick={() => {
                   setOpenId(null);
                   setThread(null);

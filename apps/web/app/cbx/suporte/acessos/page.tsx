@@ -162,7 +162,10 @@ export default async function AcessosPage({
                     {a.is_valid && (
                       <form action={revokeSupportAccess}>
                         <input type="hidden" name="id" value={a.id} />
-                        <button className="text-xs text-rose-300 underline-offset-2 transition hover:underline">
+                        <button
+                          type="submit"
+                          className="text-xs text-rose-300 underline-offset-2 transition hover:underline"
+                        >
                           Revogar agora
                         </button>
                       </form>

@@ -144,6 +144,7 @@ export function InstanceUsers({
                 </td>
                 <td className={`${tdCbx} text-right`}>
                   <button
+                    type="button"
                     onClick={() => setOpenId(u.id)}
                     className="rounded-md border border-white/10 px-3 py-1 text-xs font-semibold text-slate-200 transition hover:bg-white/10"
                   >
@@ -170,6 +171,7 @@ export function InstanceUsers({
           </span>
           <div className="flex gap-2">
             <button
+              type="button"
               disabled={cur <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               className={`${btnGhostCbx} disabled:opacity-40`}
@@ -177,6 +179,7 @@ export function InstanceUsers({
               Anterior
             </button>
             <button
+              type="button"
               disabled={cur >= pageCount}
               onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
               className={`${btnGhostCbx} disabled:opacity-40`}
@@ -207,6 +210,7 @@ export function InstanceUsers({
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => setOpenId(null)}
                 className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white"
                 aria-label="Fechar"
@@ -228,7 +232,10 @@ export function InstanceUsers({
                   <input type="hidden" name="holding_id" value={holdingId} />
                   <input type="hidden" name="person_id" value={open.id} />
                   <input type="hidden" name="active" value={open.is_active ? "0" : "1"} />
-                  <button className="w-full rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10">
+                  <button
+                    type="submit"
+                    className="w-full rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+                  >
                     {open.is_active ? "Desativar usuário" : "Reativar usuário"}
                   </button>
                 </form>
@@ -244,7 +251,10 @@ export function InstanceUsers({
                       Definir senha (super admin)
                     </label>
                     <PasswordField placeholder="Nova senha (mín. 6)" />
-                    <button className="w-full rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-300">
+                    <button
+                      type="submit"
+                      className="w-full rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
+                    >
                       Definir senha
                     </button>
                   </form>

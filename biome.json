@@ -47,7 +47,6 @@
       "a11y": {
         "noLabelWithoutControl": "off",
         "noSvgWithoutTitle": "off",
-        "useButtonType": "off",
         "useKeyWithClickEvents": "off",
         "useSemanticElements": "off",
         "useValidAriaRole": "off"

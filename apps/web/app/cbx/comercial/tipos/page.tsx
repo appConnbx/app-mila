@@ -62,7 +62,10 @@ export default async function TiposNegocioPage({
               <span className="text-slate-200">{t.name}</span>
               <form action={removeBusinessType}>
                 <input type="hidden" name="id" value={t.id} />
-                <button className="text-xs text-rose-300 underline-offset-2 transition hover:underline">
+                <button
+                  type="submit"
+                  className="text-xs text-rose-300 underline-offset-2 transition hover:underline"
+                >
                   remover
                 </button>
               </form>
