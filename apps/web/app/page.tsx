@@ -49,7 +49,7 @@ const APP_JSON_LD = {
 /* ---------- Ícones (inline, leves) ---------- */
 function Check({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
       <path
         d="M5 10.5l3 3 7-7"
         stroke="currentColor"
@@ -62,7 +62,7 @@ function Check({ className = "" }: { className?: string }) {
 }
 function Arrow({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
       <path
         d="M4 10h11M11 5l5 5-5 5"
         stroke="currentColor"
@@ -163,7 +163,7 @@ async function DashboardMockup() {
 
 function MicGlyph({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
       <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z" />
     </svg>
   );
@@ -606,7 +606,7 @@ export default async function LandingPage() {
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 className="h-6 w-6 text-brand"
-                aria-hidden
+                aria-hidden="true"
               >
                 <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z" />
               </svg>
@@ -625,7 +625,7 @@ export default async function LandingPage() {
                 stroke="currentColor"
                 strokeWidth="2"
                 className="h-6 w-6 text-brand"
-                aria-hidden
+                aria-hidden="true"
               >
                 <rect x="3" y="4" width="18" height="12" rx="2" />
                 <path d="M8 20h8M12 16v4" strokeLinecap="round" />
@@ -645,7 +645,7 @@ export default async function LandingPage() {
                 stroke="currentColor"
                 strokeWidth="2"
                 className="h-6 w-6 text-brand"
-                aria-hidden
+                aria-hidden="true"
               >
                 <rect x="7" y="2" width="10" height="20" rx="2.5" />
                 <path d="M11 18h2" strokeLinecap="round" />

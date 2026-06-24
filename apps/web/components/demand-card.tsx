@@ -200,7 +200,7 @@ export function DemandCard({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        aria-hidden
+        aria-hidden="true"
       >
         <path d="M9 4h6l-1 7 3 3v2H7v-2l3-3-1-7z" />
         <line x1="12" y1="19" x2="12" y2="22" />
@@ -513,7 +513,7 @@ export function DemandCard({
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  aria-hidden
+                  aria-hidden="true"
                 >
                   <path d="M9 4h6l-1 7 3 3v2H7v-2l3-3-1-7z" />
                   <line x1="12" y1="19" x2="12" y2="22" />

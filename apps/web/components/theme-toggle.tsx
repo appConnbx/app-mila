@@ -31,7 +31,7 @@ export function ThemeToggle() {
     >
       {light ? (
         // Lua → clicar volta ao escuro
-        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden>
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
           <path
             d="M16 11.5A6 6 0 0 1 8.5 4a6 6 0 1 0 7.5 7.5Z"
             stroke="currentColor"
@@ -41,7 +41,7 @@ export function ThemeToggle() {
         </svg>
       ) : (
         // Sol → clicar vai para o claro
-        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden>
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
           <circle cx="10" cy="10" r="3.4" stroke="currentColor" strokeWidth="1.6" />
           <path
             d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M15.3 4.7l-1.4 1.4M6.1 13.9l-1.4 1.4"
