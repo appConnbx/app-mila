@@ -93,7 +93,7 @@ const ICON_CARD = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    aria-hidden
+    aria-hidden="true"
   >
     <rect x="3" y="4" width="18" height="7" rx="1.5" />
     <rect x="3" y="14" width="18" height="6" rx="1.5" />
@@ -109,7 +109,7 @@ const ICON_LIST = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    aria-hidden
+    aria-hidden="true"
   >
     <line x1="8" y1="6" x2="21" y2="6" />
     <line x1="8" y1="12" x2="21" y2="12" />

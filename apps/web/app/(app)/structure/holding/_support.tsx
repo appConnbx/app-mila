@@ -110,7 +110,7 @@ export function ClientSupport({
           href={manualHref}
           className="inline-flex items-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
         >
-          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden>
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
             <path
               d="M10 3v10m0 0l-3.5-3.5M10 13l3.5-3.5M4 16h12"
               stroke="currentColor"

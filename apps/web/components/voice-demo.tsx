@@ -222,7 +222,7 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
               : "border-brand/60 bg-brand/10 text-brand hover:bg-brand/20"
           } ${full ? "cursor-not-allowed opacity-50" : ""}`}
         >
-          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" aria-hidden>
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" aria-hidden="true">
             <path
               d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z"
               stroke="currentColor"
@@ -264,7 +264,7 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
               width="13"
               height="13"
               fill="none"
-              aria-hidden
+              aria-hidden="true"
               className="mt-0.5 shrink-0"
             >
               <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.4" />
@@ -345,7 +345,7 @@ export function VoiceDemo({ labels, samples }: { labels: VoiceDemoLabels; sample
                     className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold transition ${chipCls}`}
                   >
                     {done && (
-                      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden>
+                      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden="true">
                         <path
                           d="M3.5 8.5l3 3 6-7"
                           stroke="currentColor"

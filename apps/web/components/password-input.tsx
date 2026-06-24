@@ -10,7 +10,7 @@ function EyeIcon({ open }: { open: boolean }) {
       stroke="currentColor"
       strokeWidth="2"
       className="h-4 w-4"
-      aria-hidden
+      aria-hidden="true"
     >
       <path
         d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"
@@ -26,7 +26,7 @@ function EyeIcon({ open }: { open: boolean }) {
       stroke="currentColor"
       strokeWidth="2"
       className="h-4 w-4"
-      aria-hidden
+      aria-hidden="true"
     >
       <path
         d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M9.9 4.7A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.3 4.1M6.3 6.3A18 18 0 0 0 2 12s3.5 7 10 7a10.8 10.8 0 0 0 3.1-.4"

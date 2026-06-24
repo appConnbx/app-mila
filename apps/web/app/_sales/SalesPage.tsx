@@ -84,7 +84,7 @@ export type SalesContent = {
 
 function Check({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
       <path
         d="M5 10.5l3 3 7-7"
         stroke="currentColor"
@@ -97,7 +97,7 @@ function Check({ className = "" }: { className?: string }) {
 }
 function Arrow({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
       <path
         d="M4 10h11M11 5l5 5-5 5"
         stroke="currentColor"
