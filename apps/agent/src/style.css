@@ -249,20 +249,18 @@ body {
   font-size: 10px;
   color: var(--cyan);
 }
-/* Seletor da instância de destino no painel de voz */
+/* Seletor da instância no painel de voz: usa a MESMA regra do select do
+   formulário (abaixo); aqui só largura total e cursor. */
 .mic-holding {
   width: 100%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(34, 211, 238, 0.25);
-  border-radius: 10px;
-  color: #fff;
-  padding: 6px 9px;
-  font-size: 12px;
-  outline: none;
   cursor: pointer;
 }
-.mic-holding:focus {
-  border-color: var(--cyan);
+/* Opções do dropdown nativo legíveis (fundo escuro) — senão ficam
+   branco-no-branco contra a janela translúcida do agente. */
+#quick-form select option,
+.mic-holding option {
+  background: #0f172a;
+  color: #fff;
 }
 
 /* ---------- Painel (expandido) ---------- */
@@ -355,7 +353,8 @@ body.expanded #pill {
 }
 #login-form input,
 #quick-form input,
-#quick-form select {
+#quick-form select,
+.mic-holding {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
@@ -367,7 +366,8 @@ body.expanded #pill {
 }
 #login-form input:focus,
 #quick-form input:focus,
-#quick-form select:focus {
+#quick-form select:focus,
+.mic-holding:focus {
   border-color: var(--cyan);
 }
 #login-btn,
