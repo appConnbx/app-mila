@@ -249,6 +249,21 @@ body {
   font-size: 10px;
   color: var(--cyan);
 }
+/* Seletor da instância de destino no painel de voz */
+.mic-holding {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  border-radius: 10px;
+  color: #fff;
+  padding: 6px 9px;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+.mic-holding:focus {
+  border-color: var(--cyan);
+}
 
 /* ---------- Painel (expandido) ---------- */
 body.expanded #pill {

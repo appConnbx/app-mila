@@ -67,6 +67,25 @@ function defaultHolding(): Holding | undefined {
   return holdings.find((h) => h.kind === "corporate") ?? holdings[0];
 }
 
+// Instância de criação ATIVA — compartilhada entre o microfone e o formulário
+// rápido e persistida. Resolve a trava: antes o microfone usava SEMPRE a
+// corporativa, ignorando a troca feita no formulário.
+const CREATE_HOLDING_KEY = "mila_create_holding";
+function getCreateHolding(): Holding | undefined {
+  const saved = localStorage.getItem(CREATE_HOLDING_KEY);
+  const found = saved ? holdings.find((h) => h.id === saved) : undefined;
+  return found ?? defaultHolding();
+}
+function setCreateHolding(id: string) {
+  if (!id) return;
+  localStorage.setItem(CREATE_HOLDING_KEY, id);
+  // Mantém os dois seletores em sincronia.
+  const q = $<HTMLSelectElement>("quick-holding");
+  const m = $<HTMLSelectElement>("mic-holding");
+  if (q.value !== id) q.value = id;
+  if (m.value !== id) m.value = id;
+}
+
 // ---------------- Janela: dock + modos ----------------
 // panel: cresce centralizado na vertical. mic: cresce ancorado na base
 // (o mini-painel "nasce" do botão de microfone da pílula).
@@ -106,8 +125,9 @@ async function expandTo(next: "panel" | "mic") {
   if (next === "panel") void refresh();
   if (next === "mic") {
     exitPreview(); // limpa revisão antiga, se houver
-    const h = defaultHolding();
-    $<HTMLParagraphElement>("mic-target").textContent = h ? `→ ${h.name}` : "";
+    // Reflete a instância de criação ativa no seletor do microfone.
+    const h = getCreateHolding();
+    if (h) $<HTMLSelectElement>("mic-holding").value = h.id;
     micStatus(t("micHoldHint"), "");
   }
 }
@@ -373,17 +393,24 @@ async function showMain() {
   }
   // Idioma da instância (corporativa prevalece) — retraduz a interface.
   if (applyHoldingsLang(holdings)) applyStatic();
-  const sel = $<HTMLSelectElement>("quick-holding");
-  sel.innerHTML = "";
+  const quickSel = $<HTMLSelectElement>("quick-holding");
+  const micSel = $<HTMLSelectElement>("mic-holding");
+  quickSel.innerHTML = "";
+  micSel.innerHTML = "";
   for (const h of holdings) {
-    const o = document.createElement("option");
-    o.value = h.id;
-    o.textContent = h.name;
-    sel.appendChild(o);
+    for (const sel of [quickSel, micSel]) {
+      const o = document.createElement("option");
+      o.value = h.id;
+      o.textContent = h.name;
+      sel.appendChild(o);
+    }
   }
-  // Padrão: instância corporativa pré-selecionada (se existir).
-  const corp = defaultHolding();
-  if (corp) sel.value = corp.id;
+  // Instância de criação ativa (persistida; corporativa por padrão).
+  const create = getCreateHolding();
+  if (create) {
+    quickSel.value = create.id;
+    micSel.value = create.id;
+  }
   // Primeiro login: liga "iniciar com o Windows" uma única vez (usuário pode desligar).
   try {
     if (!localStorage.getItem("mila_autostart_done")) {
@@ -574,7 +601,7 @@ async function acceptPreview() {
   micStatus(t("micCreating"), "");
   try {
     const { title, description } = splitTranscript(text);
-    const h = defaultHolding();
+    const h = getCreateHolding();
     if (!h) throw new Error("sem-instancia");
     await createDemand(h.id, title, tomorrowISO(), description);
     await refresh();
@@ -712,6 +739,15 @@ $<HTMLInputElement>("chk-autostart").addEventListener("change", async (e) => {
     /* ignora em dev */
   }
 });
+
+// Instância de criação: os dois seletores (microfone e formulário) sincronizam
+// e a escolha persiste entre sessões.
+$<HTMLSelectElement>("quick-holding").addEventListener("change", (e) =>
+  setCreateHolding((e.target as HTMLSelectElement).value),
+);
+$<HTMLSelectElement>("mic-holding").addEventListener("change", (e) =>
+  setCreateHolding((e.target as HTMLSelectElement).value),
+);
 
 // ---------------- Auto-update ----------------
 // Verifica no boot e a cada 6h; baixa e instala sozinho. Só reinicia quando
