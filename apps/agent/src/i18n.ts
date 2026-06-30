@@ -10,6 +10,7 @@ const DICT = {
     pillMicTitle: "Demanda por voz",
     micTitle: "Demanda por voz",
     micHoldHint: "Segure o botão e fale (até 10s)",
+    micTargetTitle: "Onde criar a demanda",
     micRecording: "Gravando… solte para criar.",
     micTranscribing: "Transcrevendo…",
     micCreating: "Criando demanda…",
@@ -53,6 +54,7 @@ const DICT = {
     pillMicTitle: "Voice task",
     micTitle: "Voice task",
     micHoldHint: "Hold the button and speak (up to 10s)",
+    micTargetTitle: "Where to create the task",
     micRecording: "Recording… release to create.",
     micTranscribing: "Transcribing…",
     micCreating: "Creating task…",
@@ -95,6 +97,7 @@ const DICT = {
     pillMicTitle: "Tarea por voz",
     micTitle: "Tarea por voz",
     micHoldHint: "Mantén el botón y habla (hasta 10s)",
+    micTargetTitle: "Dónde crear la tarea",
     micRecording: "Grabando… suelta para crear.",
     micTranscribing: "Transcribiendo…",
     micCreating: "Creando tarea…",
@@ -183,6 +186,7 @@ export function applyStatic() {
   set("pill-top", (el) => (el.title = t("pillTitle")));
   set("pill-mic", (el) => (el.title = t("pillMicTitle")));
   set("hold-btn", (el) => (el.title = t("pillMicTitle")));
+  set("mic-holding", (el) => (el.title = t("micTargetTitle")));
   set("mic-reject", (el) => (el.textContent = t("micRefuse")));
   set("mic-accept", (el) => (el.textContent = t("micAccept")));
   document.querySelector(".mic-title")!.textContent = t("micTitle");

@@ -25,6 +25,7 @@
       <!-- Mini-painel de voz (segure para gravar, solta = cria a demanda) -->
       <div id="micpanel" hidden>
         <p class="mic-title">Demanda por voz</p>
+        <select id="mic-holding" class="mic-holding" title="Onde criar a demanda"></select>
         <button id="hold-btn" type="button" title="Segure para gravar">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
             <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/>
@@ -38,7 +39,6 @@
         </div>
         <div id="mic-bar"><div id="mic-bar-fill"></div></div>
         <p id="mic-status" class="mic-status">Segure o botão e fale (até 10s)</p>
-        <p id="mic-target" class="mic-target"></p>
       </div>
 
       <!-- Painel (estado expandido) -->
